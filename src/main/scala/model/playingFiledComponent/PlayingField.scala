@@ -97,7 +97,7 @@ class PlayingField(
 
         println(s"⚔️ Attacking Card: $attackingCard vs Goalkeeper: $goalkeeper")
 
-        val comparisonResult = attackingCard.compare(attackingCard.value, goalkeeper.value)
+        val comparisonResult = attackingCard.compare(attackingCard, goalkeeper)
 
         if (comparisonResult > 0) {
           // ✅ Successful attack on goalkeeper
@@ -136,7 +136,7 @@ class PlayingField(
 
         println(s"⚔️ Attacking Card: $attackingCard vs Defender Card: $defenderCard")
 
-        val comparisonResult = attackingCard.compare(attackingCard.value, defenderCard.value)
+        val comparisonResult = attackingCard.compare(attackingCard, defenderCard)
 
         if (comparisonResult == 0) {
           // ✅ "Double Clash" Rule: Both players must play an extra card
@@ -148,7 +148,7 @@ class PlayingField(
 
             println(s"⚔️ Tiebreaker! ${attacker.name} plays $extraAttackerCard, ${defender.name} plays $extraDefenderCard")
 
-            val tiebreakerResult = extraAttackerCard.compare(extraAttackerCard.value, extraDefenderCard.value)
+            val tiebreakerResult = extraAttackerCard.compare(extraAttackerCard, extraDefenderCard)
 
             if (tiebreakerResult > 0) {
               println(s"🎉 ${attacker.name} wins the tiebreaker and takes all four cards!")
@@ -222,7 +222,7 @@ class PlayingField(
       println(s"Case 1: No goalkeeper and empty field. New field cards taken: $newFieldCards")
 
       // Find the highest card to set as the goalkeeper
-      val highestCard = newFieldCards.maxBy(card => card.valueToInt(card.value))
+      val highestCard = newFieldCards.maxBy(card => card.valueToInt)
       println(s"Highest card chosen as goalkeeper: $highestCard")
 
       setPlayerGoalkeeper(defender, Some(highestCard))
@@ -250,11 +250,11 @@ class PlayingField(
       println(s"Updated defender field after adding additional cards: $updatedDefenders")
 
       // Find the highest card in the updated defender field
-      val highestDefenderCard = updatedDefenders.maxBy(card => card.valueToInt(card.value))
+      val highestDefenderCard = updatedDefenders.maxBy(card => card.valueToInt)
       println(s"Highest card among defenders: $highestDefenderCard, Current goalkeeper: $goalkeeper")
 
       // Check if this highest defender card is stronger than the current goalkeeper
-      if (highestDefenderCard.valueToInt(highestDefenderCard.value) > goalkeeper.get.valueToInt(goalkeeper.get.value)) {
+      if (highestDefenderCard.valueToInt > goalkeeper.get.valueToInt) {
         // Swap the current goalkeeper with the highest defender card
         val currentGoalkeeperCard = goalkeeper.get // Store the entire goalkeeper card
         println(s"Swapping goalkeeper with higher defender card: $highestDefenderCard")
@@ -313,10 +313,10 @@ class PlayingField(
         println(s"🃏 Drawn cards: $newField")
 //        newGoalkeeper = newField.maxByOption(_.value)
         println(s"🃏 Available candidates for goalkeeper: " +
-          newField.map(c => s"${c.valueToString(c.value)} of ${Suit.suitToString(c.suit)} (Value: ${c.valueToInt(c.value)})").mkString(", ")
+          newField.map(c => s"${c.valueToString(c.value)} of ${Suit.suitToString(c.suit)} (Value: ${c.valueToInt})").mkString(", ")
         )
 
-        newGoalkeeper = newField.maxByOption(card => card.valueToInt(card.value))
+        newGoalkeeper = newField.maxByOption(card => card.valueToInt)
 
         println(s"🧤 Corrected goalkeeper selection: $newGoalkeeper")
 
@@ -386,17 +386,6 @@ class PlayingField(
     attacker = defender
     defender = temp
 
-    if (player1CardBoosted) {
-      player1Defenders = player1Defenders.map(_.revertToFormerValue)
-      player1CardBoosted = false
-      println("Reverted boosted cards for Player 1.")
-    }
-
-    if (player2CardBoosted) {
-      player2Defenders = player2Defenders.map(_.revertToFormerValue)
-      player2CardBoosted = false
-      println("Reverted boosted cards for Player 2.")
-    }
     notifyObservers()
   }
 
@@ -466,19 +455,20 @@ class PlayingField(
 
       val attackingCard1 = attackerHand.remove(attackerHand.size - 1)
       val attackingCard2 = attackerHand.remove(attackerHand.size - 1)
-      val attackValue = attackingCard1.valueToInt(attackingCard1.value) + attackingCard2.valueToInt(attackingCard2.value)
+      val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
 
       if (allDefendersBeaten(defender)) {
         val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
 
         println(s"⚔️ Attacking Cards: $attackingCard1, $attackingCard2 vs Goalkeeper: $goalkeeper")
-        val defenseValue = goalkeeper.valueToInt(goalkeeper.value)
+        val defenseValue = goalkeeper.valueToInt
 
         if (attackValue > defenseValue) {
           println("Attacker wins! Scores against the goalkeeper!")
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
           attackerHand.prepend(goalkeeper)
+
           // Remove the goalkeeper after scoring
           setPlayerGoalkeeper(defender, None)
           setPlayerDefenders(defender, List.empty)
@@ -502,7 +492,7 @@ class PlayingField(
         }
       } else {
         val defenderCard = defenderField(defenderIndex)
-        val defenseValue = defenderCard.valueToInt(defenderCard.value)
+        val defenseValue = defenderCard.valueToInt
 
         println(s"Attacking Cards: $attackingCard1, $attackingCard2 vs Defender: $defenderCard")
 
@@ -559,33 +549,30 @@ class PlayingField(
 //    notifyObservers()
 //  }
 
+
   def chooseBoostCard(index: Int): Unit = {
-    val defenderField = playerDefenders(defender)
+    val defenderField = if (defender == player1) player1Defenders else player2Defenders
 
     if (index < 0 || index >= defenderField.size) {
       println("Invalid defender index for boosting.")
       return
     }
 
-    val originalCard = defenderField(index).setFormerValue(defenderField(index).value) // Store original value
-    val boostValue = originalCard.getBoostingPolicies // Get random boost value
-    val boostedValue = originalCard.valueToInt(originalCard.value) + boostValue
+    val originalCard = defenderField(index)
+    val boostValue = originalCard.getBoostingPolicies
+    val boostedCard = originalCard.setAdditionalValue(boostValue) // ✅ Now returns a new Card
 
-    val boostedCard = originalCard.copy(
-      value = Value.allValues.find(v => originalCard.valueToInt(v) == boostedValue).getOrElse(originalCard.value)
-    )
+    // Replace the old card with the new boosted one
+    val updatedDefenderField = defenderField.updated(index, boostedCard)
 
+    // Assign the new list to the correct player's defenders
     if (defender == player1) {
-      boostedDefender1 = Some(boostedCard)
-      player1Defenders = player1Defenders.updated(index, boostedCard)
-      player1CardBoosted = true
+      player1Defenders = updatedDefenderField
     } else {
-      boostedDefender2 = Some(boostedCard)
-      player2Defenders = player2Defenders.updated(index, boostedCard)
-      player2CardBoosted = true
+      player2Defenders = updatedDefenderField
     }
 
-    println(s"Boosted Defender Card: ${originalCard} -> ${boostedCard} (Boosted by: $boostValue)")
+    println(s"Boosted Defender Card: $originalCard -> $boostedCard (Boosted by: $boostValue)")
     notifyObservers()
   }
 

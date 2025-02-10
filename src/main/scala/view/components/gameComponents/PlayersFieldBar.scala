@@ -81,6 +81,10 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
+      if(defenderCard.card.getAdditionalValue > 0) {
+        CardAnimationFactory.createFireEffect(defenderCard)
+//        CardAnimationFactory.applyBoostEffect(defenderCard)
+      }
 
       defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)
       defenderCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(defenderCard, _selectedDefenderIndex, index)
@@ -124,6 +128,9 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     val goalkeeperCard = playingField.playerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
+    }
+    if (goalkeeperCard.card.getAdditionalValue > 0) {
+      CardAnimationFactory.applyBoostEffect(goalkeeperCard)
     }
 
     // Track selected goalkeeper index

@@ -15,6 +15,7 @@ case class Memento(
                       player1Hand: mutable.Queue[Card],
                       player2Hand: mutable.Queue[Card],
                       player1Score: Int,
-                      player2Score: Int
+                      player2Score: Int,
+                      boostValues: Map[Int, Int] // ✅ Added boostValues field
                     )
 

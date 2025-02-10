@@ -41,48 +41,8 @@ import model.cardComponent.Deck
 import scala.collection.mutable
 import scalafx.application.JFXApp3
 
-object Main extends JFXApp3 {
-  override def start(): Unit = {
-    val (player1, player2) = dealCards()
-
-    // Convert player hands to queues
-    val player1HandQueue = player1.getCards.to(mutable.Queue)
-    val player2HandQueue = player2.getCards.to(mutable.Queue)
-
-    // Initialize the PlayingField with players and hands
-    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
-    pf.setPlayingField()
-
-    // Create the GameController
-    val controller = new Controller(player1, player2, pf)
-    // ✅ Start TUI in a separate thread
-    new Thread(() => {
-      val tui = new Tui(controller)
-      tui.start()
-    }).start()
-
-    // ✅ Start GUI normally
-    // Start the GUI without passing the stage explicitly
-    new Gui(controller).start()
-//    new Tui(controller).start()
-  }
-
-  def dealCards(): (Player, Player) = {
-    val deck = Deck.createDeck()
-    Deck.shuffleDeck(deck)
-
-    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
-    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
-
-    val player1 = Player("Player 1", hand1.toList)
-    val player2 = Player("Player 2", hand2.toList)
-
-    (player1, player2)
-  }
-}
-//object Main {
-//  def main(args: Array[String]): Unit = {
-//    // Deal cards
+//object Main extends JFXApp3 {
+//  override def start(): Unit = {
 //    val (player1, player2) = dealCards()
 //
 //    // Convert player hands to queues
@@ -95,35 +55,16 @@ object Main extends JFXApp3 {
 //
 //    // Create the GameController
 //    val controller = new Controller(player1, player2, pf)
-////test execute
-////    println("Before Attack:")
-////    println(player1)
-////    println(player2)
-////
-////    val attackSuccessful = pf.execute(0)
-////
-////    println("After Attack:")
-////    println(player1)
-////    println(player2)
-////    println(s"Attack Successful: $attackSuccessful")
-////test boost
-//    println("Before Boosting:")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+//    // ✅ Start TUI in a separate thread
+//    new Thread(() => {
+//      val tui = new Tui(controller)
+//      tui.start()
+//    }).start()
 //
-//    // Boost a defender card
-//    pf.chooseBoostCard(0)
-//    pf.attack(0)
-//
-//
-//    println("After Boosting:")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-////    pf.switchRoles()
-//    println("After Switch:")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//
+//    // ✅ Start GUI normally
+//    // Start the GUI without passing the stage explicitly
+//    new Gui(controller).start()
+////    new Tui(controller).start()
 //  }
 //
 //  def dealCards(): (Player, Player) = {
@@ -139,3 +80,72 @@ object Main extends JFXApp3 {
 //    (player1, player2)
 //  }
 //}
+object Main {
+  def main(args: Array[String]): Unit = {
+    // Deal cards
+    val (player1, player2) = dealCards()
+
+    // Convert player hands to queues
+    val player1HandQueue = player1.getCards.to(mutable.Queue)
+    val player2HandQueue = player2.getCards.to(mutable.Queue)
+
+    // Initialize the PlayingField with players and hands
+    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
+    pf.setPlayingField()
+
+    // Create the GameController
+    val controller = new Controller(player1, player2, pf)
+//test execute
+//    println("Before Attack:")
+//    println(player1)
+//    println(player2)
+//
+//    val attackSuccessful = pf.execute(0)
+//
+//    println("After Attack:")
+//    println(player1)
+//    println(player2)
+//    println(s"Attack Successful: $attackSuccessful")
+//test boost
+    // Choose a card to boost (Index 0 for demonstration)
+    // Print initial state
+    println("\n=== Before Boosting ===")
+    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+
+    // Choose a card to boost (Index 0 for demonstration)
+    pf.chooseBoostCard(0)
+
+    // Print state after boosting
+    println("\n=== After Boosting ===")
+    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+
+    pf.undo()
+    println("\n=== After Undo ===")
+    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+//
+//    // Perform an attack (assuming attacker attacks index 0 of the defender's field)
+//    println("\n=== Attacking Defender's First Card ===")
+//    pf.attack(0) // Attack the first defender card
+//
+//    // Print state after attack
+//    println("\n=== After Attack ===")
+//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+  }
+
+  def dealCards(): (Player, Player) = {
+    val deck = Deck.createDeck()
+    Deck.shuffleDeck(deck)
+
+    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
+    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
+
+    val player1 = Player("Player 1", hand1.toList)
+    val player2 = Player("Player 2", hand2.toList)
+
+    (player1, player2)
+  }
+}

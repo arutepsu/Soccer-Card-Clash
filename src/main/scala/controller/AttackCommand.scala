@@ -41,7 +41,8 @@ class AttackCommand(defenderIndex: Int, pf: PlayingField) extends Command {
       player1Hand = pf.getHand(pf.getAttacker).clone(),
       player2Hand = pf.getHand(pf.getDefender).clone(),
       player1Score = pf.getScorePlayer1,
-      player2Score = pf.getScorePlayer2
+      player2Score = pf.getScorePlayer2,
+      boostValues = Map.empty[Int, Int] // ✅ Fix: Added boostValues fiel
     )
   }
 

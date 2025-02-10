@@ -52,8 +52,9 @@ class Controller(player1: Player, player2: Player, pf: PlayingField) extends Obs
 
   def boostCard(defenderPosition: Int): Unit = {
     println("boosst!!!!")
-//    undoManager.doStep(command)
-//    notifyObservers() // Update state after command execution
+    val command = new BoostCardCommand(defenderPosition, pf)
+    undoManager.doStep(command)
+    notifyObservers()
   }
   private def endGame(): Unit = {
     val winner = if (pf.getScorePlayer1 >= 10) player1 else player2
