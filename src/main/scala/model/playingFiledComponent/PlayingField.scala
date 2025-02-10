@@ -37,6 +37,22 @@ class PlayingField(
   private var player2Goalkeeper: Option[Card] = None
   private var player2Defenders: List[Card] = List()
 
+  def getBoostedCards(): Map[Int, Int] = {
+    val defender = getDefender // ✅ Get current defender
+    val defenderCards = if (defender == player1) player1Defenders else player2Defenders // ✅ Get defender's cards
+
+//    println(s"Current Defender: ${defender.name}")
+//    println("Defender's Cards:")
+//    defenderCards.zipWithIndex.foreach { case (card, index) =>
+//      println(s"[$index] ${card}")
+//    }
+
+    // ✅ Return only boosted cards
+    defenderCards.zipWithIndex.collect {
+      case (card, index) if card.additionalValue > 0 => index -> card.additionalValue
+    }.toMap
+  }
+
   var boostValue1: Int = 0 // Static boost value for player 1
   var boostValue2: Int = 0 // Static boost value for player 2
   var originalDefender1: Option[Card] = None
