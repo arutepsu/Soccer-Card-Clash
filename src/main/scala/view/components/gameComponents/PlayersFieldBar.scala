@@ -1,0 +1,162 @@
+package view.components.gameComponents
+
+import scalafx.scene.layout.{VBox, HBox}
+import scalafx.geometry.Pos
+import scalafx.scene.control.Label
+import scalafx.scene.input.MouseEvent
+import model.cardComponent.Card
+import model.playerComponent.Player
+import model.playingFiledComponent.PlayingField
+import scalafx.scene.effect.DropShadow
+import scalafx.Includes._          // ✅ Ensures JavaFX → ScalaFX conve
+import scalafx.scene.paint.Color
+import scalafx.scene.effect.{Glow, DropShadow}
+import scalafx.scene.input.MouseEvent
+import scalafx.scene.paint.Color
+import scalafx.animation.ScaleTransition
+import scalafx.util.Duration
+import scalafx.Includes._
+import view.components.cardComponents.FieldCard
+import view.components.uiFactory.{CardAnimationFactory, CardImageLoader}
+
+class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
+
+  alignment = Pos.CENTER
+  spacing = 10
+
+  /** Label indicating the current game state */
+  private val statusLabel = new Label {
+    text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
+    style = "-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"
+  }
+
+  /** Label indicating which player's field this is */
+  private val playerLabel = new Label {
+    text = s"${player.name}'s Field"
+    style = "-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white;"
+  }
+
+  /** Retrieves defender cards */
+  private def getDefenderCards: List[Card] = playingField.playerDefenders(player)
+
+  /** **Updates the goalkeeper ONLY ONCE during initialization** */
+  private def initializeGoalkeeper(): Unit = {
+//    val defenderCards = getDefenderCards
+//    val highestCard = if (defenderCards.nonEmpty) {
+//      Some(defenderCards.maxBy(card => card.valueToInt(card.value)))
+//    } else {
+//      None
+//    }
+//
+//    playingField.setPlayerGoalkeeper(player, highestCard)
+//
+//    println(s"⚽ Initial goalkeeper for ${player.name} is set to: ${highestCard.getOrElse("None")}")
+  }
+
+  private var selectedDefender: Option[FieldCard] = None // Track selected defender card
+
+  /** Store the selected defender index */
+  private var _selectedDefenderIndex: Option[Int] = None
+
+  /** Public getter for selected defender index */
+  def selectedDefenderIndex: Option[Int] = _selectedDefenderIndex
+
+  /** Public setter to reset selection */
+  def resetSelectedDefender(): Unit = {
+    _selectedDefenderIndex = None
+  }
+
+  /** Creates Defender Row */
+
+  /** Store the currently selected defender card */
+  private var selectedDefenderCard: Option[FieldCard] = None
+
+
+  /** Creates Defender Row */
+
+  private def createDefenderRow(): HBox = {
+    val defenderCards = getDefenderCards
+
+    println(s"🛡️ Creating defender row for ${player.name} with cards: $defenderCards")
+
+    val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
+      val defenderCard = new FieldCard(flipped = false, card = card)
+
+      defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)
+      defenderCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(defenderCard, _selectedDefenderIndex, index)
+
+      // Card selection logic
+      if (playingField.getDefender == player) {
+        defenderCard.onMouseClicked = (_: MouseEvent) => {
+          if (_selectedDefenderIndex.contains(index)) {
+            // Deselect the card
+            println(s"❌ Deselected: $card (Index: $index)")
+            defenderCard.effect = null
+            _selectedDefenderIndex = None
+            selectedDefenderCard = None
+          } else {
+            // Deselect the previously selected card
+            _selectedDefenderIndex.foreach { _ =>
+              println(s"🔄 Deselecting previous defender")
+              selectedDefenderCard.foreach(_.effect = null)
+            }
+
+            println(s"🛡️ Selected: $card (Index: $index)")
+            _selectedDefenderIndex = Some(index)
+            selectedDefenderCard = Some(defenderCard)
+
+            // Apply gold shadow effect for selection
+            defenderCard.effect = new DropShadow(20, Color.GOLD)
+          }
+        }
+      }
+      defenderCard
+    }
+
+    new HBox {
+      alignment = Pos.CENTER
+      spacing = 10
+      children = defenderCardNodes
+    }
+  }
+  /** **Creates UI row for goalkeeper card** */
+  private def createGoalkeeperRow(): HBox = {
+    val goalkeeperCard = playingField.playerGoalkeeper(player) match {
+      case Some(card) => new FieldCard(flipped = false, card = card)
+      case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
+    }
+
+    // Track selected goalkeeper index
+    var _selectedGoalkeeperIndex: Option[Int] = None
+
+    goalkeeperCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(goalkeeperCard, _selectedGoalkeeperIndex, 0)
+    goalkeeperCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(goalkeeperCard, _selectedGoalkeeperIndex, 0)
+    goalkeeperCard.onMouseClicked = (_: MouseEvent) => _selectedGoalkeeperIndex = CardAnimationFactory.toggleGoalkeeperSelection(goalkeeperCard, _selectedGoalkeeperIndex)
+
+    new HBox {
+      alignment = Pos.CENTER
+      spacing = 10
+      children = Seq(goalkeeperCard)
+    }
+  }
+
+
+  // ✅ **Initialize goalkeeper only once at the start**
+  initializeGoalkeeper()
+
+  // ✅ **Initialize UI (without re-updating the goalkeeper)**
+  children = Seq(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow())
+
+  /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
+  def updateField(): Unit = {
+    println(s"🔄 Updating defender's field for ${player.name}...")
+    children.clear()
+    children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow()) // No updateGoalkeeper()
+    playingField.notifyObservers() // ✅ Ensure UI refreshes
+  }
+
+  /** **Update game status dynamically** */
+  def updateGameStatus(): Unit = {
+    statusLabel.text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
+  }
+}
