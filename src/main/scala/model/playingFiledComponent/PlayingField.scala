@@ -398,6 +398,29 @@ class PlayingField(
   }
 
   def switchRoles(): Unit = {
+    println(s"Switching roles: ${attacker.name} ↔ ${defender.name}")
+
+    // Reset boost values for ALL cards (Defenders + Hand)
+    def resetBoosts(cards: List[Card]): List[Card] = {
+      cards.map { card =>
+        if (card.additionalValue > 0) {
+          println(s"Resetting Boost: ${card} (Removing: ${card.additionalValue})")
+          card.copy(additionalValue = 0) // ✅ Reset only the additional boost
+        } else {
+          card // ✅ Keep non-boosted cards unchanged
+        }
+      }
+    }
+
+    // ✅ Reset boosts for both players' defenders
+    player1Defenders = resetBoosts(player1Defenders)
+    player2Defenders = resetBoosts(player2Defenders)
+
+    val resetAttackerHand = resetBoosts(player1Cards.toList)
+    val resetDefenderHand = resetBoosts(player2Cards.toList)
+
+
+    // Swap roles
     val temp = attacker
     attacker = defender
     defender = temp
