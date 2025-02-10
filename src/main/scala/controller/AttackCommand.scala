@@ -67,7 +67,24 @@ class AttackCommand(defenderIndex: Int, pf: PlayingField) extends Command {
     // Restore scores
     pf.setScorePlayer1(memento.player1Score)
     pf.setScorePlayer2(memento.player2Score)
+    // ✅ Restore boost values for all affected cards
+    // ✅ Properly revert the boost effects
+    memento.boostValues.foreach { case (index, boost) =>
+      pf.getHand(memento.defender).toList.lift(index).foreach { card =>
+        println(s"Undoing boost: Resetting ${card} by -$boost")
 
+        // ✅ Reset the card boost
+        val revertedCard = card.copy(
+          additionalValue = card.additionalValue - boost, // ✅ Subtract boost to revert
+          lastBoostValue = 0 // ✅ Reset lastBoostValue
+        )
+
+        // ✅ Replace the card in the defender's hand
+        defenderHand.update(index, revertedCard)
+
+        println(s"After Undo: $revertedCard")
+      }
+    }
     // Notify observers of the restored state
     pf.notifyObservers()
   }

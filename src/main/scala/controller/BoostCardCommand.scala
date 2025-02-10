@@ -74,14 +74,15 @@ class BoostCardCommand(cardIndex: Int, pf: PlayingField) extends Command {
     pf.setScorePlayer2(memento.player2Score)
 
     // ✅ Reset `additionalValue` completely for cards that were boosted
+    // ✅ Properly revert the boost effects
     memento.boostValues.foreach { case (index, boost) =>
       pf.getHand(memento.defender).toList.lift(index).foreach { card =>
-        println(s"Undo Boost: Resetting ${card} to original state")
+        println(s"Undoing boost: Resetting ${card} by -$boost")
 
-        // ✅ Create a fully reverted card with `additionalValue = 0`
+        // ✅ Reset the card boost
         val revertedCard = card.copy(
-          additionalValue = 0, // ✅ Reset to original (no boost)
-          lastBoostValue = 0 // ✅ Clear last boost tracking
+          additionalValue = card.additionalValue - boost, // ✅ Subtract boost to revert
+          lastBoostValue = 0 // ✅ Reset lastBoostValue
         )
 
         // ✅ Replace the card in the defender's hand
