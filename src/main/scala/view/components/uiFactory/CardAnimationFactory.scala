@@ -4,7 +4,7 @@ import javafx.event.EventHandler
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.Includes.*
-import scalafx.animation.{ScaleTransition, TranslateTransition}
+import scalafx.animation.{ScaleTransition, TranslateTransition, FadeTransition, StrokeTransition}
 import scalafx.scene.control.Button
 import scalafx.scene.effect.{DropShadow, Glow}
 import scalafx.scene.input.MouseEvent
@@ -14,8 +14,198 @@ import view.components.cardComponents.{FieldCard, HandCard}
 import scalafx.animation.{ScaleTransition, Timeline, KeyFrame, PauseTransition}
 import scalafx.scene.effect.Glow
 import scalafx.util.Duration
+import scalafx.scene.image.ImageView
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.layout.{StackPane, Pane}
+import view.utils.ImageUtils
+import scalafx.collections.ObservableBuffer
+import scalafx.application.Platform
+import view.components.uiFactory.CardImageLoader
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.StackPane
+import scalafx.scene.effect.DropShadow
+import scalafx.scene.shape.Rectangle
+import scalafx.scene.paint.Color
+
 object CardAnimationFactory {
-  
+  private val boostEffectPath = "/view/data/cards/effects/boost.png"
+
+  /**
+   * Adds a boost effect overlay if the card has an additional value (>0).
+   */
+
+
+  def applyBoostEffect(card: FieldCard): Unit = {
+    if (card.card.additionalValue > 0) {
+      val scaleFactor = 0.2f // Adjust scale factor for the boost effect
+      val boostView = ImageUtils.importImageAsViewBoost(boostEffectPath, scaleFactor, 30, 50) // Max 100x100 size
+
+      // Positioning the boost effect relative to the card
+      boostView.translateX = card.width.value * 0.4 // Move slightly to the right
+      boostView.translateY = -card.height.value * 0.4 // Move above the card
+
+      Platform.runLater {
+        card.parent.value match {
+          case javafxParent: javafx.scene.layout.Pane =>
+            val parentChildren = javafxParent.getChildren
+
+            if (parentChildren.contains(card)) {
+              parentChildren.remove(card)
+
+              val cardStack = new StackPane {
+                children = Seq(card, boostView) // ✅ Directly overlay the boost on the original card
+                prefWidth = card.width.value
+                prefHeight = card.height.value
+              }
+
+              parentChildren.add(cardStack)
+            } else {
+              println("⚠️ [ERROR] Card was not found in parent container!")
+            }
+
+          case _ =>
+            println("⚠️ [ERROR] Card has no valid parent container!")
+        }
+      }
+    }
+  }
+
+  /**
+   * Creates and applies a glowing fire effect to a boosted card.
+   *
+   * @param card The card to which the fire effect should be applied.
+   */
+//  def createFireEffect(card: FieldCard): Unit = {
+//    // 🔥 Create a Gold glow effect
+//    val glowEffect = new DropShadow {
+//      color = Color.Gold
+//      radius = 90
+//      spread = 0.8
+//    }
+//
+//    // 🔥 Animate the glow intensity (pulsing effect)
+//    val glowAnimation = new FadeTransition(Duration(500), card) {
+//      fromValue = 0.6
+//      toValue = 1.0
+//      cycleCount = FadeTransition.Indefinite
+//      autoReverse = true
+//    }
+//
+//    // 🔥 Animate the entire card's brightness (pulsing effect)
+//    val cardFadeAnimation = new FadeTransition(Duration(500), card) {
+//      fromValue = 0.3 // Dimmed gold
+//      toValue = 2.0 // Bright gold
+//      cycleCount = FadeTransition.Indefinite
+//      autoReverse = true
+//    }
+//
+//    // Apply the effect to the card
+//    card.effect = glowEffect
+//    glowAnimation.play()
+//    cardFadeAnimation.play() // 🔥 The whole card now blinks in sync with the glow!
+//  }
+
+  def createFireEffect(card: FieldCard): Unit = {
+    Platform.runLater {
+      card.parent.value match {
+        case javafxParent: javafx.scene.layout.Pane =>
+          val parentChildren = javafxParent.getChildren
+
+          if (parentChildren.contains(card)) {
+            parentChildren.remove(card)
+
+            // 🔥 Get the actual width and height of the card
+            val cardWidth = card.getWidth
+            val cardHeight = card.getHeight
+
+            // 🔥 Load burn effect frame using CardImageLoader
+            val burnEffect = CardImageLoader.getBurnEffectView(80, 120)
+
+            // 🔥 Animate the burn effect (fade transition)
+            val burnAnimation = new FadeTransition(Duration(500), burnEffect) {
+              fromValue = 0.5 // Start at 50% opacity
+              toValue = 1.0 // Brighten fully
+              cycleCount = FadeTransition.Indefinite
+              autoReverse = true
+            }
+
+            // Start the animation
+            burnAnimation.play()
+
+            // Wrap card inside a StackPane with the burn effect
+            val cardStack = new StackPane {
+              children = Seq(card, burnEffect) // ✅ Overlay burn effect
+              prefWidth = cardWidth
+              prefHeight = cardHeight
+            }
+
+            parentChildren.add(cardStack)
+          } else {
+            println("⚠️ [ERROR] Card was not found in parent container!")
+          }
+
+        case _ =>
+          println("⚠️ [ERROR] Card has no valid parent container!")
+      }
+    }
+  }
+
+//  def createFireEffect(card: FieldCard): Unit = {
+//    Platform.runLater {
+//      card.parent.value match {
+//        case javafxParent: javafx.scene.layout.Pane =>
+//          val parentChildren = javafxParent.getChildren
+//
+//          if (parentChildren.contains(card)) {
+//            parentChildren.remove(card)
+//
+//            // 🔥 Create a blinking border frame
+//            val blinkingFrame = new Rectangle {
+//              width = card.width.value
+//              height = card.height.value
+//              arcWidth = 22  // 🔥 Rounded corners for a smooth look
+//              arcHeight = 18
+//              stroke = Color.Gold  // Initial color
+//              strokeWidth = 4
+//              fill = Color.Transparent // Only the frame should be visible
+//            }
+//
+//            // 🔥 Animate the border color (blinking effect)
+//            val borderAnimation = new StrokeTransition(Duration(500), blinkingFrame) {
+//              fromValue = Color.Gold
+//              toValue = Color.Orange
+//              cycleCount = StrokeTransition.Indefinite
+//              autoReverse = true
+//            }
+//
+//            // 🔥 Slight pulsing effect (thickness change)
+//            val fadeEffect = new FadeTransition(Duration(500), blinkingFrame) {
+//              fromValue = 0.7
+//              toValue = 1.0
+//              cycleCount = FadeTransition.Indefinite
+//              autoReverse = true
+//            }
+//
+//            // Start animations
+//            borderAnimation.play()
+//            fadeEffect.play()
+//
+//            val cardStack = new StackPane {
+//              children = Seq(card: scalafx.scene.Node, blinkingFrame: scalafx.scene.Node) // ✅ Explicitly cast to Node
+//              prefWidth = card.width.value
+//              prefHeight = card.height.value
+//            }
+//
+//            parentChildren.add(cardStack)
+//          } else {
+//            println("⚠️ [ERROR] Card was not found in parent container!")
+//          }
+//
+//        case _ =>
+//          println("⚠️ [ERROR] Card has no valid parent container!")
+//      }
+//    }
+//  }
   def highlightLastHandCard(player: Player, playingField: PlayingField): Option[HandCard] = {
     val hand = playingField.getHand(player)
 

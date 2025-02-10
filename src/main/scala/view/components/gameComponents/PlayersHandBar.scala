@@ -38,8 +38,8 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
     val hand = playingField.getHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val isLastCard = index == hand.size - 1
-      val handCard = new HandCard(flipped = !isLastCard, card = card)
-
+//      val handCard = new HandCard(flipped = !isLastCard, card = card)
+      val handCard = new HandCard(flipped = false, card = card)
       // Drop shadow for depth
       handCard.effect = new DropShadow(10, Color.BLACK)
 

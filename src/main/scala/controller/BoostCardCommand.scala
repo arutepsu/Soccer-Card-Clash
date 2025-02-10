@@ -8,28 +8,34 @@ import controller.Memento
 import util.Command
 import model.playingFiledComponent.PlayingField
 import controller.Memento
-class SpecialAttackCommand(defenderIndex: Int, pf: PlayingField) extends Command {
+
+class BoostCardCommand(cardIndex: Int, pf: PlayingField) extends Command {
   private var memento: Option[Memento] = None
-  private var attackSuccessful: Boolean = false // Tracks if the attack was successful
+  private var boostValue: Int = 0 // ✅ Track boost value separately for undo
 
   override def doStep(): Unit = {
     // Save the current state before making changes
     memento = Some(createMemento())
-    attackSuccessful = pf.execute(defenderIndex)
+
+    // Get the selected card
+    val selectedCard = pf.getHand(pf.getAttacker).toList.lift(cardIndex)
+
+    selectedCard.foreach { card =>
+      boostValue = card.getBoostingPolicies // ✅ Get and store boost value
+      pf.chooseBoostCard(cardIndex)
+    }
   }
 
   override def undoStep(): Unit = {
-    // Restore the state from the memento
+    // Restore the previous state
     memento.foreach(restoreMemento)
   }
 
   override def redoStep(): Unit = {
-    // Re-execute the attack logic
-    doStep()
+    doStep() // Reapply the boost effect
   }
 
   private def createMemento(): Memento = {
-    // Capture the current state of the game
     Memento(
       attacker = pf.getAttacker,
       defender = pf.getDefender,
@@ -41,7 +47,7 @@ class SpecialAttackCommand(defenderIndex: Int, pf: PlayingField) extends Command
       player2Hand = pf.getHand(pf.getDefender).clone(),
       player1Score = pf.getScorePlayer1,
       player2Score = pf.getScorePlayer2,
-      boostValues = Map.empty[Int, Int] // ✅ Fix: Added boostValues fiel
+      boostValues = Map(cardIndex -> boostValue) // ✅ Save the boost value for this card
     )
   }
 
@@ -54,7 +60,7 @@ class SpecialAttackCommand(defenderIndex: Int, pf: PlayingField) extends Command
     pf.setPlayerGoalkeeper(memento.attacker, memento.player1Goalkeeper)
     pf.setPlayerGoalkeeper(memento.defender, memento.player2Goalkeeper)
 
-    // Restore player hands (clear and refill with memento state)
+    // Restore player hands
     val attackerHand = pf.getHand(memento.attacker)
     attackerHand.clear()
     attackerHand.enqueueAll(memento.player1Hand)
@@ -67,8 +73,27 @@ class SpecialAttackCommand(defenderIndex: Int, pf: PlayingField) extends Command
     pf.setScorePlayer1(memento.player1Score)
     pf.setScorePlayer2(memento.player2Score)
 
+    // ✅ Reset `additionalValue` completely for cards that were boosted
+    memento.boostValues.foreach { case (index, boost) =>
+      pf.getHand(memento.defender).toList.lift(index).foreach { card =>
+        println(s"Undo Boost: Resetting ${card} to original state")
+
+        // ✅ Create a fully reverted card with `additionalValue = 0`
+        val revertedCard = card.copy(
+          additionalValue = 0, // ✅ Reset to original (no boost)
+          lastBoostValue = 0 // ✅ Clear last boost tracking
+        )
+
+        // ✅ Replace the card in the defender's hand
+        defenderHand.update(index, revertedCard)
+
+        println(s"After Undo: $revertedCard")
+      }
+    }
+
     // Notify observers of the restored state
     pf.notifyObservers()
   }
+
 
 }

@@ -93,8 +93,25 @@ case class GamePlayerScene(
 
   specialActionsBar.setBoostAction { () =>
     println("🔋 Boosting a card!")
-//    controller.boostCard()
-//    updateDisplay()
+
+    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
+    val defenderCards = playingField.playerDefenders(playingField.getDefender)
+
+    if (defenderCards.nonEmpty) {
+      defenderFieldBar.selectedDefenderIndex match {
+        case Some(defenderIndex) =>
+          println(s"🔥 Boosting defender at index: $defenderIndex")
+          controller.boostCard(defenderIndex)
+          updateDisplay()
+          defenderFieldBar.resetSelectedDefender()
+
+        case None =>
+          println("⚠️ No defender selected for boost!")
+          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
+      }
+    } else {
+      println("⚠️ No defenders available to boost!")
+    }
   }
 
   val player1ScoreLabel = new Label {
