@@ -110,24 +110,39 @@ object Main extends JFXApp3 {
 ////test boost
 //    // Choose a card to boost (Index 0 for demonstration)
 //    // Print initial state
-//    println("\n=== Before Boosting ===")
+//    println("\n=== Before Attack ===")
+////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
+//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
 //    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
 //    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//
 //    // Choose a card to boost (Index 0 for demonstration)
 ////    pf.chooseBoostCard(0)
 //
-//    controller.boostCard(0)
+//    controller.executeAttackCommandDouble(0)
 //    // Print state after boosting
-//    println("\n=== After Boosting ===")
+//    println("\n=== After Attack ===")
+//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
+//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
 //    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
 //    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
 //    controller.undo()
 //
-//    println("\n=== After Undo ===")
+//    println("\n=== After 1 Undo ===")
+//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
+//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
 //    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
 //    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//
+////    controller.undo()
+////    // Print state after boosting
+////    println("\n=== After 1 Undo ===")
+////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
+////    controller.undo()
+////    println("\n=== After 2 Undo ===")
+////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
+////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
 ////
 ////    // Perform an attack (assuming attacker attacks index 0 of the defender's field)
 ////    println("\n=== Attacking Defender's First Card ===")

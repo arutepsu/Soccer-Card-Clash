@@ -20,6 +20,11 @@ class Controller(player1: Player, player2: Player, pf: PlayingField) extends Obs
   // Getters for players
   def getPlayer1: Player = player1
   def getPlayer2: Player = player2
+
+  def getPlayerHand(player: Player): List[Card] = {
+    pf.getHand(player).toList // ✅ Convert the hand queue to a List
+  }
+
   def startGame(): Unit = {
     pf.initializeRoles()
 

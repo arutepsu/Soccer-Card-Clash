@@ -476,9 +476,9 @@ class PlayingField(
     }
   }
 
-  def execute(defenderIndex: Int): Boolean = {
-    val attackerHand = attacker.cards.toBuffer
-    val defenderHand = defender.cards.toBuffer
+  def doubleAtack(defenderIndex: Int): Boolean = {
+    val attackerHand = getHand(attacker)
+    val defenderHand = getHand(defender)
     val defenderField = playerDefenders(defender)
 
     println(s"Executing attack - Attacker: ${attacker.name}, Defender: ${defender.name}")
@@ -500,9 +500,9 @@ class PlayingField(
         val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
 
         println(s"⚔️ Attacking Cards: $attackingCard1, $attackingCard2 vs Goalkeeper: $goalkeeper")
-        val defenseValue = goalkeeper.valueToInt
+        val goalkeeperValue = goalkeeper.valueToInt
 
-        if (attackValue > defenseValue) {
+        if (attackValue > goalkeeperValue) {
           println("Attacker wins! Scores against the goalkeeper!")
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
