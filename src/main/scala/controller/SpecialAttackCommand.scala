@@ -15,7 +15,7 @@ class SpecialAttackCommand(defenderIndex: Int, pf: PlayingField) extends Command
   override def doStep(): Unit = {
     // Save the current state before making changes
     memento = Some(createMemento())
-    attackSuccessful = pf.execute(defenderIndex)
+    attackSuccessful = pf.doubleAtack(defenderIndex)
   }
 
   override def undoStep(): Unit = {
