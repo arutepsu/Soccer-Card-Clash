@@ -42,6 +42,17 @@ import scala.collection.mutable
 import scalafx.application.JFXApp3
 import controller.BoostCardCommand
 
+import controller.Controller
+import model.playerComponent.Player
+import model.playingFiledComponent.PlayingField
+import model.cardComponent.Deck
+import scala.collection.mutable
+import scalafx.application.JFXApp3
+import scalafx.stage.Stage
+import view.scenes.sceneManager.SceneManager
+import view.scenes.MainMenuScene
+import view.Gui
+
 object Main extends JFXApp3 {
   override def start(): Unit = {
     val (player1, player2) = dealCards()
@@ -56,16 +67,18 @@ object Main extends JFXApp3 {
 
     // Create the GameController
     val controller = new Controller(player1, player2, pf)
+
     // ✅ Start TUI in a separate thread
     new Thread(() => {
       val tui = new Tui(controller)
       tui.start()
     }).start()
 
-    // ✅ Start GUI normally
-    // Start the GUI without passing the stage explicitly
-    new Gui(controller).start()
-//    new Tui(controller).start()
+    // ✅ Start GUI using SceneManager
+
+    // ✅ Start GUI (which starts MainMenuScene)
+    val gui = new Gui(controller)
+    gui.start()
   }
 
   def dealCards(): (Player, Player) = {
@@ -81,6 +94,47 @@ object Main extends JFXApp3 {
     (player1, player2)
   }
 }
+
+
+//object Main extends JFXApp3 {
+//  override def start(): Unit = {
+//    val (player1, player2) = dealCards()
+//
+//    // Convert player hands to queues
+//    val player1HandQueue = player1.getCards.to(mutable.Queue)
+//    val player2HandQueue = player2.getCards.to(mutable.Queue)
+//
+//    // Initialize the PlayingField with players and hands
+//    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
+//    pf.setPlayingField()
+//
+//    // Create the GameController
+//    val controller = new Controller(player1, player2, pf)
+//    // ✅ Start TUI in a separate thread
+//    new Thread(() => {
+//      val tui = new Tui(controller)
+//      tui.start()
+//    }).start()
+//
+//    // ✅ Start GUI normally
+//    // Start the GUI without passing the stage explicitly
+//    new Gui(controller).start()
+////    new Tui(controller).start()
+//  }
+//
+//  def dealCards(): (Player, Player) = {
+//    val deck = Deck.createDeck()
+//    Deck.shuffleDeck(deck)
+//
+//    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
+//    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
+//
+//    val player1 = Player("Player 1", hand1.toList)
+//    val player2 = Player("Player 2", hand2.toList)
+//
+//    (player1, player2)
+//  }
+//}
 //object Main {
 //  def main(args: Array[String]): Unit = {
 //    // Deal cards

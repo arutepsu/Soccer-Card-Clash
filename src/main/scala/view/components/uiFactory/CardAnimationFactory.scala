@@ -111,38 +111,24 @@ object CardAnimationFactory {
         case javafxParent: javafx.scene.layout.Pane =>
           val parentChildren = javafxParent.getChildren
 
-          if (parentChildren.contains(card)) {
-            parentChildren.remove(card)
+          // 🔥 Load burn effect
+          val burnEffect = CardImageLoader.getBurnEffectView(80, 120)
 
-            // 🔥 Get the actual width and height of the card
-            val cardWidth = card.getWidth
-            val cardHeight = card.getHeight
-
-            // 🔥 Load burn effect frame using CardImageLoader
-            val burnEffect = CardImageLoader.getBurnEffectView(80, 120)
-
-            // 🔥 Animate the burn effect (fade transition)
-            val burnAnimation = new FadeTransition(Duration(500), burnEffect) {
-              fromValue = 0.5 // Start at 50% opacity
-              toValue = 1.0 // Brighten fully
-              cycleCount = FadeTransition.Indefinite
-              autoReverse = true
-            }
-
-            // Start the animation
-            burnAnimation.play()
-
-            // Wrap card inside a StackPane with the burn effect
-            val cardStack = new StackPane {
-              children = Seq(card, burnEffect) // ✅ Overlay burn effect
-              prefWidth = cardWidth
-              prefHeight = cardHeight
-            }
-
-            parentChildren.add(cardStack)
-          } else {
-            println("⚠️ [ERROR] Card was not found in parent container!")
+          // 🔥 Animate burn effect
+          val burnAnimation = new FadeTransition(Duration(500), burnEffect) {
+            fromValue = 0.5
+            toValue = 1.0
+            cycleCount = FadeTransition.Indefinite
+            autoReverse = true
           }
+
+          // Start animation
+          burnAnimation.play()
+
+          // ✅ Instead of replacing the card, just overlay the effect
+          burnEffect.setLayoutX(card.getLayoutX)
+          burnEffect.setLayoutY(card.getLayoutY)
+          parentChildren.add(burnEffect) // Add effect without removing card
 
         case _ =>
           println("⚠️ [ERROR] Card has no valid parent container!")
@@ -150,7 +136,8 @@ object CardAnimationFactory {
     }
   }
 
-//  def createFireEffect(card: FieldCard): Unit = {
+
+  //  def createFireEffect(card: FieldCard): Unit = {
 //    Platform.runLater {
 //      card.parent.value match {
 //        case javafxParent: javafx.scene.layout.Pane =>

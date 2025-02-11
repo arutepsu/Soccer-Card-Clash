@@ -1,6 +1,6 @@
 package view.scenes
-
 import controller.Controller
+import sceneManager.SceneManager
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
@@ -13,7 +13,7 @@ import view.components.gameComponents.*
 import view.components.tui.tui
 import view.components.uiFactory.GameButtonFactory
 import view.utils.ImageUtils
-
+import scalafx.stage.Stage
 case class GamePlayerScene(
                             controller: Controller,
                             windowWidth: Double,
@@ -47,6 +47,7 @@ case class GamePlayerScene(
 
   val attackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
   val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
+  var attackersDefenders = new SelectablePlayersFieldBar(playingField.getAttacker, playingField)
 
   val gameStatusBar = new GameStatusBar
 
@@ -61,7 +62,7 @@ case class GamePlayerScene(
     spacing = 300
     children = Seq(attackerHandBar)
   }
-  val specialActionsBar = new SpecialActionsBar(controller)
+  val specialActionsBar = new DoubleAttackBar(controller)
   val backgroundViewSpecial = new HBox {
     alignment = Pos.CENTER_LEFT
     spacing = 20
@@ -91,28 +92,28 @@ case class GamePlayerScene(
     }
   }
 
-  specialActionsBar.setBoostAction { () =>
-    println("🔋 Boosting a card!")
-
-    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.playerDefenders(playingField.getDefender)
-
-    if (defenderCards.nonEmpty) {
-      defenderFieldBar.selectedDefenderIndex match {
-        case Some(defenderIndex) =>
-          println(s"🔥 Boosting defender at index: $defenderIndex")
-          controller.boostCard(defenderIndex)
-          updateDisplay()
-          defenderFieldBar.resetSelectedDefender()
-
-        case None =>
-          println("⚠️ No defender selected for boost!")
-          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-      }
-    } else {
-      println("⚠️ No defenders available to boost!")
-    }
-  }
+//  specialActionsBar.setBoostAction { () =>
+//    println("🔋 Boosting a card!")
+//
+//    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
+//    val defenderCards = playingField.playerDefenders(playingField.getDefender)
+//
+//    if (defenderCards.nonEmpty) {
+//      defenderFieldBar.selectedDefenderIndex match {
+//        case Some(defenderIndex) =>
+//          println(s"🔥 Boosting defender at index: $defenderIndex")
+//          controller.boostCard(defenderIndex)
+//          updateDisplay()
+//          defenderFieldBar.resetSelectedDefender()
+//
+//        case None =>
+//          println("⚠️ No defender selected for boost!")
+//          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
+//      }
+//    } else {
+//      println("⚠️ No defenders available to boost!")
+//    }
+//  }
 
   val player1ScoreLabel = new Label {
     text = s"${player1.name} Score: ${playingField.getScorePlayer1}"
@@ -260,7 +261,23 @@ case class GamePlayerScene(
       }
     )
   }
+  // ✅ Display attacker's field (Persistent instance)
 
+  val showDefendersButton: Button = GameButtonFactory.createGameButton(
+    text = "Show Defenders",
+    width = 180,
+    height = 50
+  ) { () =>
+    SceneManager.switchScene(new AttackerDefendersScene(
+      playingField = playingField,
+      windowWidth = windowWidth,
+      windowHeight = windowHeight,
+      moveToGamePlayerScene = () => SceneManager.switchScene(this) // Back to GamePlayerScene
+    ))
+  }
+
+  // ✅ Add "Show Defenders" button to `actionButtons`
+  actionButtons.children.add(showDefendersButton)
   /** ✅ Observer Pattern: Update UI when notified */
   override def update: Unit = {
     updateDisplay()
@@ -290,4 +307,5 @@ case class GamePlayerScene(
 
     println(controller.getPlayingField) // Print current game state in TUI for debugging
   }
+
 }
