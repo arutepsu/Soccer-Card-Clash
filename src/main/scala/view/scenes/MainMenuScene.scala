@@ -91,13 +91,13 @@ class MainMenuScene(controller: Controller) { // No need to pass `Stage`
       alignment = Pos.Center
       children = Seq(
         new GameLabel("Soccer Card Game", 1.5),
-        GameButtonFactory.createGameButton("Create New Game", 200, 50) {
+        GameButtonFactory.createGameButton("Create New Game", 400, 250) {
           () => SceneManager.switchScene(createGameScene()) // ✅ SceneManager handles switching
         },
-        GameButtonFactory.createGameButton("Load Game", 200, 50) {
+        GameButtonFactory.createGameButton("Load Game", 400, 250) {
           () => SceneManager.switchScene(loadGameScene()) // ✅ SceneManager handles switching
         },
-        GameButtonFactory.createGameButton("Quit", 200, 50) {
+        GameButtonFactory.createGameButton("Quit", 400, 250) {
           () => sys.exit(0)
         }
       )
