@@ -92,29 +92,6 @@ case class GamePlayerScene(
     }
   }
 
-//  specialActionsBar.setBoostAction { () =>
-//    println("🔋 Boosting a card!")
-//
-//    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-//    val defenderCards = playingField.playerDefenders(playingField.getDefender)
-//
-//    if (defenderCards.nonEmpty) {
-//      defenderFieldBar.selectedDefenderIndex match {
-//        case Some(defenderIndex) =>
-//          println(s"🔥 Boosting defender at index: $defenderIndex")
-//          controller.boostCard(defenderIndex)
-//          updateDisplay()
-//          defenderFieldBar.resetSelectedDefender()
-//
-//        case None =>
-//          println("⚠️ No defender selected for boost!")
-//          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-//      }
-//    } else {
-//      println("⚠️ No defenders available to boost!")
-//    }
-//  }
-
   val player1ScoreLabel = new Label {
     text = s"${player1.name} Score: ${playingField.getScorePlayer1}"
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
@@ -125,31 +102,6 @@ case class GamePlayerScene(
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
-//  val attackButton = new Button("Attack") {
-//    style = "-fx-font-size: 18; -fx-padding: 10px;"
-//    onAction = _ => {
-//      val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-//      val defenderCards = playingField.playerDefenders(playingField.getDefender)
-//
-//      if (defenderCards.nonEmpty) {
-//        defenderFieldBar.selectedDefenderIndex match {
-//          case Some(defenderIndex) =>
-//            println(s"🔥 Attacking defender at index: $defenderIndex")
-//            controller.executeAttackCommand(defenderIndex)
-//            updateDisplay()
-//            defenderFieldBar.resetSelectedDefender()
-//
-//          case None =>
-//            println("⚠️ No defender selected for attack!")
-//            gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-//        }
-//      } else {
-//        println("⚽ All defenders are gone! Attacking the goalkeeper!")
-//        controller.executeAttackCommand(0)
-//        updateDisplay()
-//      }
-//    }
-//  }
   val attackButton: Button = GameButtonFactory.createGameButton(
     text = "Attack",
     width = 150, // Adjust width as needed
@@ -204,28 +156,8 @@ case class GamePlayerScene(
     returnToMainMenu()
   }
 
-//  val undoButton = new Button("Undo") {
-//    style = "-fx-font-size: 18; -fx-padding: 10px;"
-//    onAction = _ => {
-//      controller.undo()
-//      updateDisplay()
-//      gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
-//    }
-//  }
-//
-//  val redoButton = new Button("Redo") {
-//    style = "-fx-font-size: 18; -fx-padding: 10px;"
-//    onAction = _ => {
-//      controller.redo()
-//      updateDisplay()
-//      gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
-//    }
-//  }
-//
-//  val mainMenuButton = new Button("Main Menu") {
-//    style = "-fx-font-size: 18; -fx-padding: 10px;"
-//    onAction = _ => returnToMainMenu()
-//  }
+  // ✅ Create "Make Swap" button to switch to AttackerHandScene
+
 
   val actionButtons = new VBox {
     alignment = Pos.CENTER_LEFT
@@ -280,6 +212,24 @@ case class GamePlayerScene(
   // ✅ Add "Show Defenders" button to `actionButtons`
   actionButtons.children.add(showDefendersButton)
   /** ✅ Observer Pattern: Update UI when notified */
+
+  val makeSwapButton: Button = GameButtonFactory.createGameButton(
+    text = "Make Swap",
+    width = 180,
+    height = 50
+  ) { () =>
+    SceneManager.switchScene(new AttackerHandScene(
+      controller = controller,
+      playingField = playingField,
+      windowWidth = windowWidth,
+      windowHeight = windowHeight,
+      moveToGamePlayerScene = () => SceneManager.switchScene(this) // ✅ Switch back to GamePlayerScene
+    ))
+  }
+
+  // ✅ Add "Make Swap" button to `actionButtons`
+  actionButtons.children.add(makeSwapButton)
+
   override def update: Unit = {
     updateDisplay()
   }

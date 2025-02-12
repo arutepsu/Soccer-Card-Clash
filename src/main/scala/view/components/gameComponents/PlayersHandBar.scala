@@ -34,7 +34,7 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
   }
 
   /** Creates ImageViews for all Hand Cards with visual effects */
-  private def createHandCardRow(): HBox = {
+  def createHandCardRow(): HBox = {
     val hand = playingField.getHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val isLastCard = index == hand.size - 1

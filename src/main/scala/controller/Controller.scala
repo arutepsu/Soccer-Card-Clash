@@ -78,7 +78,6 @@ class Controller(player1: Player, player2: Player, pf: PlayingField) extends Obs
     notifyObservers()
   }
 
-
   def boostGoalkeeper(): Unit = {
     val goalkeeperOpt = pf.getGoalkeeper(pf.getAttacker)
 
@@ -99,6 +98,14 @@ class Controller(player1: Player, player2: Player, pf: PlayingField) extends Obs
         println("⚠️ No goalkeeper available to boost!")
     }
   }
+
+  def swapAttackerCard(index: Int): Unit = {
+    println(s"🔄 Swapping attacker card at index: $index")
+    val command = new SwapCommand(index, pf)
+    undoManager.doStep(command)
+    notifyObservers()
+  }
+
 
   private def endGame(): Unit = {
     val winner = if (pf.getScorePlayer1 >= 10) player1 else player2

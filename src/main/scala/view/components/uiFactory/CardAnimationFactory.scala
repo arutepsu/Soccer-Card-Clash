@@ -26,6 +26,7 @@ import scalafx.scene.layout.StackPane
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.shape.Rectangle
 import scalafx.scene.paint.Color
+import view.components.cardComponents.GameCard
 
 object CardAnimationFactory {
   private val boostEffectPath = "/view/data/cards/effects/boost.png"
@@ -243,7 +244,7 @@ object CardAnimationFactory {
   /** Applies a hover effect with automatic fade-out after some time */
 
   /** Applies a hover effect that loops while the cursor is over the card */
-  def applyHoverEffect(card: FieldCard, selectedIndex: Option[Int], index: Int): Unit = {
+  def applyHoverEffect(card: GameCard, selectedIndex: Option[Int], index: Int): Unit = {
     if (!selectedIndex.contains(index)) { // Do not apply if selected
 
       // Ensure any previous animation is stopped before starting a new one
@@ -273,7 +274,7 @@ object CardAnimationFactory {
   }
 
   /** Stops the hover effect when the mouse leaves */
-  def removeHoverEffect(card: FieldCard, selectedIndex: Option[Int], index: Int): Unit = {
+  def removeHoverEffect(card: GameCard, selectedIndex: Option[Int], index: Int): Unit = {
     if (!selectedIndex.contains(index)) { // Do not remove if selected
       // Stop ongoing animations
       card.userData match {
@@ -293,6 +294,7 @@ object CardAnimationFactory {
       zoomOut.play()
     }
   }
+
 
   /** Handles goalkeeper selection and deselection */
   def toggleGoalkeeperSelection(goalkeeperCard: FieldCard, selectedIndex: Option[Int]): Option[Int] = {
