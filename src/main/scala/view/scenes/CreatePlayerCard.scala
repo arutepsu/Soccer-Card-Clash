@@ -189,11 +189,17 @@ class CreatePlayerCard(controller: Controller) extends VBox {
       return
     }
 
-    controller.getPlayer1.setName(playerNames.head)
-    controller.getPlayer2.setName(playerNames(1))
+    // ✅ Assign names to players using `setPlayerName` method
+    controller.setPlayerName(1, playerNames.head)
+    controller.setPlayerName(2, playerNames(1))
 
-    SceneManager.switchScene(new GamePlayerScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
+    // ✅ Start the game AFTER setting names
+    controller.startGame()
+
+    // ✅ Switch to the main game scene
+    SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
   }
+
 
   /** Displays an alert message */
     private def showAlert(titleText: String, content: String): Unit = {

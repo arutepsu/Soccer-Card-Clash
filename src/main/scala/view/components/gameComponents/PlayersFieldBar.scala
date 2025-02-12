@@ -82,8 +82,8 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
       if(defenderCard.card.getAdditionalValue > 0) {
-        CardAnimationFactory.createFireEffect(defenderCard)
-//        CardAnimationFactory.applyBoostEffect(defenderCard)
+//        CardAnimationFactory.createFireEffect(defenderCard)
+        CardAnimationFactory.applyBoostEffect(defenderCard)
       }
 
       defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)

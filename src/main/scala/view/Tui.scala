@@ -21,38 +21,53 @@ class Tui(controller: Controller) extends Observer {
 
   /** Starts the TUI loop */
   def start(): Unit = {
-    println("Starting the game in TUI mode...")
-    println("Type 'attack', 'undo', 'redo', or 'exit' to quit.")
-    update // Show initial game state
+    println("Welcome to the Soccer Card Game (TUI Mode)!")
+
+    // ✅ Ensure the game is initialized
+    controller.startGame()
+
+    println("Type 'attack', 'undo', 'redo', 'swap', or 'exit' to quit.")
+    update// Show initial game state
 
     var running = true
     while (running) {
-      val input = scala.io.StdIn.readLine().trim.toLowerCase
+      val input = readLine().trim.toLowerCase
       input match {
         case "attack" =>
           val defenderPosition = controller.selectDefenderPosition()
           if (defenderPosition == -1) {
             println("Attacking the goalkeeper.")
           } else if (defenderPosition == -2) {
-            println("Select a defender position to attack.")
-            val pos = scala.io.StdIn.readLine().toIntOption.getOrElse(-1)
+            println("Select a defender position to attack:")
+            val pos = readLine().toIntOption.getOrElse(-1)
             if (pos >= 1) controller.executeAttackCommand(pos - 1)
-            else println("Invalid input.")
+            else println("❌ Invalid input.")
           }
+
         case "undo" =>
           controller.undo()
-          println("Undo executed!")
+          println("🔄 Undo executed!")
 
         case "redo" =>
           controller.redo()
-          println("Redo executed!")
+          println("🔁 Redo executed!")
+
+        case "swap" =>
+          println("Select a card index to swap from attacker's hand:")
+          val index = readLine().toIntOption.getOrElse(-1)
+          if (index >= 0) {
+            controller.swapAttackerCard(index)
+            println(s"🔄 Swapped attacker card at index: $index")
+          } else {
+            println("❌ Invalid card index.")
+          }
 
         case "exit" =>
-          println("Exiting TUI...")
+          println("👋 Exiting TUI...")
           running = false
 
         case _ =>
-          println("Invalid command. Type 'attack', 'undo', 'redo', or 'exit'.")
+          println("❌ Invalid command. Type 'attack', 'undo', 'redo', 'swap', or 'exit'.")
       }
     }
   }
@@ -73,22 +88,21 @@ class Tui(controller: Controller) extends Observer {
     val defenderHand = pf.getHand(defender).mkString(", ")
     val defenderField = pf.playerDefenders(defender).mkString(", ")
     val defenderGoalkeeper = pf.getGoalkeeper(defender)
-    val attackerHandCount = pf.getHand(attacker).size
-    val defenderHandCount = pf.getHand(defender).size
 
-    s"""Attacker: ${attacker.name} (Cards in hand: $attackerHandCount)
-       |!!!!!!!!!!!! I AM SYCHRONIZED!!!!!!! :D
-       |Attacker's Hand: $attackerHand
-       |Defender's Hand: $defenderHand
-       |Attacking Card: $attackingCard
+    s"""🏆 **Current Game State**
+       |--------------------------------
+       |⚔️  Attacker: ${attacker.name}
+       |   🎴 Hand: $attackerHand
+       |   🃏 Attacking Card: $attackingCard
        |
-       |Defender: ${defender.name} (Cards in hand: $defenderHandCount)
-       |Defender's Field: $defenderField
-       |Defender's Goalkeeper: $defenderGoalkeeper
+       |🛡️  Defender: ${defender.name}
+       |   🎴 Hand: $defenderHand
+       |   🏟️ Field: $defenderField
+       |   🥅 Goalkeeper: $defenderGoalkeeper
+       |--------------------------------
        |""".stripMargin
   }
 }
-
 //class Tui(controller: Controller) extends Observer {
 //
 //  controller.add(this) // TUI subscribes to Controller updates

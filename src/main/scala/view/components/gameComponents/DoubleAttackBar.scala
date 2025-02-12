@@ -12,7 +12,7 @@ class DoubleAttackBar(controller: Controller) extends HBox {
 
   // ✅ Initialize Attack Button
   private val attackButton: Button = GameButtonFactory.createGameButton(
-    text = "Attack",
+    text = "Double Attack",
     width = 150,
     height = 50
   ) { () => println("Attack button clicked!") } // ✅ Placeholder action

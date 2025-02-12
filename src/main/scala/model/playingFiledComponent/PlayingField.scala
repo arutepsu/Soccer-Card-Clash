@@ -41,12 +41,6 @@ class PlayingField(
     val defender = getDefender // ✅ Get current defender
     val defenderCards = if (defender == player1) player1Defenders else player2Defenders // ✅ Get defender's cards
 
-//    println(s"Current Defender: ${defender.name}")
-//    println("Defender's Cards:")
-//    defenderCards.zipWithIndex.foreach { case (card, index) =>
-//      println(s"[$index] ${card}")
-//    }
-
     // ✅ Return only boosted cards
     defenderCards.zipWithIndex.collect {
       case (card, index) if card.additionalValue > 0 => index -> card.additionalValue
@@ -316,66 +310,51 @@ class PlayingField(
     var newField: List[Card] = List()
     var newGoalkeeper: Option[Card] = None
 
-    println(s"🔍 RefillField Debug: Starting for ${player.name}")
-    println(s"🃏 Hand before drawing: ${hand.mkString(", ")}")
-    println(s"🛡 Current defenders: $defenders, Goalkeeper: $goalkeeper")
-    println(s"🛠 Defender count: $defenderCount, Goalkeeper count: $goalkeeperCount")
-
     (defenderCount, goalkeeperCount) match {
       case (0, 0) =>
-        println("🚀 Case (0,0): Drawing 4 cards")
+//        println("🚀 Case (0,0): Drawing 4 cards")
         newField = hand.takeRight(4).toList
         hand.dropRightInPlace(4)
-        println(s"🃏 Drawn cards: $newField")
+//        println(s"🃏 Drawn cards: $newField")
 //        newGoalkeeper = newField.maxByOption(_.value)
-        println(s"🃏 Available candidates for goalkeeper: " +
-          newField.map(c => s"${c.valueToString(c.value)} of ${Suit.suitToString(c.suit)} (Value: ${c.valueToInt})").mkString(", ")
-        )
+//        println(s"🃏 Available candidates for goalkeeper: " +
+//          newField.map(c => s"${c.valueToString(c.value)} of ${Suit.suitToString(c.suit)} (Value: ${c.valueToInt})").mkString(", ")
+//        )
 
         newGoalkeeper = newField.maxByOption(card => card.valueToInt)
 
-        println(s"🧤 Corrected goalkeeper selection: $newGoalkeeper")
+//        println(s"🧤 Corrected goalkeeper selection: $newGoalkeeper")
 
 
       case (1, _) =>
-        println("🚀 Case (1,X): Drawing 2 cards")
+//        println("🚀 Case (1,X): Drawing 2 cards")
         newField = hand.takeRight(2).toList
         hand.dropRightInPlace(2)
-        println(s"🃏 Drawn cards: $newField")
+//        println(s"🃏 Drawn cards: $newField")
 
       case (2, _) =>
-        println("🚀 Case (2,X): Drawing 1 card")
+//        println("🚀 Case (2,X): Drawing 1 card")
         newField = hand.takeRight(1).toList
         hand.dropRightInPlace(1)
-        println(s"🃏 Drawn card: $newField")
+//        println(s"🃏 Drawn card: $newField")
 
       case _ =>
-        println("✅ Case (3,X): All defenders present, no new cards drawn.")
+//        println("✅ Case (3,X): All defenders present, no new cards drawn.")
         return
     }
 
-    println(s"📌 New field before assignment: $newField")
-    println(s"📌 New goalkeeper before assignment: $newGoalkeeper")
 
     // Update player's field, goalkeeper, and defenders
     if (player == player1) {
       player1Field = newField
       player1Goalkeeper = newGoalkeeper.orElse(newField.maxByOption(_.value))
       player1Defenders = newField.filterNot(_ == player1Goalkeeper.getOrElse(newField.head))
-      println(s"✅ Updated player1Field: $player1Field")
-      println(s"✅ Updated player1Goalkeeper: $player1Goalkeeper")
-      println(s"✅ Updated player1Defenders: $player1Defenders")
+
     } else {
       player2Field = newField
       player2Goalkeeper = newGoalkeeper.orElse(newField.maxByOption(_.value))
       player2Defenders = newField.filterNot(_ == player2Goalkeeper.getOrElse(newField.head))
-      println(s"✅ Updated player2Field: $player2Field")
-      println(s"✅ Updated player2Goalkeeper: $player2Goalkeeper")
-      println(s"✅ Updated player2Defenders: $player2Defenders")
     }
-
-    println(s"⚡ refillField() finished for ${player.name}")
-    println(s"💡 Remaining hand size: ${hand.size}")
   }
 
 
@@ -496,7 +475,7 @@ class PlayingField(
     println(s"Defender field: ${defenderField.mkString(", ")}")
 
     Try {
-      if (attackerHand.size < 2 || defenderField.isEmpty || defenderIndex < 0 || defenderIndex >= defenderField.size) {
+      if (attackerHand.size < 2) {
         println("Invalid attack: Not enough cards or invalid defender index.")
         throw new IllegalAccessException()
       }

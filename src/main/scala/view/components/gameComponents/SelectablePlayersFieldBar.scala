@@ -44,7 +44,8 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
       if (defenderCard.card.getAdditionalValue > 0) {
-        CardAnimationFactory.createFireEffect(defenderCard)
+//        CardAnimationFactory.createFireEffect(defenderCard)
+        CardAnimationFactory.applyBoostEffect(defenderCard)
       }
 
       defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedCardIndex, index)
@@ -148,3 +149,26 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
 }
 
+//override def updateField(): Unit = {
+//    println(s"🔄 Updating defender's field for ${player.name}...")
+//
+//    // ✅ Remove all previous UI components
+//    children.clear()
+//
+//    // ✅ Create new defender and goalkeeper rows
+//    val newDefenderRow = createDefenderRow()
+//    val newGoalkeeperRow = createGoalkeeperRow()
+//
+//    // ✅ Add them back to the UI
+//    children.addAll(newDefenderRow, newGoalkeeperRow)
+//
+//    // ✅ Reapply boost effect after updating the UI
+//    getDefenderCards.zipWithIndex.foreach { case (card, index) =>
+//      if (card.getAdditionalValue > 0) {
+//        val defenderCard = newDefenderRow.children.get(index).asInstanceOf[FieldCard]
+//        CardAnimationFactory.applyBoostEffect(defenderCard)
+//      }
+//    }
+//
+//    playingField.notifyObservers() // ✅ Ensure UI refreshes
+//  }
