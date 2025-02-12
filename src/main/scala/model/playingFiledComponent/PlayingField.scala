@@ -447,6 +447,15 @@ class PlayingField(
     if (player == player1) player1Goalkeeper else player2Goalkeeper
   }
 
+//  val goalkeeperCard: Card = getGoalkeeper(attacker) match {
+//    case Some(goalkeeper) => goalkeeper
+//    case None => throw new NoSuchElementException(s"No goalkeeper found for attacker: $attacker")
+//  }
+  val goalkeeperCard: Option[Card] =
+    if (attacker != null) getGoalkeeper(attacker)
+    else None
+
+
   // --- Score retrieval methods ---
   def getScorePlayer1: Int = scorePlayer1
   def getScorePlayer2: Int = scorePlayer2
@@ -589,23 +598,27 @@ class PlayingField(
 //  }
 
 
-  def chooseBoostCard(index: Int): Unit = {
-    val defenderField = if (defender == player1) player1Defenders else player2Defenders
-
-    if (index < 0 || index >= defenderField.size) {
+  def chooseBoostCardDefender(index: Int): Unit = {
+    val attackersDefenderField = if (attacker == player1) player1Defenders else player2Defenders
+    val attackersGoalkeeper = if (attacker == player1) player1Goalkeeper else player2Goalkeeper
+    if (index < 0 || index >= attackersDefenderField.size) {
       println("Invalid defender index for boosting.")
       return
     }
 
-    val originalCard = defenderField(index)
+    val originalCard = attackersDefenderField(index)
+    if (originalCard.wasBoosted) { // ✅ Prevent multiple boosts
+      println(s"⚠️ Boost prevented! ${originalCard} has already been boosted once.")
+      return
+    }
     val boostValue = originalCard.getBoostingPolicies
     val boostedCard = originalCard.setAdditionalValue(boostValue) // ✅ Now returns a new Card
 
     // Replace the old card with the new boosted one
-    val updatedDefenderField = defenderField.updated(index, boostedCard)
+    val updatedDefenderField = attackersDefenderField.updated(index, boostedCard)
 
     // Assign the new list to the correct player's defenders
-    if (defender == player1) {
+    if (attacker == player1) {
       player1Defenders = updatedDefenderField
     } else {
       player2Defenders = updatedDefenderField
@@ -613,6 +626,36 @@ class PlayingField(
 
     println(s"Boosted Defender Card: $originalCard -> $boostedCard (Boosted by: $boostValue)")
     notifyObservers()
+  }
+  def setGoalkeeperForAttacker(card: Card): Unit = {
+    if (attacker == player1) {
+      player1Goalkeeper = Some(card)
+    } else {
+      player2Goalkeeper = Some(card)
+    }
+    notifyObservers() // ✅ Ensure UI refreshes
+  }
+
+  def chooseBoostCardGoalkeeper(): Unit = {
+    val attackersGoalkeeperOpt = getGoalkeeper(attacker) // ✅ Ensure goalkeeper is fetched as Option[Card]
+
+    attackersGoalkeeperOpt match {
+      case Some(attackersGoalkeeper) =>
+        if (attackersGoalkeeper.wasBoosted) { // ✅ Prevent multiple boosts
+          println(s"⚠️ Boost prevented! ${attackersGoalkeeper} has already been boosted once.")
+          return
+        }
+        val boostValue = attackersGoalkeeper.getBoostingPolicies
+        val boostedCard = attackersGoalkeeper.setAdditionalValue(boostValue) // ✅ Boosts goalkeeper
+
+        setGoalkeeperForAttacker(boostedCard) // ✅ Updates the playing field
+
+        println(s"Boosted Goalkeeper Card: $attackersGoalkeeper -> $boostedCard (Boosted by: $boostValue)")
+        notifyObservers()
+
+      case None =>
+        println("⚠️ No goalkeeper available to boost!")
+    }
   }
 
 

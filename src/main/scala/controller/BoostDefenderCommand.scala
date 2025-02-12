@@ -9,7 +9,7 @@ import util.Command
 import model.playingFiledComponent.PlayingField
 import controller.Memento
 
-class BoostCardCommand(cardIndex: Int, pf: PlayingField) extends Command {
+class BoostDefenderCommand(cardIndex: Int, pf: PlayingField) extends Command {
   private var memento: Option[Memento] = None
   private var boostValue: Int = 0 // ✅ Track boost value separately for undo
 
@@ -22,7 +22,7 @@ class BoostCardCommand(cardIndex: Int, pf: PlayingField) extends Command {
 
     selectedCard.foreach { card =>
       boostValue = card.getBoostingPolicies // ✅ Get and store boost value
-      pf.chooseBoostCard(cardIndex)
+      pf.chooseBoostCardDefender(cardIndex)
     }
   }
 

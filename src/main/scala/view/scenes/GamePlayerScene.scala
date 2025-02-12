@@ -269,6 +269,7 @@ case class GamePlayerScene(
     height = 50
   ) { () =>
     SceneManager.switchScene(new AttackerDefendersScene(
+      controller = controller,
       playingField = playingField,
       windowWidth = windowWidth,
       windowHeight = windowHeight,

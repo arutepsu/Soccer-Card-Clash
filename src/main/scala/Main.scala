@@ -40,7 +40,7 @@ import model.playingFiledComponent.PlayingField
 import model.cardComponent.Deck
 import scala.collection.mutable
 import scalafx.application.JFXApp3
-import controller.BoostCardCommand
+import controller.BoostDefenderCommand
 
 import controller.Controller
 import model.playerComponent.Player

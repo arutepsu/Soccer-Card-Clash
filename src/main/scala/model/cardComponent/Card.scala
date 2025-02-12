@@ -1,55 +1,62 @@
 package model.cardComponent
+
 import scala.math.Integral.Implicits.infixIntegralOps
 import scala.util.Random
 import model.cardComponent.Value.{Ace, Eight, Five, Four, Jack, King, Nine, Queen, Seven, Six, Ten, Three, Two, Value}
 import model.cardComponent.Suit.{Diamonds, Suit}
 
-case class Card(value: Value, suit: Suit, var additionalValue: Int = 0, var lastBoostValue: Int = 0) { // ✅ Added lastBoostValue
+case class Card(
+                 value: Value,
+                 suit: Suit,
+                 additionalValue: Int = 0,
+                 lastBoostValue: Int = 0,
+                 wasBoosted: Boolean = false // ✅ New flag to prevent double boosting
+               ) {
 
   override def toString: String =
     s"${valueToString(value)} of ${Suit.suitToString(suit)} with addVal = ${additionalValue} (Last Boost: ${lastBoostValue})"
 
   def valueToString(value: Value): String = value match {
-    case Ace => "Ace"
-    case Two => "2"
+    case Ace   => "Ace"
+    case Two   => "2"
     case Three => "3"
-    case Four => "4"
-    case Five => "5"
-    case Six => "6"
+    case Four  => "4"
+    case Five  => "5"
+    case Six   => "6"
     case Seven => "7"
     case Eight => "8"
-    case Nine => "9"
-    case Ten => "10"
-    case Jack => "Jack"
+    case Nine  => "9"
+    case Ten   => "10"
+    case Jack  => "Jack"
     case Queen => "Queen"
-    case King => "King"
+    case King  => "King"
   }
 
   def valueToInt: Int = {
     val baseValue = this.value match {
-      case Ace => 14
-      case Two => 2
+      case Ace   => 14
+      case Two   => 2
       case Three => 3
-      case Four => 4
-      case Five => 5
-      case Six => 6
+      case Four  => 4
+      case Five  => 5
+      case Six   => 6
       case Seven => 7
       case Eight => 8
-      case Nine => 9
-      case Ten => 10
-      case Jack => 11
+      case Nine  => 9
+      case Ten   => 10
+      case Jack  => 11
       case Queen => 12
-      case King => 13
+      case King  => 13
     }
     baseValue + additionalValue // ✅ Always considers the boost!
   }
+
   def updateValue(): Card = {
     val newBaseValue = this.valueToInt // Get the total integer value (base + boost)
     val newValue = Value.allValues.find(v => Value.valueToInt(v) == newBaseValue).getOrElse(this.value)
 
     this.copy(value = newValue) // ✅ Return a new Card with updated `value`
   }
-
 
   def compare(card1: Card, card2: Card): Int = {
     val card1Value: Int = card1.valueToInt // Includes base + additionalValue
@@ -71,32 +78,45 @@ case class Card(value: Value, suit: Suit, var additionalValue: Int = 0, var last
     }
   }
 
-
   def getAdditionalValue: Int = additionalValue
 
+  /** ✅ Prevents double boosting */
   def setAdditionalValue(boost: Int): Card = {
+    if (this.wasBoosted) { // ✅ Prevents applying a second boost
+      println(s"⚠️ Boost prevented! ${this} has already been boosted once.")
+      return this // ✅ Returns the same card without boosting again
+    }
+
     println(s"old: ${this}")
     val newCard = this.copy(
       additionalValue = this.additionalValue + boost,
-      lastBoostValue = boost // ✅ Store the last applied boost value
+      lastBoostValue = boost, // ✅ Store last applied boost value
+      wasBoosted = true // ✅ Marks the card as boosted
     )
     println(s"new: ${newCard}")
     newCard.updateValue()
   }
 
-
-  def revertAdditionalValue(): Unit = {
-    this.additionalValue = 0
+  def revertAdditionalValue(): Card = {
+    if (this.wasBoosted) { // ✅ Reset only if the card was boosted
+      println(s"🔄 Reverting boost for ${this}")
+      this.copy(additionalValue = 0, lastBoostValue = 0, wasBoosted = false) // ✅ Resets the boost
+    } else {
+      this // ✅ Returns the same card if no boost was applied
+    }
   }
 
+  /** ✅ Ensures boost is generated only once */
   def getBoostingPolicies: Int = {
-    if (lastBoostValue == 0) { // ✅ If no previous boost, generate a new one
-      val maxBoostLimit = Card(Ace, Diamonds).valueToInt - this.valueToInt
-      val boost = Random.between(1, maxBoostLimit + 1)
-      this.copy(lastBoostValue = boost).lastBoostValue // ✅ Store boost in the copied object
-    } else {
-      lastBoostValue // ✅ Return stored boost value instead of generating a new one every time
+    if (wasBoosted) { // ✅ Prevents generating a new boost if already boosted
+      println(s"⚠️ Boosting prevented! ${this} was already boosted.")
+      return 0 // ✅ No additional boost allowed
     }
+
+    val maxBoostLimit = Card(Ace, Diamonds).valueToInt - this.valueToInt
+    val boost = Random.between(1, maxBoostLimit + 1)
+
+    this.copy(lastBoostValue = boost, wasBoosted = true).lastBoostValue // ✅ Stores boost and marks as boosted
   }
 
   def fileName: String = {
@@ -105,6 +125,7 @@ case class Card(value: Value, suit: Suit, var additionalValue: Int = 0, var last
     s"${valueStr}_of_${suitStr}.png"
   }
 }
+
 //package model.cardComponent
 //import scala.math.Integral.Implicits.infixIntegralOps
 //import scala.util.Random

@@ -55,12 +55,51 @@ class Controller(player1: Player, player2: Player, pf: PlayingField) extends Obs
     notifyObservers() // Update state after command execution
   }
 
-  def boostCard(defenderPosition: Int): Unit = {
-    println("boosst!!!!")
-    val command = new BoostCardCommand(defenderPosition, pf)
+  def boostDefender(defenderPosition: Int): Unit = {
+    val defenders = pf.playerDefenders(pf.getAttacker)
+
+    // ✅ Prevent out-of-range index
+    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
+      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
+      return
+    }
+
+    val selectedDefender = defenders(defenderPosition)
+
+    // ✅ Prevent multiple boosts
+    if (selectedDefender.wasBoosted) {
+      println(s"⚠️ Boost prevented! Defender ${selectedDefender} has already been boosted.")
+      return
+    }
+
+    println("✅ Boosting defender!")
+    val command = new BoostDefenderCommand(defenderPosition, pf)
     undoManager.doStep(command)
     notifyObservers()
   }
+
+
+  def boostGoalkeeper(): Unit = {
+    val goalkeeperOpt = pf.getGoalkeeper(pf.getAttacker)
+
+    goalkeeperOpt match {
+      case Some(goalkeeper) =>
+        // ✅ Prevent multiple boosts
+        if (goalkeeper.wasBoosted) {
+          println(s"⚠️ Boost prevented! Goalkeeper ${goalkeeper} has already been boosted.")
+          return
+        }
+
+        println("✅ Boosting goalkeeper!")
+        val command = new BoostGoalkeeperCommand(pf)
+        undoManager.doStep(command)
+        notifyObservers()
+
+      case None =>
+        println("⚠️ No goalkeeper available to boost!")
+    }
+  }
+
   private def endGame(): Unit = {
     val winner = if (pf.getScorePlayer1 >= 10) player1 else player2
     val winnerScore = if (pf.getScorePlayer1 >= 10) pf.getScorePlayer1 else pf.getScorePlayer2

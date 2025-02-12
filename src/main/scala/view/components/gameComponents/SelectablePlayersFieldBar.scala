@@ -21,6 +21,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
   /** ✅ Public method to get the selected card */
   def getSelectedCard: Option[FieldCard] = selectedCard
+
   /** Public getter for selected card index */
   def selectedCardIndex: Option[Int] = _selectedCardIndex
 
@@ -31,7 +32,8 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
   /** Store the currently selected card */
   private var selectedCard: Option[FieldCard] = None
-  private def getDefenderCards: List[Card] = playingField.playerDefenders(player)
+  def getDefenderCards: List[Card] = playingField.playerDefenders(player)
+  def getGoalkeeperCard: Option[Card] = playingField.getGoalkeeper(player)
 
   /** ✅ Creates Defender Row (Selectable) */
   override def createDefenderRow(): HBox = {
@@ -78,6 +80,13 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
   }
 
   /** ✅ Creates Goalkeeper Row (Selectable) */
+  /** ✅ Add a new boolean variable to track goalkeeper selection */
+  private var _isGoalkeeperSelected: Boolean = false
+
+  /** ✅ Public method to check if goalkeeper is selected */
+  def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
+
+  /** ✅ Modify onMouseClicked to set `isGoalkeeperSelected = true` when selecting the goalkeeper */
   override def createGoalkeeperRow(): HBox = {
     val goalkeeperCard = playingField.playerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
@@ -88,8 +97,11 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
       CardAnimationFactory.applyBoostEffect(goalkeeperCard)
     }
 
-    goalkeeperCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
-    goalkeeperCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
+    goalkeeperCard.onMouseEntered = (_: MouseEvent) =>
+      CardAnimationFactory.applyHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
+
+    goalkeeperCard.onMouseExited = (_: MouseEvent) =>
+      CardAnimationFactory.removeHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
 
     goalkeeperCard.onMouseClicked = (_: MouseEvent) => {
       if (_selectedCardIndex.contains(0)) {
@@ -97,6 +109,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
         goalkeeperCard.effect = null
         _selectedCardIndex = None
         selectedCard = None
+        _isGoalkeeperSelected = false // ✅ Deselect goalkeeper
       } else {
         _selectedCardIndex.foreach { _ =>
           println(s"🔄 Deselecting previous card")
@@ -107,21 +120,31 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
         _selectedCardIndex = Some(0)
         selectedCard = Some(goalkeeperCard)
         goalkeeperCard.effect = new DropShadow(20, Color.GOLD)
+        _isGoalkeeperSelected = true // ✅ Mark goalkeeper as selected
       }
     }
 
     new HBox {
-      alignment = Pos.CENTER
-      spacing = 10
-      children = Seq(goalkeeperCard)
-    }
+        alignment = Pos.CENTER
+        spacing = 10
+        children = Seq(goalkeeperCard)
+      }
   }
-
+  children = Seq(createDefenderRow(), createGoalkeeperRow())
   // ✅ Update UI with selectable cards
-  override def updateField(): Unit = {
-    println(s"🔄 Updating selectable defender's field for ${player.name}...")
-    children.clear()
-    children.addAll(createDefenderRow(), createGoalkeeperRow())
-    playingField.notifyObservers()
-  }
+    override def updateField(): Unit = {
+      println(s"🔄 Updating defender's field for ${player.name}...")
+
+      // ✅ Remove all previous UI components
+      children.clear()
+
+      // ✅ Re-add only the existing rows (NO new rows created)
+      children.addAll(createDefenderRow(), createGoalkeeperRow())
+
+      // ✅ Ensure the UI refreshes properly
+      playingField.notifyObservers()
+    }
+  
+
 }
+

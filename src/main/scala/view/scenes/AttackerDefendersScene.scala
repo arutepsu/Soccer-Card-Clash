@@ -1,4 +1,5 @@
 package view.scenes
+
 import scalafx.scene.control.Button
 import controller.Controller
 import model.playerComponent.Player
@@ -10,6 +11,7 @@ import view.components.gameComponents.{SelectablePlayersFieldBar, BoostBar}
 import view.components.uiFactory.GameButtonFactory
 
 case class AttackerDefendersScene(
+                                   controller: Controller,  // ✅ Added Controller
                                    playingField: PlayingField,
                                    windowWidth: Double,
                                    windowHeight: Double,
@@ -17,8 +19,9 @@ case class AttackerDefendersScene(
                                  ) extends Scene(windowWidth, windowHeight) {
 
   // ✅ Display attacker's field (Persistent instance)
-  val playerDefenders = new SelectablePlayersFieldBar(playingField.getAttacker, playingField)
-
+  val attackerDefenderField = new SelectablePlayersFieldBar(playingField.getAttacker, playingField)
+  val playerGoalkeeper = attackerDefenderField.getGoalkeeperCard
+  val playerDefenders = attackerDefenderField.getDefenderCards
   // ✅ Create a black background
   val backgroundView = new Region {
     style = "-fx-background-color: black;"
@@ -34,21 +37,29 @@ case class AttackerDefendersScene(
   ) { () =>
     moveToGamePlayerScene() // ✅ Switch back to GamePlayerScene
   }
+
+  // ✅ Boost Card Button
+  // ✅ Boost Card Button (Now boosts only the selected defender)
   val boostButton: Button = GameButtonFactory.createGameButton(
     text = "Boost",
     width = 180,
     height = 50
   ) { () =>
-    playerDefenders.selectedCardIndex match {
+    if (attackerDefenderField.isGoalkeeperSelected) { // ✅ Boost goalkeeper if selected
+      println("⚽ Boosting Goalkeeper!")
+      controller.boostGoalkeeper()
+    } else attackerDefenderField.selectedCardIndex match { // ✅ Boost only the selected defender
       case Some(index) =>
-        println(s"⚡ Boosting card at index: $index")
-        playingField.chooseBoostCard(index) // ✅ Apply game logic for boosting
-        playerDefenders.updateField() // ✅ Refresh UI after boost
+        println(s"⚡ Boosting defender at index: $index")
+        controller.boostDefender(index)
       case None =>
-        println("❌ No card selected to boost!")
+        println("⚠️ No defender selected for boosting!")
     }
-  }
 
+    // ✅ Notify Observers & Refresh UI
+    playingField.notifyObservers()
+    attackerDefenderField.updateField()
+  }
 
 
   // ✅ Button Layout (Includes BoostBar and Back Button)
@@ -63,7 +74,7 @@ case class AttackerDefendersScene(
     alignment = Pos.CENTER
     spacing = 20
     padding = Insets(20)
-    children = Seq(playerDefenders, buttonLayout)
+    children = Seq(attackerDefenderField, buttonLayout)
   }
 
   // ✅ Apply background to root
