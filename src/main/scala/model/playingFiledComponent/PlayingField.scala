@@ -377,27 +377,26 @@ class PlayingField(
   }
 
   def switchRoles(): Unit = {
-    println(s"Switching roles: ${attacker.name} ↔ ${defender.name}")
 
     // Reset boost values for ALL cards (Defenders + Hand)
-    def resetBoosts(cards: List[Card]): List[Card] = {
-      cards.map { card =>
-        if (card.additionalValue > 0) {
-          println(s"Resetting Boost: ${card} (Removing: ${card.additionalValue})")
-          card.copy(additionalValue = 0) // ✅ Reset only the additional boost
-        } else {
-          card // ✅ Keep non-boosted cards unchanged
-        }
-      }
-    }
-
-    // ✅ Reset boosts for both players' defenders
-    player1Defenders = resetBoosts(player1Defenders)
-    player2Defenders = resetBoosts(player2Defenders)
-
-    val resetAttackerHand = resetBoosts(player1Cards.toList)
-    val resetDefenderHand = resetBoosts(player2Cards.toList)
-
+//    def resetBoosts(cards: List[Card]): List[Card] = {
+//      cards.map { card =>
+//        if (card.additionalValue > 0) {
+//          println(s"Resetting Boost: ${card} (Removing: ${card.additionalValue})")
+//          card.copy(additionalValue = 0) // ✅ Reset only the additional boost
+//        } else {
+//          card // ✅ Keep non-boosted cards unchanged
+//        }
+//      }
+//    }
+//
+//    // ✅ Reset boosts for both players' defenders
+//    player1Defenders = resetBoosts(player1Defenders)
+//    player2Defenders = resetBoosts(player2Defenders)
+//
+//    val resetAttackerHand = resetBoosts(player1Cards.toList)
+//    val resetDefenderHand = resetBoosts(player2Cards.toList)
+//
 
     // Swap roles
     val temp = attacker
@@ -494,6 +493,9 @@ class PlayingField(
           println("Attacker wins! Scores against the goalkeeper!")
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
+          if (goalkeeper.wasBoosted) {
+            goalkeeper.revertAdditionalValue()
+          }
           attackerHand.prepend(goalkeeper)
 
           // Remove the goalkeeper after scoring
@@ -510,6 +512,9 @@ class PlayingField(
           println("Goalkeeper saves! Defender wins!")
           defenderHand.prepend(attackingCard1)
           defenderHand.prepend(attackingCard2)
+          if (goalkeeper.wasBoosted) {
+            goalkeeper.revertAdditionalValue()
+          }
           defenderHand.prepend(goalkeeper)
           refillDefenderField(defender)
           switchRoles()
@@ -527,6 +532,9 @@ class PlayingField(
           println("Attacker wins! Takes all three cards back into hand.")
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
+          if (defenderCard.wasBoosted) {
+            defenderCard.revertAdditionalValue()
+          }
           attackerHand.prepend(defenderCard)
           removeDefenderCard(defender, defenderCard)
           println(s"Updated Attacker hand: ${attackerHand.mkString(", ")}")
@@ -535,6 +543,9 @@ class PlayingField(
           println("Defender wins! Takes all three cards.")
           defenderHand.prepend(attackingCard1)
           defenderHand.prepend(attackingCard2)
+          if (defenderCard.wasBoosted) {
+            defenderCard.revertAdditionalValue()
+          }
           defenderHand.prepend(defenderCard)
 
           removeDefenderCard(defender, defenderCard)
@@ -606,6 +617,7 @@ class PlayingField(
     println(s"Boosted Defender Card: $originalCard -> $boostedCard (Boosted by: $boostValue)")
     notifyObservers()
   }
+
   def setGoalkeeperForAttacker(card: Card): Unit = {
     if (attacker == player1) {
       player1Goalkeeper = Some(card)
@@ -635,7 +647,7 @@ class PlayingField(
       case None =>
         println("⚠️ No goalkeeper available to boost!")
     }
-    
+
   }
 
   def swapAttacker(index: Int): Unit = {

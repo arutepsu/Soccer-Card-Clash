@@ -39,19 +39,6 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   /** Retrieves defender cards */
   private def getDefenderCards: List[Card] = playingField.playerDefenders(player)
 
-  /** **Updates the goalkeeper ONLY ONCE during initialization** */
-  private def initializeGoalkeeper(): Unit = {
-//    val defenderCards = getDefenderCards
-//    val highestCard = if (defenderCards.nonEmpty) {
-//      Some(defenderCards.maxBy(card => card.valueToInt(card.value)))
-//    } else {
-//      None
-//    }
-//
-//    playingField.setPlayerGoalkeeper(player, highestCard)
-//
-//    println(s"⚽ Initial goalkeeper for ${player.name} is set to: ${highestCard.getOrElse("None")}")
-  }
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card
 
@@ -81,7 +68,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
-      if(defenderCard.card.getAdditionalValue > 0) {
+      if(defenderCard.card.wasBoosted) {
 //        CardAnimationFactory.createFireEffect(defenderCard)
         CardAnimationFactory.applyBoostEffect(defenderCard)
       }
@@ -129,7 +116,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
-    if (goalkeeperCard.card.getAdditionalValue > 0) {
+    if (goalkeeperCard.card.additionalValue > 0) {
       CardAnimationFactory.applyBoostEffect(goalkeeperCard)
     }
 
@@ -146,10 +133,6 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
       children = Seq(goalkeeperCard)
     }
   }
-
-
-  // ✅ **Initialize goalkeeper only once at the start**
-  initializeGoalkeeper()
 
   // ✅ **Initialize UI (without re-updating the goalkeeper)**
   children = Seq(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow())

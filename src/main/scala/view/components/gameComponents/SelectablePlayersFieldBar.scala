@@ -43,7 +43,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
-      if (defenderCard.card.getAdditionalValue > 0) {
+      if (defenderCard.card.additionalValue > 0) {
 //        CardAnimationFactory.createFireEffect(defenderCard)
         CardAnimationFactory.applyBoostEffect(defenderCard)
       }
@@ -94,7 +94,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
 
-    if (goalkeeperCard.card.getAdditionalValue > 0) {
+    if (goalkeeperCard.card.additionalValue > 0) {
       CardAnimationFactory.applyBoostEffect(goalkeeperCard)
     }
 
