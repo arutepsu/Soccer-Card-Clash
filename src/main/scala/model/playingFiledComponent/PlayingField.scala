@@ -116,6 +116,7 @@ class PlayingField(
           // Prepend cards to the start of the attacker's hand
           attackerHand.prepend(attackingCard)
           attackerHand.prepend(goalkeeper)
+          revertCard(goalkeeper)
 
           // Remove the goalkeeper after scoring
           setPlayerGoalkeeper(defender, None)
@@ -134,7 +135,7 @@ class PlayingField(
           // Prepend cards to the start of the defender's hand
           defenderHand.prepend(attackingCard)
           defenderHand.prepend(goalkeeper)
-
+          revertCard(goalkeeper)
           refillDefenderField(defender)
           switchRoles()
           notifyObservers()
@@ -186,11 +187,24 @@ class PlayingField(
           // ✅ Normal attack success
           println(s"🎯 ${attacker.name} succeeded in the attack!")
 
-          // Prepend cards to the start of the attacker's hand
-          attackerHand.prepend(attackingCard)
-          attackerHand.prepend(defenderCard)
+          val boostedValue = defenderCard.additionalValue // ✅ Store the boost before moving
 
+          // ✅ Remove the defender's card from the field
           removeDefenderCard(defender, defenderCard)
+
+          // ✅ Only reset if this card is NOT moving to attacker's hand
+          if (!attackerHand.contains(defenderCard)) {
+            revertCard(defenderCard)
+          }
+
+          // ✅ Modify `defenderCard` directly instead of using `.copy()`
+          defenderCard.additionalValue = boostedValue
+          defenderCard.wasBoosted = true
+
+          // ✅ Move defender's card to attacker's hand
+          attackerHand.prepend(attackingCard)
+          attackerHand.prepend(defenderCard) // ✅ Keeps the same object reference
+
           true
         } else {
           // ❌ Normal attack failure
@@ -199,7 +213,7 @@ class PlayingField(
           // Prepend cards to the start of the defender's hand
           defenderHand.prepend(attackingCard)
           defenderHand.prepend(defenderCard)
-
+          revertCard(defenderCard)
           removeDefenderCard(defender, defenderCard)
           refillDefenderField(defender)
           switchRoles()
@@ -494,7 +508,7 @@ class PlayingField(
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
           if (goalkeeper.wasBoosted) {
-            goalkeeper.revertAdditionalValue()
+            revertCard(goalkeeper)
           }
           attackerHand.prepend(goalkeeper)
 
@@ -513,7 +527,7 @@ class PlayingField(
           defenderHand.prepend(attackingCard1)
           defenderHand.prepend(attackingCard2)
           if (goalkeeper.wasBoosted) {
-            goalkeeper.revertAdditionalValue()
+            revertCard(goalkeeper)
           }
           defenderHand.prepend(goalkeeper)
           refillDefenderField(defender)
@@ -533,7 +547,7 @@ class PlayingField(
           attackerHand.prepend(attackingCard1)
           attackerHand.prepend(attackingCard2)
           if (defenderCard.wasBoosted) {
-            defenderCard.revertAdditionalValue()
+            revertCard(defenderCard)
           }
           attackerHand.prepend(defenderCard)
           removeDefenderCard(defender, defenderCard)
@@ -544,7 +558,7 @@ class PlayingField(
           defenderHand.prepend(attackingCard1)
           defenderHand.prepend(attackingCard2)
           if (defenderCard.wasBoosted) {
-            defenderCard.revertAdditionalValue()
+            revertCard(defenderCard)
           }
           defenderHand.prepend(defenderCard)
 
@@ -590,33 +604,28 @@ class PlayingField(
 
   def chooseBoostCardDefender(index: Int): Unit = {
     val attackersDefenderField = if (attacker == player1) player1Defenders else player2Defenders
-    val attackersGoalkeeper = if (attacker == player1) player1Goalkeeper else player2Goalkeeper
     if (index < 0 || index >= attackersDefenderField.size) {
       println("Invalid defender index for boosting.")
       return
     }
 
     val originalCard = attackersDefenderField(index)
-    if (originalCard.wasBoosted) { // ✅ Prevent multiple boosts
+    println(s"Original Card Before Boosting: $originalCard") // ✅ Correctly prints before boosting
+
+    // ✅ Ensure wasBoosted is checked correctly before generating a new boost
+    if (originalCard.wasBoosted) {
       println(s"⚠️ Boost prevented! ${originalCard} has already been boosted once.")
       return
     }
+
     val boostValue = originalCard.getBoostingPolicies
-    val boostedCard = originalCard.setAdditionalValue(boostValue) // ✅ Now returns a new Card
+    originalCard.setAdditionalValue(boostValue) // ✅ Modify the card directly
 
-    // Replace the old card with the new boosted one
-    val updatedDefenderField = attackersDefenderField.updated(index, boostedCard)
+    println(s"Boosted Defender Card: ${attackersDefenderField(index)} (Boosted by: $boostValue)")
 
-    // Assign the new list to the correct player's defenders
-    if (attacker == player1) {
-      player1Defenders = updatedDefenderField
-    } else {
-      player2Defenders = updatedDefenderField
-    }
-
-    println(s"Boosted Defender Card: $originalCard -> $boostedCard (Boosted by: $boostValue)")
     notifyObservers()
   }
+
 
   def setGoalkeeperForAttacker(card: Card): Unit = {
     if (attacker == player1) {
@@ -632,10 +641,10 @@ class PlayingField(
 
     attackersGoalkeeperOpt match {
       case Some(attackersGoalkeeper) =>
-        if (attackersGoalkeeper.wasBoosted) { // ✅ Prevent multiple boosts
-          println(s"⚠️ Boost prevented! ${attackersGoalkeeper} has already been boosted once.")
-          return
-        }
+//        if (attackersGoalkeeper.wasBoosted) { // ✅ Prevent multiple boosts
+//          println(s"⚠️ Boost prevented! ${attackersGoalkeeper} has already been boosted once.")
+//          return
+//        }
         val boostValue = attackersGoalkeeper.getBoostingPolicies
         val boostedCard = attackersGoalkeeper.setAdditionalValue(boostValue) // ✅ Boosts goalkeeper
 
@@ -649,6 +658,24 @@ class PlayingField(
     }
 
   }
+
+  def revertCard(card: Card): Card = {
+    val revertedCard = card.revertAdditionalValue()
+//
+//    // ✅ If the reverted card is in the attacker's or defender's field, update it
+    val attackerField = getField(attacker)
+    val defenderField = getField(defender)
+
+    val updatedAttackerField = attackerField.map(c => if (c == card) revertedCard else c)
+    val updatedDefenderField = defenderField.map(c => if (c == card) revertedCard else c)
+
+    setPlayerDefenders(attacker, updatedAttackerField)
+    setPlayerDefenders(defender, updatedDefenderField)
+
+    notifyObservers() // ✅ Notify after updating game state
+    revertedCard
+  }
+
 
   def swapAttacker(index: Int): Unit = {
     val attackerHand = getHand(attacker) // ✅ Get attacker's hand

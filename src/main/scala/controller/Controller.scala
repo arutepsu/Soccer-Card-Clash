@@ -86,16 +86,16 @@ class Controller extends Observable {
   def boostDefender(defenderPosition: Int): Unit = {
     val defenders = pf.playerDefenders(pf.getAttacker)
 
-    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
-      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
-      return
-    }
+//    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
+//      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
+//      return
+//    }
 
     val selectedDefender = defenders(defenderPosition)
-    if (selectedDefender.wasBoosted) {
-      println(s"⚠️ Boost prevented! Defender ${selectedDefender} has already been boosted.")
-      return
-    }
+//    if (selectedDefender.wasBoosted) {
+//      println(s"⚠️ Boost prevented! Defender ${selectedDefender} has already been boosted.")
+//      return
+//    }
 
     println("✅ Boosting defender!")
     val command = new BoostDefenderCommand(defenderPosition, pf)

@@ -53,47 +53,6 @@ import view.scenes.sceneManager.SceneManager
 import view.scenes.MainMenuScene
 import view.Gui
 
-//object Main extends JFXApp3 {
-//  override def start(): Unit = {
-//    val (player1, player2) = dealCards()
-//
-//    // Convert player hands to queues
-//    val player1HandQueue = player1.getCards.to(mutable.Queue)
-//    val player2HandQueue = player2.getCards.to(mutable.Queue)
-//
-//    // Initialize the PlayingField with players and hands
-//    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
-//    pf.setPlayingField()
-//
-//    // Create the GameController
-//    val controller = new Controller(player1, player2, pf)
-//
-//    // ✅ Start TUI in a separate thread
-//    new Thread(() => {
-//      val tui = new Tui(controller)
-//      tui.start()
-//    }).start()
-//
-//    // ✅ Start GUI using SceneManager
-//
-//    // ✅ Start GUI (which starts MainMenuScene)
-//    val gui = new Gui(controller)
-//    gui.start()
-//  }
-//
-//  def dealCards(): (Player, Player) = {
-//    val deck = Deck.createDeck()
-//    Deck.shuffleDeck(deck)
-//
-//    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
-//    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
-//
-//    val player1 = Player("Player 1", hand1.toList)
-//    val player2 = Player("Player 2", hand2.toList)
-//
-//    (player1, player2)
-//  }
-//}
 object Main extends JFXApp3 {
   override def start(): Unit = {
     // ✅ Create controller
@@ -113,130 +72,79 @@ object Main extends JFXApp3 {
 //    controller.startGame()
   }
 }
+import controller.Controller
+import model.cardComponent.Card
 
-
-//object Main extends JFXApp3 {
-//  override def start(): Unit = {
-//    val (player1, player2) = dealCards()
+//object Main extends App {
+//  val controller = new Controller()
 //
-//    // Convert player hands to queues
-//    val player1HandQueue = player1.getCards.to(mutable.Queue)
-//    val player2HandQueue = player2.getCards.to(mutable.Queue)
+//  // Start the game
+//  controller.startGame()
+//  controller.setPlayerName(1, "Alice")
+//  controller.setPlayerName(2, "Bob")
 //
-//    // Initialize the PlayingField with players and hands
-//    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
-//    pf.setPlayingField()
+//  // Print the initial playing field state
+//  println("\n=== Initial Playing Field ===")
+//  println(controller.getPlayingField)
 //
-//    // Create the GameController
-//    val controller = new Controller(player1, player2, pf)
-//    // ✅ Start TUI in a separate thread
-//    new Thread(() => {
-//      val tui = new Tui(controller)
-//      tui.start()
-//    }).start()
+//  // Boost a defender (Assuming defender at index 0)
+//  println("\n=== Boosting Defender at Index 0 ===")
+//  println(controller.getPlayingField.getField(controller.getPlayingField.getAttacker))
+//  controller.getPlayingField.chooseBoostCardDefender(0)
 //
-//    // ✅ Start GUI normally
-//    // Start the GUI without passing the stage explicitly
-//    new Gui(controller).start()
-////    new Tui(controller).start()
-//  }
+//  // Print the playing field after boosting
+//  println("\n=== After Boost ===")
+//  println(controller.getPlayingField)
 //
-//  def dealCards(): (Player, Player) = {
-//    val deck = Deck.createDeck()
-//    Deck.shuffleDeck(deck)
+//  // Get the boosted card before reverting
+//  val boostedCard = controller.getPlayingField.playerDefenders(controller.getPlayingField.getAttacker).head
+//  println(s"\n=== Before Reverting ===\nBoosted Card: $boostedCard")
 //
-//    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
-//    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
+//  // Revert the boost using `revertCard`
+//  val revertedCard = controller.getPlayingField.revertCard(boostedCard)
+//  controller.undo()
+//  // Print the reverted card
+//  println(s"\n=== After Reverting and udo ===\nReverted Card: $revertedCard")
 //
-//    val player1 = Player("Player 1", hand1.toList)
-//    val player2 = Player("Player 2", hand2.toList)
+//  // Print the final playing field state
+//  println("\n=== Final Playing Field ===")
+//  println(controller.getPlayingField)
 //
-//    (player1, player2)
-//  }
+//  println("\n=== Game Simulation Complete ===")
 //}
+
 //object Main {
 //  def main(args: Array[String]): Unit = {
-//    // Deal cards
-//    val (player1, player2) = dealCards()
+//    val controller = new Controller()
 //
-//    // Convert player hands to queues
-//    val player1HandQueue = player1.getCards.to(mutable.Queue)
-//    val player2HandQueue = player2.getCards.to(mutable.Queue)
+//    println("🎮 Welcome to the Card Battle Game!")
 //
-//    // Initialize the PlayingField with players and hands
-//    val pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
-//    pf.setPlayingField()
+//    // ✅ Start Game
+//    controller.startGame()
 //
-//    // Create the GameController
-//    val controller = new Controller(player1, player2, pf)
-////test execute
-////    println("Before Attack:")
-////    println(player1)
-////    println(player2)
-////
-////    val attackSuccessful = pf.execute(0)
-////
-////    println("After Attack:")
-////    println(player1)
-////    println(player2)
-////    println(s"Attack Successful: $attackSuccessful")
-////test boost
-//    // Choose a card to boost (Index 0 for demonstration)
-//    // Print initial state
-//    println("\n=== Before Attack ===")
-////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
-//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//    // Choose a card to boost (Index 0 for demonstration)
-////    pf.chooseBoostCard(0)
+//    // ✅ Set Player Names
+//    controller.setPlayerName(1, "Alice") // Attacker
+//    controller.setPlayerName(2, "Bob")   // Defender
 //
-//    controller.executeAttackCommandDouble(0)
-//    // Print state after boosting
-//    println("\n=== After Attack ===")
-//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
-//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//    controller.undo()
+//    println(s"✅ Game started with Attacker: ${controller.getPlayer1.name} and Defender: ${controller.getPlayer2.name}")
 //
-//    println("\n=== After 1 Undo ===")
-//    println(s"Player 1 Hand: ${controller.getPlayerHand(controller.getPlayer1).mkString(", ")}")
-//    println(s"Player 2 Hand: ${controller.getPlayerHand(controller.getPlayer2).mkString(", ")}")
-//    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-//    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-////    controller.undo()
-////    // Print state after boosting
-////    println("\n=== After 1 Undo ===")
-////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-////    controller.undo()
-////    println("\n=== After 2 Undo ===")
-////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-////
-////    // Perform an attack (assuming attacker attacks index 0 of the defender's field)
-////    println("\n=== Attacking Defender's First Card ===")
-////    pf.attack(0) // Attack the first defender card
-////
-////    // Print state after attack
-////    println("\n=== After Attack ===")
-////    println(s"Player 1 Defenders: ${pf.playerDefenders(player1).mkString(", ")}")
-////    println(s"Player 2 Defenders: ${pf.playerDefenders(player2).mkString(", ")}")
-//  }
+//    // ✅ Print Initial Hands
+////    println(s"🃏 ${controller.getPlayer1.name}'s hand: ${controller.getPlayer1.getCards.mkString(", ")}")
+//    println(s"🛡️ ${controller.getPlayer2.name}'s field: ${controller.getPlayingField.getField(controller.getPlayer2).mkString(", ")}")
 //
-//  def dealCards(): (Player, Player) = {
-//    val deck = Deck.createDeck()
-//    Deck.shuffleDeck(deck)
+//    // ✅ Boost Defender at position 0
+//    println("🚀 Boosting Defender at position 0!")
+//    controller.getPlayingField.chooseBoostCardDefender(0)
+//    println(s"🛡️ ${controller.getPlayer2.name}'s field: ${controller.getPlayingField.getField(controller.getPlayer2).mkString(", ")}")
+//    // ✅ Attack Defender at position 0
+//    controller.getPlayingField.switchRoles()
+//    println("⚔️ Attacking Defender at position 0!")
+//    controller.executeAttackCommand(0)
 //
-//    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
-//    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
+//    // ✅ Print Updated Hands
+//    println(s"🔄 Updated ${controller.getPlayer1.name}'s hand: ${controller.getPlayer1.getCards.mkString(", ")}")
+////    println(s"🔄 Updated ${controller.getPlayer2.name}'s hand: ${controller.getPlayer2.getCards.mkString(", ")}")
 //
-//    val player1 = Player("Player 1", hand1.toList)
-//    val player2 = Player("Player 2", hand2.toList)
-//
-//    (player1, player2)
+//    println("🎮 Game action completed!")
 //  }
 //}
