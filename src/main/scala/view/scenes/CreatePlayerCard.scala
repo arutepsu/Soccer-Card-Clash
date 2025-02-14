@@ -129,26 +129,27 @@ import scalafx.scene.text.Text
 import view.scenes.sceneManager.SceneManager
 import view.components.playerComponents.PlayerTextInputField
 import view.components.uiFactory.GameButtonFactory
+import view.utils.Styles
 
 class CreatePlayerCard(controller: Controller) extends VBox {
-  prefHeight = 450
-  prefWidth = 450
+  prefHeight = 600 // Increased height for better spacing
+  prefWidth = 500  // Adjusted width for better UI
   fillWidth = false
-  padding = Insets(top = 10, right = 20, bottom = 10, left = 20)
+  padding = Insets(20)
   alignment = Pos.Center
 
-  style = "-fx-background-color: #FFCD92;" +
-    "-fx-background-radius: 36;" +
-    "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 10, 0, 5, 5);"
+  // ✅ Apply external CSS for consistent styling
+  this.getStylesheets.add(Styles.createPlayerCss)
+  styleClass.add("create-player-panel")
 
   val createPlayersTitle = new Text {
     text = "Create Players"
-    style = "-fx-fill: #7A2626; -fx-font-size: 30;"
+    styleClass.add("title") // ✅ Using external CSS
   }
 
   val nameTitle = new Text {
     text = "Enter Player Names"
-    alignmentInParent = Pos.BASELINE_LEFT
+    styleClass.add("subtitle") // ✅ Using external CSS
   }
 
   children.addAll(createPlayersTitle, nameTitle)
@@ -157,20 +158,22 @@ class CreatePlayerCard(controller: Controller) extends VBox {
   val playerTextInputFields =
     for (_ <- 1 to maxAllowedPlayersCount) yield PlayerTextInputField()
 
-  val playerTextInputFieldVBox = new VBox(8) {
+  val playerTextInputFieldVBox = new VBox(10) {
     children = playerTextInputFields
-    padding = Insets(top = 0, right = 20, bottom = 20, left = 20)
+    padding = Insets(10)
   }
 
-  children.addAll(playerTextInputFieldVBox)
+  children.add(playerTextInputFieldVBox)
 
   val startButton = GameButtonFactory.createGameButton(
     text = "Start",
-    width = 350,
-    height = 70
+    width = 250, // ✅ Adjusted button size
+    height = 60
   )(() => startGame())
 
-  val startButtonBox = new VBox(0) {
+  startButton.styleClass.add("start-button") // ✅ Apply button style
+
+  val startButtonBox = new VBox(10) {
     alignment = Pos.TOP_CENTER
     children = Seq(startButton)
   }
@@ -200,13 +203,12 @@ class CreatePlayerCard(controller: Controller) extends VBox {
     SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
   }
 
-
   /** Displays an alert message */
-    private def showAlert(titleText: String, content: String): Unit = {
-      val alert = new Alert(AlertType.Warning)
-      alert.title = titleText
-      alert.headerText = None
-      alert.contentText = content
-      alert.showAndWait()
-    }
+  private def showAlert(titleText: String, content: String): Unit = {
+    val alert = new Alert(AlertType.Warning)
+    alert.title = titleText
+    alert.headerText = None
+    alert.contentText = content
+    alert.showAndWait()
+  }
 }

@@ -8,6 +8,7 @@ import scalafx.scene.control.Button
 import scalafx.scene.layout.{StackPane, VBox, HBox, Region}
 import view.components.gameComponents.SelectablePlayersHandBar
 import view.components.uiFactory.GameButtonFactory
+import view.utils.Styles
 
 case class AttackerHandScene(
                               controller: Controller,
@@ -17,8 +18,7 @@ case class AttackerHandScene(
                               moveToGamePlayerScene: () => Unit
                             ) extends Scene(windowWidth, windowHeight) {
 
-  // ✅ Display attacker's selectable hand
-  val attackerHandBar = new SelectablePlayersHandBar(playingField.getAttacker, playingField, isLeftSide = true)
+  this.getStylesheets.add(Styles.attackerHandSceneCss) // ✅ Load external CSS
 
   // ✅ Create a black background
   val backgroundView = new Region {
@@ -26,6 +26,10 @@ case class AttackerHandScene(
     prefWidth = windowWidth
     prefHeight = windowHeight
   }
+
+  // ✅ Display attacker's selectable hand
+  val attackerHandBar = new SelectablePlayersHandBar(playingField.getAttacker, playingField, isLeftSide = true)
+  attackerHandBar.styleClass.add("selectable-hand-bar") // ✅ Apply styling
 
   // ✅ Back to Game button
   val backButton: Button = GameButtonFactory.createGameButton(
@@ -35,6 +39,7 @@ case class AttackerHandScene(
   ) { () =>
     moveToGamePlayerScene()
   }
+  backButton.styleClass.add("button") // ✅ Apply styling
 
   // ✅ Swap Card Button
   val swapButton: Button = GameButtonFactory.createGameButton(
@@ -52,9 +57,11 @@ case class AttackerHandScene(
         println("❌ No card selected to swap!")
     }
   }
+  swapButton.styleClass.add("button") // ✅ Apply styling
 
   // ✅ Button Layout
   val buttonLayout = new HBox {
+    styleClass.add("button-layout") // ✅ Apply styling
     alignment = Pos.CENTER
     spacing = 15
     children = Seq(swapButton, backButton)
@@ -69,6 +76,7 @@ case class AttackerHandScene(
   }
 
   root = new StackPane {
+    styleClass.add("attacker-hand-scene") // ✅ Apply main styling to root
     children = Seq(backgroundView, layout)
   }
 }

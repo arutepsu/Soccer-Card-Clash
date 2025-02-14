@@ -108,15 +108,27 @@ class BoostGoalkeeperCommand(pf: PlayingField) extends Command {
       pf.setPlayerDefenders(memento.defender, defenderField)
     }
 
-    // ✅ Restore boosted attacker’s GOALKEEPER if applicable
+    // ✅ Restore boosted ATTACKER’S GOALKEEPER if applicable
     memento.goalkeeperBoost.foreach { case (additional, lastBoost, wasBoosted) =>
       pf.getGoalkeeper(memento.attacker).foreach { goalkeeper =>
         println(s"Restoring boost for attacker's goalkeeper: ${goalkeeper}")
-        goalkeeper.additionalValue = additional // ✅ Ensure `additionalValue` is properly restored
+        goalkeeper.additionalValue = additional
         goalkeeper.lastBoostValue = lastBoost
         goalkeeper.wasBoosted = wasBoosted
-        goalkeeper.updateValue()
+        goalkeeper.updateValue() // ✅ Ensure value updates correctly
         pf.setPlayerGoalkeeper(memento.attacker, Some(goalkeeper))
+      }
+    }
+
+    // ✅ Restore boosted DEFENDER’S GOALKEEPER if applicable
+    memento.goalkeeperBoost.foreach { case (additional, lastBoost, wasBoosted) =>
+      pf.getGoalkeeper(memento.defender).foreach { goalkeeper =>
+        println(s"Restoring boost for defender's goalkeeper: ${goalkeeper}")
+        goalkeeper.additionalValue = additional
+        goalkeeper.lastBoostValue = lastBoost
+        goalkeeper.wasBoosted = wasBoosted
+        goalkeeper.updateValue() // ✅ Ensure value updates correctly
+        pf.setPlayerGoalkeeper(memento.defender, Some(goalkeeper))
       }
     }
 

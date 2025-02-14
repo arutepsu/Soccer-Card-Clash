@@ -6,8 +6,8 @@ import scalafx.scene.image.{Image, ImageView}
 object CardImageLoader {
 
   private val cardImagePath = "/view/data/cards/"
-  private val defaultWidth = 80.0  // Default width for cards
-  private val defaultHeight = 120.0 // Default height for cards
+  private val defaultWidth = 120.0  // Default width for cards
+  private val defaultHeight = 160.0 // Default height for cards
 
   /**
    * Loads an ImageView from resources and scales it appropriately.

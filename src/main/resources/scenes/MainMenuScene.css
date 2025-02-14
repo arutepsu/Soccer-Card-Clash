@@ -1,0 +1,30 @@
+/* Full-screen background image */
+.root {
+    -fx-background-image: url('/view/data/images/mainmenu.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Centered layout for HBox and VBox */
+HBox, VBox {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+/* Smaller buttons */
+.button {
+    -fx-font-size: 16px; /* Smaller text */
+    -fx-padding: 8px 15px; /* Smaller padding */
+    -fx-pref-width: 200px; /* Adjusted width */
+    -fx-pref-height: 80px; /* Adjusted height */
+}
+
+/* Stylish Title */
+.title-label {
+    -fx-font-size: 48px; /* Bigger size */
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700; /* Gold color */
+    -fx-font-family: "Arial Black";
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
+}

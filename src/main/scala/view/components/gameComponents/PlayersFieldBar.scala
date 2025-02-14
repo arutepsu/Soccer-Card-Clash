@@ -18,22 +18,25 @@ import scalafx.util.Duration
 import scalafx.Includes._
 import view.components.cardComponents.FieldCard
 import view.components.uiFactory.{CardAnimationFactory, CardImageLoader}
-
+import view.utils.Styles
 class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
   alignment = Pos.CENTER
   spacing = 10
-
+  this.getStylesheets.add(Styles.playersFieldBarCss) // ✅ Load external CSS
+  styleClass.add("players-field-bar") // ✅ Apply panel style
   /** Label indicating the current game state */
+
   private val statusLabel = new Label {
     text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
-    style = "-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"
+    styleClass.add("status-label") // ✅ Apply CSS class
   }
 
   /** Label indicating which player's field this is */
+  /** Label indicating which player's field this is */
   private val playerLabel = new Label {
     text = s"${player.name}'s Field"
-    style = "-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white;"
+    styleClass.add("player-label") // ✅ Apply CSS class
   }
 
   /** Retrieves defender cards */
@@ -68,6 +71,8 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
+      defenderCard.styleClass.add("field-card") // ✅ Apply CSS class
+
       if(defenderCard.card.wasBoosted) {
 //        CardAnimationFactory.createFireEffect(defenderCard)
         CardAnimationFactory.applyBoostEffect(defenderCard)
@@ -85,11 +90,14 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
             defenderCard.effect = null
             _selectedDefenderIndex = None
             selectedDefenderCard = None
+            defenderCard.styleClass.remove("selected-card")
           } else {
+
             // Deselect the previously selected card
             _selectedDefenderIndex.foreach { _ =>
               println(s"🔄 Deselecting previous defender")
               selectedDefenderCard.foreach(_.effect = null)
+              defenderCard.styleClass.add("selected-card") //
             }
 
             println(s"🛡️ Selected: $card (Index: $index)")
@@ -105,8 +113,9 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     }
 
     new HBox {
-      alignment = Pos.CENTER
-      spacing = 10
+      styleClass.add("defender-row") // ✅ Apply styling
+//      alignment = Pos.CENTER
+//      spacing = 10
       children = defenderCardNodes
     }
   }
@@ -119,6 +128,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     if (goalkeeperCard.card.additionalValue > 0) {
       CardAnimationFactory.applyBoostEffect(goalkeeperCard)
     }
+    goalkeeperCard.styleClass.add("field-card") // ✅ Apply styling
 
     // Track selected goalkeeper index
     var _selectedGoalkeeperIndex: Option[Int] = None
@@ -128,8 +138,9 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     goalkeeperCard.onMouseClicked = (_: MouseEvent) => _selectedGoalkeeperIndex = CardAnimationFactory.toggleGoalkeeperSelection(goalkeeperCard, _selectedGoalkeeperIndex)
 
     new HBox {
+      styleClass.add("goalkeeper-row") // ✅ Apply styling
       alignment = Pos.CENTER
-      spacing = 10
+//      spacing = 10
       children = Seq(goalkeeperCard)
     }
   }

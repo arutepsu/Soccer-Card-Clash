@@ -14,6 +14,9 @@ import view.components.tui.tui
 import view.components.uiFactory.GameButtonFactory
 import view.utils.ImageUtils
 import scalafx.stage.Stage
+import view.utils.Styles
+
+
 case class PlayingFieldScene(
                             controller: Controller,
                             windowWidth: Double,
@@ -26,12 +29,12 @@ case class PlayingFieldScene(
 
   // ✅ Register this scene as an Observer
   controller.add(this)
-
-  val backgroundView = new Region {
-    style = "-fx-background-color: black;"
-    prefWidth = windowWidth
-    prefHeight = windowHeight
-  }
+  this.getStylesheets.add(Styles.playingFieldCss)
+//  val backgroundView = new Region {
+//    style = "-fx-background-color: black;"
+//    prefWidth = windowWidth
+//    prefHeight = windowHeight
+//  }
 
   val player1 = controller.getPlayer1
   val player2 = controller.getPlayer2
@@ -172,7 +175,7 @@ case class PlayingFieldScene(
 
   root = new StackPane {
     children = Seq(
-      backgroundView,
+//      backgroundView,
       new HBox {
         alignment = Pos.CENTER_LEFT
         spacing = 20

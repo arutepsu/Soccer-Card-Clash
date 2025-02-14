@@ -145,7 +145,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
       // ✅ Ensure the UI refreshes properly
       playingField.notifyObservers()
     }
-  
+
 
 }
 

@@ -19,7 +19,7 @@ object ImageUtils {
   /**
    * Loads an image and returns it as a properly scaled ImageView for boost effects.
    */
-  def importImageAsViewBoost(imageUrl: String, scaleFactor: Float, maxW: Double, maxH: Double): ImageView = {
+  def importImageAsViewSize(imageUrl: String, scaleFactor: Float, maxW: Double, maxH: Double): ImageView = {
     val loadedImage = importImageBoost(imageUrl) // Load the image
 
     // Create an ImageView and scale it while maintaining the aspect ratio

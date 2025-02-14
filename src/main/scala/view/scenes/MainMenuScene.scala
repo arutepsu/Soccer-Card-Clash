@@ -79,6 +79,7 @@ import view.components.GameLabel
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
 import controller.Controller
+import view.utils.Styles
 class MainMenuScene(controller: Controller) { // No need to pass `Stage`
 
   // Placeholder for saved games
@@ -86,23 +87,28 @@ class MainMenuScene(controller: Controller) { // No need to pass `Stage`
 
   // Main menu scene
   def mainMenuScene(): Scene = new Scene {
+    this.getStylesheets.add(Styles.mainMenuCss)
+
     root = new VBox {
       spacing = 10
       alignment = Pos.Center
       children = Seq(
-        new GameLabel("Soccer Card Game", 1.5),
-        GameButtonFactory.createGameButton("Create New Game", 400, 250) {
+        new GameLabel("Soccer Card Clash", 1.5) {
+          styleClass.add("title-label") // ✅ Apply custom title style
+        },
+        GameButtonFactory.createGameButton("Create New Game", 200, 80) {
           () => SceneManager.switchScene(createGameScene()) // ✅ SceneManager handles switching
         },
-        GameButtonFactory.createGameButton("Load Game", 400, 250) {
+        GameButtonFactory.createGameButton("Load Game", 200, 80) {
           () => SceneManager.switchScene(loadGameScene()) // ✅ SceneManager handles switching
         },
-        GameButtonFactory.createGameButton("Quit", 400, 250) {
+        GameButtonFactory.createGameButton("Quit", 200, 80) {
           () => sys.exit(0)
         }
       )
     }
   }
+
 
   // Create game scene
   def createGameScene(): Scene = new Scene {

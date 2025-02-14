@@ -1,0 +1,55 @@
+/* Styles.css */
+
+/* General Scene Background with Image */
+.root {
+    -fx-background-image: url("/view/data/frames/frame3.png");
+    -fx-background-size: cover; /* Ensure full coverage */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+/* Button Text Styling (No color changes) */
+.button {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}
+
+/* Label Styling */
+.label {
+    -fx-font-size: 22px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}
+
+/* Player Score Labels */
+.player-score-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700; /* Gold color for emphasis */
+    -fx-font-family: "Arial";
+}
+
+/* HBox and VBox Styling */
+.hbox, .vbox {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+/* Game Status Bar Styling */
+.game-status-bar {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}
+
+/* Players Field and Hand Bars */
+.players-field-bar, .players-hand-bar {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}

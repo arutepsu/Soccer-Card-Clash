@@ -1,0 +1,52 @@
+/* Background Panel Styling */
+.create-player-panel {
+    -fx-background-image: url("/view/data/images/stadium.jpg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-padding: 20px;
+    -fx-background-radius: 36;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 10, 0, 5, 5);
+}
+
+/* Title Styling */
+.title {
+    -fx-font-size: 50px; /* ✅ Bigger and bolder */
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700; /* ✅ Gold color */
+    -fx-font-family: "Arial White";
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
+}
+
+/* Subtitle (Enter Player Names) */
+.subtitle {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+}
+
+/* Player Input Fields */
+.player-text-input {
+    -fx-font-size: 20px;
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-border-color: #FFD700;
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+}
+
+/* Start Button */
+/*.start-button {*/
+/*    -fx-font-size: 22px;*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: white;*/
+/*    !*-fx-background-color: #7A2626;*!*/
+/*    -fx-border-radius: 10px;*/
+/*    -fx-background-radius: 10px;*/
+/*    -fx-padding: 15px 30px;*/
+/*}*/
+
+/*.start-button:hover {*/
+/*    -fx-background-color: #A83232; !* ✅ Lighter red on hover *!*/
+/*}*/

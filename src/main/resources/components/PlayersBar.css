@@ -1,0 +1,40 @@
+/* 🔹 PlayersBar Styling */
+.players-bar {
+    -fx-spacing: 15px;
+    -fx-alignment: top-right;
+    -fx-padding: 10px;
+}
+
+/* 🔹 Player Avatar Styling */
+.player-avatar-box {
+    -fx-padding: 5px;
+    -fx-background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+    -fx-border-color: #FFD700; /* Gold border */
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 10, 0, 5, 5);
+}
+
+/* 🔹 Player Name Button */
+.player-name-button {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}
+
+/* 🔹 Avatar Images */
+.player-avatar-box .image-view {
+    -fx-fit-width: 120px;
+    -fx-fit-height: 120px;
+    -fx-border-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0, 2, 2);
+}
+
+/* 🔹 Highlight Current Player (Attacker) */
+.current-player {
+    -fx-background-color: rgba(255, 215, 0, 0.3); /* Light Gold */
+    -fx-border-color: #FFD700;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+}

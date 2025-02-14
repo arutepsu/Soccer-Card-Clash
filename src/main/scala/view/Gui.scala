@@ -21,6 +21,7 @@ import view.scenes.MainMenuScene
 //}
 import controller.Controller
 import scalafx.stage.Stage
+import scalafx.scene.image.Image
 import view.scenes.sceneManager.SceneManager
 import view.scenes.MainMenuScene
 
@@ -29,6 +30,7 @@ class Gui(controller: Controller) {
     // ✅ Use PrimaryStage from ScalaFX 3.x
     val stage = new PrimaryStage {
       title = "Soccer Card Game" // Set the window title
+      icons.add(new Image("/view/data/logo.png"))
     }
 
 //    // ✅ Pass the initialized stage to SoccerCardGame
