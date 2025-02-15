@@ -23,6 +23,12 @@ class Controller extends IController {
   def getPlayer2: Player = player2
 
   def setPlayerName(playerIndex: Int, name: String): Unit = {
+    // ✅ Ensure PlayingField is initialized
+    if (pf == null) {
+      println("⚠️ PlayingField is not initialized. Initializing now...")
+      startGame() // ✅ Ensure game is started before setting names
+    }
+
     if (playerIndex == 1) {
       getPlayingField.getAttacker.setName(name)
       println(s"✅ Player 1 name set to: $name")
@@ -32,8 +38,10 @@ class Controller extends IController {
     } else {
       println("❌ Invalid player index! Use 1 or 2.")
     }
+
     notifyObservers() // ✅ Notify UI of the change
   }
+
 
   def startGame(): Unit = {
     println("🎲 Starting new game...")

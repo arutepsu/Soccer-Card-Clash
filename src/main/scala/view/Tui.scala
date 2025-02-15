@@ -1,36 +1,103 @@
 //package view
 //
-//import controller.IController
+//import model.cardComponent.Deck
+//import model.playerComponent.Player
+//import model.playingFiledComponent.PlayingField
+//import model.cardComponent.Card
+//import util.Observable
 //import util.Observer
-//import tui.TuiMainMenu
-//import tui.TuiGameLoop
-//import tui.TuiView
-//import controller.baseControllerImplementation.GameState
+//import scala.io.StdIn.readLine
+//import scala.collection.mutable
+//import scala.util.Try
+//import controller.IController
+//
 //class Tui(controller: IController) extends Observer {
+//
+//  // ✅ Register as an Observer
 //  controller.add(this)
 //
-//  private var activeView: TuiView = new TuiMainMenu(controller)
-//
+//  /** Starts the TUI loop */
 //  def start(): Unit = {
-//    activeView.start()
-//  }
+//    println("Welcome to the Soccer Card Game (TUI Mode)!")
 //
-//  override def update: Unit = {
-//    if (GameState.gameStarted) {
-//      println("🎮 TUI detected that the game has started! Switching to game mode...")
+//    // ✅ Ensure the game is initialized
+//    controller.startGame()
 //
-//      if (!activeView.isInstanceOf[TuiGameLoop]) {
-//        activeView = new TuiGameLoop(controller) // ✅ Now valid
-//        activeView.start() // ✅ Calls start(), which runs the game loop
-//      }
-//    } else {
-//      println("📜 TUI detected that the game has returned to the Main Menu.")
+//    println("Type 'attack', 'undo', 'redo', 'swap', or 'exit' to quit.")
+//    update // ✅ Show initial game state
 //
-//      if (!activeView.isInstanceOf[TuiMainMenu]) {
-//        activeView = new TuiMainMenu(controller) // ✅ Now valid
-//        activeView.start()
+//    var running = true
+//    while (running) {
+//      val input = readLine().trim.toLowerCase
+//      input match {
+//        case "attack" =>
+//          val defenderPosition = controller.selectDefenderPosition()
+//          if (defenderPosition == -1) {
+//            println("Attacking the goalkeeper.")
+//          } else if (defenderPosition == -2) {
+//            println("Select a defender position to attack:")
+//            val pos = readLine().toIntOption.getOrElse(-1)
+//            if (pos >= 1) controller.executeAttackCommand(pos - 1)
+//            else println("❌ Invalid input.")
+//          }
+//
+//        case "undo" =>
+//          controller.undo()
+//          println("🔄 Undo executed!")
+//
+//        case "redo" =>
+//          controller.redo()
+//          println("🔁 Redo executed!")
+//
+//        case "swap" =>
+//          println("Select a card index to swap from attacker's hand:")
+//          val index = readLine().toIntOption.getOrElse(-1)
+//          if (index >= 0) {
+//            controller.swapAttackerCard(index)
+//            println(s"🔄 Swapped attacker card at index: $index")
+//          } else {
+//            println("❌ Invalid card index.")
+//          }
+//
+//        case "exit" =>
+//          println("👋 Exiting TUI...")
+//          running = false
+//
+//        case _ =>
+//          println("❌ Invalid command. Type 'attack', 'undo', 'redo', 'swap', or 'exit'.")
 //      }
 //    }
+//  }
+//
+//  /** ✅ Observer Pattern: Refresh the game state whenever notified */
+//  override def update: Unit = {
+//    println("================================")
+//    println(displayGameState())
+//  }
+//
+//  /** Displays the current game state */
+//  def displayGameState(): String = {
+//    val pf = controller.getPlayingField
+//    val attacker = pf.getAttacker
+//    val defender = pf.getDefender
+//    val attackingCard = pf.getAttackingCard
+//    val attackerHand = pf.getHand(attacker).mkString(", ")
+//    val defenderHand = pf.getHand(defender).mkString(", ")
+//    val defenderField = pf.fieldState.playerDefenders(defender).mkString(", ")
+//    val defenderGoalkeeper = pf.fieldState.getGoalkeeper(defender)
+//
+//    s"""🏆 **Current Game State**
+//       |--------------------------------
+//       |⚔️  Attacker: ${attacker.name}
+//       |   🎴 Hand: $attackerHand
+//       |   🃏 Attacking Card: $attackingCard
+//       |
+//       |🛡️  Defender: ${defender.name}
+//       |   🎴 Hand: $defenderHand
+//       |   🏟️ Field: $defenderField
+//       |   🥅 Goalkeeper: $defenderGoalkeeper
+//       |--------------------------------
+//       |""".stripMargin
 //  }
 //}
 package view
@@ -51,18 +118,97 @@ class Tui(controller: IController) extends Observer {
   // ✅ Register as an Observer
   controller.add(this)
 
+  // ✅ Define different states for the TUI
+  sealed trait TuiState
+  case object MainMenu extends TuiState
+  case object CreatePlayer extends TuiState
+  case object LoadGame extends TuiState
+  case object PlayingField extends TuiState
+  case object Exiting extends TuiState
+
+  private var currentState: TuiState = MainMenu // ✅ Start with the main menu
+
   /** Starts the TUI loop */
   def start(): Unit = {
     println("Welcome to the Soccer Card Game (TUI Mode)!")
+    var running = true
 
-    // ✅ Ensure the game is initialized
+    while (running) {
+      currentState match {
+        case MainMenu       => showMainMenu()
+        case CreatePlayer   => showCreatePlayer()
+        case LoadGame       => showLoadGame()
+        case PlayingField   => showPlayingField()
+        case Exiting        => running = false
+      }
+    }
+  }
+
+  /** ✅ Show Main Menu */
+  def showMainMenu(): Unit = {
+    println(
+      """|======== Main Menu ========
+         |1. Create New Game
+         |2. Load Game
+         |3. Exit
+         |===========================
+         |Enter choice:""".stripMargin
+    )
+
+    readLine().trim match {
+      case "1" => currentState = CreatePlayer
+      case "2" => currentState = LoadGame
+      case "3" => currentState = Exiting
+      case _   => println("❌ Invalid choice. Please enter 1, 2, or 3.")
+    }
+  }
+
+  /** ✅ Handle Player Creation */
+  def showCreatePlayer(): Unit = {
+    println("\n👥 Enter Player Names (exactly 2 players required):")
+
+    val playerNames = (1 to 2).map { i =>
+      print(s"Player $i: ")
+      readLine().trim
+    }.filter(_.nonEmpty)
+
+    if (playerNames.size != 2) {
+      println("❌ Exactly 2 players are required! Returning to Main Menu...")
+      currentState = MainMenu
+      return
+    }
+
+    // ✅ Assign names to players using `setPlayerName`
+    controller.setPlayerName(1, playerNames.head)
+    controller.setPlayerName(2, playerNames(1))
+
+    println(s"✅ Players set: ${playerNames.head} & ${playerNames(1)}")
     controller.startGame()
 
-    println("Type 'attack', 'undo', 'redo', 'swap', or 'exit' to quit.")
-    update // ✅ Show initial game state
+    currentState = PlayingField
+  }
 
-    var running = true
-    while (running) {
+  /** ✅ Handle Loading a Game */
+  def showLoadGame(): Unit = {
+    println("\n📂 Enter the saved game file path:")
+    val filePath = readLine().trim
+
+    controller.loadGame(filePath) match {
+      case scala.util.Success(_) =>
+        println("✅ Game loaded successfully!")
+        currentState = PlayingField
+      case scala.util.Failure(ex) =>
+        println(s"❌ Failed to load game: ${ex.getMessage}")
+        currentState = MainMenu
+    }
+  }
+
+  /** ✅ Show Playing Field & Handle In-Game Actions */
+  def showPlayingField(): Unit = {
+    println("🎮 Game Started! Type 'attack', 'undo', 'redo', 'swap', 'exit'.")
+
+    var inGame = true
+    while (inGame) {
       val input = readLine().trim.toLowerCase
       input match {
         case "attack" =>
@@ -95,8 +241,9 @@ class Tui(controller: IController) extends Observer {
           }
 
         case "exit" =>
-          println("👋 Exiting TUI...")
-          running = false
+          println("👋 Exiting to Main Menu...")
+          inGame = false
+          currentState = MainMenu
 
         case _ =>
           println("❌ Invalid command. Type 'attack', 'undo', 'redo', 'swap', or 'exit'.")
@@ -110,7 +257,7 @@ class Tui(controller: IController) extends Observer {
     println(displayGameState())
   }
 
-  /** Displays the current game state */
+  /** ✅ Displays the current game state */
   def displayGameState(): String = {
     val pf = controller.getPlayingField
     val attacker = pf.getAttacker
