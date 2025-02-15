@@ -89,7 +89,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
   /** ✅ Modify onMouseClicked to set `isGoalkeeperSelected = true` when selecting the goalkeeper */
   override def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.playerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.getGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }

@@ -21,7 +21,7 @@ import model.playingFiledComponent.PlayingField
 import scala.io.StdIn.readLine
 import scala.collection.mutable
 import scala.util.Try
-import controller.Controller
+import controller.baseControllerImplementation.Controller
 //object Main extends JFXApp3 {
 //
 //  override def start(): Unit = {
@@ -34,15 +34,12 @@ import controller.Controller
 //    stage.scene = soccerCardGame.mainMenuScene() // Start with the main menu
 //  }
 //}
-import controller.Controller
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import model.cardComponent.Deck
 import scala.collection.mutable
 import scalafx.application.JFXApp3
-import controller.BoostDefenderCommand
 
-import controller.Controller
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import model.cardComponent.Deck
@@ -52,11 +49,15 @@ import scalafx.stage.Stage
 import view.scenes.sceneManager.SceneManager
 import view.scenes.MainMenuScene
 import view.Gui
+import controller.IController
+import controller.command.BoostDefenderCommand
 
 object Main extends JFXApp3 {
+  private val controller: IController = new Controller()
   override def start(): Unit = {
     // ✅ Create controller
-    val controller = new Controller()
+
+//    val controller = new Controller()
 
     // ✅ Start TUI in a separate thread
     new Thread(() => {
@@ -72,8 +73,6 @@ object Main extends JFXApp3 {
 //    controller.startGame()
   }
 }
-import controller.Controller
-import model.cardComponent.Card
 
 //object Main extends App {
 //  val controller = new Controller()

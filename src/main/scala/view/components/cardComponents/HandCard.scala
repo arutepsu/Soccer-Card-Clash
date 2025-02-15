@@ -12,13 +12,5 @@ case class HandCard(
                    ) extends GameCard(flipped, isLastCard, isSelectable, card, scaleFactor) {
 
   override def flip(): GameCard = this.copy(flipped = !flipped)
-
-
-//onMouseClicked = _ => {
-//    if (isSelectable) {
-//      isSelected = !isSelected
-//      if (isSelected) pulsateTransition.play()
-//      else pulsateTransition.stop()
-//    }
-//  }
+  
 }

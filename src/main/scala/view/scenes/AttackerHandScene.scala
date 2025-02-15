@@ -1,6 +1,6 @@
 package view.scenes
 
-import controller.Controller
+import controller.IController
 import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -11,7 +11,7 @@ import view.components.uiFactory.GameButtonFactory
 import view.utils.Styles
 
 case class AttackerHandScene(
-                              controller: Controller,
+                              controller: IController,
                               playingField: PlayingField,
                               windowWidth: Double,
                               windowHeight: Double,

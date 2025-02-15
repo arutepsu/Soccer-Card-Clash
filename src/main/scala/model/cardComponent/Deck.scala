@@ -9,7 +9,7 @@ object Deck {
       suit <- Suit.values.toList
       value <- Value.allValues
     } yield Card(value, suit)
-    mutable.Queue(deck: _*) // Convert the list to a mutable Queue
+    mutable.Queue(deck: _*)
   }
 
   def shuffleDeck(deck: mutable.Queue[Card]): Unit = {

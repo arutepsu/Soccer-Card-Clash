@@ -78,9 +78,10 @@ import scalafx.scene.layout.VBox
 import view.components.GameLabel
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
-import controller.Controller
+import controller.baseControllerImplementation.Controller
+import controller.IController
 import view.utils.Styles
-class MainMenuScene(controller: Controller) { // No need to pass `Stage`
+class MainMenuScene(controller: IController) { // No need to pass `Stage`
 
   // Placeholder for saved games
   val savedGames = ObservableBuffer("Game 1", "Game 2", "Game 3")

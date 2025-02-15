@@ -13,6 +13,7 @@ import util.UndoManager
 import model.cardComponent.{Card, Deck}
 import model.playerComponent.Player
 import model.cardComponent.Suit
+
 import scala.collection.mutable
 import model.cardComponent.Value
 import util.Command
@@ -24,12 +25,47 @@ class PlayingField(
                   ) extends Observable{
   private var attacker: Player = player1
   private var defender: Player = player2
+  def getAttacker: Player = attacker
+  def getDefender: Player = defender
+
+
+  def setAttacker(newAttacker: Player): Unit = {
+    attacker = newAttacker
+  }
+
+  def setDefender(newDefender: Player): Unit = {
+    defender = newDefender
+  }
+
   private var scorePlayer1: Int = 0
   private var scorePlayer2: Int = 0
+
+  def getScorePlayer1: Int = scorePlayer1
+
+  def getScorePlayer2: Int = scorePlayer2
+
+  def setScorePlayer1(score: Int): Unit = {
+    scorePlayer1 = score
+    notifyObservers()
+  }
+
+  def setScorePlayer2(score: Int): Unit = {
+    scorePlayer2 = score
+    notifyObservers()
+  }
 
   private var player1Field: List[Card] = List()
   private var player2Field: List[Card] = List()
 
+  def setPlayingField(): Unit = {
+    println("✅ setPlayingField() was called!") // Debugging line
+    refillField(player1, player1Cards, player1Defenders, player1Field, player1Goalkeeper)
+    refillField(player2, player2Cards, player2Defenders, player2Field, player2Goalkeeper)
+  }
+
+  def playerField(player: Player): List[Card] = {
+    if (player == player1) player1Field else player2Field
+  }
 
   private var player1Goalkeeper: Option[Card] = None
   private var player1Defenders: List[Card] = List()
@@ -37,47 +73,23 @@ class PlayingField(
   private var player2Goalkeeper: Option[Card] = None
   private var player2Defenders: List[Card] = List()
 
-  def getBoostedCards(): Map[Int, Int] = {
-    val defender = getDefender // ✅ Get current defender
-    val defenderCards = if (defender == player1) player1Defenders else player2Defenders // ✅ Get defender's cards
-
-    // ✅ Return only boosted cards
-    defenderCards.zipWithIndex.collect {
-      case (card, index) if card.additionalValue > 0 => index -> card.additionalValue
-    }.toMap
+  def playerDefenders(player: Player): List[Card] = {
+    if (player == player1) player1Defenders else player2Defenders
   }
 
-  var boostValue1: Int = 0 // Static boost value for player 1
-  var boostValue2: Int = 0 // Static boost value for player 2
-  var originalDefender1: Option[Card] = None
-  var originalDefender2: Option[Card] = None
-  var player1CardBoosted: Boolean = false // Track if player 1 has boosted a card
-  var player2CardBoosted: Boolean = false // Track if player 2 has boosted a card
-  private val commandManager = new UndoManager
-
-  def executeCommand(command: Command): Unit = {
-    commandManager.doStep(command)
-    notifyObservers()
+  def getGoalkeeper(player: Player): Option[Card] = {
+    if (player == player1) player1Goalkeeper else player2Goalkeeper
+  }
+  def getDefenders(player: Player): List[Card] = {
+    if (player == player1) player1Defenders else player2Defenders
   }
 
-  def undo(): Unit = commandManager.undoStep()
-
-  def redo(): Unit = commandManager.redoStep()
-
-  // Initialize the playing field with defender and goalkeeper cards for both players
-  def setPlayingField(): Unit = {
-    println("✅ setPlayingField() was called!")  // Debugging line
-    refillField(player1, player1Cards, player1Defenders, player1Field, player1Goalkeeper)
-    refillField(player2, player2Cards, player2Defenders, player2Field, player2Goalkeeper)
-  }
-
-  def initializeRoles(): Unit = {
-    attacker = player1
-    defender = player2
-  }
-
-  def playerField(player: Player): List[Card] = {
-    if (player == player1) player1Field else player2Field
+  def setPlayerDefenders(player: Player, newDefenderField: List[Card]): Unit = {
+    if (player == player1) {
+      player1Defenders = newDefenderField
+    } else if (player == player2) {
+      player2Defenders = newDefenderField
+    }
   }
 
   def setPlayerGoalkeeper(player: Player, goalkeeper: Option[Card]): Unit = {
@@ -87,6 +99,74 @@ class PlayingField(
       player2Goalkeeper = goalkeeper
     }
   }
+
+  def setGoalkeeperForAttacker(card: Card): Unit = {
+    if (getAttacker == player1) {
+      player1Goalkeeper = Some(card)
+    } else {
+      player2Goalkeeper = Some(card)
+    }
+    notifyObservers() // ✅ Ensure UI refreshes
+  }
+
+  def getHand(player: Player): mutable.Queue[Card] = {
+    if (player == player1) player1Cards else player2Cards
+  }
+
+  def getAttackingCard: Card = getHand(attacker).last
+
+  def getDefenderCard: Card = getHand(defender).last
+
+  def allDefendersBeaten(currentDefender: Player): Boolean = {
+    getDefenders(currentDefender).isEmpty
+  }
+  //-------------------------roles
+  def initializeRoles(): Unit = {
+    attacker = player1
+    defender = player2
+  }
+
+  def switchRoles(): Unit = {
+
+    val temp = attacker
+    attacker = defender
+    defender = temp
+
+    notifyObservers()
+  }
+
+  def setRoles(newAttacker: Player, newDefender: Player): Unit
+  = {
+    attacker = newAttacker
+    defender = newDefender
+    println(s"Roles set manually. Attacker: ${attacker.name}, Defender: ${defender.name}")
+  }
+
+  //-------------------------roles
+
+
+  //  val goalkeeperCard: Card = getGoalkeeper(attacker) match {
+  //    case Some(goalkeeper) => goalkeeper
+  //    case None => throw new NoSuchElementException(s"No goalkeeper found for attacker: $attacker")
+  //  }
+  val goalkeeperCard: Option[Card] =
+  if (attacker != null) getGoalkeeper(attacker)
+  else None
+
+
+  // ------------------ Score
+
+
+  private def scoreGoal(): Unit = {
+    if (attacker == player1) scorePlayer1 += 1
+    else scorePlayer2 += 1
+    notifyObservers()
+  }
+  // ------------------ Score
+
+  // --- Getter for the attacking card ---
+
+
 
   // Main attack logic that now takes a defenderIndex parameter for position selection
 
@@ -103,7 +183,7 @@ class PlayingField(
 
       if (allDefendersBeaten(defender)) {
         // Attacker attempts to attack the goalkeeper
-        val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
+        val goalkeeper = getGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
 
         println(s"⚔️ Attacking Card: $attackingCard vs Goalkeeper: $goalkeeper")
 
@@ -232,7 +312,7 @@ class PlayingField(
 
   def refillDefenderField(defender: Player): Unit = {
     var defenderField = playerDefenders(defender) // Current defenders on the field
-    var goalkeeper = playerGoalkeeper(defender) // Current goalkeeper
+    var goalkeeper = getGoalkeeper(defender) // Current goalkeeper
     val defenderHand = getHand(defender) // Cards remaining in defender's hand
 
     println(s"Initial state -> Goalkeeper: $goalkeeper, Defender Field: $defenderField, Defender Hand: $defenderHand")
@@ -297,7 +377,7 @@ class PlayingField(
     }
 
     // Final state after processing
-    println(s"Final state -> Goalkeeper: ${playerGoalkeeper(defender)}, Defender Field: ${playerDefenders(defender)}, Defender Hand: $defenderHand")
+    println(s"Final state -> Goalkeeper: ${getGoalkeeper(defender)}, Defender Field: ${playerDefenders(defender)}, Defender Hand: $defenderHand")
   }
 
 
@@ -372,110 +452,6 @@ class PlayingField(
   }
 
 
-  def allDefendersBeaten(currentDefender: Player): Boolean = {
-    getField(currentDefender).isEmpty
-  }
-
-  private def scoreGoal(): Unit = {
-    if (attacker == player1) scorePlayer1 += 1
-    else scorePlayer2 += 1
-    notifyObservers()
-  }
-
-  def playerDefenders(player: Player): List[Card] = {
-    if (player == player1) player1Defenders else player2Defenders
-  }
-
-  def playerGoalkeeper(player: Player): Option[Card] = {
-    if (player == player1) player1Goalkeeper else player2Goalkeeper
-  }
-
-  def switchRoles(): Unit = {
-
-    // Reset boost values for ALL cards (Defenders + Hand)
-//    def resetBoosts(cards: List[Card]): List[Card] = {
-//      cards.map { card =>
-//        if (card.additionalValue > 0) {
-//          println(s"Resetting Boost: ${card} (Removing: ${card.additionalValue})")
-//          card.copy(additionalValue = 0) // ✅ Reset only the additional boost
-//        } else {
-//          card // ✅ Keep non-boosted cards unchanged
-//        }
-//      }
-//    }
-//
-//    // ✅ Reset boosts for both players' defenders
-//    player1Defenders = resetBoosts(player1Defenders)
-//    player2Defenders = resetBoosts(player2Defenders)
-//
-//    val resetAttackerHand = resetBoosts(player1Cards.toList)
-//    val resetDefenderHand = resetBoosts(player2Cards.toList)
-//
-
-    // Swap roles
-    val temp = attacker
-    attacker = defender
-    defender = temp
-
-    notifyObservers()
-  }
-
-  def setRoles(newAttacker: Player, newDefender: Player): Unit
-  =
-  {
-    attacker = newAttacker
-    defender = newDefender
-    println(s"Roles set manually. Attacker: ${attacker.name}, Defender: ${defender.name}")
-  }
-  def getHand(player: Player): mutable.Queue[Card] = {
-    if (player == player1) player1Cards else player2Cards
-  }
-
-  def getField(player: Player): List[Card] = {
-    if (player == player1) player1Defenders else player2Defenders
-  }
-
-  def getGoalkeeper(player: Player): Option[Card] = {
-    if (player == player1) player1Goalkeeper else player2Goalkeeper
-  }
-
-//  val goalkeeperCard: Card = getGoalkeeper(attacker) match {
-//    case Some(goalkeeper) => goalkeeper
-//    case None => throw new NoSuchElementException(s"No goalkeeper found for attacker: $attacker")
-//  }
-  val goalkeeperCard: Option[Card] =
-    if (attacker != null) getGoalkeeper(attacker)
-    else None
-
-
-  // --- Score retrieval methods ---
-  def getScorePlayer1: Int = scorePlayer1
-  def getScorePlayer2: Int = scorePlayer2
-
-  def setScorePlayer1(score: Int): Unit = {
-    scorePlayer1 = score
-    notifyObservers()
-  }
-
-  def setScorePlayer2(score: Int): Unit = {
-    scorePlayer2 = score
-    notifyObservers()
-  }
-
-  def getAttacker: Player = attacker
-
-  def getDefender: Player = defender
-
-  // --- Getter for the attacking card ---
-  def getAttackingCard: Card = getHand(attacker).last
-  def getDefenderCard: Card = getHand(defender).last
-  def setPlayerDefenders(player: Player, newDefenderField: List[Card]): Unit = {
-    if (player == player1) {
-      player1Defenders = newDefenderField
-    } else if (player == player2) {
-      player2Defenders = newDefenderField
-    }
-  }
 
   def doubleAtack(defenderIndex: Int): Boolean = {
     val attackerHand = getHand(attacker)
@@ -498,7 +474,7 @@ class PlayingField(
       val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
 
       if (allDefendersBeaten(defender)) {
-        val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
+        val goalkeeper = getGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
 
         println(s"⚔️ Attacking Cards: $attackingCard1, $attackingCard2 vs Goalkeeper: $goalkeeper")
         val goalkeeperValue = goalkeeper.valueToInt
@@ -575,33 +551,7 @@ class PlayingField(
       false
     }
   }
-
-  var boostedDefender1: Option[Card] = None
-  var boostedDefender2: Option[Card] = None
-
-//  def chooseBoostCard(index: Int): Unit = {
-//    val defenderField = playerDefenders(defender)
-//
-//    if (index < 0 || index >= defenderField.size) {
-//      println("Invalid defender index for boosting.")
-//      return
-//    }
-//
-//    val originalCard = defenderField(index)
-//    val boostValue = originalCard.getBoostingPolicies
-//    val boostedValue = originalCard.valueToInt(originalCard.value) + boostValue
-//
-//    val boostedCard = Card(
-//      Value.allValues.find(v => originalCard.valueToInt(v) == boostedValue).getOrElse(originalCard.value),
-//      originalCard.suit
-//    )
-//
-//    if (defender == player1) boostedDefender1 = Some(boostedCard) else boostedDefender2 = Some(boostedCard)
-//    println(s"Boosted Defender Card: $boostedCard (Boosted by: $boostValue)")
-//    notifyObservers()
-//  }
-
-
+  //-----------bosoting
   def chooseBoostCardDefender(index: Int): Unit = {
     val attackersDefenderField = if (attacker == player1) player1Defenders else player2Defenders
     if (index < 0 || index >= attackersDefenderField.size) {
@@ -624,16 +574,6 @@ class PlayingField(
     println(s"Boosted Defender Card: ${attackersDefenderField(index)} (Boosted by: $boostValue)")
 
     notifyObservers()
-  }
-
-
-  def setGoalkeeperForAttacker(card: Card): Unit = {
-    if (attacker == player1) {
-      player1Goalkeeper = Some(card)
-    } else {
-      player2Goalkeeper = Some(card)
-    }
-    notifyObservers() // ✅ Ensure UI refreshes
   }
 
   def chooseBoostCardGoalkeeper(): Unit = {
@@ -663,8 +603,8 @@ class PlayingField(
     val revertedCard = card.revertAdditionalValue()
 //
 //    // ✅ If the reverted card is in the attacker's or defender's field, update it
-    val attackerField = getField(attacker)
-    val defenderField = getField(defender)
+    val attackerField = getDefenders(attacker)
+    val defenderField = getDefenders(defender)
 
     val updatedAttackerField = attackerField.map(c => if (c == card) revertedCard else c)
     val updatedDefenderField = defenderField.map(c => if (c == card) revertedCard else c)
@@ -676,7 +616,16 @@ class PlayingField(
     revertedCard
   }
 
+//  def setGoalkeeperForAttacker(card: Card): Unit = {
+//    if (attacker == player1) {
+//      player1Goalkeeper = Some(card)
+//    } else {
+//      player2Goalkeeper = Some(card)
+//    }
+//    notifyObservers() // ✅ Ensure UI refreshes
+//  }
 
+//-----------bosoting
   def swapAttacker(index: Int): Unit = {
     val attackerHand = getHand(attacker) // ✅ Get attacker's hand
 
@@ -702,210 +651,4 @@ class PlayingField(
 
     notifyObservers() // ✅ Update UI and notify changes
   }
-
-
 }
-
-//def attack(defenderIndex: Int): Boolean = {
-//  val attackerHand = getHand(attacker)
-//  val defenderHand = getHand(defender)
-//  val defenderField = playerDefenders(defender)
-//
-//  Try {
-//    // Take the last card from the attacker's hand (queue principle)
-//    val attackingCard = attackerHand.remove(attackerHand.size - 1)
-//    val attackerCardValue = attackingCard.valueToInt(attackingCard.value)
-//
-//    if (allDefendersBeaten(defender)) {
-//      // Attacker attempts to attack the goalkeeper
-//      val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
-//
-//      println(s"Attacking Card: $attackingCard, Goalkeeper Card: $goalkeeper")
-//
-//      if (attackerCardValue >= goalkeeper.valueToInt(goalkeeper.value)) {
-//        // Successful attack on goalkeeper
-//        println(s"${attacker.name} succeeded in attacking the goalkeeper and scored a goal!")
-//
-//        // Prepend cards to the start of the hand
-//        attackerHand.prepend(attackingCard)
-//        attackerHand.prepend(goalkeeper)
-//
-//        // Remove the goalkeeper after scoring
-//        setPlayerGoalkeeper(defender, None) // Clear the goalkeeper
-//        setPlayerDefenders(defender, List.empty) // Clear defenders field
-//
-//        scoreGoal()
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//
-//        true
-//      } else {
-//        // Failed attack on goalkeeper
-//        println(s"${defender.name} defended successfully against the goalkeeper attack. Roles are switched.")
-//
-//        // Prepend cards to the start of the defender's hand
-//        defenderHand.prepend(attackingCard)
-//        defenderHand.prepend(goalkeeper)
-//
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//        false
-//      }
-//    } else {
-//      // Regular attack against defender
-//      val defenderCard = defenderField(defenderIndex)
-//
-//      println(s"Attacking Card: $attackingCard, Defender Card: $defenderCard")
-//
-//      if (attackerCardValue > defenderCard.valueToInt(defenderCard.value)) {
-//        // Successful attack on defender
-//        println(s"${attacker.name} succeeded in the attack!")
-//
-//        // Prepend cards to the start of the hand
-//        attackerHand.prepend(attackingCard)
-//        attackerHand.prepend(defenderCard)
-//
-//        removeDefenderCard(defender, defenderCard)
-//        true
-//      } else {
-//        // Failed attack on defender
-//        println(s"${defender.name} defended successfully. Roles are switched.")
-//
-//        // Prepend cards to the start of the defender's hand
-//        defenderHand.prepend(attackingCard)
-//        defenderHand.prepend(defenderCard)
-//        removeDefenderCard(defender, defenderCard)
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//        false
-//      }
-//    }
-//  } match {
-//    case Success(result) => result
-//    case Failure(exception) =>
-//      println(s"An error occurred during the attack: ${exception.getMessage}")
-//      false
-//  }
-//} this comparing method in attacking ? :   def compare(card1: Value, card2: Value): Int = {
-//  println(s"Comparing: ${valueToString(card1)} (${valueToInt(card1)}) vs ${valueToString(card2)} (${valueToInt(card2)})")
-//
-//  (card1, card2) match {
-//    case (Two, Ace)  =>
-//      println("Special Rule: 2 beats Ace!")
-//      1  // ✅ 2 beats Ace
-//    case (Ace, Two)  =>
-//      println("Special Rule: Ace beats 2!")
-//      -1 // ✅ Ace beats 2
-//    case _ =>
-//      val result = valueToInt(card1) - valueToInt(card2)
-//      println(s"Standard Comparison Result: $result")
-//      result // Standard comparison
-//  }
-//}
-//Example Scenario
-//  Initial Attack
-//  Player A attacks with 10 of Hearts
-//Player B defends with 10 of Clubs
-//Same value → Tiebreaker round begins!
-//  Tiebreaker Round
-//  Player A plays 6 of Diamonds
-//Player B plays 9 of Spades
-//Comparison: 6 vs 9 → Player B wins
-//Final Outcome
-//  Player B takes all four cards:
-//  ✅ 10 of Hearts
-//    ✅ 10 of Clubs
-//    ✅ 6 of Diamonds
-//    ✅ 9 of Spades
-
-//def attack(defenderIndex: Int): Boolean = {
-//  val attackerHand = getHand(attacker)
-//  val defenderHand = getHand(defender)
-//  val defenderField = playerDefenders(defender)
-//
-//  Try {
-//    // Take the last card from the attacker's hand (queue principle)
-//    val attackingCard = attackerHand.remove(attackerHand.size - 1)
-//
-//    if (allDefendersBeaten(defender)) {
-//      // Attacker attempts to attack the goalkeeper
-//      val goalkeeper = playerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
-//
-//      println(s"⚔️ Attacking Card: $attackingCard vs Goalkeeper: $goalkeeper")
-//
-//      val comparisonResult = attackingCard.compare(attackingCard.value, goalkeeper.value)
-//
-//      if (comparisonResult > 0) {
-//        // ✅ Successful attack on goalkeeper
-//        println(s"🎯 ${attacker.name} succeeded in attacking the goalkeeper and scored a goal!")
-//
-//        // Prepend cards to the start of the attacker's hand
-//        attackerHand.prepend(attackingCard)
-//        attackerHand.prepend(goalkeeper)
-//
-//        // Remove the goalkeeper after scoring
-//        setPlayerGoalkeeper(defender, None)
-//        setPlayerDefenders(defender, List.empty)
-//
-//        scoreGoal()
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//
-//        true
-//      } else {
-//        // ❌ Failed attack on goalkeeper
-//        println(s"🛡️ ${defender.name} defended successfully against the goalkeeper attack. Roles are switched.")
-//
-//        // Prepend cards to the start of the defender's hand
-//        defenderHand.prepend(attackingCard)
-//        defenderHand.prepend(goalkeeper)
-//
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//        false
-//      }
-//    } else {
-//      // Regular attack against defender
-//      val defenderCard = defenderField(defenderIndex)
-//
-//      println(s"⚔️ Attacking Card: $attackingCard vs Defender Card: $defenderCard")
-//
-//      val comparisonResult = attackingCard.compare(attackingCard.value, defenderCard.value)
-//
-//      if (comparisonResult > 0) {
-//        // ✅ Successful attack on defender
-//        println(s"🎯 ${attacker.name} succeeded in the attack!")
-//
-//        // Prepend cards to the start of the attacker's hand
-//        attackerHand.prepend(attackingCard)
-//        attackerHand.prepend(defenderCard)
-//
-//        removeDefenderCard(defender, defenderCard)
-//        true
-//      } else {
-//        // ❌ Failed attack on defender
-//        println(s"🛡️ ${defender.name} defended successfully. Roles are switched.")
-//
-//        // Prepend cards to the start of the defender's hand
-//        defenderHand.prepend(attackingCard)
-//        defenderHand.prepend(defenderCard)
-//
-//        removeDefenderCard(defender, defenderCard)
-//        refillDefenderField(defender)
-//        switchRoles()
-//        notifyObservers()
-//        false
-//      }
-//    }
-//  } match {
-//    case Success(result) => result
-//    case Failure(exception) =>
-//      println(s"❌ An error occurred during the attack: ${exception.getMessage}")
-//      false
-//  }
-//}

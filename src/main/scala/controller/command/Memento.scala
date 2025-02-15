@@ -1,10 +1,11 @@
-package controller
-import util.Command
-import model.playingFiledComponent.PlayingField
-import model.playerComponent.Player
-import scala.collection.mutable
+package controller.command
+
 import model.cardComponent.Card
-import controller.Memento
+import model.playerComponent.Player
+import model.playingFiledComponent.PlayingField
+import util.Command
+
+import scala.collection.mutable
 case class Memento(
                     attacker: Player,
                     defender: Player,

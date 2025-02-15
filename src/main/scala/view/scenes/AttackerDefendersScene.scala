@@ -1,7 +1,7 @@
 package view.scenes
 
 import scalafx.scene.control.Button
-import controller.Controller
+import controller.IController
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
@@ -11,7 +11,7 @@ import view.components.gameComponents.{SelectablePlayersFieldBar, BoostBar}
 import view.components.uiFactory.GameButtonFactory
 
 case class AttackerDefendersScene(
-                                   controller: Controller,  // ✅ Added Controller
+                                   controller: IController,  // ✅ Added Controller
                                    playingField: PlayingField,
                                    windowWidth: Double,
                                    windowHeight: Double,

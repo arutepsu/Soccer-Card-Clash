@@ -1,7 +1,5 @@
 package model.playerComponent
-
 import model.cardComponent.Card
-
 import scala.collection.mutable
 
 case class Player(
@@ -11,13 +9,11 @@ case class Player(
                    usedExecuteAttack: Option[Boolean] = Some(false)
                  ) {
   override def toString: String = s"Player: $name, Cards: ${cards.mkString(", ")}"
-
-  // ✅ Method to get the cards of the player
+  
   def getCards: List[Card] = cards
-
-  // ✅ Method to change the player's name
+  
   def setName(newName: String): Player = {
-    this.copy(name = newName) // Returns a new Player with the updated name
+    this.copy(name = newName)
   }
 
   def useBoostCard(): Player = {

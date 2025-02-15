@@ -1,7 +1,7 @@
 package view.components.gameComponents
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
-import controller.Controller
+import controller.baseControllerImplementation.Controller
 import view.components.uiFactory.GameButtonFactory
 import scalafx.scene.control.Button
 

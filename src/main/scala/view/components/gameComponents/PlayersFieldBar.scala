@@ -17,7 +17,7 @@ import scalafx.animation.ScaleTransition
 import scalafx.util.Duration
 import scalafx.Includes._
 import view.components.cardComponents.FieldCard
-import view.components.uiFactory.{CardAnimationFactory, CardImageLoader}
+import view.components.uiFactory.{CardAnimationFactory}
 import view.utils.Styles
 class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
@@ -121,7 +121,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   }
   /** **Creates UI row for goalkeeper card** */
   def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.playerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.getGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }

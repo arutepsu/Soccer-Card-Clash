@@ -2,7 +2,7 @@ package view.components.gameComponents
 
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.{Insets, Pos}
-import controller.Controller
+import controller.IController
 import view.components.GameLabel
 import model.playerComponent.Player
 import view.components.playerComponents.PlayerAvatar
@@ -10,7 +10,7 @@ import view.components.playerComponents.PlayerAvatar
 import view.utils.Styles
 
 class PlayersBar(
-                  controller: Controller,
+                  controller: IController,
                   moveToGamePlayerScene: (index: Int) => Unit
                 ) extends HBox {
 

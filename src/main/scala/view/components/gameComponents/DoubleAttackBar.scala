@@ -2,11 +2,11 @@ package view.components.gameComponents
 
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
-import controller.Controller
+import controller.IController
 import view.components.uiFactory.GameButtonFactory
 import scalafx.scene.control.Button
 
-class DoubleAttackBar(controller: Controller) extends HBox {
+class DoubleAttackBar(controller: IController) extends HBox {
   spacing = 10
   alignment = Pos.CENTER
 

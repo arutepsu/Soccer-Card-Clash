@@ -1,5 +1,5 @@
 package view.scenes
-import controller.Controller
+import controller.IController
 import sceneManager.SceneManager
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
@@ -10,7 +10,6 @@ import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import util.Observer
 import view.components.gameComponents.*
-import view.components.tui.tui
 import view.components.uiFactory.GameButtonFactory
 import view.utils.ImageUtils
 import scalafx.stage.Stage
@@ -18,7 +17,7 @@ import view.utils.Styles
 
 
 case class PlayingFieldScene(
-                            controller: Controller,
+                            controller: IController,
                             windowWidth: Double,
                             windowHeight: Double,
                             currentPlayerViewIndex: Int,

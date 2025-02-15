@@ -120,7 +120,7 @@
 //}
 package view.scenes
 
-import controller.Controller
+import controller.IController
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.Alert
@@ -131,7 +131,7 @@ import view.components.playerComponents.PlayerTextInputField
 import view.components.uiFactory.GameButtonFactory
 import view.utils.Styles
 
-class CreatePlayerCard(controller: Controller) extends VBox {
+class CreatePlayerCard(controller: IController) extends VBox {
   prefHeight = 600 // Increased height for better spacing
   prefWidth = 500  // Adjusted width for better UI
   fillWidth = false
