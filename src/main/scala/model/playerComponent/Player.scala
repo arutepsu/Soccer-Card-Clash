@@ -35,4 +35,7 @@ case class Player(
       this.copy(usedExecuteAttack = Some(true))
     }
   }
+  def setHandCards(newCards: List[Card]): Player = {
+    this.copy(cards = newCards)
+  }
 }

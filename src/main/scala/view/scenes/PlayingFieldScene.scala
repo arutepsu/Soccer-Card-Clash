@@ -73,7 +73,7 @@ case class PlayingFieldScene(
 
   speciaDobuleAttackBar.setAttackAction { () =>
     val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.playerDefenders(playingField.getDefender)
+    val defenderCards = playingField.fieldState.getDefenders(playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {
@@ -100,7 +100,7 @@ case class PlayingFieldScene(
     height = 50 // Adjust height as needed
   ) { () =>
     val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.playerDefenders(playingField.getDefender)
+    val defenderCards = playingField.fieldState.getDefenders(playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {
@@ -123,12 +123,12 @@ case class PlayingFieldScene(
 
 
   val player1ScoreLabel = new Label {
-    text = s"${player1.name} Score: ${playingField.getScorePlayer1}"
+    text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
   val player2ScoreLabel = new Label {
-    text = s"${player2.name} Score: ${playingField.getScorePlayer2}"
+    text = s"${player2.name} Score: ${playingField.scores.getScorePlayer2}"
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
@@ -254,8 +254,8 @@ case class PlayingFieldScene(
 
     gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, attacker.name, defender.name)
 
-    player1ScoreLabel.text = s"${player1.name} Score: ${playingField.getScorePlayer1}"
-    player2ScoreLabel.text = s"${player2.name} Score: ${playingField.getScorePlayer2}"
+    player1ScoreLabel.text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
+    player2ScoreLabel.text = s"${player2.name} Score: ${playingField.scores.getScorePlayer2}"
 
     newAttackerHandBar.updateHand()
     newDefenderFieldBar.updateField()

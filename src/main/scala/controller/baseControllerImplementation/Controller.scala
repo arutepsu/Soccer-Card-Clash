@@ -81,7 +81,7 @@ class Controller extends IController {
   }
 
   def boostDefender(defenderPosition: Int): Unit = {
-    val defenders = pf.playerDefenders(pf.getAttacker)
+    val defenders = pf.fieldState.playerDefenders(pf.getAttacker)
 
     //    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
     //      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
@@ -101,7 +101,7 @@ class Controller extends IController {
   }
 
   def boostGoalkeeper(): Unit = {
-    pf.getGoalkeeper(pf.getAttacker) match {
+    pf.fieldState.getGoalkeeper(pf.getAttacker) match {
       case Some(goalkeeper) =>
         if (goalkeeper.wasBoosted) {
           println(s"⚠️ Boost prevented! Goalkeeper ${goalkeeper} has already been boosted.")
@@ -126,15 +126,15 @@ class Controller extends IController {
   }
 
   private def endGame(): Unit = {
-    val winner = if (pf.getScorePlayer1 >= 10) player1 else player2
-    val winnerScore = if (pf.getScorePlayer1 >= 10) pf.getScorePlayer1 else pf.getScorePlayer2
+    val winner = if (pf.scores.getScorePlayer1 >= 10) player1 else player2
+    val winnerScore = if (pf.scores.getScorePlayer1 >= 10) pf.scores.getScorePlayer1 else pf.scores.getScorePlayer2
     notifyObservers()
     println(s"🏆 ${winner.name} wins with $winnerScore points!")
   }
 
   def selectDefenderPosition(): Int = {
     val currentDefender = pf.getDefender
-    if (pf.allDefendersBeaten(currentDefender)) -1
+    if (pf.fieldState.allDefendersBeaten(currentDefender)) -1
     else -2
   }
 
@@ -177,4 +177,10 @@ class Controller extends IController {
       controller
     }
   }
+
+//  def notifyObservers(): Unit = {
+//    println("🔔 Notifying observers...")
+//    notifyObservers() // ✅ Calls the observer update method
+//  }
+
 }

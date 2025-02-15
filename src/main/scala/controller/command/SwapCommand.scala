@@ -7,6 +7,6 @@ class SwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf){
 
   override protected def executeAction(): Unit = {
     // Execute the swap
-    pf.swapAttacker(cardIndex)
+    pf.swapHandler.swapAttacker(cardIndex)
   }
 }

@@ -17,4 +17,15 @@ object Deck {
     deck.clear()
     deck.enqueueAll(shuffled)
   }
+
+  def dealCards(): (List[Card], List[Card]) = {
+    val deck = createDeck()
+    shuffleDeck(deck)
+
+    val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
+    val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
+
+    (hand1, hand2) // ✅ This should be (List[Card], List[Card])
+  }
+
 }
