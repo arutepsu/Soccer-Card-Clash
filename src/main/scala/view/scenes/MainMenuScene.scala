@@ -11,8 +11,10 @@ import view.scenes.sceneManager.SceneManager
 import controller.baseControllerImplementation.Controller
 import controller.IController
 import view.utils.Styles
-class MainMenuScene(controller: IController) { // No need to pass `Stage`
-
+import scalafx.application.Platform
+import util.Observer
+class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Observer
+  controller.add(this)
   // Placeholder for saved games
   val savedGames = ObservableBuffer("Game 1", "Game 2", "Game 3")
 
@@ -64,5 +66,12 @@ class MainMenuScene(controller: IController) { // No need to pass `Stage`
         )
       }
     }
+  }
+
+  override def update: Unit = {
+    Platform.runLater(() => {
+      println("🔄 Main Menu Updating!")
+      SceneManager.refreshCurrentScene()
+    })
   }
 }

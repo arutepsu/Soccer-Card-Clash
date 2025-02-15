@@ -157,8 +157,11 @@ class Tui(controller: IController) extends Observer {
 
     readLine().trim match {
       case "1" => currentState = CreatePlayer
+      println("Create Player Menu Selected")
       case "2" => currentState = LoadGame
+        println("Load Game Menu Selected")
       case "3" => currentState = Exiting
+        println("Exit Selected")
       case _   => println("❌ Invalid choice. Please enter 1, 2, or 3.")
     }
   }
@@ -259,26 +262,32 @@ class Tui(controller: IController) extends Observer {
 
   /** ✅ Displays the current game state */
   def displayGameState(): String = {
-    val pf = controller.getPlayingField
-    val attacker = pf.getAttacker
-    val defender = pf.getDefender
-    val attackingCard = pf.getAttackingCard
-    val attackerHand = pf.getHand(attacker).mkString(", ")
-    val defenderHand = pf.getHand(defender).mkString(", ")
-    val defenderField = pf.fieldState.playerDefenders(defender).mkString(", ")
-    val defenderGoalkeeper = pf.fieldState.getGoalkeeper(defender)
 
-    s"""🏆 **Current Game State**
-       |--------------------------------
-       |⚔️  Attacker: ${attacker.name}
-       |   🎴 Hand: $attackerHand
-       |   🃏 Attacking Card: $attackingCard
-       |
-       |🛡️  Defender: ${defender.name}
-       |   🎴 Hand: $defenderHand
-       |   🏟️ Field: $defenderField
-       |   🥅 Goalkeeper: $defenderGoalkeeper
-       |--------------------------------
-       |""".stripMargin
+    val pf = controller.getPlayingField
+    if(pf == null) {
+      println("not init pf")
+      "stt"
+    } else {
+      val attacker = pf.getAttacker
+      val defender = pf.getDefender
+      val attackingCard = pf.getAttackingCard
+      val attackerHand = pf.getHand(attacker).mkString(", ")
+      val defenderHand = pf.getHand(defender).mkString(", ")
+      val defenderField = pf.fieldState.playerDefenders(defender).mkString(", ")
+      val defenderGoalkeeper = pf.fieldState.getGoalkeeper(defender)
+
+      s"""🏆 **Current Game State**
+         |--------------------------------
+         |⚔️  Attacker: ${attacker.name}
+         |   🎴 Hand: $attackerHand
+         |   🃏 Attacking Card: $attackingCard
+         |
+         |🛡️  Defender: ${defender.name}
+         |   🎴 Hand: $defenderHand
+         |   🏟️ Field: $defenderField
+         |   🥅 Goalkeeper: $defenderGoalkeeper
+         |--------------------------------
+         |""".stripMargin
+    }
   }
 }

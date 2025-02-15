@@ -11,32 +11,43 @@ import view.components.playerComponents.PlayerTextInputField
 import view.components.uiFactory.GameButtonFactory
 import view.utils.Styles
 
-class CreatePlayerCard(controller: IController) extends VBox {
-  prefHeight = 600 // Increased height for better spacing
-  prefWidth = 500  // Adjusted width for better UI
+import scalafx.scene.layout.VBox
+import scalafx.scene.control.Alert
+import scalafx.geometry.Insets
+import scalafx.scene.text.Text
+import scalafx.scene.control.{TextField}
+import scalafx.application.Platform
+import controller.IController
+import util.Observer
+
+class CreatePlayerCard(controller: IController) extends VBox with Observer { // ✅ Now an Observer
+
+  prefHeight = 600
+  prefWidth = 500
   fillWidth = false
   padding = Insets(20)
   alignment = Pos.Center
 
-  // ✅ Apply external CSS for consistent styling
+  // ✅ Register as an observer
+  controller.add(this)
+
   this.getStylesheets.add(Styles.createPlayerCss)
   styleClass.add("create-player-panel")
 
   val createPlayersTitle = new Text {
     text = "Create Players"
-    styleClass.add("title") // ✅ Using external CSS
+    styleClass.add("title")
   }
 
   val nameTitle = new Text {
     text = "Enter Player Names"
-    styleClass.add("subtitle") // ✅ Using external CSS
+    styleClass.add("subtitle")
   }
 
   children.addAll(createPlayersTitle, nameTitle)
 
   val maxAllowedPlayersCount = 2
-  val playerTextInputFields =
-    for (_ <- 1 to maxAllowedPlayersCount) yield PlayerTextInputField()
+  val playerTextInputFields = for (_ <- 1 to maxAllowedPlayersCount) yield new TextField()
 
   val playerTextInputFieldVBox = new VBox(10) {
     children = playerTextInputFields
@@ -47,11 +58,11 @@ class CreatePlayerCard(controller: IController) extends VBox {
 
   val startButton = GameButtonFactory.createGameButton(
     text = "Start",
-    width = 250, // ✅ Adjusted button size
+    width = 250,
     height = 60
   )(() => startGame())
 
-  startButton.styleClass.add("start-button") // ✅ Apply button style
+  startButton.styleClass.add("start-button")
 
   val startButtonBox = new VBox(10) {
     alignment = Pos.TOP_CENTER
@@ -72,15 +83,30 @@ class CreatePlayerCard(controller: IController) extends VBox {
       return
     }
 
-    // ✅ Assign names to players using `setPlayerName` method
+    // ✅ Assign names to players using `setPlayerName`
     controller.setPlayerName(1, playerNames.head)
     controller.setPlayerName(2, playerNames(1))
 
     // ✅ Start the game AFTER setting names
-    controller.startGame()
+    // ✅ Start game **only if it hasn't been started yet**
+    if (controller.getPlayingField == null) {
+      println("🎲 Initializing game...")
+      controller.startGame()
+    }
 
     // ✅ Switch to the main game scene
     SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
+  }
+
+  /** ✅ Observer Pattern: Refresh the player names when notified */
+  override def update: Unit = {
+    Platform.runLater(() => {
+      println("🔄 CreatePlayerCard Updating!")
+
+      // ✅ Ensure input fields match player names
+      playerTextInputFields.head.text = controller.getPlayer1.name
+      playerTextInputFields(1).text = controller.getPlayer2.name
+    })
   }
 
   /** Displays an alert message */
