@@ -234,7 +234,7 @@ object CardAnimationFactory {
 //    }
 //  }
   def highlightLastHandCard(player: Player, playingField: PlayingField): Option[HandCard] = {
-    val hand = playingField.getHand(player)
+    val hand = playingField.fieldState.getPlayerHand(player)
 
     if (hand.nonEmpty) {
       val newLastCard = hand.last

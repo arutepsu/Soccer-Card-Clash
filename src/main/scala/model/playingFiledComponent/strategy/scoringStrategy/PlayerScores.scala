@@ -1,4 +1,4 @@
-package model.playingFiledComponent.scoringStrategy
+package model.playingFiledComponent.strategy.scoringStrategy
 
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField

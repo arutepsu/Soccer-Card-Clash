@@ -1,7 +1,7 @@
-package model.playingFiledComponent.attackStrategy
+package model.playingFiledComponent.strategy.attackStrategy
 
 import model.playingFiledComponent.PlayingField
-import model.playingFiledComponent.attackStrategy.AttackStrategy
+import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
 
@@ -14,8 +14,8 @@ class SingleAttackStrategy extends AttackStrategy{
 
     val attacker = roles.attacker
     val defender = roles.defender
-    val attackerHand = playingField.getHand(attacker)
-    val defenderHand = playingField.getHand(defender)
+    val attackerHand = playingField.fieldState.getPlayerHand(attacker)
+    val defenderHand = playingField.fieldState.getPlayerHand(defender)
 
     Try {
       val attackingCard = attackerHand.remove(attackerHand.size - 1)

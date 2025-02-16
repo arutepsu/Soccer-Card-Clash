@@ -1,4 +1,4 @@
-package model.playingFiledComponent.refillStrategy
+package model.playingFiledComponent.strategy.refillStrategy
 
 import model.playerComponent.Player
 import model.playingFiledComponent.FieldState
@@ -8,10 +8,9 @@ import scala.collection.mutable
 class StandardRefillStrategy extends RefillStrategy {
 
   override def refillDefenderField(fieldState: FieldState, defender: Player): Unit = {
-    val defenderField = fieldState.getPlayerDefenders(defender) // Current defenders on the field
-    val goalkeeper = fieldState.getPlayerGoalkeeper(defender) // Current goalkeeper
-    val defenderHand = fieldState.getPlayingField.getHand(defender)
-
+    val defenderField = fieldState.getPlayerDefenders(defender)
+    val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
+    val defenderHand = fieldState.getPlayerHand(defender)
     println(s"Initial state -> Goalkeeper: $goalkeeper, Defender Field: $defenderField, Defender Hand: $defenderHand")
 
     // Case 1: If no goalkeeper exists and defender field is empty, set up with 4 cards from the hand

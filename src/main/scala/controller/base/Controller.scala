@@ -4,11 +4,12 @@ import controller.IController
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.HandSwapCommand
+import controller.gameBase.GameController
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import util.UndoManager
-
+import view.GameLogger
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.collection.mutable
 import scala.util.Try
@@ -18,15 +19,16 @@ class Controller extends IController {
 
   private var player1: Player = _
   private var player2: Player = _
-  private var pf: PlayingField = _
-
-  def getPlayingField: PlayingField = pf
+  private var playingField: PlayingField = _
+  private var gameController: GameController = _
+  def getPlayingField: PlayingField = playingField
+  def getGameController: GameController = gameController
   def getPlayer1: Player = player1
   def getPlayer2: Player = player2
 
   def setPlayerName(playerIndex: Int, name: String): Unit = {
     // ✅ Ensure PlayingField is initialized
-    if (pf == null) {
+    if (playingField == null) {
       println("⚠️ PlayingField is not initialized. Initializing now...")
       startGame() // ✅ Ensure game is started before setting names
     }
@@ -45,22 +47,40 @@ class Controller extends IController {
   }
 
 
+//  def startGame(): Unit = {
+//    println("🎲 Starting new game...")
+//
+//    // ✅ Deal cards and initialize players
+//    val (p1, p2) = dealCards()
+//    player1 = p1
+//    player2 = p2
+//
+//    // ✅ Convert hands to queues
+//    val player1HandQueue = player1.getCards.to(mutable.Queue)
+//    val player2HandQueue = player2.getCards.to(mutable.Queue)
+//
+//    // ✅ Initialize playing field
+//    pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
+//    pf.setPlayingField()
+//
+//    println(s"✅ Game initialized with ${player1.name} and ${player2.name}")
+//    notifyObservers()
+//  }
   def startGame(): Unit = {
     println("🎲 Starting new game...")
 
-    // ✅ Deal cards and initialize players
     val (p1, p2) = dealCards()
     player1 = p1
     player2 = p2
 
-    // ✅ Convert hands to queues
-    val player1HandQueue = player1.getCards.to(mutable.Queue)
-    val player2HandQueue = player2.getCards.to(mutable.Queue)
+    playingField = new PlayingField(player1, player2)
+    playingField.fieldState.initializePlayerHands(player1.getCards, player2.getCards)
+    playingField.setPlayingField()
 
-    // ✅ Initialize playing field
-    pf = new PlayingField(player1, player1HandQueue, player2, player2HandQueue)
-    pf.setPlayingField()
+    gameController = new GameController(playingField)
 
+    val logger = new GameLogger()
+    gameController.addObserver(logger)
     println(s"✅ Game initialized with ${player1.name} and ${player2.name}")
     notifyObservers()
   }
@@ -79,19 +99,19 @@ class Controller extends IController {
   }
 
   def executeAttackCommand(defenderPosition: Int): Unit = {
-    val command = new SingleAttackCommand(defenderPosition, pf)
+    val command = new SingleAttackCommand(defenderPosition, gameController)
     undoManager.doStep(command)
     notifyObservers()
   }
 
   def executeAttackCommandDouble(defenderPosition: Int): Unit = {
-    val command = new DoubleAttackCommand(defenderPosition, pf)
+    val command = new DoubleAttackCommand(defenderPosition, gameController)
     undoManager.doStep(command)
     notifyObservers()
   }
 
   def boostDefender(defenderPosition: Int): Unit = {
-    val defenders = pf.fieldState.getPlayerDefenders(pf.getAttacker)
+    val defenders = playingField.fieldState.getPlayerDefenders(playingField.getAttacker)
 
     //    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
     //      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
@@ -105,13 +125,13 @@ class Controller extends IController {
     //    }
 
     println("✅ Boosting defender!")
-    val command = new BoostDefenderCommand(defenderPosition, pf)
+    val command = new BoostDefenderCommand(defenderPosition, gameController)
     undoManager.doStep(command)
     notifyObservers()
   }
 
   def boostGoalkeeper(): Unit = {
-    pf.fieldState.getPlayerGoalkeeper(pf.getAttacker) match {
+    playingField.fieldState.getPlayerGoalkeeper(playingField.getAttacker) match {
       case Some(goalkeeper) =>
         if (goalkeeper.wasBoosted) {
           println(s"⚠️ Boost prevented! Goalkeeper ${goalkeeper} has already been boosted.")
@@ -119,7 +139,7 @@ class Controller extends IController {
         }
 
         println("✅ Boosting goalkeeper!")
-        val command = new BoostGoalkeeperCommand(pf)
+        val command = new BoostGoalkeeperCommand(gameController)
         undoManager.doStep(command)
         notifyObservers()
 
@@ -130,21 +150,21 @@ class Controller extends IController {
 
   def swapAttackerCard(index: Int): Unit = {
     println(s"🔄 Swapping attacker card at index: $index")
-    val command = new HandSwapCommand(index, pf)
+    val command = new HandSwapCommand(index, gameController)
     undoManager.doStep(command)
     notifyObservers()
   }
 
   private def endGame(): Unit = {
-    val winner = if (pf.scores.getScorePlayer1 >= 10) player1 else player2
-    val winnerScore = if (pf.scores.getScorePlayer1 >= 10) pf.scores.getScorePlayer1 else pf.scores.getScorePlayer2
+    val winner = if (playingField.scores.getScorePlayer1 >= 10) player1 else player2
+    val winnerScore = if (playingField.scores.getScorePlayer1 >= 10) playingField.scores.getScorePlayer1 else playingField.scores.getScorePlayer2
     notifyObservers()
     println(s"🏆 ${winner.name} wins with $winnerScore points!")
   }
 
   def selectDefenderPosition(): Int = {
-    val currentDefender = pf.getDefender
-    if (pf.fieldState.allDefendersBeaten(currentDefender)) -1
+    val currentDefender = playingField.getDefender
+    if (playingField.fieldState.allDefendersBeaten(currentDefender)) -1
     else -2
   }
 
@@ -168,7 +188,7 @@ class Controller extends IController {
       val oos = new ObjectOutputStream(new FileOutputStream(filePath))
       oos.writeObject(player1)
       oos.writeObject(player2)
-      oos.writeObject(pf)
+      oos.writeObject(playingField)
       oos.close()
     }
   }
@@ -183,7 +203,7 @@ class Controller extends IController {
       val controller = new Controller()
       controller.player1 = loadedPlayer1
       controller.player2 = loadedPlayer2
-      controller.pf = loadedPf
+      controller.playingField = loadedPf
       controller
     }
   }

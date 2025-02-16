@@ -18,7 +18,7 @@ class SelectablePlayersHandBar(player: Player, playingField: PlayingField, isLef
   def selectedCardIndex: Option[Int] = _selectedCardIndex
 
   override def createHandCardRow(): HBox = {
-    val hand = playingField.getHand(player)
+    val hand = playingField.fieldState.getPlayerHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val handCard = new HandCard(flipped = false, card = card)
       handCard.effect = new DropShadow(10, Color.BLACK)

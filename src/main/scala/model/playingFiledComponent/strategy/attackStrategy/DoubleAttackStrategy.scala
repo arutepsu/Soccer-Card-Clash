@@ -1,7 +1,7 @@
-package model.playingFiledComponent.attackStrategy
+package model.playingFiledComponent.strategy.attackStrategy
 
 import model.playingFiledComponent.PlayingField
-import model.playingFiledComponent.attackStrategy.AttackStrategy
+import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
 class DoubleAttackStrategy extends AttackStrategy {
@@ -14,8 +14,8 @@ class DoubleAttackStrategy extends AttackStrategy {
 
       val attacker = roles.attacker
       val defender = roles.defender
-      val attackerHand = playingField.getHand(attacker)
-      val defenderHand = playingField.getHand(defender)
+      val attackerHand = playingField.fieldState.getPlayerHand(attacker)
+      val defenderHand = playingField.fieldState.getPlayerHand(defender)
 
       println(s"Executing attack - Attacker: ${attacker.name}, Defender: ${defender.name}")
       println(s"Attacker hand before attack: ${attackerHand.mkString(", ")}")

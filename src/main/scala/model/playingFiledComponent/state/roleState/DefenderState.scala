@@ -1,4 +1,6 @@
-package model.playingFiledComponent.roleState
+package model.playingFiledComponent.state.roleState
+
+import model.playingFiledComponent.state.roleState.RoleState
 
 class DefenderState extends RoleState {
   override def switchRoles(context: PlayerRoles): Unit = {

@@ -1,8 +1,8 @@
-package model.playingFiledComponent.boostStrategy
+package model.playingFiledComponent.strategy.boostStrategy
 
 import model.cardComponent.base.Card
-import model.playingFiledComponent.boostStrategy.{BoostStrategy, CardBoostStrategy}
-import model.playingFiledComponent.roleState.PlayerRoles
+import model.playingFiledComponent.strategy.boostStrategy.{BoostStrategy, CardBoostStrategy}
+import model.playingFiledComponent.state.roleState.PlayerRoles
 import model.playingFiledComponent.{FieldState, PlayingField}
 //class BoostManager(
 //                    playingField: PlayingField,

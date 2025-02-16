@@ -1,4 +1,4 @@
-package model.playingFiledComponent.boostStrategy
+package model.playingFiledComponent.strategy.boostStrategy
 import model.cardComponent.ICard
 
 class CardBoostStrategy(boostType: String) extends BoostStrategy {

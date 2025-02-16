@@ -1,13 +1,21 @@
 package controller.command.commandTypes.swapCommands
 
 import controller.command.base.BaseCommand
+import controller.gameBase.GameController
 import model.playingFiledComponent.PlayingField
-class HandSwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
+//class HandSwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
+//
+//  override protected def executeAction(): Unit = {
+//    // ✅ Ensure the strategy is set to HandSwap before execution
+//    pf.setSwapStrategy("hand")
+//    pf.swapAttacker(cardIndex)
+//  }
+//}
+
+class HandSwapCommand(cardIndex: Int, gc: GameController) extends BaseCommand(gc) {
 
   override protected def executeAction(): Unit = {
-    // ✅ Ensure the strategy is set to HandSwap before execution
-    pf.setSwapStrategy("hand")
-    pf.swapAttacker(cardIndex)
+    // ✅ Delegate swap logic to GameController
+    gc.handSwap(cardIndex)
   }
 }
-

@@ -1,4 +1,4 @@
-package model.playingFiledComponent.refillStrategy
+package model.playingFiledComponent.strategy.refillStrategy
 import model.playerComponent.Player
 import model.playingFiledComponent.FieldState
 import model.cardComponent.base.Card
