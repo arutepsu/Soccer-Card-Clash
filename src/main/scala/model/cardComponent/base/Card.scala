@@ -4,7 +4,7 @@ import Suit.{Diamonds, Suit}
 import Value.*
 import model.cardComponent.ICard
 import model.cardComponent.*
-import model.cardComponent.specialExtension.BoostingPolicies
+import model.cardComponent.boosting.BoostingPolicies
 
 import scala.math.Integral.Implicits.infixIntegralOps
 import scala.util.Random

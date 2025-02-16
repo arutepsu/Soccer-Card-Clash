@@ -4,6 +4,8 @@ import model.cardComponent.base.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import util.ICommand
+import model.playerComponent.PlayerAction.PlayerAction
+
 
 import scala.collection.mutable
 case class Memento(
@@ -18,5 +20,7 @@ case class Memento(
                     player1Score: Int,
                     player2Score: Int,
                     boostValues: Map[Int, (Int, Int, Boolean)],
-                    goalkeeperBoost: Option[(Int, Int, Boolean)]
+                    goalkeeperBoost: Option[(Int, Int, Boolean)],
+                    player1Actions: Map[PlayerAction, Int],
+                    player2Actions: Map[PlayerAction, Int]
                   )

@@ -1,4 +1,4 @@
-package model.cardComponent.specialExtension
+package model.cardComponent.boosting
 
 import model.cardComponent.base.Value.*
 import model.cardComponent.base.Value

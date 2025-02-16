@@ -2,6 +2,8 @@ package model.playingFiledComponent.strategy.swapStrategy
 import model.playingFiledComponent.PlayingField
 import model.playingFiledComponent.state.roleState.PlayerRoles
 import model.cardComponent.base.Card
+import model.playerComponent.Player
+import model.playerComponent.PlayerAction.PlayerAction
 class SwapHandler(
                    playingField: PlayingField,
                    roles: PlayerRoles,
@@ -18,6 +20,7 @@ class SwapHandler(
   def swapAttacker(index: Int): Unit = {
     val attackerHand = playingField.fieldState.getPlayerHand(roles.attacker)
     swapStrategy.swap(attackerHand, index)
+    roles.attacker.performAction(PlayerAction.Swap)
     playingField.notifyObservers()
   }
 }

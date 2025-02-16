@@ -1,5 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
+import model.playerComponent.PlayerAction.PlayerAction
 import model.playingFiledComponent.PlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
@@ -14,6 +15,7 @@ class DoubleAttackStrategy extends AttackStrategy {
 
       val attacker = roles.attacker
       val defender = roles.defender
+      attacker.performAction(PlayerAction.DoubleAttack)
       val attackerHand = playingField.fieldState.getPlayerHand(attacker)
       val defenderHand = playingField.fieldState.getPlayerHand(defender)
 
