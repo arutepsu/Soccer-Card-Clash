@@ -1,9 +1,9 @@
 package util
 
 class UndoManager {
-  private var undoStack: List[Command]= Nil
-  private var redoStack: List[Command]= Nil
-  def doStep(command: Command): Unit = {
+  private var undoStack: List[ICommand]= Nil
+  private var redoStack: List[ICommand]= Nil
+  def doStep(command: ICommand): Unit = {
     undoStack = command::undoStack
     command.doStep()
   }

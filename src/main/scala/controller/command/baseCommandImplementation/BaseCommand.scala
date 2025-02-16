@@ -1,9 +1,9 @@
-package controller.command
+package controller.command.baseCommandImplementation
 
 import model.playingFiledComponent.PlayingField
-import util.Command
+import util.ICommand
 
-abstract class BaseCommand(val pf: PlayingField) extends Command {
+abstract class BaseCommand(val pf: PlayingField) extends ICommand {
 
   protected var memento: Option[Memento] = None
 

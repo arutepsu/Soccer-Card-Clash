@@ -1,10 +1,10 @@
 package view.components.gameComponents
 
+import model.cardComponent.cardBaseImplementation.Card
 import scalafx.scene.layout.{VBox, HBox}
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
 import scalafx.scene.input.MouseEvent
-import model.cardComponent.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.scene.effect.DropShadow
@@ -17,7 +17,7 @@ import scalafx.animation.ScaleTransition
 import scalafx.util.Duration
 import scalafx.Includes._
 import view.components.cardComponents.FieldCard
-import view.components.uiFactory.{CardAnimationFactory}
+import view.components.uiFactory.CardAnimationFactory
 import view.utils.Styles
 class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 

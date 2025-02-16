@@ -3,7 +3,7 @@
 //import model.cardComponent.Deck
 //import model.playerComponent.Player
 //import model.playingFiledComponent.PlayingField
-//import model.cardComponent.Card
+//import model.cardComponent.cardBaseImplementation.Card
 //import util.Observable
 //import util.Observer
 //import scala.io.StdIn.readLine
@@ -271,7 +271,7 @@
 //import model.cardComponent.Deck
 //import model.playerComponent.Player
 //import model.playingFiledComponent.PlayingField
-//import model.cardComponent.Card
+//import model.cardComponent.cardBaseImplementation.Card
 //import util.Observable
 //import util.Observer
 //import scala.io.StdIn.readLine

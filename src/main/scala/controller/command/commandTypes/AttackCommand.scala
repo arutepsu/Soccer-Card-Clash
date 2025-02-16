@@ -1,7 +1,10 @@
-package controller.command
-import scala.collection.mutable
+package controller.command.commandTypes
+
+import controller.command.baseCommandImplementation.BaseCommand
 import model.playingFiledComponent.PlayingField
-import util.Command
+import util.ICommand
+
+import scala.collection.mutable
 
 
 class AttackCommand(defenderIndex: Int, pf: PlayingField) extends BaseCommand(pf) {

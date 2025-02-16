@@ -1,4 +1,4 @@
-package model.cardComponent
+package model.cardComponent.cardBaseImplementation
 
 object Value {
   sealed trait Value extends Ordered[Value] {
@@ -40,4 +40,15 @@ object Value {
     case Queen => 12
     case King => 13
   }
+
+  def fromInt(n: Int): Option[Value] = allValues.find(valueToInt(_) == n)
+
+  // ✅ Convert a string to a `Value`.
+  def fromString(s: String): Option[Value] = allValues.find(_.toString.toLowerCase == s.toLowerCase)
+
+  // ✅ Check if the card is a face card.
+  def isFaceCard(value: Value): Boolean = value == Jack || value == Queen || value == King
+
+  // ✅ Check if the card is a number card.
+  def isNumberCard(value: Value): Boolean = valueToInt(value) >= 2 && valueToInt(value) <= 10
 }

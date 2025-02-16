@@ -3,7 +3,7 @@ import model.playingFiledComponent.PlayingField
 import util.Observable
 import util.Observer
 import model.playerComponent.Player
-import model.cardComponent.Card
+import model.cardComponent.cardFactory.DeckFactory
 import scala.collection.mutable
 import scala.io.StdIn.readLine
 import java.io._
@@ -12,11 +12,10 @@ import model.playingFiledComponent.PlayingField
 import util.{Observable, UndoManager}
 import model.playerComponent.Player
 import scala.collection.mutable
-import model.cardComponent.Deck
 import model.playingFiledComponent.PlayingField
 import util.{Observable, UndoManager}
 import model.playerComponent.Player
-import model.cardComponent.{Card, Deck}
+import model.cardComponent.cardBaseImplementation.Card
 import scala.collection.mutable
 import scala.util.Try
 import java.io._

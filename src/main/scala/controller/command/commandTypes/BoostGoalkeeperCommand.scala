@@ -1,8 +1,9 @@
-package controller.command
+package controller.command.commandTypes
 
-import model.cardComponent.Card
+import controller.command.baseCommandImplementation.BaseCommand
+import model.cardComponent.cardBaseImplementation.Card
 import model.playingFiledComponent.PlayingField
-import util.Command
+import util.ICommand
 
 class BoostGoalkeeperCommand(pf: PlayingField) extends BaseCommand(pf) {
   private var boostValue: Int = 0 // ✅ Track boost value separately for undo

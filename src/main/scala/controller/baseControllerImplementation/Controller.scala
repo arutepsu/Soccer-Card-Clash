@@ -1,8 +1,8 @@
 package controller.baseControllerImplementation
 
-import controller.command.{AttackCommand, BoostDefenderCommand, BoostGoalkeeperCommand, SpecialAttackCommand, SwapCommand}
 import controller.IController
-import model.cardComponent.Deck
+import controller.command.commandTypes.{AttackCommand, BoostDefenderCommand, BoostGoalkeeperCommand, SpecialAttackCommand, SwapCommand}
+import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import util.UndoManager
@@ -64,8 +64,8 @@ class Controller extends IController {
   }
 
   private def dealCards(): (Player, Player) = {
-    val deck = Deck.createDeck()
-    Deck.shuffleDeck(deck)
+    val deck = DeckFactory.createDeck()
+    DeckFactory.shuffleDeck(deck)
 
     val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
     val hand2 = for (_ <- 1 to 26) yield deck.dequeue()

@@ -1,6 +1,6 @@
 package view.components.cardComponents
 
-import model.cardComponent.Card
+import model.cardComponent.cardBaseImplementation.Card
 import view.components.cardComponents.GameCard
 
 case class FieldCard(

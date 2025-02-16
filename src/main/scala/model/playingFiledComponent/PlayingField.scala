@@ -653,7 +653,8 @@ package model.playingFiledComponent
 //  }
 //}
 
-import model.cardComponent.{Card, Deck}
+import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.BoostManager
 import util.Observable

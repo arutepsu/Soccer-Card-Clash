@@ -8,8 +8,8 @@ import scalafx.scene.effect.DropShadow
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
 import javafx.application.Platform
+import model.cardComponent.cardBaseImplementation.Card
 import scala.concurrent.{ExecutionContext, Future}
-import model.cardComponent.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.Includes._
@@ -132,7 +132,7 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
 //import scalafx.scene.paint.Color
 //import scalafx.animation.{TranslateTransition, ScaleTransition}
 //import scalafx.util.Duration
-//import model.cardComponent.Card
+//import model.cardComponent.cardBaseImplementation.Card
 //import model.playerComponent.Player
 //import model.playingFiledComponent.PlayingField
 //import scalafx.Includes._
@@ -236,7 +236,7 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
 //import scalafx.scene.paint.Color
 //import scalafx.animation.{TranslateTransition, ScaleTransition}
 //import scalafx.util.Duration
-//import model.cardComponent.Card
+//import model.cardComponent.cardBaseImplementation.Card
 //import model.playerComponent.Player
 //import model.playingFiledComponent.PlayingField
 //import scalafx.Includes._

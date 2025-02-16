@@ -1,9 +1,9 @@
-package controller.command
+package controller.command.baseCommandImplementation
 
-import model.cardComponent.Card
+import model.cardComponent.cardBaseImplementation.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
-import util.Command
+import util.ICommand
 
 import scala.collection.mutable
 case class Memento(

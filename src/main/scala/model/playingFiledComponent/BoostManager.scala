@@ -1,5 +1,6 @@
 package model.playingFiledComponent
-import model.cardComponent.Card
+
+import model.cardComponent.cardBaseImplementation.Card
 class BoostManager(
                     playingField: PlayingField,
                     roles: PlayerRoles,

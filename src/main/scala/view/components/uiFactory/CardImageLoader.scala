@@ -1,6 +1,6 @@
 package view.components.uiFactory
 
-import model.cardComponent.Card
+import model.cardComponent.cardBaseImplementation.Card
 import scalafx.scene.image.{Image, ImageView}
 
 object CardImageLoader {

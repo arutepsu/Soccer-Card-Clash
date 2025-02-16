@@ -1,12 +1,12 @@
 package view.components.gameComponents
 
+import model.cardComponent.cardBaseImplementation.Card
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.paint.Color
 import scalafx.Includes._
-import model.cardComponent.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import view.components.cardComponents.HandCard

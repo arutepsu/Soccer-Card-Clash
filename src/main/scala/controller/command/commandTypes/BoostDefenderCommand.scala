@@ -1,7 +1,9 @@
-package controller.command
-import model.cardComponent.Card
+package controller.command.commandTypes
+
+import controller.command.baseCommandImplementation.BaseCommand
+import model.cardComponent.cardBaseImplementation.Card
 import model.playingFiledComponent.PlayingField
-import util.Command
+import util.ICommand
 
 class BoostDefenderCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
   override protected def executeAction(): Unit = {
