@@ -73,7 +73,7 @@ case class PlayingFieldScene(
 
   speciaDobuleAttackBar.setAttackAction { () =>
     val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.fieldState.getDefenders(playingField.getDefender)
+    val defenderCards = playingField.fieldState.getPlayerDefenders(playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {
@@ -100,7 +100,7 @@ case class PlayingFieldScene(
     height = 50 // Adjust height as needed
   ) { () =>
     val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.fieldState.getDefenders(playingField.getDefender)
+    val defenderCards = playingField.fieldState.getPlayerDefenders(playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {

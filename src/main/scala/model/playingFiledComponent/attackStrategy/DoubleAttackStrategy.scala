@@ -20,7 +20,7 @@ class DoubleAttackStrategy extends AttackStrategy {
       println(s"Executing attack - Attacker: ${attacker.name}, Defender: ${defender.name}")
       println(s"Attacker hand before attack: ${attackerHand.mkString(", ")}")
       println(s"Defender hand before attack: ${defenderHand.mkString(", ")}")
-      println(s"Defender field: ${fieldState.getDefenders(defender).mkString(", ")}")
+      println(s"Defender field: ${fieldState.getPlayerDefenders(defender).mkString(", ")}")
 
       Try {
         if (attackerHand.size < 2) {
@@ -33,7 +33,7 @@ class DoubleAttackStrategy extends AttackStrategy {
         val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
 
         if (fieldState.allDefendersBeaten(defender)) {
-          val goalkeeper = fieldState.getGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
+          val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(throw new NoSuchElementException("Goalkeeper not found"))
 
           println(s"⚔️ Attacking Cards: $attackingCard1, $attackingCard2 vs Goalkeeper: $goalkeeper")
           val goalkeeperValue = goalkeeper.valueToInt

@@ -21,7 +21,7 @@ class SingleAttackStrategy extends AttackStrategy{
       val attackingCard = attackerHand.remove(attackerHand.size - 1)
 
       if (fieldState.allDefendersBeaten(defender)) { // ✅ Check defenders from FieldState
-        val goalkeeper = fieldState.getGoalkeeper(defender).getOrElse(
+        val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(
           throw new NoSuchElementException("Goalkeeper not found")
         )
 

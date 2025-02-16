@@ -30,22 +30,22 @@ abstract class BaseCommand(val pf: PlayingField) extends ICommand {
 
   /** ✅ Creates a snapshot of the game state */
   private def createMemento(): Memento = {
-    val boostValues = pf.fieldState.playerDefenders(pf.getAttacker).zipWithIndex.collect {
+    val boostValues = pf.fieldState.getPlayerDefenders(pf.getAttacker).zipWithIndex.collect {
       case (card, index) if card.additionalValue > 0 =>
         index -> (card.additionalValue, card.lastBoostValue, card.wasBoosted)
     }.toMap
 
-    val goalkeeperBoost = pf.fieldState.getGoalkeeper(pf.getAttacker).map { gk =>
+    val goalkeeperBoost = pf.fieldState.getPlayerGoalkeeper(pf.getAttacker).map { gk =>
       (gk.additionalValue, gk.lastBoostValue, gk.wasBoosted)
     }
 
     Memento(
       attacker = pf.getAttacker,
       defender = pf.getDefender,
-      player1Defenders = pf.fieldState.playerDefenders(pf.getAttacker).map(_.copy()),
-      player2Defenders = pf.fieldState.playerDefenders(pf.getDefender).map(_.copy()),
-      player1Goalkeeper = pf.fieldState.getGoalkeeper(pf.getAttacker),
-      player2Goalkeeper = pf.fieldState.getGoalkeeper(pf.getDefender),
+      player1Defenders = pf.fieldState.getPlayerDefenders(pf.getAttacker).map(_.copy()),
+      player2Defenders = pf.fieldState.getPlayerDefenders(pf.getDefender).map(_.copy()),
+      player1Goalkeeper = pf.fieldState.getPlayerGoalkeeper(pf.getAttacker),
+      player2Goalkeeper = pf.fieldState.getPlayerGoalkeeper(pf.getDefender),
       player1Hand = pf.getHand(pf.getAttacker).toList,
       player2Hand = pf.getHand(pf.getDefender).toList,
       player1Score = pf.scores.getScorePlayer1,
@@ -60,7 +60,7 @@ abstract class BaseCommand(val pf: PlayingField) extends ICommand {
       // ✅ Revert **only the last boosted defender at `lastBoostedIndex`**
       println(s"🔄 Undoing boost at index $lastBoostedIndex")
 
-      pf.fieldState.playerDefenders(memento.attacker).lift(lastBoostedIndex).foreach { card =>
+      pf.fieldState.getPlayerDefenders(memento.attacker).lift(lastBoostedIndex).foreach { card =>
         println(s"✅ Reverting Boost: ${card} → Original Value Restored")
         card.revertAdditionalValue() // ✅ Undo boost **only for this card**
       }
@@ -94,7 +94,7 @@ abstract class BaseCommand(val pf: PlayingField) extends ICommand {
     // ✅ Restore goalkeeper boost if needed
     if (memento.goalkeeperBoost.isDefined) {
       val (additional, lastBoost, wasBoosted) = memento.goalkeeperBoost.get
-      pf.fieldState.getGoalkeeper(memento.attacker).foreach { goalkeeper =>
+      pf.fieldState.getPlayerGoalkeeper(memento.attacker).foreach { goalkeeper =>
         println(s"🔄 Restoring goalkeeper boost...")
         goalkeeper.revertAdditionalValue()
         pf.fieldState.setPlayerGoalkeeper(memento.attacker, Some(goalkeeper))

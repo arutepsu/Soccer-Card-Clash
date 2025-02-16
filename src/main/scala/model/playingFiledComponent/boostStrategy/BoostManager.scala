@@ -80,7 +80,7 @@ class BoostManager(
 
   // ✅ Boost a defender using the current boost strategy
   def chooseBoostCardDefender(index: Int): Unit = {
-    val attackersDefenderField = fieldState.getDefenders(roles.attacker)
+    val attackersDefenderField = fieldState.getPlayerDefenders(roles.attacker)
     if (index < 0 || index >= attackersDefenderField.size) {
       println("Invalid defender index for boosting.")
       return
@@ -104,7 +104,7 @@ class BoostManager(
 
   // ✅ Boost a goalkeeper using the same strategy class
   def chooseBoostCardGoalkeeper(): Unit = {
-    val attackersGoalkeeperOpt = fieldState.getGoalkeeper(roles.attacker)
+    val attackersGoalkeeperOpt = fieldState.getPlayerGoalkeeper(roles.attacker)
 
     attackersGoalkeeperOpt match {
       case Some(goalkeeper) =>
@@ -126,8 +126,8 @@ class BoostManager(
   def revertCard(card: Card): Card = {
     val revertedCard = card.revertAdditionalValue()
     //    // ✅ If the reverted card is in the attacker's or defender's field, update it
-    val attackerField = fieldState.getDefenders(playingField.getAttacker)
-    val defenderField = fieldState.getDefenders(playingField.getDefender)
+    val attackerField = fieldState.getPlayerDefenders(playingField.getAttacker)
+    val defenderField = fieldState.getPlayerDefenders(playingField.getDefender)
 
     val updatedAttackerField = attackerField.map(c => if (c == card) revertedCard else c)
     val updatedDefenderField = defenderField.map(c => if (c == card) revertedCard else c)

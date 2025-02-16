@@ -9,7 +9,7 @@ class BoostGoalkeeperCommand(pf: PlayingField) extends BaseCommand(pf) {
   private var boostValue: Int = 0 // ✅ Track boost value separately for undo
 
   override protected def executeAction(): Unit = {
-    val goalkeeperOpt = pf.fieldState.getGoalkeeper(pf.getAttacker)
+    val goalkeeperOpt = pf.fieldState.getPlayerGoalkeeper(pf.getAttacker)
 
     goalkeeperOpt.foreach { goalkeeper =>
       boostValue = goalkeeper.getBoostingPolicies // ✅ Get and store boost value

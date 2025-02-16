@@ -273,8 +273,8 @@ class Tui(controller: IController) extends Observer {
       val attackingCard = pf.getAttackingCard
       val attackerHand = pf.getHand(attacker).mkString(", ")
       val defenderHand = pf.getHand(defender).mkString(", ")
-      val defenderField = pf.fieldState.playerDefenders(defender).mkString(", ")
-      val defenderGoalkeeper = pf.fieldState.getGoalkeeper(defender)
+      val defenderField = pf.fieldState.getPlayerDefenders(defender).mkString(", ")
+      val defenderGoalkeeper = pf.fieldState.getPlayerGoalkeeper(defender)
 
       s"""🏆 **Current Game State**
          |--------------------------------

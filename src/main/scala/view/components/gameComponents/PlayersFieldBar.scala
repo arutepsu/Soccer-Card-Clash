@@ -40,7 +40,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   }
 
   /** Retrieves defender cards */
-  private def getDefenderCards: List[Card] = playingField.fieldState.getDefenders(player)
+  private def getDefenderCards: List[Card] = playingField.fieldState.getPlayerDefenders(player)
 
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card
@@ -121,7 +121,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   }
   /** **Creates UI row for goalkeeper card** */
   def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.fieldState.getGoalkeeper(player) match {
+    val goalkeeperCard = playingField.fieldState.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }

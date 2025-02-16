@@ -91,7 +91,7 @@ class Controller extends IController {
   }
 
   def boostDefender(defenderPosition: Int): Unit = {
-    val defenders = pf.fieldState.playerDefenders(pf.getAttacker)
+    val defenders = pf.fieldState.getPlayerDefenders(pf.getAttacker)
 
     //    if (defenderPosition < 0 || defenderPosition >= defenders.size) {
     //      println(s"⚠️ Boost prevented! Invalid defender index: $defenderPosition")
@@ -111,7 +111,7 @@ class Controller extends IController {
   }
 
   def boostGoalkeeper(): Unit = {
-    pf.fieldState.getGoalkeeper(pf.getAttacker) match {
+    pf.fieldState.getPlayerGoalkeeper(pf.getAttacker) match {
       case Some(goalkeeper) =>
         if (goalkeeper.wasBoosted) {
           println(s"⚠️ Boost prevented! Goalkeeper ${goalkeeper} has already been boosted.")
