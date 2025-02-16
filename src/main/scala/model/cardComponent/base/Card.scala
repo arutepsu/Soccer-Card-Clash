@@ -1,10 +1,10 @@
-package model.cardComponent.cardBaseImplementation
+package model.cardComponent.base
 
 import Suit.{Diamonds, Suit}
 import Value.*
 import model.cardComponent.ICard
 import model.cardComponent.*
-import model.cardComponent.specialExtension.Boosting
+import model.cardComponent.specialExtension.BoostingPolicies
 
 import scala.math.Integral.Implicits.infixIntegralOps
 import scala.util.Random
@@ -130,9 +130,9 @@ case class Card private (
       return 0
     }
 
-    val boost = Boosting.getBoostAmount(this.value) // ✅ Get predefined boost
+    val boost = BoostingPolicies.getBoostAmount(this.value) // ✅ Get predefined boost
 
-    val boostedValue = Math.min(Value.valueToInt(this.value) + boost, Boosting.maxAllowedValue)
+    val boostedValue = Math.min(Value.valueToInt(this.value) + boost, BoostingPolicies.maxAllowedValue)
 
     val finalBoost = boostedValue - Value.valueToInt(this.value) // ✅ Ensure correct boost applied
 

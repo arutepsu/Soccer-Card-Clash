@@ -1,6 +1,6 @@
-package controller.command.baseCommandImplementation
+package controller.command.base
 
-import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.base.Card
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import util.ICommand
@@ -17,6 +17,6 @@ case class Memento(
                     player2Hand: List[Card],
                     player1Score: Int,
                     player2Score: Int,
-                    boostValues: Map[Int, (Int, Int, Boolean)], // ✅ Stores (additionalValue, lastBoostValue, wasBoosted)
-                    goalkeeperBoost: Option[(Int, Int, Boolean)] // ✅ Stores (additionalValue, lastBoostValue, wasBoosted) for goalkeeper
+                    boostValues: Map[Int, (Int, Int, Boolean)],
+                    goalkeeperBoost: Option[(Int, Int, Boolean)]
                   )

@@ -1,7 +1,7 @@
-package controller.command.commandTypes
+package controller.command.commandTypes.boostCommands
 
-import controller.command.baseCommandImplementation.BaseCommand
-import model.cardComponent.cardBaseImplementation.Card
+import controller.command.base.BaseCommand
+import model.cardComponent.base.Card
 import model.playingFiledComponent.PlayingField
 import util.ICommand
 

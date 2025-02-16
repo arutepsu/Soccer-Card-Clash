@@ -1,6 +1,6 @@
 package view.components.cardComponents
 
-import model.cardComponent.cardBaseImplementation.{Card, Suit, Value}
+import model.cardComponent.base.{Card, Suit, Value}
 import scalafx.animation.ScaleTransition
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.HBox

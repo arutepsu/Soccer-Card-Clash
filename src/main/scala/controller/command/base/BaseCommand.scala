@@ -1,4 +1,4 @@
-package controller.command.baseCommandImplementation
+package controller.command.base
 
 import model.playingFiledComponent.PlayingField
 import util.ICommand

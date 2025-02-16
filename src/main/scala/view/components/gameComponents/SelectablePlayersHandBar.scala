@@ -1,6 +1,6 @@
 package view.components.gameComponents
 
-import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.base.Card
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
 import scalafx.scene.input.MouseEvent

@@ -1,6 +1,6 @@
 package model.playerComponent
 
-import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.base.Card
 import scala.collection.mutable
 
 case class Player(

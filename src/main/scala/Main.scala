@@ -2,7 +2,7 @@
 import scalafx.application.JFXApp3
 import view.Tui
 import controller.IController
-import controller.baseControllerImplementation.Controller
+import controller.base.Controller
 import view.Gui
 import view.tui.TuiManager
 object Main extends JFXApp3 {

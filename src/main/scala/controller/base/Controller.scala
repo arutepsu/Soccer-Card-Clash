@@ -1,7 +1,9 @@
-package controller.baseControllerImplementation
+package controller.base
 
 import controller.IController
-import controller.command.commandTypes.{AttackCommand, BoostDefenderCommand, BoostGoalkeeperCommand, SpecialAttackCommand, SwapCommand}
+import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
+import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
+import controller.command.commandTypes.swapCommands.HandSwapCommand
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
@@ -77,13 +79,13 @@ class Controller extends IController {
   }
 
   def executeAttackCommand(defenderPosition: Int): Unit = {
-    val command = new AttackCommand(defenderPosition, pf)
+    val command = new SingleAttackCommand(defenderPosition, pf)
     undoManager.doStep(command)
     notifyObservers()
   }
 
   def executeAttackCommandDouble(defenderPosition: Int): Unit = {
-    val command = new SpecialAttackCommand(defenderPosition, pf)
+    val command = new DoubleAttackCommand(defenderPosition, pf)
     undoManager.doStep(command)
     notifyObservers()
   }
@@ -128,7 +130,7 @@ class Controller extends IController {
 
   def swapAttackerCard(index: Int): Unit = {
     println(s"🔄 Swapping attacker card at index: $index")
-    val command = new SwapCommand(index, pf)
+    val command = new HandSwapCommand(index, pf)
     undoManager.doStep(command)
     notifyObservers()
   }

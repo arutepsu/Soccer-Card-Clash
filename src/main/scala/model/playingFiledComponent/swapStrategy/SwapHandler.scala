@@ -1,0 +1,23 @@
+package model.playingFiledComponent.swapStrategy
+import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.roleState.PlayerRoles
+import model.cardComponent.base.Card
+class SwapHandler(
+                   playingField: PlayingField,
+                   roles: PlayerRoles,
+                   private var swapStrategy: SwapStrategy = new HandSwapStrategy() // ✅ Default strategy
+                 ) {
+
+  // ✅ Accepts a `SwapStrategy` object instead of a String
+  def setSwapStrategy(newStrategy: SwapStrategy): Unit = {
+    swapStrategy = newStrategy
+    println(s"🔄 Swap strategy updated to: ${swapStrategy.getClass.getSimpleName}")
+  }
+
+  // ✅ Executes the current swap strategy
+  def swapAttacker(index: Int): Unit = {
+    val attackerHand = playingField.getHand(roles.attacker)
+    swapStrategy.swap(attackerHand, index)
+    playingField.notifyObservers()
+  }
+}

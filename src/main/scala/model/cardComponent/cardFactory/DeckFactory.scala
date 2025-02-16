@@ -1,6 +1,6 @@
 package model.cardComponent.cardFactory
 
-import model.cardComponent.cardBaseImplementation.{Card, Suit, Value}
+import model.cardComponent.base.{Card, Suit, Value}
 import model.cardComponent.cardFactory.CardFactory
 
 import scala.collection.mutable

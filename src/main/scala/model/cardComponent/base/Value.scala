@@ -1,4 +1,4 @@
-package model.cardComponent.cardBaseImplementation
+package model.cardComponent.base
 
 object Value {
   sealed trait Value extends Ordered[Value] {

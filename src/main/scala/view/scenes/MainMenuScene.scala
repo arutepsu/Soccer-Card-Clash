@@ -8,7 +8,7 @@ import scalafx.scene.layout.VBox
 import view.components.GameLabel
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
-import controller.baseControllerImplementation.Controller
+import controller.base.Controller
 import controller.IController
 import view.utils.Styles
 import scalafx.application.Platform

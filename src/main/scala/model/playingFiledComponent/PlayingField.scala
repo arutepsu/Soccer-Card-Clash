@@ -653,12 +653,15 @@ package model.playingFiledComponent
 //  }
 //}
 
-import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.base.Card
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
-import model.playingFiledComponent.BoostManager
+import model.playingFiledComponent.attackStrategy.{AttackHandler, AttackStrategy, DoubleAttackStrategy, SingleAttackStrategy}
+import model.playingFiledComponent.boostStrategy.BoostManager
+import model.playingFiledComponent.roleState.PlayerRoles
+import model.playingFiledComponent.swapStrategy.{HandSwapStrategy, CircularSwapStrategy}
 import util.Observable
-
+import model.playingFiledComponent.swapStrategy.SwapHandler
 import scala.collection.mutable
 import scala.util.Try
 
@@ -673,19 +676,54 @@ class PlayingField(
   val scores = new PlayerScores(player1, player2, this)
   val fieldState = new FieldState(player1, player2, this)
   val boostManager = new BoostManager(this, roles, fieldState)
-  val attackHandler = new AttackHandler(this, roles, fieldState, boostManager, scores)
-  val swapHandler = new SwapHandler(this, roles)
+
+  // ✅ Initialize AttackHandler with a default attack strategy
+  var attackHandler = new AttackHandler(new SingleAttackStrategy())
+
+  var swapHandler = new SwapHandler(this, roles)
+
   def getAttacker: Player = roles.attacker
   def getDefender: Player = roles.defender
+
   def setAttacker(newAttacker: Player): Unit = roles.attacker = newAttacker
   def setDefender(newDefender: Player): Unit = roles.defender = newDefender
+
   def setPlayingField(): Unit = fieldState.initializeFields()
-  def getHand(player: Player): mutable.Queue[Card] = if (player == player1) player1Cards else player2Cards
+
+  def getHand(player: Player): mutable.Queue[Card] =
+    if (player == player1) player1Cards else player2Cards
+
   def getAttackingCard: Card = getHand(roles.attacker).last
   def getDefenderCard: Card = getHand(roles.defender).last
-  def attack(defenderIndex: Int): Boolean = attackHandler.executeAttack(defenderIndex)
-  def doubleAttack(defenderIndex: Int): Boolean = attackHandler.executeDoubleAtack(defenderIndex)
+
+  // ✅ Set attack strategy dynamically
+  def setAttackStrategy(strategy: AttackStrategy): Unit = {
+    attackHandler.setStrategy(strategy)
+  }
+
+  // ✅ Execute attack with the currently selected strategy
+  def attack(defenderIndex: Int): Boolean = attackHandler.executeAttack(this, defenderIndex)
+
+  // ✅ Execute double attack using the appropriate strategy
+  def doubleAttack(defenderIndex: Int): Boolean = {
+    attackHandler.setStrategy(new DoubleAttackStrategy()) // Set double attack before execution
+    val result = attackHandler.executeAttack(this, defenderIndex)
+    attackHandler.setStrategy(new SingleAttackStrategy()) // Reset to default
+    result
+  }
+
   def chooseBoostCardDefender(cardIndex: Int): Unit = boostManager.chooseBoostCardDefender(cardIndex)
+
+  // ✅ Execute swap based on the **currently selected strategy**
   def swapAttacker(cardIndex: Int): Unit = swapHandler.swapAttacker(cardIndex)
-  def switchRoles(): Unit = { roles.switchRoles();}
+
+  // ✅ Change swap strategy dynamically
+  def setSwapStrategy(strategyType: String): Unit = {
+    val newStrategy = strategyType.toLowerCase match {
+      case "circular" => new CircularSwapStrategy()
+      case "hand" | _ => new HandSwapStrategy() // Default
+    }
+    swapHandler.setSwapStrategy(newStrategy)
+  }
+  def switchRoles(): Unit = { roles.switchRoles() }
 }

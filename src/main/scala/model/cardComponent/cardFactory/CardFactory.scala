@@ -1,8 +1,8 @@
 package model.cardComponent.cardFactory
 
-import model.cardComponent.cardBaseImplementation.Suit.Suit
-import model.cardComponent.cardBaseImplementation.Value.Value
-import model.cardComponent.cardBaseImplementation.{Card, Suit, Value}
+import model.cardComponent.base.Suit.Suit
+import model.cardComponent.base.Value.Value
+import model.cardComponent.base.{Card, Suit, Value}
 
 import scala.util.Random
 object CardFactory {

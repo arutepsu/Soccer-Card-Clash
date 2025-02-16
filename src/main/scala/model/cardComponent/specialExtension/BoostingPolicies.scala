@@ -1,9 +1,9 @@
 package model.cardComponent.specialExtension
 
-import model.cardComponent.cardBaseImplementation.Value.*
-import model.cardComponent.cardBaseImplementation.Value
+import model.cardComponent.base.Value.*
+import model.cardComponent.base.Value
 
-object Boosting {
+object BoostingPolicies {
   // ✅ Predefined boost values per card rank
   private val boostValues: Map[Value, Int] = Map(
     Two   -> 6,  // Low cards get higher boosts

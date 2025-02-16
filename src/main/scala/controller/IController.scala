@@ -15,7 +15,7 @@ import scala.collection.mutable
 import model.playingFiledComponent.PlayingField
 import util.{Observable, UndoManager}
 import model.playerComponent.Player
-import model.cardComponent.cardBaseImplementation.Card
+import model.cardComponent.base.Card
 import scala.collection.mutable
 import scala.util.Try
 import java.io._

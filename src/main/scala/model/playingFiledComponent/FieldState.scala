@@ -4,7 +4,7 @@ import util.Observable
 import util.UndoManager
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
-import model.cardComponent.cardBaseImplementation.{Card, Suit}
+import model.cardComponent.base.{Card, Suit}
 
 class FieldState(player1: Player, player2: Player, playingField: PlayingField) {
   private var player1Field: List[Card] = List()

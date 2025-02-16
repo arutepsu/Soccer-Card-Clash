@@ -1,8 +1,8 @@
 package model.cardComponent
 
 
-import model.cardComponent.cardBaseImplementation.Value.Value
-import model.cardComponent.cardBaseImplementation.Suit.Suit
+import model.cardComponent.base.Value.Value
+import model.cardComponent.base.Suit.Suit
 
 trait ICard {
   def value: Value
