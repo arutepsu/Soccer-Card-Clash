@@ -659,9 +659,11 @@ import model.playerComponent.Player
 import model.playingFiledComponent.attackStrategy.{AttackHandler, AttackStrategy, DoubleAttackStrategy, SingleAttackStrategy}
 import model.playingFiledComponent.boostStrategy.BoostManager
 import model.playingFiledComponent.roleState.PlayerRoles
-import model.playingFiledComponent.swapStrategy.{HandSwapStrategy, CircularSwapStrategy}
+import model.playingFiledComponent.scoringStrategy.PlayerScores
+import model.playingFiledComponent.swapStrategy.{CircularSwapStrategy, HandSwapStrategy}
 import util.Observable
 import model.playingFiledComponent.swapStrategy.SwapHandler
+
 import scala.collection.mutable
 import scala.util.Try
 
