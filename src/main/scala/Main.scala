@@ -5,14 +5,11 @@ import controller.IController
 import controller.baseControllerImplementation.Controller
 import view.Gui
 import view.tui.TuiManager
-
 object Main extends JFXApp3 {
   private val controller: IController = new Controller()
   override def start(): Unit = {
     // ✅ Start TUI in a separate thread
     new Thread(() => {
-//      val tui = new Tui(controller)
-//      tui.start()
       val tuiManager = new TuiManager(controller)
       tuiManager.start()
     }).start()
@@ -21,7 +18,5 @@ object Main extends JFXApp3 {
     val gui = new Gui(controller)
     gui.start()
     controller.notifyObservers()
-    // ✅ Start the game (sets players & field)
-    //    controller.startGame()
   }
 }

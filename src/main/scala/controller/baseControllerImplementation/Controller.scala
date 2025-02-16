@@ -185,10 +185,4 @@ class Controller extends IController {
       controller
     }
   }
-
-//  def notifyObservers(): Unit = {
-//    println("🔔 Notifying observers...")
-//    notifyObservers() // ✅ Calls the observer update method
-//  }
-
 }

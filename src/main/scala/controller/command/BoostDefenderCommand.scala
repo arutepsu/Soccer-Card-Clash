@@ -7,4 +7,10 @@ class BoostDefenderCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand
   override protected def executeAction(): Unit = {
     pf.chooseBoostCardDefender(cardIndex) // ✅ Boosts the defender
   }
+
+  override def undoStep(): Unit = {
+    memento.foreach(m => restoreBoosts(m, cardIndex)) // ✅ Only undo the boosted card at `cardIndex`
+  }
+
+
 }

@@ -11,4 +11,3 @@ object Suit extends Enumeration {
     case Spades => "Spades"
   }
 }
-

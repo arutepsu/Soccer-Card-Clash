@@ -1,5 +1,5 @@
 package view.scenes.sceneManager
-//
+
 import scalafx.stage.Stage
 import scalafx.scene.Scene
 import scalafx.animation.{FadeTransition, Interpolator}
