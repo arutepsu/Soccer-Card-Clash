@@ -2,11 +2,11 @@ package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
 import controller.command.base.BaseCommand
-import controller.gameBase.GameController
+import controller.gameBase.GameManager
 import model.cardComponent.base.Card
 import model.playingFiledComponent.PlayingField
 
-class BoostDefenderCommand(cardIndex: Int, gc: GameController) extends BaseCommand(gc) {
+class BoostDefenderCommand(cardIndex: Int, gc: GameManager) extends BaseCommand(gc) {
 
   override protected def executeAction(): Unit = {
     gc.boostDefender(cardIndex)

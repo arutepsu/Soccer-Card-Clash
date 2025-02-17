@@ -4,10 +4,10 @@ import model.playingFiledComponent.PlayingField
 import model.cardComponent.base.Card
 import model.playerComponent.Player
 import model.playerComponent.PlayerAction.PlayerAction
-import controller.gameBase.GameController
+import controller.gameBase.GameManager
 import model.playerComponent.PlayerAction._
 
-class MementoManager(private var gameController: GameController) {
+class MementoManager(private var gameController: GameManager) {
 
   def createMemento(): Memento = {
     val playingField = gameController.getPlayingField // ✅ Now accessing PlayingField via GameController

@@ -2,7 +2,7 @@ package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
 import controller.command.base.BaseCommand
-import controller.gameBase.GameController
+import controller.gameBase.GameManager
 import model.cardComponent.base.Card
 import model.playingFiledComponent.PlayingField
 //class BoostGoalkeeperCommand(pf: PlayingField) extends BaseCommand(pf) {
@@ -17,15 +17,15 @@ import model.playingFiledComponent.PlayingField
 //    }
 //  }
 //}
-class BoostGoalkeeperCommand(gc: GameController) extends BaseCommand(gc) {
+class BoostGoalkeeperCommand(gc: GameManager) extends BaseCommand(gc) {
   private var boostValue: Int = 0 // ✅ Track boost value separately for undo
 
   override protected def executeAction(): Unit = {
-//    val goalkeeperOpt = gc.getGoalkeeper(gc.pf.getAttacker)
-//
-//    goalkeeperOpt.foreach { goalkeeper =>
-//      boostValue = goalkeeper.getBoostingPolicies // ✅ Get and store boost value
-//      gc.boostGoalkeeper() // ✅ Delegate boosting logic to GameController
-//    }
+    //    val goalkeeperOpt = gc.getGoalkeeper(gc.pf.getAttacker)
+    //
+    //    goalkeeperOpt.foreach { goalkeeper =>
+    //      boostValue = goalkeeper.getBoostingPolicies // ✅ Get and store boost value
+    //      gc.boostGoalkeeper() // ✅ Delegate boosting logic to GameController
+    //    }
   }
 }

@@ -34,8 +34,7 @@ trait IController extends Observable {
   def swapAttackerCard(index: Int): Unit
   def undo(): Unit
   def redo(): Unit
-  def nextPhase(): Unit
-  def saveGame(filePath: String): Try[Unit]
-  def loadGame(filePath: String): Try[IController]
+  def saveGame(filePath: String): Unit
+  def loadGame(filePath: String): Try[Unit]
   def selectDefenderPosition(): Int
 }

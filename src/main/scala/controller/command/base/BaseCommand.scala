@@ -1,11 +1,11 @@
 package controller.command.base
 
 import controller.command.ICommand
-import controller.gameBase.GameController
+import controller.gameBase.GameManager
 import model.playingFiledComponent.PlayingField
 import controller.command.memento._
 
-abstract class BaseCommand(val gameController: GameController) extends ICommand {
+abstract class BaseCommand(val gameController: GameManager) extends ICommand {
   protected val mementoManager = new MementoManager(gameController)
   protected var memento: Option[Memento] = None
 
@@ -21,7 +21,7 @@ abstract class BaseCommand(val gameController: GameController) extends ICommand 
   override def redoStep(): Unit = {
     doStep()
   }
-  
+
   protected def executeAction(): Unit
 
 }

@@ -19,4 +19,5 @@ object DeckFactory {
     deck.clear()
     deck.enqueueAll(shuffled)
   }
+  
 }

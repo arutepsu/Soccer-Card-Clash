@@ -1,5 +1,4 @@
 package controller.gameBase
-
 import model.cardComponent.base.Card
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
@@ -14,7 +13,7 @@ import util.{AttackEvent, BoostEvent, GameEvent, GameObserver, Observable, SwapE
 
 import scala.collection.mutable.ListBuffer
 
-class GameController(val playingField: PlayingField) {
+class GameManager(val playingField: PlayingField) {
 
   private val fieldState = playingField.fieldState
   private val attackHandler = playingField.attackHandler
