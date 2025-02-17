@@ -25,13 +25,13 @@ class DoubleAttackStrategy extends AttackStrategy {
       println(s"Defender field: ${fieldState.getPlayerDefenders(defender).mkString(", ")}")
 
       Try {
-        if (attackerHand.size < 2) {
+        if (attackerHand.getHandSize < 2) {
           println("Invalid attack: Not enough cards or invalid defender index.")
           throw new IllegalAccessException()
         }
 
-        val attackingCard1 = attackerHand.remove(attackerHand.size - 1)
-        val attackingCard2 = attackerHand.remove(attackerHand.size - 1)
+        val attackingCard1 = attackerHand.removeLastCard()
+        val attackingCard2 = attackerHand.removeLastCard()
         val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
 
         if (fieldState.allDefendersBeaten(defender)) {
@@ -42,12 +42,12 @@ class DoubleAttackStrategy extends AttackStrategy {
 
           if (attackValue > goalkeeperValue) {
             println("Attacker wins! Scores against the goalkeeper!")
-            attackerHand.prepend(attackingCard1)
-            attackerHand.prepend(attackingCard2)
+            attackerHand.addCard(attackingCard1)
+            attackerHand.addCard(attackingCard2)
             if (goalkeeper.wasBoosted) {
               boostManager.revertCard(goalkeeper)
             }
-            attackerHand.prepend(goalkeeper)
+            attackerHand.addCard(goalkeeper)
 
             // Remove the goalkeeper after scoring
             fieldState.setPlayerGoalkeeper(defender, None)
@@ -61,12 +61,12 @@ class DoubleAttackStrategy extends AttackStrategy {
             true
           } else {
             println("Goalkeeper saves! Defender wins!")
-            defenderHand.prepend(attackingCard1)
-            defenderHand.prepend(attackingCard2)
+            defenderHand.addCard(attackingCard1)
+            defenderHand.addCard(attackingCard2)
             if (goalkeeper.wasBoosted) {
               boostManager.revertCard(goalkeeper)
             }
-            defenderHand.prepend(goalkeeper)
+            defenderHand.addCard(goalkeeper)
             fieldState.refillDefenderField(defender)
             roles.switchRoles()
             playingField.notifyObservers()
@@ -81,23 +81,23 @@ class DoubleAttackStrategy extends AttackStrategy {
 
           if (attackValue > defenseValue) {
             println("Attacker wins! Takes all three cards back into hand.")
-            attackerHand.prepend(attackingCard1)
-            attackerHand.prepend(attackingCard2)
+            attackerHand.addCard(attackingCard1)
+            attackerHand.addCard(attackingCard2)
             if (defenderCard.wasBoosted) {
               boostManager.revertCard(defenderCard)
             }
-            attackerHand.prepend(defenderCard)
+            attackerHand.addCard(defenderCard)
             fieldState.removeDefenderCard(defender, defenderCard)
             println(s"Updated Attacker hand: ${attackerHand.mkString(", ")}")
             true
           } else {
             println("Defender wins! Takes all three cards.")
-            defenderHand.prepend(attackingCard1)
-            defenderHand.prepend(attackingCard2)
+            defenderHand.addCard(attackingCard1)
+            defenderHand.addCard(attackingCard2)
             if (defenderCard.wasBoosted) {
               boostManager.revertCard(defenderCard)
             }
-            defenderHand.prepend(defenderCard)
+            defenderHand.addCard(defenderCard)
 
             fieldState.removeDefenderCard(defender, defenderCard)
             fieldState.refillDefenderField(defender)

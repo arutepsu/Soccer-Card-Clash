@@ -18,7 +18,7 @@ class SingleAttackStrategy extends AttackStrategy{
     val defenderHand = playingField.fieldState.getPlayerHand(defender)
 
     Try {
-      val attackingCard = attackerHand.remove(attackerHand.size - 1)
+      val attackingCard = attackerHand.removeLastCard()
 
       if (fieldState.allDefendersBeaten(defender)) { // ✅ Check defenders from FieldState
         val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(
@@ -32,8 +32,8 @@ class SingleAttackStrategy extends AttackStrategy{
         if (comparisonResult > 0) {
           println(s"🎯 ${attacker.name} scored a goal!")
 
-          attackerHand.prepend(attackingCard)
-          attackerHand.prepend(goalkeeper)
+          attackerHand.addCard(attackingCard)
+          attackerHand.addCard(goalkeeper)
           boostManager.revertCard(goalkeeper)
 
           fieldState.setPlayerGoalkeeper(defender, None)
@@ -47,8 +47,8 @@ class SingleAttackStrategy extends AttackStrategy{
         } else {
           println(s"🛡️ ${defender.name} defended successfully. Roles are switched.")
 
-          defenderHand.prepend(attackingCard)
-          defenderHand.prepend(goalkeeper)
+          defenderHand.addCard(attackingCard)
+          defenderHand.addCard(goalkeeper)
           boostManager.revertCard(goalkeeper)
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
@@ -67,8 +67,8 @@ class SingleAttackStrategy extends AttackStrategy{
           println(s"🔥 Tie! Both players must play another card!")
 
           if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
-            val extraAttackerCard = attackerHand.remove(attackerHand.size - 1)
-            val extraDefenderCard = defenderHand.remove(defenderHand.size - 1)
+            val extraAttackerCard = attackerHand.removeLastCard()
+            val extraDefenderCard = defenderHand.removeLastCard()
 
             println(s"⚔️ Tiebreaker! ${attacker.name} plays $extraAttackerCard, ${defender.name} plays $extraDefenderCard")
 
@@ -76,17 +76,17 @@ class SingleAttackStrategy extends AttackStrategy{
 
             if (tiebreakerResult > 0) {
               println(s"🎉 ${attacker.name} wins the tiebreaker and takes all four cards!")
-              attackerHand.prepend(attackingCard)
-              attackerHand.prepend(defenderCard)
-              attackerHand.prepend(extraAttackerCard)
-              attackerHand.prepend(extraDefenderCard)
+              attackerHand.addCard(attackingCard)
+              attackerHand.addCard(defenderCard)
+              attackerHand.addCard(extraAttackerCard)
+              attackerHand.addCard(extraDefenderCard)
               fieldState.removeDefenderCard(defender, defenderCard)
             } else {
               println(s"🛡️ ${defender.name} wins the tiebreaker and takes all four cards!")
-              defenderHand.prepend(attackingCard)
-              defenderHand.prepend(defenderCard)
-              defenderHand.prepend(extraAttackerCard)
-              defenderHand.prepend(extraDefenderCard)
+              defenderHand.addCard(attackingCard)
+              defenderHand.addCard(defenderCard)
+              defenderHand.addCard(extraAttackerCard)
+              defenderHand.addCard(extraDefenderCard)
               fieldState.removeDefenderCard(defender, defenderCard) //added not testet
             }
           } else {
@@ -98,8 +98,8 @@ class SingleAttackStrategy extends AttackStrategy{
           false
         } else if (comparisonResult > 0) {
           println(s"🎯 ${attacker.name} succeeded in the attack!")
-          attackerHand.prepend(attackingCard)
-          attackerHand.prepend(defenderCard)
+          attackerHand.addCard(attackingCard)
+          attackerHand.addCard(defenderCard)
           boostManager.revertCard(defenderCard)
           fieldState.removeDefenderCard(defender, defenderCard) // ✅ Delegate removal
           playingField.notifyObservers()
@@ -107,8 +107,8 @@ class SingleAttackStrategy extends AttackStrategy{
         } else {
           println(s"🛡️ ${defender.name} defended successfully. Roles are switched.")
 
-          defenderHand.prepend(attackingCard)
-          defenderHand.prepend(defenderCard)
+          defenderHand.addCard(attackingCard)
+          defenderHand.addCard(defenderCard)
           boostManager.revertCard(defenderCard)
           fieldState.removeDefenderCard(defender, defenderCard) // ✅ Remove from FieldState
           fieldState.refillDefenderField(defender) // ✅ Refill via FieldState

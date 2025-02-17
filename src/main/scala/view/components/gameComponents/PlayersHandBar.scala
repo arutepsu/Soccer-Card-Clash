@@ -22,7 +22,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boolean) extends HBox {
 
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
-  spacing = Math.max(-30 + (playingField.fieldState.getPlayerHand(player).size * -2), -50)
+  spacing = Math.max(-30 + (playingField.fieldState.getPlayerHand(player).getHandSize * -2), -50)
 
 
   private var selectedCard: Option[HandCard] = None
@@ -37,7 +37,7 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
   def createHandCardRow(): HBox = {
     val hand = playingField.fieldState.getPlayerHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
-      val isLastCard = index == hand.size - 1
+      val isLastCard = index == hand.getHandSize - 1
 //      val handCard = new HandCard(flipped = !isLastCard, card = card)
       val handCard = new HandCard(flipped = false, card = card)
       // Drop shadow for depth

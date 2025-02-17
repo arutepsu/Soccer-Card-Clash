@@ -1,14 +1,15 @@
 package model.playingFiledComponent.strategy.swapStrategy
 import scala.collection.mutable
 import model.cardComponent.base.Card
+import model.playingFiledComponent.state.HandCardsQueue
 class CircularSwapStrategy extends SwapStrategy {
-  override def swap(attackerHand: mutable.Queue[Card], index: Int): Unit = {
-    if (attackerHand.size < 2) {
+  override def swap(attackerHand: HandCardsQueue, index: Int): Unit = {
+    if (attackerHand.getHandSize < 2) {
       println("⚠️ Not enough cards to swap. No swap performed.")
       return
     }
 
-    if (index < 0 || index >= attackerHand.size) {
+    if (index < 0 || index >= attackerHand.getHandSize) {
       println(s"⚠️ Invalid swap index: $index. No swap performed.")
       return
     }
