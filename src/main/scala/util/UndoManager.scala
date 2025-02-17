@@ -1,5 +1,7 @@
 package util
 
+import controller.command.ICommand
+
 class UndoManager {
   private var undoStack: List[ICommand]= Nil
   private var redoStack: List[ICommand]= Nil

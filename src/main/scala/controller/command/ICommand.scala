@@ -1,4 +1,4 @@
-package util
+package controller.command
 
 trait ICommand {
   def doStep():Unit

@@ -1,11 +1,10 @@
-package controller.command.base
+package controller.command.memento
 
+import controller.command.ICommand
 import model.cardComponent.base.Card
 import model.playerComponent.Player
-import model.playingFiledComponent.PlayingField
-import util.ICommand
 import model.playerComponent.PlayerAction.PlayerAction
-
+import model.playingFiledComponent.PlayingField
 
 import scala.collection.mutable
 case class Memento(
