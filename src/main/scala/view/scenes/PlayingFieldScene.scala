@@ -8,7 +8,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import util.Observer
+import util.{ObservableEvent, Observer}
 import view.components.gameComponents.*
 import view.components.uiFactory.GameButtonFactory
 import view.utils.ImageUtils
@@ -234,7 +234,7 @@ case class PlayingFieldScene(
   // ✅ Add "Make Swap" button to actionButtons
   actionButtons.children.add(makeSwapButton)
 
-  override def update: Unit = {
+  override def update(e: ObservableEvent): Unit = {
     updateDisplay()
   }
 

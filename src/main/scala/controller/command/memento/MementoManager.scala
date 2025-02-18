@@ -2,9 +2,9 @@ package controller.command.memento
 
 import model.playingFiledComponent.PlayingField
 import model.cardComponent.base.Card
+import model.gameComponent.GameManager
 import model.playerComponent.Player
 import model.playerComponent.PlayerAction.PlayerAction
-import controller.gameBase.GameManager
 import model.playerComponent.PlayerAction._
 
 class MementoManager(private var gameController: GameManager) {

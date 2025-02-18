@@ -2,8 +2,8 @@ package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
 import controller.command.base.BaseCommand
-import controller.gameBase.GameManager
 import model.cardComponent.base.Card
+import model.gameComponent.GameManager
 import model.playingFiledComponent.PlayingField
 
 class BoostDefenderCommand(cardIndex: Int, gc: GameManager) extends BaseCommand(gc) {

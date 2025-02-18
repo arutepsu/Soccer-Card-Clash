@@ -1,4 +1,5 @@
-package controller.gameBase
+package model.gameComponent
+
 import model.cardComponent.base.Card
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
@@ -9,7 +10,7 @@ import model.playingFiledComponent.strategy.attackStrategy.{AttackHandler, Attac
 import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.scoringStrategy.PlayerScores
 import model.playingFiledComponent.strategy.swapStrategy.*
-import util.{AttackEvent, BoostEvent, GameEvent, GameObserver, Observable, SwapEvent}
+import util.*
 
 import scala.collection.mutable.ListBuffer
 

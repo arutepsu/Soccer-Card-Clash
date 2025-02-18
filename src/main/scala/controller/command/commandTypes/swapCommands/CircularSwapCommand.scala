@@ -1,7 +1,7 @@
 package controller.command.commandTypes.swapCommands
 
 import controller.command.base.BaseCommand
-import controller.gameBase.GameManager
+import model.gameComponent.GameManager
 import model.playingFiledComponent.PlayingField
 //class CircularSwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
 //

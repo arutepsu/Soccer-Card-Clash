@@ -104,8 +104,8 @@ package view
 
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
-import util.Observable
-import util.Observer
+import util.{Observable, ObservableEvent, Observer}
+
 import scala.io.StdIn.readLine
 import scala.collection.mutable
 import scala.util.Try
@@ -255,7 +255,7 @@ class Tui(controller: IController) extends Observer {
   }
 
   /** ✅ Observer Pattern: Refresh the game state whenever notified */
-  override def update: Unit = {
+  override def update(e: ObservableEvent): Unit = {
     println("================================")
     println(displayGameState())
   }

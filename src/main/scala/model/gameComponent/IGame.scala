@@ -1,6 +1,5 @@
 package model.gameComponent
 
-import controller.gameBase.GameManager
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 

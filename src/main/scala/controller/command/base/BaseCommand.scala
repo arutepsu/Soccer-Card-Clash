@@ -1,9 +1,9 @@
 package controller.command.base
 
 import controller.command.ICommand
-import controller.gameBase.GameManager
 import model.playingFiledComponent.PlayingField
 import controller.command.memento._
+import model.gameComponent.GameManager
 
 abstract class BaseCommand(val gameController: GameManager) extends ICommand {
   protected val mementoManager = new MementoManager(gameController)

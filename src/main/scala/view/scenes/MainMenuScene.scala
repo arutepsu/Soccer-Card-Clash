@@ -9,10 +9,10 @@ import view.components.GameLabel
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
 import controller.base.Controller
-import controller.IController
+import controller.{ControllerEvents, IController}
 import view.utils.Styles
 import scalafx.application.Platform
-import util.Observer
+import util.{ObservableEvent, Observer}
 class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Observer
   controller.add(this)
   // Placeholder for saved games
@@ -68,9 +68,16 @@ class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Ob
     }
   }
 
-  override def update: Unit = {
+  override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println("🔄 Main Menu Updating!")
+//      e match {
+//        case ControllerEvents.MainMenu =>
+//          println("📌 Switching to Main Menu!")
+//          SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene())
+//
+//        case _ => println("🔕 Ignoring event, only Main Menu updates GUI.")
+//      }
       SceneManager.refreshCurrentScene()
     })
   }

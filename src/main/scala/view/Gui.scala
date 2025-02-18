@@ -9,10 +9,11 @@ import scalafx.scene.image.Image
 import view.scenes.sceneManager.SceneManager
 import view.scenes.MainMenuScene
 import controller.IController
-import util.Observer
+import util._
 import scalafx.application.Platform
+import controller.ControllerEvents
 
-class Gui(controller: IController)extends Observer{
+class Gui(controller: IController) extends Observer{
   controller.add(this)
   def start(): Unit = {
     // ✅ Use PrimaryStage from ScalaFX 3.x
@@ -27,10 +28,17 @@ class Gui(controller: IController)extends Observer{
   }
 
   /** ✅ Observer Pattern: Refresh the GUI whenever notified */
-  override def update: Unit = {
+  override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println("🔄 GUI Updating!")
-      SceneManager.refreshCurrentScene() // 🔄 Replace with your actual GUI update method
+      println(s"🔄 GUI Updating: Event - $e")
+
+      e match {
+        case ControllerEvents.MainMenu =>
+          println("📌 Switching to Main Menu!")
+          SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene())
+
+        case _ => println("🔕 Ignoring event, only Main Menu updates GUI.")
+      }
     })
   }
 }

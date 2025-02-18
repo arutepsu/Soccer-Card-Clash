@@ -1,7 +1,6 @@
 package view.scenes
 
-import controller.IController
-import scalafx.geometry.{Insets, Pos}
+import controller.{ControllerEvents, IController}
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.Alert
 import scalafx.scene.layout.VBox
@@ -10,15 +9,15 @@ import view.scenes.sceneManager.SceneManager
 import view.components.playerComponents.PlayerTextInputField
 import view.components.uiFactory.GameButtonFactory
 import view.utils.Styles
-
 import scalafx.scene.layout.VBox
 import scalafx.scene.control.Alert
 import scalafx.geometry.Insets
 import scalafx.scene.text.Text
-import scalafx.scene.control.{TextField}
+import scalafx.scene.control.TextField
 import scalafx.application.Platform
 import controller.IController
-import util.Observer
+import util.{ObservableEvent, Observer}
+import scalafx.geometry.Pos
 
 class CreatePlayerCard(controller: IController) extends VBox with Observer { // ✅ Now an Observer
 
@@ -99,13 +98,18 @@ class CreatePlayerCard(controller: IController) extends VBox with Observer { // 
   }
 
   /** ✅ Observer Pattern: Refresh the player names when notified */
-  override def update: Unit = {
+  override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println("🔄 CreatePlayerCard Updating!")
 
       // ✅ Ensure input fields match player names
       playerTextInputFields.head.text = controller.getPlayer1.name
       playerTextInputFields(1).text = controller.getPlayer2.name
+      e match {
+        case ControllerEvents.StartGame =>
+          println("📌 Switching to Main Menu!")
+          SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
+      }
     })
   }
 

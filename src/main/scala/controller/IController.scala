@@ -13,7 +13,7 @@ import util.{Observable, UndoManager}
 import model.playerComponent.Player
 import scala.collection.mutable
 import model.playingFiledComponent.PlayingField
-import util.{Observable, UndoManager}
+import util.{Observable, UndoManager, ObservableEvent}
 import model.playerComponent.Player
 import model.cardComponent.base.Card
 import scala.collection.mutable
@@ -37,4 +37,5 @@ trait IController extends Observable {
   def saveGame(filePath: String): Unit
   def loadGame(filePath: String): Try[Unit]
   def selectDefenderPosition(): Int
+  
 }

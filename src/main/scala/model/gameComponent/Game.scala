@@ -3,7 +3,6 @@ package model.gameComponent
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.HandSwapCommand
-import controller.gameBase.GameManager
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
