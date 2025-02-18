@@ -13,7 +13,6 @@ class PlayerAvatar(
                     scaleAvatar: Float,
                     scaleFont: Float,
                     profilePicturePath: String, // ✅ Profile Picture Path
-                    onPlayerNameButtonClick: () => Unit
                   ) extends VBox {
 
   val avatar: ImageView = try {
@@ -21,12 +20,11 @@ class PlayerAvatar(
   } catch {
     case e: Exception =>
       println(s"⚠️ [ERROR] Profile image not found: $profilePicturePath (${e.getMessage})")
-      ImageUtils.importImageAsView("/view/data/players/default_avatar.png", scaleAvatar) // ✅ Fallback
+      ImageUtils.importImageAsView("/images/data/players/player2.jpeg", scaleAvatar) // ✅ Fallback
   }
 
   val playerNameButton = new Button(player.name) {
     style = s"-fx-font-size: ${scaleFont * 12};"
-    onAction = _ => onPlayerNameButtonClick()
   }
 
   alignment = Pos.TOP_CENTER

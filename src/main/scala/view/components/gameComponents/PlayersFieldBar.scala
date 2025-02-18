@@ -74,7 +74,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
       defenderCard.styleClass.add("field-card") // ✅ Apply CSS class
 
       if(defenderCard.card.wasBoosted) {
-//        CardAnimationFactory.createFireEffect(defenderCard)
+        //        CardAnimationFactory.createFireEffect(defenderCard)
         CardAnimationFactory.applyBoostEffect(defenderCard)
       }
 
@@ -114,8 +114,8 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
 
     new HBox {
       styleClass.add("defender-row") // ✅ Apply styling
-//      alignment = Pos.CENTER
-//      spacing = 10
+      //      alignment = Pos.CENTER
+      //      spacing = 10
       children = defenderCardNodes
     }
   }
@@ -140,7 +140,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     new HBox {
       styleClass.add("goalkeeper-row") // ✅ Apply styling
       alignment = Pos.CENTER
-//      spacing = 10
+      //      spacing = 10
       children = Seq(goalkeeperCard)
     }
   }
@@ -149,7 +149,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   children = Seq(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow())
 
   /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
-  def updateField(): Unit = {
+  def updateBar(): Unit = {
     println(s"🔄 Updating defender's field for ${player.name}...")
     children.clear()
     children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow()) // No updateGoalkeeper()

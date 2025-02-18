@@ -10,7 +10,7 @@ import view.components.uiFactory.{ButtonAnimationFactory, CardAnimationFactory}
 import view.utils.ImageUtils
 object GameButtonFactory {
 
-  private val defaultImagePath = "/view/data/buttons/button.png" // Default button image path
+  private val defaultImagePath = "/images/data/buttons/button.png" // Default button image path
 
   def createGameButton(
                         text: String,

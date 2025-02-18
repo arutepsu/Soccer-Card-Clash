@@ -1,4 +1,5 @@
 package view.scenes
+
 import sceneManager.SceneManager
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
@@ -13,12 +14,13 @@ import controller.{ControllerEvents, IController}
 import view.utils.Styles
 import scalafx.application.Platform
 import util.{ObservableEvent, Observer}
-class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Observer
-  controller.add(this)
+
+class MainMenuScene(controller: IController) extends Observer {
+
   // Placeholder for saved games
   val savedGames = ObservableBuffer("Game 1", "Game 2", "Game 3")
 
-  // Main menu scene
+  // ✅ Main menu scene
   def mainMenuScene(): Scene = new Scene {
     this.getStylesheets.add(Styles.mainMenuCss)
 
@@ -27,32 +29,31 @@ class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Ob
       alignment = Pos.Center
       children = Seq(
         new GameLabel("Soccer Card Clash", 1.5) {
-          styleClass.add("title-label") // ✅ Apply custom title style
+          styleClass.add("title-label")
         },
         GameButtonFactory.createGameButton("Create New Game", 200, 80) {
-          () => SceneManager.switchScene(createGameScene()) // ✅ SceneManager handles switching
+          () => controller.notifyObservers(ControllerEvents.StartGame) // ✅ Notify Observers instead
         },
         GameButtonFactory.createGameButton("Load Game", 200, 80) {
-          () => SceneManager.switchScene(loadGameScene()) // ✅ SceneManager handles switching
+          () => controller.notifyObservers(ControllerEvents.LoadGame) // ✅ Notify Observers instead
         },
         GameButtonFactory.createGameButton("Quit", 200, 80) {
-          () => sys.exit(0)
+          () => controller.notifyObservers(ControllerEvents.Quit)
         }
       )
     }
   }
 
-
-  // Create game scene
+  // ✅ Create Game Scene
   def createGameScene(): Scene = new Scene {
     root = new CreatePlayerCard(controller)
   }
 
-  // Load game scene
+  // ✅ Load Game Scene
   def loadGameScene(): Scene = {
     val listView = new ListView(savedGames)
     val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
-      () => SceneManager.switchScene(mainMenuScene()) // ✅ Switch back to menu
+      () => controller.notifyObservers(ControllerEvents.LoadGame) // ✅ Notify Observers instead
     }
 
     new Scene {
@@ -68,17 +69,13 @@ class MainMenuScene(controller: IController) extends Observer { // ✅ Now an Ob
     }
   }
 
+  // ✅ Observer Pattern: Handle Scene Transitions Here
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println("🔄 Main Menu Updating!")
-//      e match {
-//        case ControllerEvents.MainMenu =>
-//          println("📌 Switching to Main Menu!")
-//          SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene())
-//
-//        case _ => println("🔕 Ignoring event, only Main Menu updates GUI.")
-//      }
-      SceneManager.refreshCurrentScene()
+      println(s"🔄 GUI Received Event: $e")
+
+      // ✅ Instead of switching scenes manually, notify SceneManager
+      SceneManager.update(e)
     })
   }
 }

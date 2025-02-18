@@ -3,9 +3,9 @@ package view.components.uiFactory
 import model.cardComponent.base.Card
 import scalafx.scene.image.{Image, ImageView}
 
-object CardImageLoader {
+object BoostLoader {
 
-  private val cardImagePath = "/view/data/cards/"
+  private val cardImagePath = "/images/data/cards/"
   private val defaultWidth = 200.0  // Default width for cards
   private val defaultHeight = 220.0 // Default height for cards
 

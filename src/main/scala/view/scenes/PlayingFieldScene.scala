@@ -14,26 +14,22 @@ import view.components.uiFactory.GameButtonFactory
 import view.utils.ImageUtils
 import scalafx.stage.Stage
 import view.utils.Styles
-
-
+import controller.ControllerEvents
+import scalafx.application.Platform
 case class PlayingFieldScene(
-                            controller: IController,
-                            windowWidth: Double,
-                            windowHeight: Double,
-                            currentPlayerViewIndex: Int,
-                            onGameInfoButtonClick: () => Unit,
-                            moveToGamePlayerScene: (index: Int) => Unit,
-                            returnToMainMenu: () => Unit
-                          ) extends Scene(windowWidth, windowHeight) with Observer {
+                              controller: IController,
+                              windowWidth: Double,
+                              windowHeight: Double,
+                            ) extends Scene(windowWidth, windowHeight) with Observer {
 
   // ✅ Register this scene as an Observer
   controller.add(this)
   this.getStylesheets.add(Styles.playingFieldCss)
-//  val backgroundView = new Region {
-//    style = "-fx-background-color: black;"
-//    prefWidth = windowWidth
-//    prefHeight = windowHeight
-//  }
+  //  val backgroundView = new Region {
+  //    style = "-fx-background-color: black;"
+  //    prefWidth = windowWidth
+  //    prefHeight = windowHeight
+  //  }
 
   val player1 = controller.getPlayer1
   val player2 = controller.getPlayer2
@@ -157,8 +153,10 @@ case class PlayingFieldScene(
     width = 180,
     height = 50
   ) { () =>
-    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Switch to Main Menu
+//    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Switch to Main Menu
+  controller.notifyObservers(ControllerEvents.MainMenu)
   }
+
 
   // ✅ Create "Make Swap" button to switch to AttackerHandScene
 
@@ -170,11 +168,11 @@ case class PlayingFieldScene(
     children = Seq(attackButton, undoButton, redoButton, mainMenuButton)
   }
 
-  val playersBar = new PlayersBar(controller, moveToGamePlayerScene)
+  val playersBar = new PlayersBar(controller)
 
   root = new StackPane {
     children = Seq(
-//      backgroundView,
+      //      backgroundView,
       new HBox {
         alignment = Pos.CENTER_LEFT
         spacing = 20
@@ -204,13 +202,7 @@ case class PlayingFieldScene(
     width = 180,
     height = 50
   ) { () =>
-    SceneManager.switchScene(new AttackerDefendersScene(
-      controller = controller,
-      playingField = playingField,
-      windowWidth = windowWidth,
-      windowHeight = windowHeight,
-      moveToGamePlayerScene = () => SceneManager.switchScene(this) // Back to GamePlayerScene
-    ))
+    controller.notifyObservers(ControllerEvents.AttackerDefenderField)
   }
 
   // ✅ Add "Show Defenders" button to actionButtons
@@ -222,13 +214,7 @@ case class PlayingFieldScene(
     width = 180,
     height = 50
   ) { () =>
-    SceneManager.switchScene(new AttackerHandScene(
-      controller = controller,
-      playingField = playingField,
-      windowWidth = windowWidth,
-      windowHeight = windowHeight,
-      moveToGamePlayerScene = () => SceneManager.switchScene(this) // ✅ Switch back to GamePlayerScene
-    ))
+    controller.notifyObservers(ControllerEvents.AttckerHand)
   }
 
   // ✅ Add "Make Swap" button to actionButtons
@@ -257,8 +243,8 @@ case class PlayingFieldScene(
     player1ScoreLabel.text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
     player2ScoreLabel.text = s"${player2.name} Score: ${playingField.scores.getScorePlayer2}"
 
-    newAttackerHandBar.updateHand()
-    newDefenderFieldBar.updateField()
+    newAttackerHandBar.updateBar()
+    newDefenderFieldBar.updateBar()
 
     println(controller.getPlayingField) // Print current game state in TUI for debugging
   }

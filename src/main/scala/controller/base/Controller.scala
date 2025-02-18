@@ -34,31 +34,31 @@ class Controller extends IController {
   }
 
   def executeAttackCommand(defenderPosition: Int): Unit = {
-    val command = new SingleAttackCommand(defenderPosition, game.getGameController)
+    val command = new SingleAttackCommand(defenderPosition, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.RegularAttack)
   }
 
   def executeAttackCommandDouble(defenderPosition: Int): Unit = {
-    val command = new DoubleAttackCommand(defenderPosition, game.getGameController)
+    val command = new DoubleAttackCommand(defenderPosition, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.DoubleAttack)
   }
 
   def boostDefender(defenderPosition: Int): Unit = {
-    val command = new BoostDefenderCommand(defenderPosition, game.getGameController)
+    val command = new BoostDefenderCommand(defenderPosition, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.BoostDefender)
   }
 
   def boostGoalkeeper(): Unit = {
-    val command = new BoostGoalkeeperCommand(game.getGameController)
+    val command = new BoostGoalkeeperCommand(game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.BoostGoalkeeper)
   }
 
   def swapAttackerCard(index: Int): Unit = {
-    val command = new HandSwapCommand(index, game.getGameController)
+    val command = new HandSwapCommand(index, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.HandSwap)
   }

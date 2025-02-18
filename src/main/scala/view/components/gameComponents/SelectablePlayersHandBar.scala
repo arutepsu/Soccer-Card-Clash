@@ -52,7 +52,7 @@ class SelectablePlayersHandBar(player: Player, playingField: PlayingField, isLef
     }
   }
 
-  override def updateHand(): Unit = {
+  override def updateBar(): Unit = {
     println("🔄 Updating Hand UI...")
     children.clear()
     children.addAll(createHandCardRow())

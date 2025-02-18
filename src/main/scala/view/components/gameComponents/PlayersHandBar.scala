@@ -71,7 +71,7 @@ class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boo
   children = Seq(playerLabel, createHandCardRow())
 
   /** Updates Hand UI with enhanced animations */
-  def updateHand(): Unit = {
+  def updateBar(): Unit = {
     println("🔄 Updating Hand UI with enhanced animation...")
 
     val oldChildren = children.tail // Exclude label

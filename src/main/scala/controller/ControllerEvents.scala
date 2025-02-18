@@ -10,6 +10,8 @@ enum ControllerEvents extends ObservableEvent {
   case RegularAttack, DoubleAttack, HandSwap, CircularSwap
   case BoostDefender, BoostGoalkeeper
 
+  //Player Evenents
+  case AttckerHand, AttackerDefenderField, PlayingField
   // 🔹 Exit Game Events
   case Quit
 

@@ -11,7 +11,7 @@ import scalafx.scene.effect.DropShadow
 import scalafx.Includes._
 import scalafx.scene.paint.Color
 import view.components.cardComponents.FieldCard
-import view.components.uiFactory.{CardAnimationFactory, CardImageLoader}
+import view.components.uiFactory.{CardAnimationFactory, BoostLoader}
 
 /** This version allows selecting ANY card (defenders + goalkeeper) */
 class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) extends PlayersFieldBar(player, playingField) {
@@ -133,7 +133,7 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
   }
   children = Seq(createDefenderRow(), createGoalkeeperRow())
   // ✅ Update UI with selectable cards
-    override def updateField(): Unit = {
+    override def updateBar(): Unit = {
       println(s"🔄 Updating defender's field for ${player.name}...")
 
       // ✅ Remove all previous UI components

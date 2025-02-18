@@ -2,7 +2,7 @@
 
 /* General Scene Background with Image */
 .root {
-    -fx-background-image: url("/view/data/frames/frame3.png");
+    -fx-background-image: url("/images/data/frames/frame3.png");
     -fx-background-size: cover; /* Ensure full coverage */
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;

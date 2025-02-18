@@ -20,7 +20,6 @@ import scala.collection.mutable
 import scala.util.Try
 import java.io._
 
-// Define a trait for the Controller
 trait IController extends Observable {
   def getPlayingField: PlayingField
   def getPlayer1: Player

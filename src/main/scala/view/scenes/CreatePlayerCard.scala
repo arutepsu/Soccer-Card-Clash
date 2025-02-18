@@ -27,9 +27,6 @@ class CreatePlayerCard(controller: IController) extends VBox with Observer { // 
   padding = Insets(20)
   alignment = Pos.Center
 
-  // ✅ Register as an observer
-  controller.add(this)
-
   this.getStylesheets.add(Styles.createPlayerCss)
   styleClass.add("create-player-panel")
 
@@ -85,16 +82,13 @@ class CreatePlayerCard(controller: IController) extends VBox with Observer { // 
     // ✅ Assign names to players using `setPlayerName`
     controller.setPlayerName(1, playerNames.head)
     controller.setPlayerName(2, playerNames(1))
-
-    // ✅ Start the game AFTER setting names
-    // ✅ Start game **only if it hasn't been started yet**
+    
     if (controller.getPlayingField == null) {
       println("🎲 Initializing game...")
       controller.startGame()
     }
-
-    // ✅ Switch to the main game scene
-    SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
+    
+    controller.notifyObservers(ControllerEvents.PlayingField)
   }
 
   /** ✅ Observer Pattern: Refresh the player names when notified */
@@ -105,13 +99,10 @@ class CreatePlayerCard(controller: IController) extends VBox with Observer { // 
       // ✅ Ensure input fields match player names
       playerTextInputFields.head.text = controller.getPlayer1.name
       playerTextInputFields(1).text = controller.getPlayer2.name
-      e match {
-        case ControllerEvents.StartGame =>
-          println("📌 Switching to Main Menu!")
-          SceneManager.switchScene(new PlayingFieldScene(controller, 800, 600, 0, () => {}, _ => {}, () => {}))
-      }
+      SceneManager.update(e)
     })
   }
+
 
   /** Displays an alert message */
   private def showAlert(titleText: String, content: String): Unit = {

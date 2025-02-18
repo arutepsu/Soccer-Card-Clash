@@ -21,7 +21,7 @@ class Game extends IGame {
   override def getPlayingField: PlayingField = playingField
   override def getPlayer1: Player = player1
   override def getPlayer2: Player = player2
-  def getGameController: GameManager = gameManager  // 🔥 Needed for Controller commands
+  def getGameManager: GameManager = gameManager
   override def setPlayerName(playerIndex: Int, name: String): Unit = {
     if (playingField == null) startGame()
 

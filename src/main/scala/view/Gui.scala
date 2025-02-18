@@ -14,31 +14,27 @@ import scalafx.application.Platform
 import controller.ControllerEvents
 
 class Gui(controller: IController) extends Observer{
-  controller.add(this)
+//  controller.add(this)
   def start(): Unit = {
     // ✅ Use PrimaryStage from ScalaFX 3.x
     val stage = new PrimaryStage {
       title = "Soccer Card Game" // Set the window title
-      icons.add(new Image("/view/data/logo.png"))
-    }
+      icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
 
-    //    // ✅ Pass the initialized stage to SoccerCardGame
-    SceneManager.init(stage) // ✅ Initialize SceneManager
-    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Set initial scene
+    }
+     // ✅ Initialize SceneManager
+    SceneManager.init(stage, controller)
+//    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Set initial scene
+    controller.notifyObservers(ControllerEvents.MainMenu)
   }
 
   /** ✅ Observer Pattern: Refresh the GUI whenever notified */
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println(s"🔄 GUI Updating: Event - $e")
+      println(s"🔄 GUI Received Event: $e")
 
-      e match {
-        case ControllerEvents.MainMenu =>
-          println("📌 Switching to Main Menu!")
-          SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene())
-
-        case _ => println("🔕 Ignoring event, only Main Menu updates GUI.")
-      }
+      // ✅ Instead of switching scenes manually, notify SceneManager
+      SceneManager.update(e)
     })
   }
 }

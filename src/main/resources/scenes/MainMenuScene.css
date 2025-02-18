@@ -1,6 +1,6 @@
 /* Full-screen background image */
 .root {
-    -fx-background-image: url('/view/data/images/mainmenu.jpg');
+    -fx-background-image: url('/images/data/images/mainmenu.jpg');
     -fx-background-size: cover;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;

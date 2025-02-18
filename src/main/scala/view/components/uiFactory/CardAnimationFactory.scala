@@ -20,7 +20,7 @@ import scalafx.scene.layout.{StackPane, Pane}
 import view.utils.ImageUtils
 import scalafx.collections.ObservableBuffer
 import scalafx.application.Platform
-import view.components.uiFactory.CardImageLoader
+import view.components.uiFactory.BoostLoader
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.StackPane
 import scalafx.scene.effect.DropShadow
@@ -29,7 +29,7 @@ import scalafx.scene.paint.Color
 import view.components.cardComponents.GameCard
 
 object CardAnimationFactory {
-  private val boostEffectPath = "/view/data/cards/effects/boost.png"
+  private val boostEffectPath = "/images/data/cards/effects/boost.png"
 
   /**
    * Adds a boost effect overlay if the card has an additional value (>0).
@@ -152,7 +152,7 @@ object CardAnimationFactory {
           val parentChildren = javafxParent.getChildren
 
           // 🔥 Load burn effect
-          val burnEffect = CardImageLoader.getBurnEffectView(80, 120)
+          val burnEffect = BoostLoader.getBurnEffectView(80, 120)
 
           // 🔥 Animate burn effect
           val burnAnimation = new FadeTransition(Duration(500), burnEffect) {

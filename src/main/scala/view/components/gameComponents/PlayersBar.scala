@@ -11,23 +11,23 @@ import view.utils.Styles
 
 class PlayersBar(
                   controller: IController,
-                  moveToGamePlayerScene: (index: Int) => Unit
                 ) extends HBox {
 
   spacing = 10
   alignment = Pos.TOP_RIGHT
   this.getStylesheets.add(Styles.playersBarCss) // ✅ Load external CSS
   styleClass.add("players-bar") // ✅ Apply main styling
-
-  updatePlayersDisplay()
+  var attacker : Player = _
+  var defender : Player = _
+  updateBar()
 
   /** Updates the display when the current player (attacker) changes */
-  def updatePlayersDisplay(): Unit = {
+  def updateBar(): Unit = {
     children.clear()
 
     val playingField = controller.getPlayingField
-    val attacker = playingField.getAttacker
-    val defender = playingField.getDefender
+    attacker = playingField.getAttacker
+    defender = playingField.getDefender
     val players = List(attacker, defender)
 
     players.zipWithIndex.foreach { case (p, index) =>
@@ -38,8 +38,7 @@ class PlayersBar(
         playerIndex = index,
         scaleAvatar = 0.2,
         scaleFont = 0.1,
-        profilePicturePath = s"/view/data/players/player${index + 1}.jpeg",
-        onPlayerNameButtonClick = () => moveToGamePlayerScene(index)
+        profilePicturePath = s"/images/data/players/player${index + 1}.jpeg",
       )
 
       val playerAvatarBox = new VBox {
@@ -61,6 +60,6 @@ class PlayersBar(
 
   /** Call this method whenever roles switch */
   def refreshOnRoleSwitch(): Unit = {
-    updatePlayersDisplay()
+    updateBar()
   }
 }
