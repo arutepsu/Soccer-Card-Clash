@@ -1,6 +1,7 @@
 package view.components.cardComponents
 
-import model.cardComponent.base.{Card, Suit, Value}
+import model.cardComponent.ICard
+import model.cardComponent.base.{Suit, Value}
 import scalafx.animation.ScaleTransition
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.HBox
@@ -16,7 +17,7 @@ abstract class GameCard(
                          flipped: Boolean = true,
                          isLastCard: Boolean = false, // ✅ Track last card in hand
                          isSelectable: Boolean = false,
-                         card: Card,
+                         card: ICard,
                          scaleFactor: Float = mainCardScaleFactor
                        ) extends HBox {
 

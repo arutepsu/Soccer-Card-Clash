@@ -1,10 +1,10 @@
 package view.components.cardComponents
 
-import model.cardComponent.base.Card
+import model.cardComponent.ICard
 import view.components.cardComponents.GameCard
 
 case class HandCard(
-                     card: Card,
+                     card: ICard,
                      flipped: Boolean = true,
                      isLastCard: Boolean = false, // ✅ Mark if it's the last card
                      isSelectable: Boolean = false,

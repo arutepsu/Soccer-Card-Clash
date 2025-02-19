@@ -1,0 +1,25 @@
+package model.cardComponent.base
+
+import model.cardComponent.base.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
+import model.cardComponent.base.Value.{Value, *}
+import model.cardComponent.base.{Suit, Value}
+import model.cardComponent.boosting.BoostingPolicies
+import model.cardComponent.base.Card
+
+class RegularCard(initialValue: Value, override val suit: Suit) extends Card(suit) {
+
+  private var _value: Value = initialValue
+
+  override def value: Value = _value  
+  
+  def setValue(newValue: Value): Unit = _value = newValue
+
+  override def boost(): Card = {
+    val boostAmount = BoostingPolicies.getBoostAmount(this.value)
+    new BoostedCard(this, boostAmount)
+  }
+
+  override def revertBoost(): Card = this
+
+  override def copy(): Card = new RegularCard(value, suit)
+}

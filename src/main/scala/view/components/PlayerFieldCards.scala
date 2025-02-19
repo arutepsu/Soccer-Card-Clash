@@ -1,6 +1,6 @@
 package view.components
 
-import model.cardComponent.base.{Card, Suit, Value}
+import model.cardComponent.base.{Suit, Value}
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import model.playerComponent.Player

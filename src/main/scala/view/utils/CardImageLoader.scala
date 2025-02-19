@@ -1,6 +1,7 @@
 package view.utils
 
-import model.cardComponent.base.{Card, Suit, Value}
+import model.cardComponent.ICard
+import model.cardComponent.base.{Suit, Value}
 import scalafx.animation.ScaleTransition
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.HBox
@@ -9,7 +10,7 @@ import view.utils.ImageUtils
 object CardImageLoader {
   val cardsPath = "/images/data/cards/"
 
-  def loadCardImage(card: Card, flipped: Boolean, isLastCard: Boolean, scaleFactor: Float): ImageView = {
+  def loadCardImage(card: ICard, flipped: Boolean, isLastCard: Boolean, scaleFactor: Float): ImageView = {
     val imageUrl = if (flipped && !isLastCard) cardsPath + "card_black.png" else getCardFilePath(card) // ✅ All flipped cards except the last one
 
     val image = try {
@@ -27,7 +28,7 @@ object CardImageLoader {
     }
   }
 
-  def getCardFilePath(card: Card): String = {
+  def getCardFilePath(card: ICard): String = {
     s"$cardsPath${card.fileName}"
   }
 }

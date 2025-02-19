@@ -1,5 +1,4 @@
 package model.playingFiledComponent
-import model.cardComponent.base.Card
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.Player
 import model.playingFiledComponent.state.gameState.GameState

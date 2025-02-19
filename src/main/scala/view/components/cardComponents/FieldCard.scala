@@ -1,10 +1,10 @@
 package view.components.cardComponents
 
-import model.cardComponent.base.Card
+import model.cardComponent.ICard
 import view.components.cardComponents.GameCard
 
 case class FieldCard(
-                      card: Card,
+                      card: ICard,
                       flipped: Boolean = true,
                       isSelectable: Boolean = false,
                       scaleFactor: Float = mainCardScaleFactor

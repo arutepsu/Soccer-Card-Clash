@@ -18,8 +18,6 @@ case class Memento(
                     player2Hand: List[Card],
                     player1Score: Int,
                     player2Score: Int,
-                    boostValues: Map[Int, (Int, Int, Boolean)],
-                    goalkeeperBoost: Option[(Int, Int, Boolean)],
                     player1Actions: Map[PlayerAction, Int],
                     player2Actions: Map[PlayerAction, Int]
                   )

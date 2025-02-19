@@ -1,17 +1,18 @@
 package view.components.gameComponents
 
-import model.cardComponent.base.Card
-import scalafx.scene.layout.{VBox, HBox}
+import model.cardComponent.base.BoostedCard
+import model.cardComponent.ICard
+import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
 import scalafx.scene.input.MouseEvent
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.scene.effect.DropShadow
-import scalafx.Includes._
+import scalafx.Includes.*
 import scalafx.scene.paint.Color
 import view.components.cardComponents.FieldCard
-import view.components.uiFactory.{CardAnimationFactory, BoostLoader}
+import view.components.uiFactory.{BoostLoader, CardAnimationFactory}
 
 /** This version allows selecting ANY card (defenders + goalkeeper) */
 class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) extends PlayersFieldBar(player, playingField) {
@@ -32,8 +33,8 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
   /** Store the currently selected card */
   private var selectedCard: Option[FieldCard] = None
-  def getDefenderCards: List[Card] = playingField.fieldState.getPlayerDefenders(player)
-  def getGoalkeeperCard: Option[Card] = playingField.fieldState.getPlayerGoalkeeper(player)
+  def getDefenderCards: List[ICard] = playingField.fieldState.getPlayerDefenders(player)
+  def getGoalkeeperCard: Option[ICard] = playingField.fieldState.getPlayerGoalkeeper(player)
 
   /** ✅ Creates Defender Row (Selectable) */
   override def createDefenderRow(): HBox = {
@@ -43,10 +44,15 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
-      if (defenderCard.card.additionalValue > 0) {
-//        CardAnimationFactory.createFireEffect(defenderCard)
-        CardAnimationFactory.applyBoostEffect(defenderCard)
-      }
+      println(s"📌 FieldCard at index $index: ${defenderCard} (Type: ${defenderCard.getClass.getSimpleName})")
+      println(s"📌 FieldCard.card at index $index: ${defenderCard.card} (Type: ${defenderCard.card.getClass.getSimpleName})")
+
+      defenderCard.card match
+        case boostedCard: BoostedCard =>
+          println(s"✅ BoostedCard2 detected: $boostedCard")
+          CardAnimationFactory.applyBoostEffect(defenderCard)
+        case _ =>
+          println("❌ No boost effect applied.") // Optional debug message
 
       defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedCardIndex, index)
       defenderCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(defenderCard, _selectedCardIndex, index)
@@ -89,10 +95,12 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
 
-    if (goalkeeperCard.card.additionalValue > 0) {
-      CardAnimationFactory.applyBoostEffect(goalkeeperCard)
+    goalkeeperCard.card match {
+      case boosted: BoostedCard =>
+        CardAnimationFactory.applyBoostEffect(goalkeeperCard)
+      case _ =>
+        println("No boost effect applied.") // Optional debug message
     }
-
     goalkeeperCard.onMouseEntered = (_: MouseEvent) =>
       CardAnimationFactory.applyHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
 
@@ -143,27 +151,3 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
 
 
 }
-
-//override def updateField(): Unit = {
-//    println(s"🔄 Updating defender's field for ${player.name}...")
-//
-//    // ✅ Remove all previous UI components
-//    children.clear()
-//
-//    // ✅ Create new defender and goalkeeper rows
-//    val newDefenderRow = createDefenderRow()
-//    val newGoalkeeperRow = createGoalkeeperRow()
-//
-//    // ✅ Add them back to the UI
-//    children.addAll(newDefenderRow, newGoalkeeperRow)
-//
-//    // ✅ Reapply boost effect after updating the UI
-//    getDefenderCards.zipWithIndex.foreach { case (card, index) =>
-//      if (card.getAdditionalValue > 0) {
-//        val defenderCard = newDefenderRow.children.get(index).asInstanceOf[FieldCard]
-//        CardAnimationFactory.applyBoostEffect(defenderCard)
-//      }
-//    }
-//
-//    playingField.notifyObservers() // ✅ Ensure UI refreshes
-//  }

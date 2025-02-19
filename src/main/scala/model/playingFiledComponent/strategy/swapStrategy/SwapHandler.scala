@@ -1,7 +1,6 @@
 package model.playingFiledComponent.strategy.swapStrategy
 import model.playingFiledComponent.PlayingField
 import model.playingFiledComponent.state.roleState.PlayerRoles
-import model.cardComponent.base.Card
 import model.playerComponent.Player
 import model.playerComponent.PlayerAction.PlayerAction
 class SwapHandler(

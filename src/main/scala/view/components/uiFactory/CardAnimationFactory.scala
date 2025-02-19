@@ -71,7 +71,7 @@ object CardAnimationFactory {
 //    }
 //  }
   def applyBoostEffect(card: FieldCard): Unit = {
-    if (card.card.additionalValue > 0) {
+//    if (card.card.additionalValue > 0) {
       val scaleFactor = 0.2f // Adjust scale factor for the boost effect
       val boostView = ImageUtils.importImageAsViewSize(boostEffectPath, scaleFactor, 30, 50) // Max 100x100 size
 
@@ -107,7 +107,7 @@ object CardAnimationFactory {
             println("⚠️ [ERROR] Card has no valid parent container!")
         }
       }
-    }
+//    }
   }
 
   /**

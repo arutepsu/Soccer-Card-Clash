@@ -9,7 +9,7 @@ trait IGame {
   def getPlayingField: PlayingField
   def getPlayer1: Player
   def getPlayer2: Player
-  def getGameManager: GameManager  // 🔥 Allows Controller to execute commands
+  def getGameManager: GameManager
   def setPlayerName(playerIndex: Int, name: String): Unit
   def selectDefenderPosition(): Int
   def saveGame(filePath: String): Try[Unit]

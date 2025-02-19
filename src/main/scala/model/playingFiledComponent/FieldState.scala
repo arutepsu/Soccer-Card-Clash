@@ -108,10 +108,11 @@
 //}
 package model.playingFiledComponent
 
+import model.cardComponent.ICard
+
 import scala.collection.mutable
 import model.playerComponent.Player
-import model.cardComponent.base.Card
-import model.playingFiledComponent.strategy.refillStrategy._
+import model.playingFiledComponent.strategy.refillStrategy.*
 import model.playingFiledComponent.factories.PlayerHandFactory
 import model.playingFiledComponent.state.HandCardsQueue
 class FieldState(val playingField: PlayingField, val player1: Player, val player2: Player) {
@@ -125,13 +126,17 @@ class FieldState(val playingField: PlayingField, val player1: Player, val player
   private var player1Hand: HandCardsQueue = new HandCardsQueue(List())
   private var player2Hand: HandCardsQueue = new HandCardsQueue(List())
 
-  def initializePlayerHands(player1Cards: List[Card], player2Cards: List[Card]): Unit = {
+//  def initializePlayerHands(player1Cards: List[Card], player2Cards: List[Card]): Unit = {
+//    player1Hand = new HandCardsQueue(player1Cards)
+//    player2Hand = new HandCardsQueue(player2Cards)
+//  }
+  def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
     player1Hand = new HandCardsQueue(player1Cards)
     player2Hand = new HandCardsQueue(player2Cards)
   }
 
-  def getAttackingCard: Card = getPlayerHand(playingField.getAttacker).getCards.last
-  def getDefenderCard: Card = getPlayerHand(playingField.getDefender).getCards.last
+  def getAttackingCard: ICard = getPlayerHand(playingField.getAttacker).getCards.last
+  def getDefenderCard: ICard = getPlayerHand(playingField.getDefender).getCards.last
 
   def getPlayerHand(player: Player): HandCardsQueue =
     if (player == player1) player1Hand else player2Hand
@@ -151,35 +156,35 @@ class FieldState(val playingField: PlayingField, val player1: Player, val player
     refillStrategy.refillField(this, player, hand.getCards)
 
   /** 📌 ========== PLAYER FIELD STATE ========== */
-  private var player1Field: List[Card] = List()
-  private var player2Field: List[Card] = List()
+  private var player1Field: List[ICard] = List()
+  private var player2Field: List[ICard] = List()
 
-  private var player1Goalkeeper: Option[Card] = None
-  private var player1Defenders: List[Card] = List()
+  private var player1Goalkeeper: Option[ICard] = None
+  private var player1Defenders: List[ICard] = List()
 
-  private var player2Goalkeeper: Option[Card] = None
-  private var player2Defenders: List[Card] = List()
+  private var player2Goalkeeper: Option[ICard] = None
+  private var player2Defenders: List[ICard] = List()
 
-  def getPlayerField(player: Player): List[Card] =
+  def getPlayerField(player: Player): List[ICard] =
     if (player == player1) player1Field else player2Field
 
-  def setPlayerField(player: Player, newField: List[Card]): Unit =
+  def setPlayerField(player: Player, newField: List[ICard]): Unit =
     if (player == player1) player1Field = newField else player2Field = newField
 
-  def getPlayerGoalkeeper(player: Player): Option[Card] =
+  def getPlayerGoalkeeper(player: Player): Option[ICard] =
     if (player == player1) player1Goalkeeper else player2Goalkeeper
 
-  def setPlayerGoalkeeper(player: Player, goalkeeper: Option[Card]): Unit =
+  def setPlayerGoalkeeper(player: Player, goalkeeper: Option[ICard]): Unit =
     if (player == player1) player1Goalkeeper = goalkeeper else player2Goalkeeper = goalkeeper
 
-  def getPlayerDefenders(player: Player): List[Card] =
+  def getPlayerDefenders(player: Player): List[ICard] =
     if (player == player1) player1Defenders else player2Defenders
 
-  def setPlayerDefenders(player: Player, newDefenderField: List[Card]): Unit =
+  def setPlayerDefenders(player: Player, newDefenderField: List[ICard]): Unit =
     if (player == player1) player1Defenders = newDefenderField else player2Defenders = newDefenderField
 
   /** 📌 ========== FIELD MANAGEMENT ========== */
-  def setGoalkeeperForAttacker(card: Card): Unit = {
+  def setGoalkeeperForAttacker(card: ICard): Unit = {
     if (playingField.getAttacker == player1) player1Goalkeeper = Some(card)
     else player2Goalkeeper = Some(card)
 
@@ -193,7 +198,7 @@ class FieldState(val playingField: PlayingField, val player1: Player, val player
   }
 
   /** 📌 ========== GAMEPLAY HELPERS ========== */
-  def removeDefenderCard(currentDefender: Player, defenderCard: Card): Unit =
+  def removeDefenderCard(currentDefender: Player, defenderCard: ICard): Unit =
     if (currentDefender == player1) {
       player1Defenders = player1Defenders.filterNot(_ == defenderCard)
     } else {
@@ -203,7 +208,7 @@ class FieldState(val playingField: PlayingField, val player1: Player, val player
   def allDefendersBeaten(currentDefender: Player): Boolean =
     getPlayerDefenders(currentDefender).isEmpty
 
-  def getDefenderCard(player: Player, index: Int): Card = {
+  def getDefenderCard(player: Player, index: Int): ICard = {
     val defenders = if (player == player1) player1Defenders else player2Defenders
     if (index < 0 || index >= defenders.size)
       throw new IndexOutOfBoundsException("Invalid defender index")

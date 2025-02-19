@@ -1,14 +1,14 @@
 package model.playingFiledComponent.state
-import model.cardComponent.base.Card
-import scala.collection.mutable
+import model.cardComponent.ICard
 import scala.collection.mutable
 
-class HandCardsQueue(initialCards: List[Card]) extends mutable.Queue[Card] {
+class HandCardsQueue(initialCards: List[ICard]) extends mutable.Queue[ICard] {
+
   this.enqueueAll(initialCards)
-  def getCards: mutable.Queue[Card] = this
-  def addCard(card: Card): Unit = this.prepend(card)
+  def getCards: mutable.Queue[ICard] = this
+  def addCard(card: ICard): Unit = this.prepend(card)
 
-  def removeLastCard(): Card = {
+  def removeLastCard(): ICard = {
     if (this.nonEmpty) {
       this.remove(this.size - 1)
     } else {

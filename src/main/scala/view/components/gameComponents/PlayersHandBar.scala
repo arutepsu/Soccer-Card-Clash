@@ -8,7 +8,6 @@ import scalafx.scene.effect.DropShadow
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
 import javafx.application.Platform
-import model.cardComponent.base.Card
 import scala.concurrent.{ExecutionContext, Future}
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField

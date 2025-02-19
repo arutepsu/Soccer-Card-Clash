@@ -30,7 +30,6 @@ class Game extends IGame {
     } else if (playerIndex == 2) {
       getPlayingField.getDefender.setName(name)
     } else {
-      println("❌ Invalid player index! Use 1 or 2.")
     }
   }
 
@@ -41,7 +40,6 @@ class Game extends IGame {
     playingField = new PlayingField(player1, player2)
     playingField.fieldState.initializePlayerHands(player1.getCards, player2.getCards)
     playingField.setPlayingField()
-
     gameManager = new GameManager(playingField)
     val logger = new GameLogger()
     gameManager.addObserver(logger)

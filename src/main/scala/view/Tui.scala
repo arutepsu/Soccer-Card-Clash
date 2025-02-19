@@ -110,7 +110,6 @@ import scala.io.StdIn.readLine
 import scala.collection.mutable
 import scala.util.Try
 import controller.IController
-import model.cardComponent.base.Card
 import model.cardComponent.cardFactory.DeckFactory
 
 class Tui(controller: IController) extends Observer {

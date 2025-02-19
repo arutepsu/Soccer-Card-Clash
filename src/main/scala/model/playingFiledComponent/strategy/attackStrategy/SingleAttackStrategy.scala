@@ -27,14 +27,13 @@ class SingleAttackStrategy extends AttackStrategy{
 
         println(s"⚔️ Attacking Card: $attackingCard vs Goalkeeper: $goalkeeper")
 
-        val comparisonResult = attackingCard.compare(attackingCard, goalkeeper)
+        val comparisonResult = attackingCard.compare(goalkeeper)
 
         if (comparisonResult > 0) {
           println(s"🎯 ${attacker.name} scored a goal!")
 
           attackerHand.addCard(attackingCard)
-          attackerHand.addCard(goalkeeper)
-          boostManager.revertCard(goalkeeper)
+          attackerHand.addCard(boostManager.revertCard(goalkeeper))
 
           fieldState.setPlayerGoalkeeper(defender, None)
           fieldState.setPlayerDefenders(defender, List.empty)
@@ -48,8 +47,7 @@ class SingleAttackStrategy extends AttackStrategy{
           println(s"🛡️ ${defender.name} defended successfully. Roles are switched.")
 
           defenderHand.addCard(attackingCard)
-          defenderHand.addCard(goalkeeper)
-          boostManager.revertCard(goalkeeper)
+          defenderHand.addCard(boostManager.revertCard(goalkeeper))
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
           playingField.notifyObservers()
@@ -60,7 +58,7 @@ class SingleAttackStrategy extends AttackStrategy{
 
         println(s"⚔️ Attacking Card: $attackingCard vs Defender Card: $defenderCard")
 
-        val comparisonResult = attackingCard.compare(attackingCard, defenderCard)
+        val comparisonResult = attackingCard.compare(defenderCard)
 
         if (comparisonResult == 0) {
           // ✅ "Double Clash" Rule: Both players must play an extra card
@@ -72,7 +70,7 @@ class SingleAttackStrategy extends AttackStrategy{
 
             println(s"⚔️ Tiebreaker! ${attacker.name} plays $extraAttackerCard, ${defender.name} plays $extraDefenderCard")
 
-            val tiebreakerResult = extraAttackerCard.compare(extraAttackerCard, extraDefenderCard)
+            val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
             if (tiebreakerResult > 0) {
               println(s"🎉 ${attacker.name} wins the tiebreaker and takes all four cards!")
@@ -99,8 +97,7 @@ class SingleAttackStrategy extends AttackStrategy{
         } else if (comparisonResult > 0) {
           println(s"🎯 ${attacker.name} succeeded in the attack!")
           attackerHand.addCard(attackingCard)
-          attackerHand.addCard(defenderCard)
-          boostManager.revertCard(defenderCard)
+          attackerHand.addCard(boostManager.revertCard(defenderCard))
           fieldState.removeDefenderCard(defender, defenderCard) // ✅ Delegate removal
           playingField.notifyObservers()
           true
@@ -108,8 +105,7 @@ class SingleAttackStrategy extends AttackStrategy{
           println(s"🛡️ ${defender.name} defended successfully. Roles are switched.")
 
           defenderHand.addCard(attackingCard)
-          defenderHand.addCard(defenderCard)
-          boostManager.revertCard(defenderCard)
+          defenderHand.addCard(boostManager.revertCard(defenderCard))
           fieldState.removeDefenderCard(defender, defenderCard) // ✅ Remove from FieldState
           fieldState.refillDefenderField(defender) // ✅ Refill via FieldState
           roles.switchRoles()

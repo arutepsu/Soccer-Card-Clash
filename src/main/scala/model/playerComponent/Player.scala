@@ -1,23 +1,22 @@
 package model.playerComponent
 
+import model.cardComponent.ICard
 import model.cardComponent.base.Card
 import model.playerComponent.PlayerAction.{PlayerAction, PlayerActionState}
 import model.playerComponent.PlayerAction.CanPerformAction
 
 case class Player(
                    name: String,
-                   cards: List[Card],
+                   cards: List[ICard],
                    actionStates: Map[PlayerAction, PlayerActionState] =
                    PlayerAction.values.map(action => action -> CanPerformAction(action.maxUses)).toMap
                  ) {
 
   override def toString: String = s"Player: $name, Cards: ${cards.mkString(", ")}"
-
-  def getCards: List[Card] = cards
+  def getCards: List[ICard] = cards
 
   def setName(newName: String): Player = this.copy(name = newName)
 
-  /** ✅ Perform an action using the enum */
   def performAction(action: PlayerAction): Player = {
     actionStates.get(action) match {
       case Some(state) => state.performAction(this, action)
@@ -27,7 +26,6 @@ case class Player(
     }
   }
 
-  /** ✅ Update action state dynamically */
   def updateActionState(action: PlayerAction, newState: PlayerActionState): Player = {
     this.copy(actionStates = actionStates.updated(action, newState))
   }

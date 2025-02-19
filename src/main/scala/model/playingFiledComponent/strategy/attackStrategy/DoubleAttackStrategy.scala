@@ -44,9 +44,9 @@ class DoubleAttackStrategy extends AttackStrategy {
           println("Attacker wins! Scores against the goalkeeper!")
           attackerHand.addCard(attackingCard1)
           attackerHand.addCard(attackingCard2)
-          if (goalkeeper.wasBoosted) {
-            boostManager.revertCard(goalkeeper)
-          }
+//          if (goalkeeper.wasBoosted) {
+//            boostManager.revertCard(goalkeeper)
+//          }
           attackerHand.addCard(goalkeeper)
 
           // Remove the goalkeeper after scoring
@@ -63,9 +63,9 @@ class DoubleAttackStrategy extends AttackStrategy {
           println("Goalkeeper saves! Defender wins!")
           defenderHand.addCard(attackingCard1)
           defenderHand.addCard(attackingCard2)
-          if (goalkeeper.wasBoosted) {
-            boostManager.revertCard(goalkeeper)
-          }
+//          if (goalkeeper.wasBoosted) {
+//            boostManager.revertCard(goalkeeper)
+//          }
           defenderHand.addCard(goalkeeper)
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
@@ -83,9 +83,9 @@ class DoubleAttackStrategy extends AttackStrategy {
           println("Attacker wins! Takes all three cards back into hand.")
           attackerHand.addCard(attackingCard1)
           attackerHand.addCard(attackingCard2)
-          if (defenderCard.wasBoosted) {
-            boostManager.revertCard(defenderCard)
-          }
+//          if (defenderCard.wasBoosted) {
+//            boostManager.revertCard(defenderCard)
+//          }
           attackerHand.addCard(defenderCard)
           fieldState.removeDefenderCard(defender, defenderCard)
           println(s"Updated Attacker hand: ${attackerHand.mkString(", ")}")
@@ -94,9 +94,9 @@ class DoubleAttackStrategy extends AttackStrategy {
           println("Defender wins! Takes all three cards.")
           defenderHand.addCard(attackingCard1)
           defenderHand.addCard(attackingCard2)
-          if (defenderCard.wasBoosted) {
-            boostManager.revertCard(defenderCard)
-          }
+//          if (defenderCard.wasBoosted) {
+//            boostManager.revertCard(defenderCard)
+//          }
           defenderHand.addCard(defenderCard)
 
           fieldState.removeDefenderCard(defender, defenderCard)

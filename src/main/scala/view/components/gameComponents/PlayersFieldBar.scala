@@ -1,21 +1,22 @@
 package view.components.gameComponents
 
-import model.cardComponent.base.Card
-import scalafx.scene.layout.{VBox, HBox}
+import model.cardComponent.base.BoostedCard
+import model.cardComponent.ICard
+import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
 import scalafx.scene.input.MouseEvent
 import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.scene.effect.DropShadow
-import scalafx.Includes._          // ✅ Ensures JavaFX → ScalaFX conve
+import scalafx.Includes.*
 import scalafx.scene.paint.Color
-import scalafx.scene.effect.{Glow, DropShadow}
+import scalafx.scene.effect.{DropShadow, Glow}
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.paint.Color
 import scalafx.animation.ScaleTransition
 import scalafx.util.Duration
-import scalafx.Includes._
+import scalafx.Includes.*
 import view.components.cardComponents.FieldCard
 import view.components.uiFactory.CardAnimationFactory
 import view.utils.Styles
@@ -40,7 +41,7 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   }
 
   /** Retrieves defender cards */
-  private def getDefenderCards: List[Card] = playingField.fieldState.getPlayerDefenders(player)
+  private def getDefenderCards: List[ICard] = playingField.fieldState.getPlayerDefenders(player)
 
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card
@@ -65,69 +66,78 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
   /** Creates Defender Row */
 
   def createDefenderRow(): HBox = {
-    val defenderCards = getDefenderCards
+    val defenderCards = getDefenderCards // ✅ Get the latest defenders
 
-    println(s"🛡️ Creating defender row for ${player.name} with cards: $defenderCards")
+    println(s"🛡️ Creating defender row for ${player.name} with updated cards: $defenderCards")
+
+    defenderCards.zipWithIndex.foreach { case (card, index) =>
+      println(s"🔍 Defender Card at index $index: $card (Type: ${card.getClass.getSimpleName})")
+    }
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
-      defenderCard.styleClass.add("field-card") // ✅ Apply CSS class
+      defenderCard.styleClass.add("field-card")
 
-      if(defenderCard.card.wasBoosted) {
-        //        CardAnimationFactory.createFireEffect(defenderCard)
-        CardAnimationFactory.applyBoostEffect(defenderCard)
-      }
+      // ✅ Use isInstanceOf to detect BoostedCard2
+      defenderCard.card match
+        case boostedCard: BoostedCard =>
+          println(s"✅ !!!!!!!!!!!!!!!!!!!!BoostedCard2 detected: $boostedCard")
+          println("⚡ Applying Boost Effect")
+          CardAnimationFactory.applyBoostEffect(defenderCard)
+        case _ =>
+          println("❌ No boost effect applied.")
 
-      defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)
-      defenderCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(defenderCard, _selectedDefenderIndex, index)
+      defenderCard.onMouseEntered = (_: MouseEvent) =>
+        CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)
 
-      // Card selection logic
+      defenderCard.onMouseExited = (_: MouseEvent) =>
+        CardAnimationFactory.removeHoverEffect(defenderCard, _selectedDefenderIndex, index)
+
       if (playingField.getDefender == player) {
         defenderCard.onMouseClicked = (_: MouseEvent) => {
           if (_selectedDefenderIndex.contains(index)) {
-            // Deselect the card
             println(s"❌ Deselected: $card (Index: $index)")
             defenderCard.effect = null
             _selectedDefenderIndex = None
             selectedDefenderCard = None
             defenderCard.styleClass.remove("selected-card")
           } else {
-
-            // Deselect the previously selected card
             _selectedDefenderIndex.foreach { _ =>
               println(s"🔄 Deselecting previous defender")
               selectedDefenderCard.foreach(_.effect = null)
-              defenderCard.styleClass.add("selected-card") //
+              defenderCard.styleClass.add("selected-card")
             }
-
             println(s"🛡️ Selected: $card (Index: $index)")
             _selectedDefenderIndex = Some(index)
             selectedDefenderCard = Some(defenderCard)
-
-            // Apply gold shadow effect for selection
             defenderCard.effect = new DropShadow(20, Color.GOLD)
           }
         }
       }
+
       defenderCard
     }
 
     new HBox {
-      styleClass.add("defender-row") // ✅ Apply styling
-      //      alignment = Pos.CENTER
-      //      spacing = 10
+      alignment = Pos.CENTER
+      spacing = 10
       children = defenderCardNodes
     }
   }
+
   /** **Creates UI row for goalkeeper card** */
   def createGoalkeeperRow(): HBox = {
     val goalkeeperCard = playingField.fieldState.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
-    if (goalkeeperCard.card.additionalValue > 0) {
-      CardAnimationFactory.applyBoostEffect(goalkeeperCard)
+    goalkeeperCard.card match {
+      case boosted: BoostedCard =>
+        CardAnimationFactory.applyBoostEffect(goalkeeperCard)
+      case _ =>
+        println("No boost effect applied.") // Optional debug message
     }
+
     goalkeeperCard.styleClass.add("field-card") // ✅ Apply styling
 
     // Track selected goalkeeper index
@@ -153,6 +163,8 @@ class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
     println(s"🔄 Updating defender's field for ${player.name}...")
     children.clear()
     children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow()) // No updateGoalkeeper()
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! herer :L ")
+    print(playingField.fieldState.getPlayerField(player))
     playingField.notifyObservers() // ✅ Ensure UI refreshes
   }
 

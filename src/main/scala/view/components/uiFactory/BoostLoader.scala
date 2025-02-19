@@ -1,6 +1,6 @@
 package view.components.uiFactory
 
-import model.cardComponent.base.Card
+import model.cardComponent.ICard
 import scalafx.scene.image.{Image, ImageView}
 
 object BoostLoader {
@@ -12,7 +12,7 @@ object BoostLoader {
   /**
    * Loads an ImageView from resources and scales it appropriately.
    */
-  def getCardImageView(card: Card, width: Double = defaultWidth, height: Double = defaultHeight): ImageView = {
+  def getCardImageView(card: ICard, width: Double = defaultWidth, height: Double = defaultHeight): ImageView = {
     val fileName = card.fileName  // Example: "4_of_diamonds.png"
     val filePath = s"$cardImagePath$fileName"  // Example: "/view/data/cards/4_of_diamonds.png"
 

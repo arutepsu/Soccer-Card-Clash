@@ -8,8 +8,8 @@ import model.playingFiledComponent.state.roleState.RoleState
 class PlayerRoles(player1: Player, player2: Player, playingField: PlayingField) {
   var attacker: Player = player1
   var defender: Player = player2
-  private var state: RoleState = new AttackerState() // Default state
-  var gameState: GameState = GameState.SwitchRoles // Start in Attack state
+  private var state: RoleState = new AttackerState()
+  var gameState: GameState = GameState.SwitchRoles
   def switchRoles(): Unit = {
     val temp = attacker
     attacker = defender
