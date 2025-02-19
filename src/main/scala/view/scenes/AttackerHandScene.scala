@@ -6,12 +6,13 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import util.{Observer, ObservableEvent}
-import view.components.gameComponents.SelectablePlayersHandBar
+import util.{ObservableEvent, Observer}
+import view.components.gameComponents.{GameStatusBar, SelectablePlayersHandBar}
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
 import view.utils.Styles
 import scalafx.application.Platform
+import view.scenes.action.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
 case class AttackerHandScene(
                               controller: IController,
                               playingField: Option[PlayingField],
@@ -20,7 +21,8 @@ case class AttackerHandScene(
                             ) extends Scene(windowWidth, windowHeight) with Observer {
 
   this.getStylesheets.add(Styles.attackerHandSceneCss) // ✅ Load external CSS
-
+  var getPlayingField: PlayingField = playingField.get
+  val gameStatusBar = new GameStatusBar
   // ✅ Create a black background
   val backgroundView = new Region {
     style = "-fx-background-color: black;"
@@ -45,33 +47,30 @@ case class AttackerHandScene(
   backButton.styleClass.add("button") // ✅ Apply styling
 
   // ✅ Swap Card Button
-  val swapButton: Button = GameButtonFactory.createGameButton(
-    text = "Swap Card",
-    width = 180,
-    height = 50
-  ) { () =>
-    attackerHandBar match {
-      case Some(handBar) =>
-        handBar.selectedCardIndex match {
-          case Some(index) =>
-            println(s"🔄 Swapping card at index: $index")
-            controller.swapAttackerCard(index) // ✅ Swap logic
-            playingField.foreach(_.notifyObservers()) // ✅ Ensure UI updates only if playingField exists
-            handBar.updateBar() // ✅ Refresh UI after swapping
-          case None =>
-            println("❌ No card selected to swap!")
-        }
-      case None => println("❌ No valid attacker hand available!")
-    }
-  }
-  swapButton.styleClass.add("button") // ✅ Apply styling
-
+  val regularSwapButton: Button = ActionButtonFactory.createRegularSwapButton(
+    RegularSwapButton(), // ✅ Use the HandSwapButton action
+    "Regular Swap",
+    180,
+    50,
+    this,
+    controller// ✅ Pass the current scene (AttackerHandScene)
+  )
+//  circularSwapButton.styleClass.add("button") // ✅ Apply styling
+  val circularSwapButton: Button = ActionButtonFactory.createCircularSwapButton(
+    CircularSwapButton(), // ✅ Use the HandSwapButton action
+    "Circular Swap",
+    180,
+    50,
+    this,
+    controller // ✅ Pass the current scene (AttackerHandScene)
+  )
+  regularSwapButton.styleClass.add("button") // ✅ Apply styling
   // ✅ Button Layout
   val buttonLayout = new HBox {
     styleClass.add("button-layout") // ✅ Apply styling
     alignment = Pos.CENTER
     spacing = 15
-    children = Seq(swapButton, backButton)
+    children = Seq(regularSwapButton, circularSwapButton, backButton)
   }
 
   // ✅ Main Layout (Only add attackerHandBar if it exists)
@@ -86,6 +85,7 @@ case class AttackerHandScene(
     styleClass.add("attacker-hand-scene") // ✅ Apply main styling to root
     children = Seq(backgroundView, layout)
   }
+
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {

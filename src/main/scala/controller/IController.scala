@@ -26,11 +26,12 @@ trait IController extends Observable {
   def getPlayer2: Player
   def setPlayerName(playerIndex: Int, name: String): Unit
   def startGame(): Unit
-  def executeAttackCommand(defenderPosition: Int): Unit
-  def executeAttackCommandDouble(defenderPosition: Int): Unit
+  def executeSingleAttackCommand(defenderPosition: Int): Unit
+  def executeDoubleAttackCommand(defenderPosition: Int): Unit
   def boostDefender(defenderPosition: Int): Unit
   def boostGoalkeeper(): Unit
-  def swapAttackerCard(index: Int): Unit
+  def regularSwap(index: Int): Unit
+  def circularSwap(index: Int): Unit
   def undo(): Unit
   def redo(): Unit
   def saveGame(filePath: String): Unit

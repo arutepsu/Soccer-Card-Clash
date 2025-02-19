@@ -18,7 +18,7 @@ class TuiPlayingField(manager: TuiManager, controller: IController) extends TuiB
           } else if (defenderPosition == -2) {
             println("Select a defender position to attack:")
             val pos = readLine().toIntOption.getOrElse(-1)
-            if (pos >= 1) controller.executeAttackCommand(pos - 1)
+            if (pos >= 1) controller.executeSingleAttackCommand(pos - 1)
             else println("❌ Invalid input.")
           }
 
@@ -34,7 +34,7 @@ class TuiPlayingField(manager: TuiManager, controller: IController) extends TuiB
           println("Select a card index to swap from attacker's hand:")
           val index = readLine().toIntOption.getOrElse(-1)
           if (index >= 0) {
-            controller.swapAttackerCard(index)
+            controller.regularSwap(index)
             println(s"🔄 Swapped attacker card at index: $index")
           } else {
             println("❌ Invalid card index.")

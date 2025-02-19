@@ -7,12 +7,13 @@ import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import util.{Observer, ObservableEvent}
-import view.components.gameComponents.{BoostBar, SelectablePlayersFieldBar}
+import util.{ObservableEvent, Observer}
+import view.components.gameComponents.{BoostBar, GameStatusBar, SelectablePlayersFieldBar}
 import view.components.uiFactory.GameButtonFactory
 import view.scenes.sceneManager.SceneManager
 import model.cardComponent.base.Card
 import scalafx.application.Platform
+import view.scenes.action.{ActionButtonFactory, BoostButton}
 case class AttackerDefendersScene(
                                    controller: IController,  // ✅ Added Controller
                                    playingField: Option[PlayingField],
@@ -24,7 +25,7 @@ case class AttackerDefendersScene(
   val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
     new SelectablePlayersFieldBar(pf.getAttacker, pf)
   }
-
+  val gameStatusBar = new GameStatusBar
   val playerGoalkeeper: Option[Card] = attackerDefenderField.flatMap(_.getGoalkeeperCard)
 //  val playerDefenders: Seq[Card] = attackerDefenderField.map(_.getDefenderCards).getOrElse(Seq())
   val playerDefenders: Option[Seq[Card]] = attackerDefenderField.map(_.getDefenderCards)
@@ -44,32 +45,14 @@ case class AttackerDefendersScene(
       controller.notifyObservers(ControllerEvents.PlayingField)
   }
 
-  val boostButton: Button = GameButtonFactory.createGameButton(
-    text = "Boost",
-    width = 180,
-    height = 50
-  ) {
-    () =>
-      attackerDefenderField match {
-        case Some(field) =>
-          if (field.isGoalkeeperSelected) { // ✅ Boost goalkeeper if selected
-            println("⚽ Boosting Goalkeeper!")
-            controller.boostGoalkeeper()
-          } else field.selectedCardIndex match { // ✅ Boost only the selected defender
-            case Some(index) =>
-              println(s"⚡ Boosting defender at index: $index")
-              controller.boostDefender(index)
-            case None =>
-              println("⚠️ No defender selected for boosting!")
-          }
-
-          // ✅ Notify Observers & Refresh UI if playingField exists
-          playingField.foreach(_.notifyObservers())
-          field.updateBar()
-
-        case None => println("❌ No valid attacker/defender field to boost!")
-      }
-  }
+  val boostButton: Button = ActionButtonFactory.createBoostButton(
+    BoostButton(), // ✅ Use the HandSwapButton action
+    "Boost Card",
+    180,
+    50,
+    this,
+    controller // ✅ Pass the current scene (AttackerHandScene)
+  )
 
   // ✅ Button Layout (Includes BoostBar and Back Button)
   val buttonLayout = new HBox {

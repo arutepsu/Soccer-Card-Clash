@@ -11,4 +11,5 @@ object GameStatusMessages {
   val NOTHING_TO_UNDO = "⚠️ Nothing to undo!"
   val NOTHING_TO_REDO = "⚠️ Nothing to redo!"
   val NO_DEFENDER_SELECTED = "⚠️ No defender selected to attack!"
+  val NO_CARD_SELECTED = "No card selected!"
 }

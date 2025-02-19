@@ -79,15 +79,10 @@ class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) exte
       children = defenderCardNodes
     }
   }
-
-  /** ✅ Creates Goalkeeper Row (Selectable) */
-  /** ✅ Add a new boolean variable to track goalkeeper selection */
   private var _isGoalkeeperSelected: Boolean = false
-
-  /** ✅ Public method to check if goalkeeper is selected */
+  
   def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
-
-  /** ✅ Modify onMouseClicked to set `isGoalkeeperSelected = true` when selecting the goalkeeper */
+  
   override def createGoalkeeperRow(): HBox = {
     val goalkeeperCard = playingField.fieldState.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)

@@ -33,13 +33,13 @@ class Controller extends IController {
     notifyObservers()
   }
 
-  def executeAttackCommand(defenderPosition: Int): Unit = {
+  def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     val command = new SingleAttackCommand(defenderPosition, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.RegularAttack)
   }
 
-  def executeAttackCommandDouble(defenderPosition: Int): Unit = {
+  def executeDoubleAttackCommand(defenderPosition: Int): Unit = {
     val command = new DoubleAttackCommand(defenderPosition, game.getGameManager)
     undoManager.doStep(command)
     notifyObservers(ControllerEvents.DoubleAttack)
@@ -57,10 +57,16 @@ class Controller extends IController {
     notifyObservers(ControllerEvents.BoostGoalkeeper)
   }
 
-  def swapAttackerCard(index: Int): Unit = {
+  def regularSwap(index: Int): Unit = {
     val command = new HandSwapCommand(index, game.getGameManager)
     undoManager.doStep(command)
-    notifyObservers(ControllerEvents.HandSwap)
+    notifyObservers(ControllerEvents.RegularSwap)
+  }
+
+  def circularSwap(index: Int): Unit = {
+    val command = new HandSwapCommand(index, game.getGameManager)
+    undoManager.doStep(command)
+    notifyObservers(ControllerEvents.CircularSwap)
   }
 
   def selectDefenderPosition(): Int = game.selectDefenderPosition()

@@ -16,20 +16,14 @@ import scalafx.stage.Stage
 import view.utils.Styles
 import controller.ControllerEvents
 import scalafx.application.Platform
+import view.components.gameComponents.ButtonBar
 case class PlayingFieldScene(
                               controller: IController,
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
 
-  // ✅ Register this scene as an Observer
-  controller.add(this)
   this.getStylesheets.add(Styles.playingFieldCss)
-  //  val backgroundView = new Region {
-  //    style = "-fx-background-color: black;"
-  //    prefWidth = windowWidth
-  //    prefHeight = windowHeight
-  //  }
 
   val player1 = controller.getPlayer1
   val player2 = controller.getPlayer2
@@ -60,63 +54,6 @@ case class PlayingFieldScene(
     spacing = 300
     children = Seq(attackerHandBar)
   }
-  val speciaDobuleAttackBar = new DoubleAttackBar(controller)
-  val backgroundViewSpecial = new HBox {
-    alignment = Pos.CENTER_LEFT
-    spacing = 20
-    children = Seq(speciaDobuleAttackBar)
-  }
-
-  speciaDobuleAttackBar.setAttackAction { () =>
-    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.fieldState.getPlayerDefenders(playingField.getDefender)
-
-    if (defenderCards.nonEmpty) {
-      defenderFieldBar.selectedDefenderIndex match {
-        case Some(defenderIndex) =>
-          println(s"🔥 Attacking defender at index: $defenderIndex")
-          controller.executeAttackCommandDouble(defenderIndex)
-          updateDisplay()
-          defenderFieldBar.resetSelectedDefender()
-
-        case None =>
-          println("⚠️ No defender selected for attack!")
-          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-      }
-    } else {
-      println("⚽ All defenders are gone! Attacking the goalkeeper!")
-      controller.executeAttackCommandDouble(0)
-      updateDisplay()
-    }
-  }
-
-  val attackButton: Button = GameButtonFactory.createGameButton(
-    text = "Attack",
-    width = 150, // Adjust width as needed
-    height = 50 // Adjust height as needed
-  ) { () =>
-    val defenderFieldBar = if (playingField.getDefender == player1) player1FieldBar else player2FieldBar
-    val defenderCards = playingField.fieldState.getPlayerDefenders(playingField.getDefender)
-
-    if (defenderCards.nonEmpty) {
-      defenderFieldBar.selectedDefenderIndex match {
-        case Some(defenderIndex) =>
-          println(s"🔥 Attacking defender at index: $defenderIndex")
-          controller.executeAttackCommand(defenderIndex)
-          updateDisplay()
-          defenderFieldBar.resetSelectedDefender()
-
-        case None =>
-          println("⚠️ No defender selected for attack!")
-          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-      }
-    } else {
-      println("⚽ All defenders are gone! Attacking the goalkeeper!")
-      controller.executeAttackCommand(0)
-      updateDisplay()
-    }
-  }
-
 
   val player1ScoreLabel = new Label {
     text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
@@ -128,56 +65,19 @@ case class PlayingFieldScene(
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
-  val undoButton: Button = GameButtonFactory.createGameButton(
-    text = "Undo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.undo()
-    updateDisplay()
-    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
-  }
-
-  val redoButton: Button = GameButtonFactory.createGameButton(
-    text = "Redo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.redo()
-    updateDisplay()
-    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
-  }
-
-  val mainMenuButton: Button = GameButtonFactory.createGameButton(
-    text = "Main Menu",
-    width = 180,
-    height = 50
-  ) { () =>
-//    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Switch to Main Menu
-  controller.notifyObservers(ControllerEvents.MainMenu)
-  }
-
+  val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
 
   // ✅ Create "Make Swap" button to switch to AttackerHandScene
-
-
-  val actionButtons = new VBox {
-    alignment = Pos.CENTER_LEFT
-    spacing = 10
-    padding = Insets(20)
-    children = Seq(attackButton, undoButton, redoButton, mainMenuButton)
-  }
 
   val playersBar = new PlayersBar(controller)
 
   root = new StackPane {
     children = Seq(
-      //      backgroundView,
       new HBox {
         alignment = Pos.CENTER_LEFT
         spacing = 20
         children = Seq(
-          actionButtons,
+          buttonBar, // Using ButtonBar here
           new VBox {
             padding = Insets(10)
             alignment = Pos.CENTER
@@ -188,38 +88,12 @@ case class PlayingFieldScene(
               playerHands,
               player1ScoreLabel,
               player2ScoreLabel,
-              backgroundViewSpecial
             )
           }
         )
       }
     )
   }
-  // ✅ Display attacker's field (Persistent instance)
-
-  val showDefendersButton: Button = GameButtonFactory.createGameButton(
-    text = "Show Defenders",
-    width = 180,
-    height = 50
-  ) { () =>
-    controller.notifyObservers(ControllerEvents.AttackerDefenderField)
-  }
-
-  // ✅ Add "Show Defenders" button to actionButtons
-  actionButtons.children.add(showDefendersButton)
-  /** ✅ Observer Pattern: Update UI when notified */
-
-  val makeSwapButton: Button = GameButtonFactory.createGameButton(
-    text = "Make Swap",
-    width = 180,
-    height = 50
-  ) { () =>
-    controller.notifyObservers(ControllerEvents.AttckerHand)
-  }
-
-  // ✅ Add "Make Swap" button to actionButtons
-  actionButtons.children.add(makeSwapButton)
-
   override def update(e: ObservableEvent): Unit = {
     updateDisplay()
   }
