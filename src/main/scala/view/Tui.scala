@@ -1,292 +1,185 @@
-//package view
-//
-//import model.cardComponent.Deck
-//import model.playerComponent.Player
-//import model.playingFiledComponent.PlayingField
-//import model.cardComponent.cardBaseImplementation.Card
-//import util.Observable
-//import util.Observer
-//import scala.io.StdIn.readLine
-//import scala.collection.mutable
-//import scala.util.Try
-//import controller.IController
-//
-//class Tui(controller: IController) extends Observer {
-//
-//  // ✅ Register as an Observer
-//  controller.add(this)
-//
-//  /** Starts the TUI loop */
-//  def start(): Unit = {
-//    println("Welcome to the Soccer Card Game (TUI Mode)!")
-//
-//    // ✅ Ensure the game is initialized
-//    controller.startGame()
-//
-//    println("Type 'attack', 'undo', 'redo', 'swap', or 'exit' to quit.")
-//    update // ✅ Show initial game state
-//
-//    var running = true
-//    while (running) {
-//      val input = readLine().trim.toLowerCase
-//      input match {
-//        case "attack" =>
-//          val defenderPosition = controller.selectDefenderPosition()
-//          if (defenderPosition == -1) {
-//            println("Attacking the goalkeeper.")
-//          } else if (defenderPosition == -2) {
-//            println("Select a defender position to attack:")
-//            val pos = readLine().toIntOption.getOrElse(-1)
-//            if (pos >= 1) controller.executeAttackCommand(pos - 1)
-//            else println("❌ Invalid input.")
-//          }
-//
-//        case "undo" =>
-//          controller.undo()
-//          println("🔄 Undo executed!")
-//
-//        case "redo" =>
-//          controller.redo()
-//          println("🔁 Redo executed!")
-//
-//        case "swap" =>
-//          println("Select a card index to swap from attacker's hand:")
-//          val index = readLine().toIntOption.getOrElse(-1)
-//          if (index >= 0) {
-//            controller.swapAttackerCard(index)
-//            println(s"🔄 Swapped attacker card at index: $index")
-//          } else {
-//            println("❌ Invalid card index.")
-//          }
-//
-//        case "exit" =>
-//          println("👋 Exiting TUI...")
-//          running = false
-//
-//        case _ =>
-//          println("❌ Invalid command. Type 'attack', 'undo', 'redo', 'swap', or 'exit'.")
-//      }
-//    }
-//  }
-//
-//  /** ✅ Observer Pattern: Refresh the game state whenever notified */
-//  override def update: Unit = {
-//    println("================================")
-//    println(displayGameState())
-//  }
-//
-//  /** Displays the current game state */
-//  def displayGameState(): String = {
-//    val pf = controller.getPlayingField
-//    val attacker = pf.getAttacker
-//    val defender = pf.getDefender
-//    val attackingCard = pf.getAttackingCard
-//    val attackerHand = pf.getHand(attacker).mkString(", ")
-//    val defenderHand = pf.getHand(defender).mkString(", ")
-//    val defenderField = pf.fieldState.playerDefenders(defender).mkString(", ")
-//    val defenderGoalkeeper = pf.fieldState.getGoalkeeper(defender)
-//
-//    s"""🏆 **Current Game State**
-//       |--------------------------------
-//       |⚔️  Attacker: ${attacker.name}
-//       |   🎴 Hand: $attackerHand
-//       |   🃏 Attacking Card: $attackingCard
-//       |
-//       |🛡️  Defender: ${defender.name}
-//       |   🎴 Hand: $defenderHand
-//       |   🏟️ Field: $defenderField
-//       |   🥅 Goalkeeper: $defenderGoalkeeper
-//       |--------------------------------
-//       |""".stripMargin
-//  }
-//}
 package view
 
-import model.playerComponent.Player
-import model.playingFiledComponent.PlayingField
+import controller.{ControllerEvents, IController}
 import util.{Observable, ObservableEvent, Observer}
-
-import scala.io.StdIn.readLine
-import scala.collection.mutable
-import scala.util.Try
-import controller.IController
-import model.cardComponent.cardFactory.DeckFactory
-
+import tui.{Parser, Prompter, TuiKeys}
+enum PromptState {
+  case None            // No active prompt
+  case PlayerName      // Waiting for player names
+  case NewGame         // New game setup
+  case LoadGame        // Loading game
+  case SaveGame        // Saving game
+  case Attack          // Selecting an attack
+  case Swap            // Swapping cards
+  case Redo        // Undo/Redo operations
+  case Undo        // Undo/Redo operations
+  case Boost
+}
 class Tui(controller: IController) extends Observer {
-
-  // ✅ Register as an Observer
+  private var promptState: PromptState = PromptState.None
+  private val prompter = new Prompter()
+  private val parser = new Parser
   controller.add(this)
 
-  // ✅ Define different states for the TUI
-  sealed trait TuiState
-  case object MainMenu extends TuiState
-  case object CreatePlayer extends TuiState
-  case object LoadGame extends TuiState
-  case object PlayingField extends TuiState
-  case object Exiting extends TuiState
+  println("🎮 Welcome to Soccer Card Clash!")
+  TuiKeys.values.foreach { key =>
+    println(s"${key.productPrefix}, Key: ${key.key}")
+  }
 
-  private var currentState: TuiState = MainMenu // ✅ Start with the main menu
-
-  /** Starts the TUI loop */
+  /** ✅ Start TUI Loop */
   def start(): Unit = {
-    println("Welcome to the Soccer Card Game (TUI Mode)!")
-    var running = true
-
-    while (running) {
-      currentState match {
-        case MainMenu       => showMainMenu()
-        case CreatePlayer   => showCreatePlayer()
-        case LoadGame       => showLoadGame()
-        case PlayingField   => showPlayingField()
-        case Exiting        => running = false
-      }
+    var input: String = ""
+    while (input != TuiKeys.Quit.key) {
+      input = scala.io.StdIn.readLine().trim
+      processInputLine(input)
     }
   }
 
-  /** ✅ Show Main Menu */
-  def showMainMenu(): Unit = {
-    println(
-      """|======== Main Menu ========
-         |1. Create New Game
-         |2. Load Game
-         |3. Exit
-         |===========================
-         |Enter choice:""".stripMargin
-    )
+  def printStatusScreen(): Unit = {
+//    val playingField = controller.getPlayingField
+//    val attacker = playingField.getAttacker
+//    val defender = playingField.getDefender
+//    val player1HandCards = playingField.fieldState.getPlayerHand(attacker)
+//    val player2HandCards = playingField.fieldState.getPlayerHand(defender)
+//    val player1field = playingField.fieldState.getPlayerField(attacker)
+//    val player2field = playingField.fieldState.getPlayerField(defender)
+//
+//    println("\n===================================")
+//    println("🏆 **CURRENT GAME STATE**")
+//    println("===================================")
+//
+//    // 🎭 **Attacker & Defender**
+//    println(f"⚔️ Attacker: ${attacker.name}")
+//    println(f"🛡️ Defender: ${defender.name}")
+//    println("-----------------------------------")
+//
+//    // 🃏 **Player Hands**
+//    println(s"🎴 ${attacker.name}'s Hand: " +
+//      (if (player1HandCards.nonEmpty) player1HandCards.mkString(", ") else "No cards left!")
+//    )
+//    println(s"🎴 ${defender.name}'s Hand: " +
+//      (if (player2HandCards.nonEmpty) player2HandCards.mkString(", ") else "No cards left!")
+//    )
+//    println("-----------------------------------")
+//
+//    // 🏟️ **Player Field Cards**
+//    println(s"🏟️ ${attacker.name}'s Field: " +
+//      (if (player1field.nonEmpty) player1field.mkString(", ") else "No defenders!")
+//    )
+//    println(s"🏟️ ${defender.name}'s Field: " +
+//      (if (player2field.nonEmpty) player2field.mkString(", ") else "No defenders!")
+//    )
 
-    readLine().trim match {
-      case "1" => currentState = CreatePlayer
-      println("Create Player Menu Selected")
-      case "2" => currentState = LoadGame
-        println("Load Game Menu Selected")
-      case "3" => currentState = Exiting
-        println("Exit Selected")
-      case _   => println("❌ Invalid choice. Please enter 1, 2, or 3.")
-    }
+    println("===================================")
   }
 
-  /** ✅ Handle Player Creation */
-  def showCreatePlayer(): Unit = {
-    println("\n👥 Enter Player Names (exactly 2 players required):")
 
-    val playerNames = (1 to 2).map { i =>
-      print(s"Player $i: ")
-      readLine().trim
-    }.filter(_.nonEmpty)
 
-    if (playerNames.size != 2) {
-      println("❌ Exactly 2 players are required! Returning to Main Menu...")
-      currentState = MainMenu
-      return
-    }
+    /** ✅ Process User Input */
+  def processInputLine(input: String): Unit = {
+    input match {
+      // ✅ Standard Commands
+//      case TuiKeys.Quit.key => controller.quit()
+      case TuiKeys.Undo.key => controller.undo()
+      case TuiKeys.Redo.key => controller.redo()
+//      case TuiKeys.CreateGame.key => controller.startGame()
+      case TuiKeys.Save.key => controller.saveGame()
+      case TuiKeys.Load.key => controller.loadGame()
 
-    // ✅ Assign names to players using `setPlayerName`
-    controller.setPlayerName(1, playerNames.head)
-    controller.setPlayerName(2, playerNames(1))
+      // ✅ Process Input Based on Current Prompt State
+      case _ => promptState match {
 
-    println(s"✅ Players set: ${playerNames.head} & ${playerNames(1)}")
-    controller.startGame()
+        /** 🔹 Player Name Entry */
+//        case PromptState.PlayerName =>
+//          parser.parsePlayerName(input) match {
+//            case Some(playerName) =>
+//              controller.addPlayer(playerName)
+//            case None => prompter.enterName()
+//          }
 
-    currentState = PlayingField
-  }
-
-  /** ✅ Handle Loading a Game */
-  def showLoadGame(): Unit = {
-    println("\n📂 Enter the saved game file path:")
-    val filePath = readLine().trim
-
-    controller.loadGame(filePath) match {
-      case scala.util.Success(_) =>
-        println("✅ Game loaded successfully!")
-        currentState = PlayingField
-      case scala.util.Failure(ex) =>
-        println(s"❌ Failed to load game: ${ex.getMessage}")
-        currentState = MainMenu
-    }
-  }
-
-  /** ✅ Show Playing Field & Handle In-Game Actions */
-  def showPlayingField(): Unit = {
-    println("🎮 Game Started! Type 'attack', 'undo', 'redo', 'swap', 'exit'.")
-
-    var inGame = true
-    while (inGame) {
-      val input = readLine().trim.toLowerCase
-      input match {
-        case "attack" =>
-          val defenderPosition = controller.selectDefenderPosition()
-          if (defenderPosition == -1) {
-            println("Attacking the goalkeeper.")
-          } else if (defenderPosition == -2) {
-            println("Select a defender position to attack:")
-            val pos = readLine().toIntOption.getOrElse(-1)
-            if (pos >= 1) controller.executeSingleAttackCommand(pos - 1)
-            else println("❌ Invalid input.")
+        /** 🔹 Attack a Defender */
+        case PromptState.Attack =>
+          parser.parseAttack(input, controller.getPlayingField.fieldState.getPlayerDefenders(controller.getPlayingField.getDefender).size) match {
+            case Some(index) => controller.executeSingleAttackCommand(index)
+            case None => println("❌ Invalid defender index! Try again.")
           }
 
-        case "undo" =>
-          controller.undo()
-          println("🔄 Undo executed!")
-
-        case "redo" =>
-          controller.redo()
-          println("🔁 Redo executed!")
-
-        case "swap" =>
-          println("Select a card index to swap from attacker's hand:")
-          val index = readLine().toIntOption.getOrElse(-1)
-          if (index >= 0) {
-            controller.regularSwap(index)
-            println(s"🔄 Swapped attacker card at index: $index")
-          } else {
-            println("❌ Invalid card index.")
+        /** 🔹 Boost a Defender */
+        case PromptState.Boost =>
+          parser.parseBoost(input, controller.getPlayingField.fieldState.getPlayerDefenders(controller.getPlayingField.getAttacker).size) match {
+            case Some(index) => controller.boostDefender(index)
+            case None => println("❌ Invalid defender index! Try again.")
           }
 
-        case "exit" =>
-          println("👋 Exiting to Main Menu...")
-          inGame = false
-          currentState = MainMenu
+        /** 🔹 Swap a Card */
+        case PromptState.Swap =>
+          parser.parseSwap(input, controller.getPlayingField.fieldState.getPlayerHand(controller.getPlayingField.getAttacker).size) match {
+            case Some(index) => controller.regularSwap(index)
+            case None => println("❌ Invalid swap index! Try again.")
+          }
 
+        /** 🔹 Load Game */
+//        case PromptState.LoadGame =>
+//          parser.parseFilePath(input) match {
+//            case Some() => controller.loadGame()
+//            case None => println("❌ Invalid file path! Try again.")
+//          }
+
+        /** 🔹 Save Game */
+//        case PromptState.SaveGame =>
+//          parser.parseFilePath(input) match {
+//            case Some() => controller.saveGame()
+//            case None => println("❌ Invalid file path! Try again.")
+//          }
+
+        /** ❌ Invalid Input */
         case _ =>
-          println("❌ Invalid command. Type 'attack', 'undo', 'redo', 'swap', or 'exit'.")
+          println("❌ Invalid input. Try again!")
       }
     }
   }
 
-  /** ✅ Observer Pattern: Refresh the game state whenever notified */
   override def update(e: ObservableEvent): Unit = {
-    println("================================")
-    println(displayGameState())
-  }
+    e match {
+      /** 🔴 Quit the game */
+      case ControllerEvents.Quit =>
+        println("👋 Goodbye!")
+        System.exit(0)
 
-  /** ✅ Displays the current game state */
-  def displayGameState(): String = {
+      /** 🎮 Prompt for Player Name Entry */
+//      case ControllerEvents.CreatePlayer =>
+//        promptState = PromptState.PlayerName
+//        prompter.enterName()
 
-    val pf = controller.getPlayingField
-    if(pf == null) {
-      println("not init pf")
-      "stt"
-    } else {
-      val attacker = pf.getAttacker
-      val defender = pf.getDefender
-      val attackingCard = pf.fieldState.getAttackingCard
-      val attackerHand = pf.fieldState.getPlayerHand(attacker).mkString(", ")
-      val defenderHand = pf.fieldState.getPlayerHand(defender).mkString(", ")
-      val defenderField = pf.fieldState.getPlayerDefenders(defender).mkString(", ")
-      val defenderGoalkeeper = pf.fieldState.getPlayerGoalkeeper(defender)
+      /** 🛡️ Prompt for Attacking a Defender */
+      case ControllerEvents.RegularAttack =>
+        promptState = PromptState.Attack
+        prompter.promptAttack()
 
-      s"""🏆 **Current Game State**
-         |--------------------------------
-         |⚔️  Attacker: ${attacker.name}
-         |   🎴 Hand: $attackerHand
-         |   🃏 Attacking Card: $attackingCard
-         |
-         |🛡️  Defender: ${defender.name}
-         |   🎴 Hand: $defenderHand
-         |   🏟️ Field: $defenderField
-         |   🥅 Goalkeeper: $defenderGoalkeeper
-         |--------------------------------
-         |""".stripMargin
+      /** ⚡ Prompt for Boosting a Defender */
+      case ControllerEvents.BoostDefender =>
+        promptState = PromptState.Boost
+        prompter.promptBoost()
+
+      /** 🔄 Prompt for Swapping a Card */
+      case ControllerEvents.RegularSwap =>
+        promptState = PromptState.Swap
+        prompter.promptSwap()
+
+      /** 💾 Load Game */
+      case ControllerEvents.LoadGame =>
+        println("✅ Game loaded successfully!")
+//        printStatusScreen()
+
+      /** 💾 Save Game */
+      case ControllerEvents.SaveGame =>
+        println("✅ Game saved successfully!")
+
+      /** 🔄 Default: Refresh Game Status */
+      case _ =>
+        printStatusScreen()
     }
   }
+
+
 }

@@ -1,17 +1,16 @@
 package model.gameComponent
 
-import model.playerComponent.Player
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 
 import scala.util.Try
 trait IGame {
-  def startGame(): Unit
+  def startGame(player1: String, player2: String): Unit
   def getPlayingField: PlayingField
   def getPlayer1: Player
   def getPlayer2: Player
   def getGameManager: GameManager
-  def setPlayerName(playerIndex: Int, name: String): Unit
   def selectDefenderPosition(): Int
-  def saveGame(filePath: String): Try[Unit]
-  def loadGame(filePath: String): Try[IGame]
+  def saveGame(): Unit
+  def loadGame(): Unit
 }

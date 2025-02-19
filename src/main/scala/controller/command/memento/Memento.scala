@@ -2,14 +2,14 @@ package controller.command.memento
 
 import controller.command.ICommand
 import model.cardComponent.base.Card
-import model.playerComponent.Player
-import model.playerComponent.PlayerAction.PlayerAction
+import model.playerComponent.IPlayer
+import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playingFiledComponent.PlayingField
 
 import scala.collection.mutable
 case class Memento(
-                    attacker: Player,
-                    defender: Player,
+                    attacker: IPlayer,
+                    defender: IPlayer,
                     player1Defenders: List[Card],
                     player2Defenders: List[Card],
                     player1Goalkeeper: Option[Card],
@@ -18,6 +18,6 @@ case class Memento(
                     player2Hand: List[Card],
                     player1Score: Int,
                     player2Score: Int,
-                    player1Actions: Map[PlayerAction, Int],
-                    player2Actions: Map[PlayerAction, Int]
+                    player1Actions: Map[PlayerActionPolicies, Int],
+                    player2Actions: Map[PlayerActionPolicies, Int]
                   )

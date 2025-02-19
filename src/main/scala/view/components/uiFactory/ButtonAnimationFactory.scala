@@ -1,7 +1,7 @@
 package view.components.uiFactory
 
 import javafx.event.EventHandler
-import model.playerComponent.Player
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.Includes.*
 import scalafx.animation.{ScaleTransition, TranslateTransition}

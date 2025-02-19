@@ -6,7 +6,7 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
 import scalafx.scene.input.MouseEvent
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
 import model.playingFiledComponent.PlayingField
 import scalafx.scene.effect.DropShadow
 import scalafx.Includes.*
@@ -15,7 +15,7 @@ import view.components.cardComponents.FieldCard
 import view.components.uiFactory.{BoostLoader, CardAnimationFactory}
 
 /** This version allows selecting ANY card (defenders + goalkeeper) */
-class SelectablePlayersFieldBar(player: Player, playingField: PlayingField) extends PlayersFieldBar(player, playingField) {
+class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) extends PlayersFieldBar(player, playingField) {
 
   /** Store the currently selected card index */
   private var _selectedCardIndex: Option[Int] = None

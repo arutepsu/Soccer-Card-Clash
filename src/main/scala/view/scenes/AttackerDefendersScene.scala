@@ -3,7 +3,7 @@ package view.scenes
 import scalafx.scene.control.Button
 import controller.{ControllerEvents, IController}
 import model.cardComponent.ICard
-import model.playerComponent.Player
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene

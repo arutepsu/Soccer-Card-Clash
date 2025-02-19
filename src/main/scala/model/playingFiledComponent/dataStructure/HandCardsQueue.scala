@@ -1,5 +1,7 @@
-package model.playingFiledComponent.state
+package model.playingFiledComponent.dataStructure
+
 import model.cardComponent.ICard
+
 import scala.collection.mutable
 
 class HandCardsQueue(initialCards: List[ICard]) extends mutable.Queue[ICard] {

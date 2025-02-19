@@ -4,7 +4,7 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.{Insets, Pos}
 import controller.IController
 import view.components.GameLabel
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
 import view.components.playerComponents.PlayerAvatar
 
 import view.utils.Styles
@@ -17,8 +17,8 @@ class PlayersBar(
   alignment = Pos.TOP_RIGHT
   this.getStylesheets.add(Styles.playersBarCss) // ✅ Load external CSS
   styleClass.add("players-bar") // ✅ Apply main styling
-  var attacker : Player = _
-  var defender : Player = _
+  var attacker : IPlayer = _
+  var defender : IPlayer = _
   updateBar()
 
   /** Updates the display when the current player (attacker) changes */

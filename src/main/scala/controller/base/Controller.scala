@@ -1,37 +1,32 @@
 package controller.base
-import controller.{ControllerEvents, IController}
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.HandSwapCommand
+import controller.{ControllerEvents, IController}
 import model.cardComponent.cardFactory.DeckFactory
-import model.playerComponent.Player
+import model.gameComponent.{Game, GameManager, IGame}
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
-import util.UndoManager
+import util.{Observer, UndoManager}
 import view.GameLogger
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.collection.mutable
 import scala.util.Try
-import model.gameComponent.{Game, GameManager, IGame}
-import util.{Observer, UndoManager}
 
 class Controller extends IController {
   private var game: IGame = new Game()
-  private val undoManager = new UndoManager  // 🔥 Move UndoManager to Controller
-
-  def startGame(): Unit = {
-    game.startGame()
+  private val undoManager = new UndoManager
+  
+  def startGame(player1: String, player2: String): Unit = {
+    game.startGame(player1, player2)
     notifyObservers(ControllerEvents.StartGame)
   }
+
 
   def getPlayingField: PlayingField = game.getPlayingField
   def getPlayer1: Player = game.getPlayer1
   def getPlayer2: Player = game.getPlayer2
-
-  def setPlayerName(playerIndex: Int, name: String): Unit = {
-    game.setPlayerName(playerIndex, name)
-    notifyObservers()
-  }
 
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     val command = new SingleAttackCommand(defenderPosition, game.getGameManager)
@@ -81,16 +76,16 @@ class Controller extends IController {
     notifyObservers(ControllerEvents.Redo)
   }
 
-  def saveGame(filePath: String): Unit = {
-    game.saveGame(filePath)
+  def saveGame(): Unit = {
+//    game.saveGame()
     notifyObservers(ControllerEvents.SaveGame)
   }
 
-  def loadGame(filePath: String): Try[Unit] = {
-    game.loadGame(filePath).map { loadedGame =>
-      game = loadedGame
-      notifyObservers(ControllerEvents.LoadGame)
-    }
+  def loadGame(): Unit = {
+    //    game.loadGame().map { loadedGame =>
+    //      game = loadedGame
+    //      notifyObservers(ControllerEvents.LoadGame)
+    //    }
   }
 
 

@@ -9,22 +9,19 @@ import scalafx.scene.image.Image
 import view.scenes.sceneManager.SceneManager
 import view.scenes.MainMenuScene
 import controller.IController
-import util._
-import scalafx.application.Platform
+import util.*
+import scalafx.application.{JFXApp3, Platform}
 import controller.ControllerEvents
 
-class Gui(controller: IController) extends Observer{
-//  controller.add(this)
-  def start(): Unit = {
-    // ✅ Use PrimaryStage from ScalaFX 3.x
-    val stage = new PrimaryStage {
-      title = "Soccer Card Game" // Set the window title
-      icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
+class Gui(controller: IController) extends JFXApp3 with Observer {
 
+  override def start(): Unit = {
+    val stage = new PrimaryStage {
+      title = "Soccer Card Game"
+      icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
     }
-     // ✅ Initialize SceneManager
+
     SceneManager.init(stage, controller)
-//    SceneManager.switchScene(new MainMenuScene(controller).mainMenuScene()) // ✅ Set initial scene
     controller.notifyObservers(ControllerEvents.MainMenu)
   }
 
@@ -32,8 +29,6 @@ class Gui(controller: IController) extends Observer{
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 GUI Received Event: $e")
-
-      // ✅ Instead of switching scenes manually, notify SceneManager
       SceneManager.update(e)
     })
   }

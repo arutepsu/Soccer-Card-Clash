@@ -6,7 +6,8 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
 import scalafx.scene.input.MouseEvent
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.scene.effect.DropShadow
 import scalafx.Includes.*
@@ -20,7 +21,7 @@ import scalafx.Includes.*
 import view.components.cardComponents.FieldCard
 import view.components.uiFactory.CardAnimationFactory
 import view.utils.Styles
-class PlayersFieldBar(player: Player, playingField: PlayingField) extends VBox {
+class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox {
 
   alignment = Pos.CENTER
   spacing = 10

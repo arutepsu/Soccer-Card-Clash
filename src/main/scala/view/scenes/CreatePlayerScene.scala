@@ -19,7 +19,7 @@ import controller.IController
 import util.{ObservableEvent, Observer}
 import scalafx.geometry.Pos
 
-class CreatePlayerCard(controller: IController) extends VBox with Observer { // ✅ Now an Observer
+class CreatePlayerScene(controller: IController) extends VBox with Observer { // ✅ Now an Observer
 
   prefHeight = 600
   prefWidth = 500
@@ -78,18 +78,11 @@ class CreatePlayerCard(controller: IController) extends VBox with Observer { // 
       showAlert("Error", "Exactly 2 players are required to start the game.")
       return
     }
-
-    // ✅ Assign names to players using `setPlayerName`
-    controller.setPlayerName(1, playerNames.head)
-    controller.setPlayerName(2, playerNames(1))
-    
-    if (controller.getPlayingField == null) {
-      println("🎲 Initializing game...")
-      controller.startGame()
-    }
-    
+    controller.startGame(playerNames.head, playerNames(1))
     controller.notifyObservers(ControllerEvents.PlayingField)
   }
+
+
 
   /** ✅ Observer Pattern: Refresh the player names when notified */
   override def update(e: ObservableEvent): Unit = {

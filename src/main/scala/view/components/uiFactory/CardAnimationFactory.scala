@@ -1,22 +1,23 @@
 package view.components.uiFactory
 
 import javafx.event.EventHandler
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.Includes.*
-import scalafx.animation.{ScaleTransition, TranslateTransition, FadeTransition, StrokeTransition}
+import scalafx.animation.{FadeTransition, ScaleTransition, StrokeTransition, TranslateTransition}
 import scalafx.scene.control.Button
 import scalafx.scene.effect.{DropShadow, Glow}
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
 import view.components.cardComponents.{FieldCard, HandCard}
-import scalafx.animation.{ScaleTransition, Timeline, KeyFrame, PauseTransition}
+import scalafx.animation.{KeyFrame, PauseTransition, ScaleTransition, Timeline}
 import scalafx.scene.effect.Glow
 import scalafx.util.Duration
 import scalafx.scene.image.ImageView
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{StackPane, Pane}
+import scalafx.scene.layout.{Pane, StackPane}
 import view.utils.ImageUtils
 import scalafx.collections.ObservableBuffer
 import scalafx.application.Platform
@@ -176,64 +177,7 @@ object CardAnimationFactory {
     }
   }
 
-
-  //  def createFireEffect(card: FieldCard): Unit = {
-//    Platform.runLater {
-//      card.parent.value match {
-//        case javafxParent: javafx.scene.layout.Pane =>
-//          val parentChildren = javafxParent.getChildren
-//
-//          if (parentChildren.contains(card)) {
-//            parentChildren.remove(card)
-//
-//            // 🔥 Create a blinking border frame
-//            val blinkingFrame = new Rectangle {
-//              width = card.width.value
-//              height = card.height.value
-//              arcWidth = 22  // 🔥 Rounded corners for a smooth look
-//              arcHeight = 18
-//              stroke = Color.Gold  // Initial color
-//              strokeWidth = 4
-//              fill = Color.Transparent // Only the frame should be visible
-//            }
-//
-//            // 🔥 Animate the border color (blinking effect)
-//            val borderAnimation = new StrokeTransition(Duration(500), blinkingFrame) {
-//              fromValue = Color.Gold
-//              toValue = Color.Orange
-//              cycleCount = StrokeTransition.Indefinite
-//              autoReverse = true
-//            }
-//
-//            // 🔥 Slight pulsing effect (thickness change)
-//            val fadeEffect = new FadeTransition(Duration(500), blinkingFrame) {
-//              fromValue = 0.7
-//              toValue = 1.0
-//              cycleCount = FadeTransition.Indefinite
-//              autoReverse = true
-//            }
-//
-//            // Start animations
-//            borderAnimation.play()
-//            fadeEffect.play()
-//
-//            val cardStack = new StackPane {
-//              children = Seq(card: scalafx.scene.Node, blinkingFrame: scalafx.scene.Node) // ✅ Explicitly cast to Node
-//              prefWidth = card.width.value
-//              prefHeight = card.height.value
-//            }
-//
-//            parentChildren.add(cardStack)
-//          } else {
-//            println("⚠️ [ERROR] Card was not found in parent container!")
-//          }
-//
-//        case _ =>
-//          println("⚠️ [ERROR] Card has no valid parent container!")
-//      }
-//    }
-//  }
-  def highlightLastHandCard(player: Player, playingField: PlayingField): Option[HandCard] = {
+  def highlightLastHandCard(player: IPlayer, playingField: PlayingField): Option[HandCard] = {
     val hand = playingField.fieldState.getPlayerHand(player)
 
     if (hand.nonEmpty) {

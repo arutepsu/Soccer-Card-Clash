@@ -46,7 +46,7 @@ class MainMenuScene(controller: IController) extends Observer {
 
   // ✅ Create Game Scene
   def createGameScene(): Scene = new Scene {
-    root = new CreatePlayerCard(controller)
+    root = new CreatePlayerScene(controller)
   }
 
   // ✅ Load Game Scene

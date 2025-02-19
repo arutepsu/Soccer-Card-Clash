@@ -1,9 +1,9 @@
 package view.components
 
 import model.cardComponent.base.{Suit, Value}
+import model.playerComponent.base.Player
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
-import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import view.components.cardComponents.{FieldCard, GoalkeeperCard}
 

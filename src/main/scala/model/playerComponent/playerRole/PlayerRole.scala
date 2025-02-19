@@ -1,4 +1,4 @@
-package model.playerComponent.PlayerRole
+package model.playerComponent.playerRole
 
 sealed trait PlayerRole {
   override def toString: String = this match {

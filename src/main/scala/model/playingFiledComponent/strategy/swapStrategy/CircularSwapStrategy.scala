@@ -1,6 +1,7 @@
 package model.playingFiledComponent.strategy.swapStrategy
+
+import model.playingFiledComponent.dataStructure.HandCardsQueue
 import scala.collection.mutable
-import model.playingFiledComponent.state.HandCardsQueue
 class CircularSwapStrategy extends SwapStrategy {
   override def swap(attackerHand: HandCardsQueue, index: Int): Unit = {
     if (attackerHand.getHandSize < 2) {

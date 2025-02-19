@@ -2,12 +2,12 @@ package model.playingFiledComponent.strategy.boostStrategy
 
 import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.cardComponent.ICard
-import model.playerComponent.PlayerAction.PlayerAction
-import model.playingFiledComponent.state.roleState.PlayerRoles
+import model.playerComponent.playerAction.PlayerActionPolicies
+import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.{FieldState, PlayingField}
 class BoostManager(
                     playingField: PlayingField,
-                    roles: PlayerRoles,
+                    roles: RolesManager,
                     fieldState: FieldState
                   ) {
 
@@ -27,7 +27,7 @@ class BoostManager(
     
     fieldState.setPlayerDefenders(roles.attacker, attackersDefenderField)
 
-    roles.attacker.performAction(PlayerAction.Boost)
+    roles.attacker.performAction(PlayerActionPolicies.Boost)
     playingField.notifyObservers()
   }
   
@@ -38,7 +38,7 @@ class BoostManager(
       case Some(goalkeeper) =>
         goalkeeper.boost()
         fieldState.setGoalkeeperForAttacker(goalkeeper)
-        roles.attacker.performAction(PlayerAction.Boost)
+        roles.attacker.performAction(PlayerActionPolicies.Boost)
         playingField.notifyObservers()
       case None =>
     }

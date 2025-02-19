@@ -1,8 +1,8 @@
 package view
 
+import model.playerComponent.base.Player
 import util.GameObserver
 import util.GameEvent
-import model.playerComponent.Player
 
 
 class GameLogger extends GameObserver {

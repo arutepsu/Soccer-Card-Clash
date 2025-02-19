@@ -1,14 +1,14 @@
 package view.components.playerComponents
 
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
 import scalafx.geometry.Pos
 import scalafx.scene.control.Button
-import scalafx.scene.image.{ImageView}
+import scalafx.scene.image.ImageView
 import scalafx.scene.layout.VBox
-import view.utils.ImageUtils // ✅ Import ImageUtils
+import view.utils.ImageUtils
 
 class PlayerAvatar(
-                    player: Player,
+                    player: IPlayer,
                     playerIndex: Int,
                     scaleAvatar: Float,
                     scaleFont: Float,

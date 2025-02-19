@@ -1,5 +1,5 @@
 package view.components.gameComponents
-import scalafx.animation._
+import scalafx.animation.*
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
@@ -8,17 +8,18 @@ import scalafx.scene.effect.DropShadow
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
 import javafx.application.Platform
+
 import scala.concurrent.{ExecutionContext, Future}
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
+import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
-import scalafx.Includes._
+import scalafx.Includes.*
 import view.components.cardComponents.HandCard
 import view.components.uiFactory.CardAnimationFactory
-import scala.math._
-
+import scala.math.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boolean) extends HBox {
+class PlayersHandBar(player: IPlayer, playingField: PlayingField, isLeftSide: Boolean) extends HBox {
 
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
   spacing = Math.max(-30 + (playingField.fieldState.getPlayerHand(player).getHandSize * -2), -50)

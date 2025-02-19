@@ -6,12 +6,12 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.paint.Color
 import scalafx.Includes._
-import model.playerComponent.Player
+import model.playerComponent.IPlayer
 import model.playingFiledComponent.PlayingField
 import view.components.cardComponents.HandCard
 import view.components.uiFactory.CardAnimationFactory
 
-class SelectablePlayersHandBar(player: Player, playingField: PlayingField, isLeftSide: Boolean) extends PlayersHandBar(player, playingField, isLeftSide) {
+class SelectablePlayersHandBar(player: IPlayer, playingField: PlayingField, isLeftSide: Boolean) extends PlayersHandBar(player, playingField, isLeftSide) {
 
   private var _selectedCardIndex: Option[Int] = None
   def selectedCardIndex: Option[Int] = _selectedCardIndex

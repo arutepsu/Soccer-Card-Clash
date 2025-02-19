@@ -137,22 +137,19 @@ import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.util.Duration
 import util.{Observable, ObservableEvent, Observer}
 import view.scenes._
-import view.scenes.CreatePlayerCard
+import view.scenes.CreatePlayerScene
 object SceneManager extends Observable with Observer { // ✅ SceneManager is now also an Observer
   private var stage: Stage = _
   private var lastSceneWidth: Double = 800
   private var lastSceneHeight: Double = 600
   private var currentScene: Option[Scene] = None
-  private var controller: IController = _ // Store reference to controller
+  private var controller: IController = _
 
-  /** ✅ Initialize SceneManager */
   def init(primaryStage: Stage, ctrl: IController): Unit = {
     stage = primaryStage
-    controller = ctrl // Store controller reference
-    controller.add(this) // ✅ Register SceneManager as an Observer
+    controller = ctrl
+    controller.add(this)
   }
-
-  /** ✅ Switch Scene with Fade Transition */
   def switchScene(newScene: Scene): Unit = {
     Platform.runLater(() => {
       val oldSceneOpt = Option(stage.scene)
@@ -176,7 +173,7 @@ object SceneManager extends Observable with Observer { // ✅ SceneManager is no
             fadeIn.interpolator = Interpolator.EaseIn
             fadeIn.play()
 
-            notifyObservers() // ✅ Notify other observers when scene changes
+            notifyObservers()
           }))
 
           fadeOut.play()
@@ -185,45 +182,35 @@ object SceneManager extends Observable with Observer { // ✅ SceneManager is no
           stage.scene = newScene
           currentScene = Some(newScene)
           applySceneSize()
-          notifyObservers() // ✅ Ensure observers (TUI/GUI) are notified
+          notifyObservers()
       }
     })
   }
 
-  /** ✅ Adjust Scene Size */
   private def applySceneSize(): Unit = {
     stage.width = lastSceneWidth
     stage.height = lastSceneHeight
   }
 
-  /** ✅ Refresh Current Scene */
   def refreshCurrentScene(): Unit = {
     Platform.runLater(() => {
       currentScene.foreach(_.root.value.requestLayout())
-      notifyObservers() // ✅ Ensure observers (TUI/GUI) are notified
+      notifyObservers()
     })
   }
 
   private def mainMenuScene: Scene = new MainMenuScene(controller).mainMenuScene()
 
-  // ✅ Create Player Scene (Ensures consistency)
   private def createPlayerScene: Scene = new Scene {
-    root = new CreatePlayerCard(controller) // ✅ Set as root of Scene
+    root = new CreatePlayerScene(controller)
   }
 
-
-  // ✅ Load Game Scene (Restored safely)
-//  private def loadGameScene: Scene = new LoadGameScene(controller)
-
-  // ✅ Playing Field Scene
   private def playingFieldScene: Scene = new PlayingFieldScene(controller, 800, 600)
 
-  // ✅ Use Factory Pattern for Attacker Scenes
   private def attackerHandScene: Scene = AttackerSceneFactory.createAttackerHandScene(controller, Option(controller.getPlayingField), 800, 600)
 
   private def attackerDefendersScene: Scene = AttackerSceneFactory.createAttackerDefendersScene(controller, Option(controller.getPlayingField), 800, 600)
 
-  /** ✅ Observer Pattern: Handle Scene Changes */
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 SceneManager Handling Event: $e")

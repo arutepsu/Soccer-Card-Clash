@@ -1,4 +1,5 @@
-package model.playingFiledComponent.factories
+package model.playerComponent.playerFactory
+
 import model.cardComponent.ICard
 
 import scala.collection.mutable

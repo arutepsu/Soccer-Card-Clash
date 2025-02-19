@@ -1,7 +1,6 @@
 package view.scenes
 import controller.IController
 import sceneManager.SceneManager
-import model.playerComponent.Player
 import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -15,6 +14,7 @@ import view.utils.ImageUtils
 import scalafx.stage.Stage
 import view.utils.Styles
 import controller.ControllerEvents
+import model.playerComponent.base.Player
 import scalafx.application.Platform
 import view.components.gameComponents.ButtonBar
 case class PlayingFieldScene(
@@ -24,7 +24,10 @@ case class PlayingFieldScene(
                             ) extends Scene(windowWidth, windowHeight) with Observer {
 
   this.getStylesheets.add(Styles.playingFieldCss)
-
+  // ✅ Ensure Playing Field Exists Before Accessing Players
+  if (controller.getPlayingField == null) {
+    throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
+  }
   val player1 = controller.getPlayer1
   val player2 = controller.getPlayer2
   val playingField = controller.getPlayingField

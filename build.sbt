@@ -34,6 +34,8 @@ lazy val root = project
   .settings(
     name := "Soccer Card Clash",
     version := "0.1.0-SNAPSHOT",
+    scalacOptions ++= Seq("-encoding", "UTF-8"),
+    javaOptions += "-Dfile.encoding=UTF-8",
     scalaVersion := scala3Version,
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
