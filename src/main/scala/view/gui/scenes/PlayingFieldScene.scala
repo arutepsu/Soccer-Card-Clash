@@ -14,8 +14,6 @@ import view.gui.utils.ImageUtils
 import scalafx.stage.Stage
 import view.gui.utils.Styles
 import controller.Events
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
 import scalafx.application.Platform
 import view.gui.components.sceneBar.ButtonBar
 import view.gui.components.sceneBar.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
@@ -44,7 +42,7 @@ case class PlayingFieldScene(
 
   val attackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
   val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
-  var attackersDefenders = new SelectablePlayersFieldBar(playingField.getAttacker, playingField)
+  var attackersDefenders = new SelectablePlayersFieldBar(playingField.getRoles.attacker, playingField)
 
   val gameStatusBar = new GameStatusBar
 
@@ -61,12 +59,12 @@ case class PlayingFieldScene(
   }
 
   val player1ScoreLabel = new Label {
-    text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
+    text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
   val player2ScoreLabel = new Label {
-    text = s"${player2.name} Score: ${playingField.scores.getScorePlayer2}"
+    text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
     style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
   }
 
@@ -117,8 +115,8 @@ case class PlayingFieldScene(
 
     gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, attacker.name, defender.name)
 
-    player1ScoreLabel.text = s"${player1.name} Score: ${playingField.scores.getScorePlayer1}"
-    player2ScoreLabel.text = s"${player2.name} Score: ${playingField.scores.getScorePlayer2}"
+    player1ScoreLabel.text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
+    player2ScoreLabel.text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
 
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()

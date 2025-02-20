@@ -1,7 +1,6 @@
 package view.gui.action
 
 import controller.IController
-import model.playingFiledComponent.base.PlayingField
 import view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
 import view.gui.components.sceneBar.GameStatusBar
 import view.gui.components.sceneBar.GameStatusMessages

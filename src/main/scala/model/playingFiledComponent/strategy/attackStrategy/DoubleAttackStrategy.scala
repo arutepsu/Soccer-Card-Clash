@@ -1,23 +1,23 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
 class DoubleAttackStrategy extends AttackStrategy {
 
-  override def execute(playingField: PlayingField, defenderIndex: Int): Boolean = {
-    val roles = playingField.roles
-    val fieldState = playingField.dataManager
-    val boostManager = playingField.boostManager
-    val scores = playingField.scores
+  override def execute(playingField: IPlayingField, defenderIndex: Int): Boolean = {
+    val roles = playingField.getRoles
+    val fieldState = playingField.getDataManager
+    val boostManager = playingField.getActionManager.boostManager
+    val scores = playingField.getScores
 
     val attacker = roles.attacker
     val defender = roles.defender
     attacker.performAction(PlayerActionPolicies.DoubleAttack)
-    val attackerHand = playingField.dataManager.getPlayerHand(attacker)
-    val defenderHand = playingField.dataManager.getPlayerHand(defender)
+    val attackerHand = playingField.getDataManager.getPlayerHand(attacker)
+    val defenderHand = playingField.getDataManager.getPlayerHand(defender)
     
     Try {
       if (attackerHand.getHandSize < 2) {

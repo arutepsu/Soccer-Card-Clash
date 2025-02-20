@@ -5,14 +5,14 @@ import model.cardComponent.base.Value.Value
 import model.cardComponent.ICard
 
 object Card {
-  def apply(value: Value, suit: Suit): Card = new RegularCard(value, suit)
+  def apply(value: Value, suit: Suit): ICard = new RegularCard(value, suit)
 }
 
 abstract class Card(val suit: Suit) extends ICard {
 
   def value: Value
 
-  def revertBoost(): Card
+  def revertBoost(): ICard
 
   override def toString: String = s"${value.toString} of ${Suit.suitToString(suit)}"
 
@@ -30,7 +30,7 @@ abstract class Card(val suit: Suit) extends ICard {
     s"${value.toString.toLowerCase.replace(" ", "_")}_of_${Suit.suitToString(suit).toLowerCase}.png"
   }
 
-  override def copy(): Card
+  override def copy(): ICard
   override def hashCode(): Int = (value, suit).##
 
   override def equals(obj: Any): Boolean = obj match {

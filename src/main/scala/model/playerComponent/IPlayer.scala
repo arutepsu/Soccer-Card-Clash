@@ -1,8 +1,6 @@
 package model.playerComponent
 import model.cardComponent.ICard
-import model.cardComponent.base.Card
 import model.playerComponent.playerRole.PlayerRole
-import model.playerComponent.base.Player
 import model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
 trait IPlayer {
   def name: String

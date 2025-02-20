@@ -2,22 +2,10 @@ package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
 import controller.command.base.BaseCommand
-import model.playingFiledComponent.base.{ActionHandler, PlayingField}
+import model.playingFiledComponent.manager.ActionManager
 
-//class BoostGoalkeeperCommand(pf: PlayingField) extends BaseCommand(pf) {
-//  private var boostValue: Int = 0 // ✅ Track boost value separately for undo
-//
-//  override protected def executeAction(): Unit = {
-//    val goalkeeperOpt = pf.fieldState.getPlayerGoalkeeper(pf.getAttacker)
-//
-//    goalkeeperOpt.foreach { goalkeeper =>
-//      boostValue = goalkeeper.getBoostingPolicies // ✅ Get and store boost value
-//      pf.boostManager.chooseBoostCardGoalkeeper() // ✅ Apply the boost
-//    }
-//  }
-//}
-class BoostGoalkeeperCommand(gc: ActionHandler) extends BaseCommand(gc) {
-  private var boostValue: Int = 0 // ✅ Track boost value separately for undo
+class BoostGoalkeeperCommand(gc: ActionManager) extends BaseCommand(gc) {
+  private var boostValue: Int = 0
 
   override protected def executeAction(): Unit = {
     //    val goalkeeperOpt = gc.getGoalkeeper(gc.pf.getAttacker)

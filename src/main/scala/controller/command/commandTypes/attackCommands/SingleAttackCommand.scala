@@ -1,12 +1,12 @@
 package controller.command.commandTypes.attackCommands
 
 import controller.command.base.BaseCommand
-import model.playingFiledComponent.base.{ActionHandler, PlayingField}
+import model.playingFiledComponent.manager.ActionManager
 
-class SingleAttackCommand(defenderIndex: Int, gc: ActionHandler) extends BaseCommand(gc) {
+class SingleAttackCommand(defenderIndex: Int, gc: ActionManager) extends BaseCommand(gc) {
   private var attackSuccessful: Boolean = false
 
   override protected def executeAction(): Unit = {
-    attackSuccessful = gc.attack(defenderIndex) // ✅ Delegate to GameController
+    attackSuccessful = gc.attack(defenderIndex)
   }
 }

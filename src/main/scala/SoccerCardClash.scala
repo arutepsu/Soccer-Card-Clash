@@ -2,7 +2,6 @@ import scalafx.application.JFXApp3
 import controller.{Events, IController}
 import controller.base.Controller
 import model.cardComponent.base.RegularCard
-import model.playingFiledComponent.base.PlayingField
 import view.gui.Gui
 import view.tui.Tui
 

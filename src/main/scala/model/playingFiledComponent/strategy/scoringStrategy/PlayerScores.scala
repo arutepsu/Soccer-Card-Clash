@@ -1,13 +1,13 @@
 package model.playingFiledComponent.strategy.scoringStrategy
 
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 
 class PlayerScores(
+                    playingField: IPlayingField,
                     player1: IPlayer,
                     player2: IPlayer,
-                    playingField: PlayingField,
-                    private var scoringStrategy: ScoringStrategy = new StandardScoring() // ✅ Default Strategy
+                    private var scoringStrategy: ScoringStrategy = new StandardScoring()
                   ) {
   private var player1Score: Int = 0
   private var player2Score: Int = 0

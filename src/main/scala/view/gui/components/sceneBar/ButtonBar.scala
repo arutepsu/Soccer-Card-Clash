@@ -10,9 +10,9 @@ import scalafx.scene.control.Button
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.action._
 import controller.Events
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 
-case class ButtonBar(controller: IController, playingField: PlayingField, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
+case class ButtonBar(controller: IController, playingField: IPlayingField, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
 
 
   val singleAttackButton: Button = ActionButtonFactory.createAttackButton(

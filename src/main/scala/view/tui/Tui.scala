@@ -98,24 +98,24 @@ class Tui(controller: IController) extends Observer {
           }
         /** 🔹 Attack a Defender */
         case PromptState.Attack =>
-          parser.parseAttack(input, controller.getPlayingField.dataManager.getPlayerDefenders(controller.getPlayingField.getDefender).size) match {
+          parser.parseAttack(input, controller.getPlayingField.getDataManager.getPlayerDefenders(controller.getPlayingField.getDefender).size) match {
             case Some(index) => controller.executeSingleAttackCommand(index)
             case None => println("Invalid defender index! Try again.")
           }
         case PromptState.DoubleAttack =>
-          parser.parseAttack(input, controller.getPlayingField.dataManager.getPlayerDefenders(controller.getPlayingField.getDefender).size) match {
+          parser.parseAttack(input, controller.getPlayingField.getDataManager.getPlayerDefenders(controller.getPlayingField.getDefender).size) match {
             case Some(index) => controller.executeDoubleAttackCommand(index)
             case None => println("Invalid defender index! Try again.")
           }
 
         case PromptState.Boost =>
-          parser.parseBoost(input, controller.getPlayingField.dataManager.getPlayerDefenders(controller.getPlayingField.getAttacker).size) match {
+          parser.parseBoost(input, controller.getPlayingField.getDataManager.getPlayerDefenders(controller.getPlayingField.getAttacker).size) match {
             case Some(index) => controller.boostDefender(index)
             case None => println("Invalid defender index! Try again.")
           }
 
         case PromptState.Swap =>
-          parser.parseSwap(input, controller.getPlayingField.dataManager.getPlayerHand(controller.getPlayingField.getAttacker).size) match {
+          parser.parseSwap(input, controller.getPlayingField.getDataManager.getPlayerHand(controller.getPlayingField.getAttacker).size) match {
             case Some(index) => controller.regularSwap(index)
             case None => println("❌ Invalid swap index! Try again.")
           }

@@ -2,11 +2,11 @@ package view.gui.components.sceneBar
 
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
-import controller.base.Controller
+import controller.IController
 import view.gui.components.uiFactory.GameButtonFactory
 import scalafx.scene.control.Button
 
-class BoostBar(controller: Controller) extends HBox {
+class BoostBar(controller: IController) extends HBox {
   spacing = 10
   alignment = Pos.CENTER
 

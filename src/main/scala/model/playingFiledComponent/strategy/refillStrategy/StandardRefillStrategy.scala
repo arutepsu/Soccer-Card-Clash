@@ -1,9 +1,8 @@
 package model.playingFiledComponent.strategy.refillStrategy
 
 import model.cardComponent.ICard
-import model.cardComponent.base.Card
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.DataManager
+import model.playingFiledComponent.manager.DataManager
 
 import scala.collection.mutable
 
@@ -14,34 +13,34 @@ class StandardRefillStrategy extends RefillStrategy {
     val defenderField = fieldState.getPlayerDefenders(defender)
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
     val defenderHand = fieldState.getPlayerHand(defender)
-    
+
     if (goalkeeper.isEmpty && defenderField.isEmpty) {
-      
+
       val newFieldCards = defenderHand.takeRight(4).toList
       defenderHand.dropRightInPlace(4)
       val highestCard = newFieldCards.maxBy(card => card.valueToInt)
       fieldState.setPlayerGoalkeeper(defender, Some(highestCard))
       val newDefenders = newFieldCards.filterNot(_ == highestCard)
       fieldState.setPlayerDefenders(defender, newDefenders)
-      
+
     } else if (defenderField.size < 3) {
-      
+
       val neededDefenders = 3 - defenderField.size
       val additionalCards = defenderHand.takeRight(neededDefenders).toList
       defenderHand.dropRightInPlace(neededDefenders)
       val updatedDefenders = defenderField ++ additionalCards
       val highestDefenderCard = updatedDefenders.maxBy(card => card.valueToInt)
-      
+
       if (highestDefenderCard.valueToInt > goalkeeper.get.valueToInt) {
-        
+
         val currentGoalkeeperCard = goalkeeper.get
         fieldState.setPlayerGoalkeeper(defender, Some(highestDefenderCard))
         fieldState.setPlayerDefenders(defender, updatedDefenders.filterNot(_ == highestDefenderCard) :+ currentGoalkeeperCard)
-        
+
       } else {
-        
+
         fieldState.setPlayerDefenders(defender, updatedDefenders)
-        
+
       }
     }
   }

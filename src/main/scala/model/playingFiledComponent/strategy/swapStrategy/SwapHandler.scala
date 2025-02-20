@@ -1,11 +1,10 @@
 package model.playingFiledComponent.strategy.swapStrategy
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerRole.RolesManager
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 
 class SwapHandler(
-                   playingField: PlayingField,
+                   playingField: IPlayingField,
                    roles: RolesManager,
                    private var swapStrategy: SwapStrategy = new HandSwapStrategy()
                  ) {
@@ -14,7 +13,7 @@ class SwapHandler(
     swapStrategy = newStrategy
   }
   def swapAttacker(index: Int): Unit = {
-    val attackerHand = playingField.dataManager.getPlayerHand(roles.attacker)
+    val attackerHand = playingField.getDataManager.getPlayerHand(roles.attacker)
     swapStrategy.swap(attackerHand, index)
     roles.attacker.performAction(PlayerActionPolicies.Swap)
     playingField.notifyObservers()

@@ -1,7 +1,7 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 
 trait AttackStrategy {
-  def execute(playingField: PlayingField, defenderIndex: Int): Boolean
+  def execute(playingField: IPlayingField, defenderIndex: Int): Boolean
 }

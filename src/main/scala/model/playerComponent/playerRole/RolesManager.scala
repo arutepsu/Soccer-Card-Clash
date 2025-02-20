@@ -2,10 +2,9 @@ package model.playerComponent.playerRole
 
 import model.playerComponent.IPlayer
 import model.playerComponent.playerRole.PlayerRole
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 
-class RolesManager(player1: IPlayer, player2: IPlayer, playingField: PlayingField) {
+class RolesManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer) {
   var attacker: IPlayer = player1
   var defender: IPlayer = player2
   def switchRoles(): Unit = {

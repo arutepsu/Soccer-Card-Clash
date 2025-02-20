@@ -3,7 +3,7 @@ package view.gui.components.sceneBar.cardBar
 import model.cardComponent.ICard
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
@@ -16,7 +16,7 @@ import view.gui.components.uiFactory.{BoostLoader, CardAnimationFactory}
 import view.gui.components.sceneBar.cardBar.PlayersFieldBar
 
 /** This version allows selecting ANY card (defenders + goalkeeper) */
-class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) extends PlayersFieldBar(player, playingField) {
+class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends PlayersFieldBar(player, playingField) {
 
   /** Store the currently selected card index */
   private var _selectedCardIndex: Option[Int] = None
@@ -34,8 +34,8 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
 
   /** Store the currently selected card */
   private var selectedCard: Option[FieldCard] = None
-  def getDefenderCards: List[ICard] = playingField.dataManager.getPlayerDefenders(player)
-  def getGoalkeeperCard: Option[ICard] = playingField.dataManager.getPlayerGoalkeeper(player)
+  def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
+  def getGoalkeeperCard: Option[ICard] = playingField.getDataManager.getPlayerGoalkeeper(player)
 
   /** ✅ Creates Defender Row (Selectable) */
   override def createDefenderRow(): HBox = {
@@ -83,7 +83,7 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
   def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
   
   override def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.dataManager.getPlayerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.getDataManager.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }

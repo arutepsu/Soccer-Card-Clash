@@ -3,8 +3,7 @@ package view.gui.scenes
 import scalafx.scene.control.Button
 import controller.{Events, IController}
 import model.cardComponent.ICard
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
@@ -17,13 +16,13 @@ import view.gui.components.sceneBar.cardBar.SelectablePlayersFieldBar
 import view.gui.action.{ActionButtonFactory, BoostButton}
 case class AttackerDefendersScene(
                                    controller: IController,
-                                   playingField: Option[PlayingField],
+                                   playingField: Option[IPlayingField],
                                    windowWidth: Double,
                                    windowHeight: Double,
                                  ) extends Scene(windowWidth, windowHeight) with Observer {
 
   val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
-    new SelectablePlayersFieldBar(pf.getAttacker, pf)
+    new SelectablePlayersFieldBar(pf.getRoles.attacker, pf)
   }
   val gameStatusBar = new GameStatusBar
   val playerGoalkeeper: Option[ICard] = attackerDefenderField.flatMap(_.getGoalkeeperCard)

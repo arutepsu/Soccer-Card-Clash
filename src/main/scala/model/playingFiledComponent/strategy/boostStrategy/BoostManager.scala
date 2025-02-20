@@ -4,10 +4,11 @@ import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.cardComponent.ICard
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerRole.RolesManager
-import model.playingFiledComponent.base.{DataManager, PlayingField}
+import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.manager.DataManager
 
 class BoostManager(
-                    playingField: PlayingField,
+                    playingField: IPlayingField,
                     roles: RolesManager,
                     fieldState: DataManager
                   ) {

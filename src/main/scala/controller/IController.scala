@@ -2,7 +2,7 @@ package controller
 import controller.command.ICommand
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import util.{Observable, ObservableEvent, Observer, UndoManager}
 
 import scala.collection.mutable
@@ -10,7 +10,7 @@ import scala.io.StdIn.readLine
 import scala.util.{Failure, Success, Try}
 
 trait IController extends Observable {
-  def getPlayingField: PlayingField
+  def getPlayingField: IPlayingField
   def getPlayer1: IPlayer
   def getPlayer2: IPlayer
   def startGame(player1: String, player2: String): Unit

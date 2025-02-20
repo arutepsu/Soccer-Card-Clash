@@ -1,7 +1,7 @@
 package view.gui.scenes
 
 import controller.{Events, IController}
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
@@ -16,20 +16,20 @@ import view.gui.components.sceneBar.cardBar.SelectablePlayersHandBar
 import view.gui.action.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
 case class AttackerHandScene(
                               controller: IController,
-                              playingField: Option[PlayingField],
+                              playingField: Option[IPlayingField],
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
 
   this.getStylesheets.add(Styles.attackerHandSceneCss)
-  var getPlayingField: PlayingField = playingField.get
+  var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
   val backgroundView = new Region {
     style = "-fx-background-color: black;"
   }
 
   val attackerHandBar: Option[SelectablePlayersHandBar] = playingField.map { pf =>
-    val handBar = new SelectablePlayersHandBar(pf.getAttacker, pf, isLeftSide = true)
+    val handBar = new SelectablePlayersHandBar(pf.getRoles.attacker, pf, isLeftSide = true)
     handBar.styleClass.add("selectable-hand-bar")
     handBar
   }

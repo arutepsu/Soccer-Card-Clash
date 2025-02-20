@@ -1,13 +1,13 @@
 package view.gui.components
 
 import model.cardComponent.base.{Suit, Value}
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
+import model.playerComponent.IPlayer
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
 import view.gui.components.cardView.{FieldCard, GoalkeeperCard}
 
-class PlayerFieldCards(player: Player, playingField: PlayingField) extends VBox {
+class PlayerFieldCards(player: IPlayer, playingField: IPlayingField) extends VBox {
 //
 //  alignment = Pos.CENTER
 //  spacing = 10

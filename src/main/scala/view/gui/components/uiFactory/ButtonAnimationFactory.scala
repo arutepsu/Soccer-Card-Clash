@@ -1,8 +1,6 @@
 package view.gui.components.uiFactory
 
 import javafx.event.EventHandler
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
 import scalafx.Includes.*
 import scalafx.animation.{ScaleTransition, TranslateTransition}
 import scalafx.scene.control.Button

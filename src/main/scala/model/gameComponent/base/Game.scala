@@ -1,34 +1,34 @@
-package model.gameComponent
+package model.gameComponent.base
 
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.HandSwapCommand
 import model.cardComponent.cardFactory.DeckFactory
-import model.playerComponent.playerRole.{Attacker, Defender}
-import model.playerComponent.base.Player
-import util.UndoManager
+import model.gameComponent.IGame
+import model.playerComponent.IPlayer
 import model.playerComponent.playerFactory.PlayerFactory
+import model.playerComponent.playerRole.{Attacker, Defender}
+import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.manager.ActionManager
+import util.UndoManager
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.util.Try
-import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.{ActionHandler, PlayingField}
 
 class Game extends IGame {
   private var player1: IPlayer = _
   private var player2: IPlayer = _
-  private var playingField: PlayingField = _
-  private var gameManager: ActionHandler = _
+  private var playingField: IPlayingField = _
+  private var actionManager: ActionManager = _
 
-  override def getPlayingField: PlayingField = playingField
+  override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-  def getGameManager: ActionHandler = gameManager
+  def getGameManager: ActionManager = actionManager
 
 
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
-    println(s"🃏 Creating players: $playerName1 (Attacker) and $playerName2 (Defender)")
-
     val deck = DeckFactory.createDeck()
 
     DeckFactory.shuffleDeck(deck)
@@ -36,10 +36,6 @@ class Game extends IGame {
     val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
     val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
 
-    println(s"🎴 $playerName1's Hand: ${hand1.mkString(", ")}")
-    println(s"🎴 $playerName2's Hand: ${hand2.mkString(", ")}")
-
-    // ✅ Use PlayerFactory to create players
     val player1 = PlayerFactory.createPlayer(playerName1, hand1.toList)
     val player2 = PlayerFactory.createPlayer(playerName2, hand2.toList)
 
@@ -55,16 +51,16 @@ class Game extends IGame {
 
     playingField = new PlayingField(player1, player2)
 
-    playingField.dataManager.initializePlayerHands(player1.getCards, player2.getCards)
+    playingField.getDataManager.initializePlayerHands(player1.getCards, player2.getCards)
 
     playingField.setPlayingField()
 
-    gameManager = new ActionHandler(playingField)
+    actionManager = new ActionManager(playingField)
   }
 
 
   override def selectDefenderPosition(): Int =
-    if (playingField.dataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
+    if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
 
   override def saveGame(): Unit =
     Try {

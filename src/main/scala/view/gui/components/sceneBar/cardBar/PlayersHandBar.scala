@@ -2,8 +2,7 @@ package view.gui.components.sceneBar.cardBar
 
 import javafx.application.Platform
 import model.playerComponent.IPlayer
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.animation.*
 import scalafx.geometry.Pos
@@ -20,10 +19,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.math.*
 
-class PlayersHandBar(player: IPlayer, playingField: PlayingField, isLeftSide: Boolean) extends HBox {
+class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: Boolean) extends HBox {
 
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
-  spacing = Math.max(-30 + (playingField.dataManager.getPlayerHand(player).getHandSize * -2), -50)
+  spacing = Math.max(-30 + (playingField.getDataManager.getPlayerHand(player).getHandSize * -2), -50)
 
 
   private var selectedCard: Option[HandCard] = None
@@ -36,7 +35,7 @@ class PlayersHandBar(player: IPlayer, playingField: PlayingField, isLeftSide: Bo
 
   /** Creates ImageViews for all Hand Cards with visual effects */
   def createHandCardRow(): HBox = {
-    val hand = playingField.dataManager.getPlayerHand(player)
+    val hand = playingField.getDataManager.getPlayerHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val isLastCard = index == hand.getHandSize - 1
 //      val handCard = new HandCard(flipped = !isLastCard, card = card)

@@ -1,7 +1,6 @@
 package model.playerComponent.base
 
 import model.cardComponent.ICard
-import model.cardComponent.base.Card
 import model.playerComponent.IPlayer
 import model.playerComponent.playerAction._
 import model.playerComponent.playerRole.PlayerRole

@@ -1,7 +1,7 @@
 package model.playingFiledComponent.strategy.refillStrategy
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.DataManager
+import model.playingFiledComponent.manager.DataManager
 
 import scala.collection.mutable
 

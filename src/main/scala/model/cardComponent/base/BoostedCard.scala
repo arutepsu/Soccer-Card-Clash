@@ -14,14 +14,9 @@ class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 
     .find(v => Value.valueToInt(originalValue) + additionalValue == Value.valueToInt(v))
     .getOrElse(originalValue)
 
-  override def boost(): Card = {
-    this
-  }
+  override def boost(): ICard = this
 
-  override def revertBoost(): Card = {
-    baseCard.setValue(originalValue)
-    baseCard
-  }
+  override def revertBoost(): Card = new RegularCard(originalValue, baseCard.suit)
 
   override def copy(): Card = new BoostedCard(baseCard, additionalValue)
 }

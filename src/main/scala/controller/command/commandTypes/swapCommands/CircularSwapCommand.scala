@@ -1,21 +1,11 @@
 package controller.command.commandTypes.swapCommands
 
 import controller.command.base.BaseCommand
-import model.playingFiledComponent.base.{ActionHandler, PlayingField}
+import model.playingFiledComponent.manager.ActionManager
 
-//class CircularSwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
-//
-//  override protected def executeAction(): Unit = {
-//    // ✅ Ensure the strategy is set to CircularSwap before execution
-//    pf.setSwapStrategy("circular")
-//    pf.swapAttacker(cardIndex)
-//  }
-//}
-//
-class CircularSwapCommand(cardIndex: Int, gc: ActionHandler) extends BaseCommand(gc) {
+class CircularSwapCommand(cardIndex: Int, gc: ActionManager) extends BaseCommand(gc) {
 
   override protected def executeAction(): Unit = {
-    // ✅ Delegate swap logic to GameController
     gc.circularSwap(cardIndex)
   }
 }

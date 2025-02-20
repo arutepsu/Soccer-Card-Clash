@@ -1,22 +1,21 @@
-package model.playingFiledComponent.base
+package model.playingFiledComponent.manager
 
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playerComponent.base.Player
 import model.playerComponent.playerFactory.PlayerHandFactory
+import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import model.playingFiledComponent.strategy.refillStrategy.*
-
 import scala.collection.mutable
-class DataManager(val playingField: PlayingField, val player1: IPlayer, val player2: IPlayer) {
-  
-  def getPlayingField: PlayingField = playingField
+class DataManager(val playingField: IPlayingField, val player1: IPlayer, val player2: IPlayer) {
+
+  def getPlayingField: IPlayingField = playingField
   def getPlayer1: IPlayer = player1
   def getPlayer2: IPlayer = player2
-  
+
   private var player1Hand: HandCardsQueue = new HandCardsQueue(List())
   private var player2Hand: HandCardsQueue = new HandCardsQueue(List())
-  
+
   def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
     player1Hand = new HandCardsQueue(player1Cards)
     player2Hand = new HandCardsQueue(player2Cards)
@@ -30,7 +29,7 @@ class DataManager(val playingField: PlayingField, val player1: IPlayer, val play
 
   def setPlayerHand(player: IPlayer, newHand: HandCardsQueue): Unit =
     if (player == player1) player1Hand = newHand else player2Hand = newHand
-  
+
   private var refillStrategy: RefillStrategy = new StandardRefillStrategy()
 
   def setRefillStrategy(strategy: RefillStrategy): Unit = refillStrategy = strategy
@@ -40,7 +39,7 @@ class DataManager(val playingField: PlayingField, val player1: IPlayer, val play
 
   private def refillField(player: IPlayer, hand: HandCardsQueue): Unit =
     refillStrategy.refillField(this, player, hand.getCards)
-  
+
   private var player1Field: List[ICard] = List()
   private var player2Field: List[ICard] = List()
 
@@ -67,7 +66,7 @@ class DataManager(val playingField: PlayingField, val player1: IPlayer, val play
 
   def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit =
     if (player == player1) player1Defenders = newDefenderField else player2Defenders = newDefenderField
-  
+
   def setGoalkeeperForAttacker(card: ICard): Unit = {
     if (playingField.getAttacker == player1) player1Goalkeeper = Some(card)
     else player2Goalkeeper = Some(card)

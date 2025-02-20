@@ -1,7 +1,7 @@
 package view.gui.components.sceneBar.cardBar
 
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.geometry.Pos
 import scalafx.scene.effect.DropShadow
@@ -12,13 +12,13 @@ import view.gui.components.cardView.HandCard
 import view.gui.components.uiFactory.CardAnimationFactory
 import view.gui.components.sceneBar.cardBar.PlayersHandBar
 
-class SelectablePlayersHandBar(player: IPlayer, playingField: PlayingField, isLeftSide: Boolean) extends PlayersHandBar(player, playingField, isLeftSide) {
+class SelectablePlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: Boolean) extends PlayersHandBar(player, playingField, isLeftSide) {
 
   private var _selectedCardIndex: Option[Int] = None
   def selectedCardIndex: Option[Int] = _selectedCardIndex
 
   override def createHandCardRow(): HBox = {
-    val hand = playingField.dataManager.getPlayerHand(player)
+    val hand = playingField.getDataManager.getPlayerHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val handCard = new HandCard(flipped = false, card = card)
       handCard.effect = new DropShadow(10, Color.BLACK)

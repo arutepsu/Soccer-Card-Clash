@@ -3,8 +3,7 @@ package view.gui.components.sceneBar.cardBar
 import model.cardComponent.ICard
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.IPlayer
-import model.playerComponent.base.Player
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.animation.ScaleTransition
 import scalafx.geometry.Pos
@@ -17,7 +16,8 @@ import scalafx.util.Duration
 import view.gui.components.cardView.FieldCard
 import view.gui.components.uiFactory.CardAnimationFactory
 import view.gui.utils.Styles
-class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox {
+import model.playingFiledComponent.IPlayingField
+class PlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends VBox {
 
   alignment = Pos.CENTER
   spacing = 10
@@ -38,7 +38,7 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
   }
 
   /** Retrieves defender cards */
-  private def getDefenderCards: List[ICard] = playingField.dataManager.getPlayerDefenders(player)
+  private def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
 
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card
@@ -116,7 +116,7 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
 
   /** **Creates UI row for goalkeeper card** */
   def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.dataManager.getPlayerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.getDataManager.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }

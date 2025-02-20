@@ -1,6 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
-import model.playingFiledComponent.base.PlayingField
+import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
@@ -10,7 +10,7 @@ class AttackHandler(var strategy: AttackStrategy) {
     this.strategy = newStrategy
   }
 
-  def executeAttack(playingField: PlayingField, defenderIndex: Int): Boolean = {
+  def executeAttack(playingField: IPlayingField, defenderIndex: Int): Boolean = {
     strategy.execute(playingField, defenderIndex)
   }
 }
