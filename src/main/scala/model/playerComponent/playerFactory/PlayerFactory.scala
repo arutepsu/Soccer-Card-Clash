@@ -5,7 +5,7 @@ import model.playerComponent.IPlayer
 import model.playerComponent.playerRole.PlayerRole
 import model.playerComponent.base.Player
 object PlayerFactory {
-  def createPlayer(name: String, role: PlayerRole, cards: List[ICard]): IPlayer = {
-    Player(name, role, cards)
+  def createPlayer(name: String, cards: List[ICard]): IPlayer = {
+    Player(name, cards)
   }
 }

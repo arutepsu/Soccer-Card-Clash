@@ -31,4 +31,10 @@ abstract class Card(val suit: Suit) extends ICard {
   }
 
   override def copy(): Card
+  override def hashCode(): Int = (value, suit).##
+
+  override def equals(obj: Any): Boolean = obj match {
+    case card: ICard => this.value == card.value && this.suit == card.suit
+    case _ => false
+  }
 }

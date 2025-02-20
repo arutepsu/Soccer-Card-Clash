@@ -1,7 +1,7 @@
 package model.playingFiledComponent.strategy.scoringStrategy
 
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 
 class PlayerScores(
                     player1: IPlayer,

@@ -1,7 +1,7 @@
 package view.gui.action
 
 import controller.IController
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import view.gui.scenes.PlayingFieldScene
 import view.gui.components.sceneBar.GameStatusBar
 import view.gui.scenes.PlayingFieldScene

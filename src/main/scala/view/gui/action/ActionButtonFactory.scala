@@ -1,10 +1,10 @@
 package view.gui.action
 
 import controller.IController
+import model.playingFiledComponent.base.PlayingField
 import view.gui.scenes.{AttackerDefendersScene, AttackerHandScene, PlayingFieldScene}
 import view.gui.components.uiFactory.GameButtonFactory
 import scalafx.scene.control.Button
-import model.playingFiledComponent.PlayingField
 object ActionButtonFactory {
 
   def createAttackButton(

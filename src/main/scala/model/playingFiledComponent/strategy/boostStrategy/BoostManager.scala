@@ -4,11 +4,12 @@ import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.cardComponent.ICard
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerRole.RolesManager
-import model.playingFiledComponent.{FieldState, PlayingField}
+import model.playingFiledComponent.base.{DataManager, PlayingField}
+
 class BoostManager(
                     playingField: PlayingField,
                     roles: RolesManager,
-                    fieldState: FieldState
+                    fieldState: DataManager
                   ) {
 
   def chooseBoostCardDefender(index: Int): Unit = {

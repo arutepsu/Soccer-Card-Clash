@@ -1,13 +1,14 @@
 package controller.base
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
-import controller.command.commandTypes.swapCommands.HandSwapCommand
+import controller.command.commandTypes.swapCommands.{CircularSwapCommand, HandSwapCommand}
 import controller.{Events, IController}
 import model.cardComponent.cardFactory.DeckFactory
-import model.gameComponent.{Game, GameManager, IGame}
-import model.playerComponent.base.Player
-import model.playingFiledComponent.PlayingField
+import model.gameComponent.{Game, IGame}
+import model.playerComponent.IPlayer
+import model.playingFiledComponent.base.{ActionHandler, PlayingField}
 import util.{Observer, UndoManager}
+import controller.command.ICommand
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.collection.mutable
@@ -22,46 +23,76 @@ class Controller extends IController {
     notifyObservers(Events.StartGame)
   }
 
-
   def getPlayingField: PlayingField = game.getPlayingField
-  def getPlayer1: Player = game.getPlayer1
-  def getPlayer2: Player = game.getPlayer2
+  def getPlayer1: IPlayer = game.getPlayer1
+  def getPlayer2: IPlayer = game.getPlayer2
+  /** ✅ Centralized Command Execution */
+  private def executeCommand(command: ICommand, event: Events): Unit = {
+    undoManager.doStep(command)
+    notifyObservers(event)
+  }
 
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
-    val command = new SingleAttackCommand(defenderPosition, game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.RegularAttack)
+    executeCommand(new SingleAttackCommand(defenderPosition, game.getGameManager), Events.RegularAttack)
   }
 
   def executeDoubleAttackCommand(defenderPosition: Int): Unit = {
-    val command = new DoubleAttackCommand(defenderPosition, game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.DoubleAttack)
+    executeCommand(new DoubleAttackCommand(defenderPosition, game.getGameManager), Events.DoubleAttack)
   }
 
+  /** ✅ Boost Commands */
   def boostDefender(defenderPosition: Int): Unit = {
-    val command = new BoostDefenderCommand(defenderPosition, game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.BoostDefender)
+    executeCommand(new BoostDefenderCommand(defenderPosition, game.getGameManager), Events.BoostDefender)
   }
 
   def boostGoalkeeper(): Unit = {
-    val command = new BoostGoalkeeperCommand(game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.BoostGoalkeeper)
+    executeCommand(new BoostGoalkeeperCommand(game.getGameManager), Events.BoostGoalkeeper)
   }
 
+  /** ✅ Swap Commands */
   def regularSwap(index: Int): Unit = {
-    val command = new HandSwapCommand(index, game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.RegularSwap)
+    executeCommand(new HandSwapCommand(index, game.getGameManager), Events.RegularSwap)
   }
 
   def circularSwap(index: Int): Unit = {
-    val command = new HandSwapCommand(index, game.getGameManager)
-    undoManager.doStep(command)
-    notifyObservers(Events.CircularSwap)
+    executeCommand(new CircularSwapCommand(index, game.getGameManager), Events.CircularSwap)
   }
+
+  //  def executeSingleAttackCommand(defenderPosition: Int): Unit = {
+//    val command = new SingleAttackCommand(defenderPosition, game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.RegularAttack)
+//  }
+//
+//  def executeDoubleAttackCommand(defenderPosition: Int): Unit = {
+//    val command = new DoubleAttackCommand(defenderPosition, game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.DoubleAttack)
+//  }
+//
+//  def boostDefender(defenderPosition: Int): Unit = {
+//    val command = new BoostDefenderCommand(defenderPosition, game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.BoostDefender)
+//  }
+//
+//  def boostGoalkeeper(): Unit = {
+//    val command = new BoostGoalkeeperCommand(game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.BoostGoalkeeper)
+//  }
+//
+//  def regularSwap(index: Int): Unit = {
+//    val command = new HandSwapCommand(index, game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.RegularSwap)
+//  }
+//
+//  def circularSwap(index: Int): Unit = {
+//    val command = new HandSwapCommand(index, game.getGameManager)
+//    undoManager.doStep(command)
+//    notifyObservers(Events.CircularSwap)
+//  }
 
   def selectDefenderPosition(): Int = game.selectDefenderPosition()
 

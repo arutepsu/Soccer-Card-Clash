@@ -4,7 +4,7 @@ import controller.command.ICommand
 import model.cardComponent.base.Card
 import model.playerComponent.IPlayer
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 
 import scala.collection.mutable
 case class Memento(

@@ -1,7 +1,7 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
@@ -9,15 +9,15 @@ class DoubleAttackStrategy extends AttackStrategy {
 
   override def execute(playingField: PlayingField, defenderIndex: Int): Boolean = {
     val roles = playingField.roles
-    val fieldState = playingField.fieldState
+    val fieldState = playingField.dataManager
     val boostManager = playingField.boostManager
     val scores = playingField.scores
 
     val attacker = roles.attacker
     val defender = roles.defender
     attacker.performAction(PlayerActionPolicies.DoubleAttack)
-    val attackerHand = playingField.fieldState.getPlayerHand(attacker)
-    val defenderHand = playingField.fieldState.getPlayerHand(defender)
+    val attackerHand = playingField.dataManager.getPlayerHand(attacker)
+    val defenderHand = playingField.dataManager.getPlayerHand(defender)
     
     Try {
       if (attackerHand.getHandSize < 2) {
@@ -39,7 +39,7 @@ class DoubleAttackStrategy extends AttackStrategy {
           attackerHand.addCard(attackingCard1)
           attackerHand.addCard(attackingCard2)
           attackerHand.addCard(boostManager.revertCard(goalkeeper))
-
+          fieldState.removeDefenderGoalkeeper(defender)
           // Remove the goalkeeper after scoring
           fieldState.setPlayerGoalkeeper(defender, None)
           fieldState.setPlayerDefenders(defender, List.empty)
@@ -55,6 +55,7 @@ class DoubleAttackStrategy extends AttackStrategy {
           defenderHand.addCard(attackingCard1)
           defenderHand.addCard(attackingCard2)
           defenderHand.addCard(boostManager.revertCard(goalkeeper))
+          fieldState.removeDefenderGoalkeeper(defender)
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
           playingField.notifyObservers()

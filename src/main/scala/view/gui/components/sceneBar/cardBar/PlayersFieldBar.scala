@@ -4,7 +4,7 @@ import model.cardComponent.ICard
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.Includes.*
 import scalafx.animation.ScaleTransition
 import scalafx.geometry.Pos
@@ -38,7 +38,7 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
   }
 
   /** Retrieves defender cards */
-  private def getDefenderCards: List[ICard] = playingField.fieldState.getPlayerDefenders(player)
+  private def getDefenderCards: List[ICard] = playingField.dataManager.getPlayerDefenders(player)
 
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card
@@ -65,11 +65,6 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
   def createDefenderRow(): HBox = {
     val defenderCards = getDefenderCards // ✅ Get the latest defenders
 
-    println(s"🛡️ Creating defender row for ${player.name} with updated cards: $defenderCards")
-
-    defenderCards.zipWithIndex.foreach { case (card, index) =>
-      println(s"🔍 Defender Card at index $index: $card (Type: ${card.getClass.getSimpleName})")
-    }
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
@@ -78,11 +73,8 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
       // ✅ Use isInstanceOf to detect BoostedCard2
       defenderCard.card match
         case boostedCard: BoostedCard =>
-          println(s"✅ !!!!!!!!!!!!!!!!!!!!BoostedCard2 detected: $boostedCard")
-          println("⚡ Applying Boost Effect")
           CardAnimationFactory.applyBoostEffect(defenderCard)
         case _ =>
-          println("❌ No boost effect applied.")
 
       defenderCard.onMouseEntered = (_: MouseEvent) =>
         CardAnimationFactory.applyHoverEffect(defenderCard, _selectedDefenderIndex, index)
@@ -124,7 +116,7 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
 
   /** **Creates UI row for goalkeeper card** */
   def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.fieldState.getPlayerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.dataManager.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
@@ -132,7 +124,6 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
       case boosted: BoostedCard =>
         CardAnimationFactory.applyBoostEffect(goalkeeperCard)
       case _ =>
-        println("No boost effect applied.") // Optional debug message
     }
 
     goalkeeperCard.styleClass.add("field-card") // ✅ Apply styling
@@ -157,11 +148,8 @@ class PlayersFieldBar(player: IPlayer, playingField: PlayingField) extends VBox 
 
   /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
   def updateBar(): Unit = {
-    println(s"🔄 Updating defender's field for ${player.name}...")
     children.clear()
     children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow()) // No updateGoalkeeper()
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! herer :L ")
-    print(playingField.fieldState.getPlayerField(player))
     playingField.notifyObservers() // ✅ Ensure UI refreshes
   }
 

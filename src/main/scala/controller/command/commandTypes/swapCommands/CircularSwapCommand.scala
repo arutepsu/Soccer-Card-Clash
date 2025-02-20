@@ -1,8 +1,8 @@
 package controller.command.commandTypes.swapCommands
 
 import controller.command.base.BaseCommand
-import model.gameComponent.GameManager
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.{ActionHandler, PlayingField}
+
 //class CircularSwapCommand(cardIndex: Int, pf: PlayingField) extends BaseCommand(pf) {
 //
 //  override protected def executeAction(): Unit = {
@@ -12,7 +12,7 @@ import model.playingFiledComponent.PlayingField
 //  }
 //}
 //
-class CircularSwapCommand(cardIndex: Int, gc: GameManager) extends BaseCommand(gc) {
+class CircularSwapCommand(cardIndex: Int, gc: ActionHandler) extends BaseCommand(gc) {
 
   override protected def executeAction(): Unit = {
     // ✅ Delegate swap logic to GameController

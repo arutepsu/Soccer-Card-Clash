@@ -1,6 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}

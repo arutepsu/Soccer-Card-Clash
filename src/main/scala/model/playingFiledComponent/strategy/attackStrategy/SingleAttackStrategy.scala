@@ -1,6 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy
 
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
 
 import scala.util.{Failure, Success, Try}
@@ -8,14 +8,14 @@ import scala.util.{Failure, Success, Try}
 class SingleAttackStrategy extends AttackStrategy{
   override def execute(playingField: PlayingField, defenderIndex: Int): Boolean = {
     val roles = playingField.roles
-    val fieldState = playingField.fieldState
+    val fieldState = playingField.dataManager
     val boostManager = playingField.boostManager
     val scores = playingField.scores
 
     val attacker = roles.attacker
     val defender = roles.defender
-    val attackerHand = playingField.fieldState.getPlayerHand(attacker)
-    val defenderHand = playingField.fieldState.getPlayerHand(defender)
+    val attackerHand = playingField.dataManager.getPlayerHand(attacker)
+    val defenderHand = playingField.dataManager.getPlayerHand(defender)
 
     Try {
       val attackingCard = attackerHand.removeLastCard()
@@ -34,7 +34,7 @@ class SingleAttackStrategy extends AttackStrategy{
 
           attackerHand.addCard(attackingCard)
           attackerHand.addCard(boostManager.revertCard(goalkeeper))
-
+          fieldState.removeDefenderGoalkeeper(defender)
           fieldState.setPlayerGoalkeeper(defender, None)
           fieldState.setPlayerDefenders(defender, List.empty)
           scores.scoreGoal(attacker) // ✅ Update score
@@ -48,6 +48,7 @@ class SingleAttackStrategy extends AttackStrategy{
 
           defenderHand.addCard(attackingCard)
           defenderHand.addCard(boostManager.revertCard(goalkeeper))
+          fieldState.removeDefenderGoalkeeper(defender)
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
           playingField.notifyObservers()

@@ -1,7 +1,6 @@
 package view.gui.components.sceneBar
 
 import controller.IController
-import model.playingFiledComponent.PlayingField
 import view.gui.scenes.PlayingFieldScene
 import view.gui.components.sceneBar.GameStatusBar
 import scalafx.scene.layout.VBox
@@ -11,6 +10,8 @@ import scalafx.scene.control.Button
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.action._
 import controller.Events
+import model.playingFiledComponent.base.PlayingField
+
 case class ButtonBar(controller: IController, playingField: PlayingField, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
 
 

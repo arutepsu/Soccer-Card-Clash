@@ -1,7 +1,7 @@
 package view.gui.components.sceneBar.cardBar
 
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.Includes.*
 import scalafx.geometry.Pos
 import scalafx.scene.effect.DropShadow
@@ -18,7 +18,7 @@ class SelectablePlayersHandBar(player: IPlayer, playingField: PlayingField, isLe
   def selectedCardIndex: Option[Int] = _selectedCardIndex
 
   override def createHandCardRow(): HBox = {
-    val hand = playingField.fieldState.getPlayerHand(player)
+    val hand = playingField.dataManager.getPlayerHand(player)
     val handCards = hand.zipWithIndex.map { case (card, index) =>
       val handCard = new HandCard(flipped = false, card = card)
       handCard.effect = new DropShadow(10, Color.BLACK)
@@ -29,14 +29,11 @@ class SelectablePlayersHandBar(player: IPlayer, playingField: PlayingField, isLe
       // ✅ Allow card selection
       handCard.onMouseClicked = (event: MouseEvent) => {
         if (_selectedCardIndex.contains(index)) {
-          println(s"❌ Deselected: $card (Index: $index)")
           handCard.effect = null
           _selectedCardIndex = None
         } else {
           _selectedCardIndex.foreach { _ =>
-            println(s"🔄 Deselecting previous card")
           }
-          println(s"🃏 Selected: $card (Index: $index)")
           _selectedCardIndex = Some(index)
           handCard.effect = new DropShadow(20, Color.GOLD)
         }
@@ -53,7 +50,6 @@ class SelectablePlayersHandBar(player: IPlayer, playingField: PlayingField, isLe
   }
 
   override def updateBar(): Unit = {
-    println("🔄 Updating Hand UI...")
     children.clear()
     children.addAll(createHandCardRow())
     playingField.notifyObservers()

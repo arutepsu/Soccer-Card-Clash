@@ -1,11 +1,11 @@
 package model.playingFiledComponent.strategy.refillStrategy
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.FieldState
+import model.playingFiledComponent.base.DataManager
 
 import scala.collection.mutable
 
 trait RefillStrategy {
-  def refillDefenderField(fieldState: FieldState, defender: IPlayer): Unit
-  def refillField(fieldState: FieldState, player: IPlayer, hand: mutable.Queue[ICard]): Unit
+  def refillDefenderField(fieldState: DataManager, defender: IPlayer): Unit
+  def refillField(fieldState: DataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit
 }

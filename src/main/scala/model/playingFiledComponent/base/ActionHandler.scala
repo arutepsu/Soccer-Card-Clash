@@ -1,9 +1,10 @@
-package model.gameComponent
+package model.playingFiledComponent.base
 
 import model.cardComponent.cardFactory.DeckFactory
-import model.playerComponent.playerRole.RolesManager
 import model.playerComponent.base.Player
+import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.*
+import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.strategy.attackStrategy.{AttackHandler, AttackStrategy, DoubleAttackStrategy, SingleAttackStrategy}
 import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.scoringStrategy.PlayerScores
@@ -12,9 +13,9 @@ import util.*
 
 import scala.collection.mutable.ListBuffer
 
-class GameManager(val playingField: PlayingField) {
+class ActionHandler(val playingField: PlayingField) {
 
-  private val fieldState = playingField.fieldState
+  private val fieldState = playingField.dataManager
   private val attackHandler = playingField.attackHandler
   private val boostManager = playingField.boostManager
   private val swapHandler = playingField.swapHandler

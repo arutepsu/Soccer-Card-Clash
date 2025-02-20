@@ -3,7 +3,7 @@ package view.gui.components.uiFactory
 import javafx.event.EventHandler
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.Includes.*
 import scalafx.animation.{FadeTransition, ScaleTransition, StrokeTransition, TranslateTransition}
 import scalafx.scene.control.Button
@@ -178,7 +178,7 @@ object CardAnimationFactory {
   }
 
   def highlightLastHandCard(player: IPlayer, playingField: PlayingField): Option[HandCard] = {
-    val hand = playingField.fieldState.getPlayerHand(player)
+    val hand = playingField.dataManager.getPlayerHand(player)
 
     if (hand.nonEmpty) {
       val newLastCard = hand.last

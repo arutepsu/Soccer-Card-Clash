@@ -2,7 +2,6 @@ package view.gui.scenes
 
 import controller.IController
 import sceneManager.SceneManager
-import model.playingFiledComponent.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
@@ -16,6 +15,7 @@ import scalafx.stage.Stage
 import view.gui.utils.Styles
 import controller.Events
 import model.playerComponent.base.Player
+import model.playingFiledComponent.base.PlayingField
 import scalafx.application.Platform
 import view.gui.components.sceneBar.ButtonBar
 import view.gui.components.sceneBar.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}

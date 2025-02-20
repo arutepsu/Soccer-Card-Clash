@@ -4,7 +4,7 @@ import scalafx.scene.control.Button
 import controller.{Events, IController}
 import model.cardComponent.ICard
 import model.playerComponent.base.Player
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}

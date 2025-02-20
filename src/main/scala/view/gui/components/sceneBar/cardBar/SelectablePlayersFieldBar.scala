@@ -3,7 +3,7 @@ package view.gui.components.sceneBar.cardBar
 import model.cardComponent.ICard
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.Includes.*
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label
@@ -34,8 +34,8 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
 
   /** Store the currently selected card */
   private var selectedCard: Option[FieldCard] = None
-  def getDefenderCards: List[ICard] = playingField.fieldState.getPlayerDefenders(player)
-  def getGoalkeeperCard: Option[ICard] = playingField.fieldState.getPlayerGoalkeeper(player)
+  def getDefenderCards: List[ICard] = playingField.dataManager.getPlayerDefenders(player)
+  def getGoalkeeperCard: Option[ICard] = playingField.dataManager.getPlayerGoalkeeper(player)
 
   /** ✅ Creates Defender Row (Selectable) */
   override def createDefenderRow(): HBox = {
@@ -45,15 +45,10 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
-      println(s"📌 FieldCard at index $index: ${defenderCard} (Type: ${defenderCard.getClass.getSimpleName})")
-      println(s"📌 FieldCard.card at index $index: ${defenderCard.card} (Type: ${defenderCard.card.getClass.getSimpleName})")
-
       defenderCard.card match
         case boostedCard: BoostedCard =>
-          println(s"✅ BoostedCard2 detected: $boostedCard")
           CardAnimationFactory.applyBoostEffect(defenderCard)
         case _ =>
-          println("❌ No boost effect applied.") // Optional debug message
 
       defenderCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(defenderCard, _selectedCardIndex, index)
       defenderCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(defenderCard, _selectedCardIndex, index)
@@ -61,17 +56,14 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
       // ✅ Allow any defender to be selected
       defenderCard.onMouseClicked = (_: MouseEvent) => {
         if (_selectedCardIndex.contains(index)) {
-          println(s"❌ Deselected: $card (Index: $index)")
           defenderCard.effect = null
           _selectedCardIndex = None
           selectedCard = None
         } else {
           _selectedCardIndex.foreach { _ =>
-            println(s"🔄 Deselecting previous card")
             selectedCard.foreach(_.effect = null)
           }
 
-          println(s"🛡️ Selected: $card (Index: $index)")
           _selectedCardIndex = Some(index)
           selectedCard = Some(defenderCard)
           defenderCard.effect = new DropShadow(20, Color.GOLD)
@@ -91,7 +83,7 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
   def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
   
   override def createGoalkeeperRow(): HBox = {
-    val goalkeeperCard = playingField.fieldState.getPlayerGoalkeeper(player) match {
+    val goalkeeperCard = playingField.dataManager.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
       case None => throw new IllegalStateException("No goalkeeper set! The game logic must always have one.")
     }
@@ -100,7 +92,6 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
       case boosted: BoostedCard =>
         CardAnimationFactory.applyBoostEffect(goalkeeperCard)
       case _ =>
-        println("No boost effect applied.") // Optional debug message
     }
     goalkeeperCard.onMouseEntered = (_: MouseEvent) =>
       CardAnimationFactory.applyHoverEffect(goalkeeperCard, _selectedCardIndex, 0)
@@ -110,18 +101,15 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
 
     goalkeeperCard.onMouseClicked = (_: MouseEvent) => {
       if (_selectedCardIndex.contains(0)) {
-        println(s"❌ Deselected Goalkeeper")
         goalkeeperCard.effect = null
         _selectedCardIndex = None
         selectedCard = None
         _isGoalkeeperSelected = false // ✅ Deselect goalkeeper
       } else {
         _selectedCardIndex.foreach { _ =>
-          println(s"🔄 Deselecting previous card")
           selectedCard.foreach(_.effect = null)
         }
 
-        println(s"🛡️ Selected Goalkeeper")
         _selectedCardIndex = Some(0)
         selectedCard = Some(goalkeeperCard)
         goalkeeperCard.effect = new DropShadow(20, Color.GOLD)
@@ -138,7 +126,6 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: PlayingField) ext
   children = Seq(createDefenderRow(), createGoalkeeperRow())
   // ✅ Update UI with selectable cards
     override def updateBar(): Unit = {
-      println(s"🔄 Updating defender's field for ${player.name}...")
 
       // ✅ Remove all previous UI components
       children.clear()

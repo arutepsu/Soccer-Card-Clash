@@ -2,9 +2,9 @@ package view.gui.components
 
 import model.cardComponent.base.{Suit, Value}
 import model.playerComponent.base.Player
+import model.playingFiledComponent.base.PlayingField
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Pos
-import model.playingFiledComponent.PlayingField
 import view.gui.components.cardView.{FieldCard, GoalkeeperCard}
 
 class PlayerFieldCards(player: Player, playingField: PlayingField) extends VBox {

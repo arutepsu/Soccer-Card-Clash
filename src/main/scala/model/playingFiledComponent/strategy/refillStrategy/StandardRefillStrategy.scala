@@ -3,13 +3,14 @@ package model.playingFiledComponent.strategy.refillStrategy
 import model.cardComponent.ICard
 import model.cardComponent.base.Card
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.FieldState
+import model.playingFiledComponent.base.DataManager
 
 import scala.collection.mutable
 
 class StandardRefillStrategy extends RefillStrategy {
 
-  override def refillDefenderField(fieldState: FieldState, defender: IPlayer): Unit = {
+  override def refillDefenderField(fieldState: DataManager, defender: IPlayer): Unit = {
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!Refill")
     val defenderField = fieldState.getPlayerDefenders(defender)
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
     val defenderHand = fieldState.getPlayerHand(defender)
@@ -45,7 +46,7 @@ class StandardRefillStrategy extends RefillStrategy {
     }
   }
 
-  override def refillField(fieldState: FieldState, player: IPlayer, hand: mutable.Queue[ICard]): Unit = {
+  override def refillField(fieldState: DataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit = {
     val defenders = fieldState.getPlayerDefenders(player)
     val goalkeeper = fieldState.getPlayerGoalkeeper(player)
 

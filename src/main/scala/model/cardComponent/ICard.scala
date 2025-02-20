@@ -13,5 +13,7 @@ trait ICard {
   def compare(that: ICard): Int
   def fileName: String
   def copy(): Card
+  def hashCode(): Int
+  def equals(obj: Any): Boolean
 
 }

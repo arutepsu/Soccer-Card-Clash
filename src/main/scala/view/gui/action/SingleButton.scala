@@ -1,7 +1,7 @@
 package view.gui.action
 
 import controller.IController
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import view.gui.scenes.PlayingFieldScene
 import view.gui.components.sceneBar.GameStatusBar
 import view.gui.components.sceneBar.GameStatusMessages
@@ -11,7 +11,7 @@ case class SingleButton() extends ActionButton[PlayingFieldScene]  {
                         playingFieldScene: PlayingFieldScene,
                         gameStatusBar: GameStatusBar): Unit = {
     val defenderFieldBar = if (playingFieldScene.playingField.getDefender == playingFieldScene.player1) playingFieldScene.player1FieldBar else playingFieldScene.player2FieldBar
-    val defenderCards = playingFieldScene.playingField.fieldState.getPlayerDefenders(playingFieldScene.playingField.getDefender)
+    val defenderCards = playingFieldScene.playingField.dataManager.getPlayerDefenders(playingFieldScene.playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {

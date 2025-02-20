@@ -1,7 +1,7 @@
 package view.gui.scenes
 
 import controller.{Events, IController}
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button

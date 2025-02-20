@@ -1,7 +1,8 @@
 package view.gui.scenes
 
 import controller.IController
-import model.playingFiledComponent.PlayingField
+import model.playingFiledComponent.base.PlayingField
+
 object AttackerSceneFactory {
   
   def createAttackerDefendersScene(controller: IController, playingField: Option[PlayingField], windowWidth: Double, windowHeight: Double): AttackerDefendersScene = {

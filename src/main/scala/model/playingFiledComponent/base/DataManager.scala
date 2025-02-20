@@ -1,28 +1,22 @@
-package model.playingFiledComponent
+package model.playingFiledComponent.base
 
 import model.cardComponent.ICard
-
-import scala.collection.mutable
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.playerComponent.playerFactory.PlayerHandFactory
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import model.playingFiledComponent.strategy.refillStrategy.*
-class FieldState(val playingField: PlayingField, val player1: IPlayer, val player2: IPlayer) {
 
-  /** 📌 ========== CORE GETTERS ========== */
+import scala.collection.mutable
+class DataManager(val playingField: PlayingField, val player1: IPlayer, val player2: IPlayer) {
+  
   def getPlayingField: PlayingField = playingField
   def getPlayer1: IPlayer = player1
   def getPlayer2: IPlayer = player2
-
-  /** 📌 ========== PLAYER HANDS (Using `ActiveHandState`) ========== */
+  
   private var player1Hand: HandCardsQueue = new HandCardsQueue(List())
   private var player2Hand: HandCardsQueue = new HandCardsQueue(List())
-
-//  def initializePlayerHands(player1Cards: List[Card], player2Cards: List[Card]): Unit = {
-//    player1Hand = new HandCardsQueue(player1Cards)
-//    player2Hand = new HandCardsQueue(player2Cards)
-//  }
+  
   def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
     player1Hand = new HandCardsQueue(player1Cards)
     player2Hand = new HandCardsQueue(player2Cards)
@@ -36,8 +30,7 @@ class FieldState(val playingField: PlayingField, val player1: IPlayer, val playe
 
   def setPlayerHand(player: IPlayer, newHand: HandCardsQueue): Unit =
     if (player == player1) player1Hand = newHand else player2Hand = newHand
-
-  /** 📌 ========== REFILL STRATEGY ========== */
+  
   private var refillStrategy: RefillStrategy = new StandardRefillStrategy()
 
   def setRefillStrategy(strategy: RefillStrategy): Unit = refillStrategy = strategy
@@ -45,10 +38,9 @@ class FieldState(val playingField: PlayingField, val player1: IPlayer, val playe
   def refillDefenderField(defender: IPlayer): Unit =
     refillStrategy.refillDefenderField(this, defender)
 
-  def refillField(player: IPlayer, hand: HandCardsQueue): Unit =
+  private def refillField(player: IPlayer, hand: HandCardsQueue): Unit =
     refillStrategy.refillField(this, player, hand.getCards)
-
-  /** 📌 ========== PLAYER FIELD STATE ========== */
+  
   private var player1Field: List[ICard] = List()
   private var player2Field: List[ICard] = List()
 
@@ -75,28 +67,34 @@ class FieldState(val playingField: PlayingField, val player1: IPlayer, val playe
 
   def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit =
     if (player == player1) player1Defenders = newDefenderField else player2Defenders = newDefenderField
-
-  /** 📌 ========== FIELD MANAGEMENT ========== */
+  
   def setGoalkeeperForAttacker(card: ICard): Unit = {
     if (playingField.getAttacker == player1) player1Goalkeeper = Some(card)
     else player2Goalkeeper = Some(card)
 
-    playingField.notifyObservers() // ✅ Ensure UI refreshes
+    playingField.notifyObservers()
   }
 
   def initializeFields(): Unit = {
-    println("✅ initializeFields() was called!")
     refillField(player1, player1Hand)
     refillField(player2, player2Hand)
   }
+  def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit = {
+    val cardExists = (if (currentDefender == player1) player1Defenders else player2Defenders).contains(defenderCard)
 
-  /** 📌 ========== GAMEPLAY HELPERS ========== */
-  def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit =
     if (currentDefender == player1) {
       player1Defenders = player1Defenders.filterNot(_ == defenderCard)
     } else {
       player2Defenders = player2Defenders.filterNot(_ == defenderCard)
     }
+  }
+  def removeDefenderGoalkeeper(currentDefender: IPlayer): Unit = {
+    if (currentDefender == player1) {
+      player1Goalkeeper = None
+    } else {
+      player2Goalkeeper = None
+    }
+  }
 
   def allDefendersBeaten(currentDefender: IPlayer): Boolean =
     getPlayerDefenders(currentDefender).isEmpty
