@@ -236,7 +236,7 @@ object SceneManager extends Observable with Observer { // ✅ SceneManager is no
           println("⚽ Starting Game!")
           switchScene(playingFieldScene)
 
-        case Events.AttckerHandCards =>
+        case Events.AttackerHandCards =>
           println("⚽ Starting Game!")
           switchScene(attackerHandScene)
 

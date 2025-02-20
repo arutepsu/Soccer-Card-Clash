@@ -9,7 +9,6 @@ import scala.collection.mutable
 class StandardRefillStrategy extends RefillStrategy {
 
   override def refillDefenderField(fieldState: DataManager, defender: IPlayer): Unit = {
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!Refill")
     val defenderField = fieldState.getPlayerDefenders(defender)
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
     val defenderHand = fieldState.getPlayerHand(defender)

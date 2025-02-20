@@ -7,7 +7,9 @@ import scala.collection.mutable
 class HandCardsQueue(initialCards: List[ICard]) extends mutable.Queue[ICard] {
 
   this.enqueueAll(initialCards)
+
   def getCards: mutable.Queue[ICard] = this
+
   def addCard(card: ICard): Unit = this.prepend(card)
 
   def removeLastCard(): ICard = {

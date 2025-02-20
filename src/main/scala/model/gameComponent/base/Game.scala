@@ -7,7 +7,6 @@ import model.cardComponent.cardFactory.DeckFactory
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer
 import model.playerComponent.playerFactory.PlayerFactory
-import model.playerComponent.playerRole.{Attacker, Defender}
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.manager.ActionManager

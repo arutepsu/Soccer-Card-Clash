@@ -1,15 +1,15 @@
 package controller.command.commandTypes.attackCommands
 
-import controller.command.base.BaseCommand
+import controller.command.base.Command
 import model.playingFiledComponent.manager.ActionManager
-import model.playingFiledComponent.strategy.attackStrategy.DoubleAttackStrategy
-import model.playingFiledComponent.strategy.attackStrategy.SingleAttackStrategy
+import model.playingFiledComponent.strategy.attackStrategy.{DoubleAttackStrategy, SingleAttackStrategy}
+
 import scala.collection.mutable
 
-class DoubleAttackCommand(defenderIndex: Int, gc: ActionManager) extends BaseCommand(gc) {
+class DoubleAttackCommand(defenderIndex: Int, gc: ActionManager) extends Command(gc) {
   private var attackSuccessful: Boolean = false
 
   override protected def executeAction(): Unit = {
-    attackSuccessful = gc.doubleAttack(defenderIndex) // ✅ Delegate to GameController
+    attackSuccessful = gc.doubleAttack(defenderIndex)
   }
 }

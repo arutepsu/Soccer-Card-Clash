@@ -1,10 +1,10 @@
 package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
-import controller.command.base.BaseCommand
+import controller.command.base.Command
 import model.playingFiledComponent.manager.ActionManager
 
-class BoostDefenderCommand(cardIndex: Int, gc: ActionManager) extends BaseCommand(gc) {
+class BoostDefenderCommand(cardIndex: Int, gc: ActionManager) extends Command(gc) {
 
   override protected def executeAction(): Unit = {
     gc.boostDefender(cardIndex)

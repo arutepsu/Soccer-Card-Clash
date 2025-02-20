@@ -1,7 +1,7 @@
 package model.playingFiledComponent.strategy.boostStrategy
 
-import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.cardComponent.ICard
+import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.IPlayingField
@@ -21,18 +21,18 @@ class BoostManager(
     }
 
     val originalCard = attackersDefenderField(index)
-    
+
     val boostedCard = originalCard.boost()
 
     attackersDefenderField = attackersDefenderField.updated(index, boostedCard)
-    
-    
+
+
     fieldState.setPlayerDefenders(roles.attacker, attackersDefenderField)
 
     roles.attacker.performAction(PlayerActionPolicies.Boost)
     playingField.notifyObservers()
   }
-  
+
   def chooseBoostCardGoalkeeper(): Unit = {
     val attackersGoalkeeperOpt = fieldState.getPlayerGoalkeeper(roles.attacker)
 
@@ -45,7 +45,7 @@ class BoostManager(
       case None =>
     }
   }
-  
+
   def revertCard(card: ICard): ICard = {
     val revertedCard = card match {
       case boosted: BoostedCard =>
@@ -62,7 +62,7 @@ class BoostManager(
 
     fieldState.setPlayerDefenders(playingField.getAttacker, updatedAttackerField)
     fieldState.setPlayerDefenders(playingField.getDefender, updatedDefenderField)
-    
+
     playingField.notifyObservers()
 
     revertedCard

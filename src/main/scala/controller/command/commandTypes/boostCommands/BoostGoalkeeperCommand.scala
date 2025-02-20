@@ -1,10 +1,10 @@
 package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
-import controller.command.base.BaseCommand
+import controller.command.base.Command
 import model.playingFiledComponent.manager.ActionManager
 
-class BoostGoalkeeperCommand(gc: ActionManager) extends BaseCommand(gc) {
+class BoostGoalkeeperCommand(gc: ActionManager) extends Command(gc) {
   private var boostValue: Int = 0
 
   override protected def executeAction(): Unit = {

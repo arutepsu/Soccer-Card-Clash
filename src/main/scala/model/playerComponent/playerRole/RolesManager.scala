@@ -1,7 +1,6 @@
 package model.playerComponent.playerRole
 
 import model.playerComponent.IPlayer
-import model.playerComponent.playerRole.PlayerRole
 import model.playingFiledComponent.IPlayingField
 
 class RolesManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer) {
@@ -13,11 +12,8 @@ class RolesManager(playingField: IPlayingField, player1: IPlayer, player2: IPlay
     defender = temp
     playingField.notifyObservers()
   }
-
   def setRoles(newAttacker: IPlayer, newDefender: IPlayer): Unit = {
     attacker = newAttacker
     defender = newDefender
-    println(s"Roles set manually. Attacker: ${attacker.name}, Defender: ${defender.name}")
   }
-
 }

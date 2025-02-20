@@ -77,7 +77,7 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
     width = 180,
     height = 50
   ) { () =>
-    controller.notifyObservers(Events.AttckerHandCards)
+    controller.notifyObservers(Events.AttackerHandCards)
   }
 
   children = Seq(

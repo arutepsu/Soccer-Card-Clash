@@ -6,6 +6,7 @@ import model.playerComponent.IPlayer
 import model.playerComponent.playerAction.PlayerActionPolicies
 
 import scala.collection.mutable
+
 case class Memento(
                     attacker: IPlayer,
                     defender: IPlayer,

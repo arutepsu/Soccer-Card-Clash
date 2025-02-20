@@ -18,21 +18,25 @@ class PlayingField(
                     val player1: IPlayer,
                     val player2: IPlayer
                   ) extends IPlayingField {
+  private val dataManager = new DataManager(this, player1, player2)
+  private val actionManager = new ActionManager(this)
+  private val roles = new RolesManager(this, player1, player2)
+  private val scores = new PlayerScores(this, player1, player2)
+
   override def setPlayingField(): Unit = {
     dataManager.initializeFields()
   }
-  private val dataManager = new DataManager(this, player1, player2)
 
-  private val actionManager = new ActionManager(this)
-
-  private val roles = new RolesManager(this, player1, player2)
-
-  private val scores = new PlayerScores(this, player1, player2)
   override def getAttacker: IPlayer = roles.attacker
+
   override def getDefender: IPlayer = roles.defender
+
   override def getDataManager: DataManager = dataManager
+
   override def getActionManager: ActionManager = actionManager
+
   override def getRoles: RolesManager = roles
+
   override def getScores: PlayerScores = scores
 }
 

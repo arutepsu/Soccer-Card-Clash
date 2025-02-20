@@ -2,10 +2,10 @@ package model.playingFiledComponent.manager
 
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playerComponent.playerFactory.PlayerHandFactory
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import model.playingFiledComponent.strategy.refillStrategy.*
+
 import scala.collection.mutable
 class DataManager(val playingField: IPlayingField, val player1: IPlayer, val player2: IPlayer) {
 

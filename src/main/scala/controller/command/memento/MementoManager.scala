@@ -1,7 +1,6 @@
 package controller.command.memento
 
 import model.cardComponent.base.BoostedCard
-import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.ActionManager
@@ -27,7 +26,6 @@ class MementoManager(private var gameManager: ActionManager) {
         case (action, CanPerformAction(remainingUses)) => action -> remainingUses
         case (action, OutOfActions()) => action -> 0
         case (action, unknown) =>
-          println(s"⚠️ Warning: Unhandled action state for $action: $unknown")
           action -> 0
       },
 
@@ -35,7 +33,6 @@ class MementoManager(private var gameManager: ActionManager) {
         case (action, CanPerformAction(remainingUses)) => action -> remainingUses
         case (action, OutOfActions()) => action -> 0
         case (action, unknown) =>
-          println(s"⚠️ Warning: Unhandled action state for $action: $unknown")
           action -> 0
       }
     )
@@ -48,14 +45,12 @@ class MementoManager(private var gameManager: ActionManager) {
 
       playingField.getDataManager.getPlayerDefenders(memento.attacker).lift(lastBoostedIndex).foreach {
         case boosted: BoostedCard =>
-          println(s"✅ Reverting Boost: ${boosted} → Original Value Restored")
           val revertedCard = boosted.revertBoost()
 
           val updatedDefenders = playingField.getDataManager.getPlayerDefenders(memento.attacker).updated(lastBoostedIndex, revertedCard)
           playingField.getDataManager.setPlayerDefenders(memento.attacker, updatedDefenders)
 
         case regular =>
-          println(s"ℹ️ Card at index $lastBoostedIndex is not boosted: $regular")
       }
     }
   }

@@ -6,9 +6,6 @@ import model.playingFiledComponent.IPlayingField
 import util.{Observable, ObservableEvent, Observer, UndoManager}
 
 import scala.collection.mutable
-import scala.io.StdIn.readLine
-import scala.util.{Failure, Success, Try}
-
 trait IController extends Observable {
   def getPlayingField: IPlayingField
   def getPlayer1: IPlayer

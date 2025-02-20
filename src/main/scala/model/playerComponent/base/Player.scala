@@ -2,8 +2,7 @@ package model.playerComponent.base
 
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playerComponent.playerAction._
-import model.playerComponent.playerRole.PlayerRole
+import model.playerComponent.playerAction.*
 case class Player(
                    name: String,
                    cards: List[ICard],
@@ -20,7 +19,6 @@ case class Player(
     actionStates.get(action) match {
       case Some(state) => state.performAction(this, action)
       case None =>
-        println(s"Action ${action.toString} is not available for ${this.name}.")
         this
     }
   }

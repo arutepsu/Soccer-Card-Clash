@@ -1,16 +1,16 @@
 package controller.base
+import controller.command.ICommand
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.{CircularSwapCommand, HandSwapCommand}
 import controller.{Events, IController}
 import model.cardComponent.cardFactory.DeckFactory
 import model.gameComponent.IGame
+import model.gameComponent.base.Game
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
-import util.{Observer, UndoManager}
-import controller.command.ICommand
-import model.gameComponent.base.Game
 import model.playingFiledComponent.manager.ActionManager
+import util.{Observer, UndoManager}
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.collection.mutable
@@ -28,7 +28,7 @@ class Controller extends IController {
   def getPlayingField: IPlayingField = game.getPlayingField
   def getPlayer1: IPlayer = game.getPlayer1
   def getPlayer2: IPlayer = game.getPlayer2
-  /** ✅ Centralized Command Execution */
+  
   private def executeCommand(command: ICommand, event: Events): Unit = {
     undoManager.doStep(command)
     notifyObservers(event)
@@ -42,7 +42,6 @@ class Controller extends IController {
     executeCommand(new DoubleAttackCommand(defenderPosition, game.getGameManager), Events.DoubleAttack)
   }
 
-  /** ✅ Boost Commands */
   def boostDefender(defenderPosition: Int): Unit = {
     executeCommand(new BoostDefenderCommand(defenderPosition, game.getGameManager), Events.BoostDefender)
   }
@@ -51,7 +50,6 @@ class Controller extends IController {
     executeCommand(new BoostGoalkeeperCommand(game.getGameManager), Events.BoostGoalkeeper)
   }
 
-  /** ✅ Swap Commands */
   def regularSwap(index: Int): Unit = {
     executeCommand(new HandSwapCommand(index, game.getGameManager), Events.RegularSwap)
   }
@@ -73,17 +71,11 @@ class Controller extends IController {
   }
 
   def saveGame(): Unit = {
-//    game.saveGame()
     notifyObservers(Events.SaveGame)
   }
 
   def loadGame(): Unit = {
-    //    game.loadGame().map { loadedGame =>
-    //      game = loadedGame
-    //      notifyObservers(ControllerEvents.LoadGame)
-    //    }
+    notifyObservers(Events.LoadGame)
   }
-
-
 }
 

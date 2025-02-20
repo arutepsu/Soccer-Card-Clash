@@ -1,5 +1,5 @@
 package util
 
 trait Observer {
-  def update(e:ObservableEvent): Unit
+  def update(e: ObservableEvent): Unit
 }
