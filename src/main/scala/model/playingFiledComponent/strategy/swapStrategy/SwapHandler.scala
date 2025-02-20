@@ -7,16 +7,12 @@ import model.playerComponent.base.Player
 class SwapHandler(
                    playingField: PlayingField,
                    roles: RolesManager,
-                   private var swapStrategy: SwapStrategy = new HandSwapStrategy() // ✅ Default strategy
+                   private var swapStrategy: SwapStrategy = new HandSwapStrategy()
                  ) {
-
-  // ✅ Accepts a `SwapStrategy` object instead of a String
+  
   def setSwapStrategy(newStrategy: SwapStrategy): Unit = {
     swapStrategy = newStrategy
-    println(s"🔄 Swap strategy updated to: ${swapStrategy.getClass.getSimpleName}")
   }
-
-  // ✅ Executes the current swap strategy
   def swapAttacker(index: Int): Unit = {
     val attackerHand = playingField.fieldState.getPlayerHand(roles.attacker)
     swapStrategy.swap(attackerHand, index)

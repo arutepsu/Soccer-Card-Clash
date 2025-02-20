@@ -8,7 +8,6 @@ import model.playerComponent.playerRole.{Attacker, Defender}
 import model.playerComponent.base.Player
 import model.playingFiledComponent.PlayingField
 import util.UndoManager
-import view.GameLogger
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.util.Try
@@ -44,30 +43,18 @@ class Game extends IGame {
   }
 
   override def startGame(playerName1: String, playerName2: String): Unit = {
-    println("🎮 Starting game setup...")
 
-    val (p1, p2) = createPlayers(playerName1, playerName2) // ✅ Create players inside startGame()
+    val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
 
-    println(s"✅ Players created successfully: $player1 and $player2")
-
     playingField = new PlayingField(player1, player2)
-    println("🏟️ Playing field initialized!")
 
     playingField.fieldState.initializePlayerHands(player1.getCards, player2.getCards)
-    println("🛠️ Player hands set in field state!")
 
     playingField.setPlayingField()
-    println("⚽ Playing field set!")
 
     gameManager = new GameManager(playingField)
-    println("🎯 Game Manager initialized!")
-
-    val logger = new GameLogger()
-    println("📜 Logger added!")
-
-    println("✅ Game successfully started!")
   }
 
 

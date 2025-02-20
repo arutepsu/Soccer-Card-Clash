@@ -6,12 +6,10 @@ import scala.collection.mutable
 class HandSwapStrategy extends SwapStrategy {
   override def swap(attackerHand: HandCardsQueue, index: Int): Unit = {
     if (attackerHand.getHandSize < 2) {
-      println("⚠️ Not enough cards to swap. No swap performed.")
       return
     }
 
     if (index < 0 || index >= attackerHand.getHandSize) {
-      println(s"⚠️ Invalid swap index: $index. No swap performed.")
       return
     }
 
@@ -21,7 +19,6 @@ class HandSwapStrategy extends SwapStrategy {
 
     attackerHand.update(index, lastCard)
     attackerHand.update(lastIndex, chosenCard)
-
-    println(s"🔄 Swapped Attacker's Cards: ${chosenCard} <--> ${lastCard}")
+    
   }
 }

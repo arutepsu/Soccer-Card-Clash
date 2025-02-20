@@ -75,14 +75,14 @@ class SingleAttackStrategy extends AttackStrategy{
             if (tiebreakerResult > 0) {
               println(s"🎉 ${attacker.name} wins the tiebreaker and takes all four cards!")
               attackerHand.addCard(attackingCard)
-              attackerHand.addCard(defenderCard)
+              attackerHand.addCard(boostManager.revertCard(defenderCard))
               attackerHand.addCard(extraAttackerCard)
               attackerHand.addCard(extraDefenderCard)
               fieldState.removeDefenderCard(defender, defenderCard)
             } else {
               println(s"🛡️ ${defender.name} wins the tiebreaker and takes all four cards!")
               defenderHand.addCard(attackingCard)
-              defenderHand.addCard(defenderCard)
+              defenderHand.addCard(boostManager.revertCard(defenderCard))
               defenderHand.addCard(extraAttackerCard)
               defenderHand.addCard(extraDefenderCard)
               fieldState.removeDefenderCard(defender, defenderCard) //added not testet

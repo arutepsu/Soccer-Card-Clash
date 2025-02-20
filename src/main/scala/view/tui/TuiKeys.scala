@@ -1,7 +1,7 @@
 package view.tui
 
 enum TuiKeys(val key: String) {
-  case CreateGame extends TuiKeys(":create Game")
+  case StartGame extends TuiKeys(":start Game")
   case Quit extends TuiKeys(":quit")
   case Undo extends TuiKeys(":undo")
   case Redo extends TuiKeys(":redo")

@@ -21,10 +21,7 @@ class Prompter {
   def promptSwap(): Unit = {
     println("🔄 Choose a card to swap from attacker's hand (enter position):")
   }
-
-  /** 🃏 Ask Player to Play a Card */
-//  def promptCardPlay(player: IPlayer): Unit = {
-//    println(s"🃏 ${player.name}, play your card:")
-//    println(player.hand.zipWithIndex.map { case (card, index) => s"[$index] $card" }.mkString("\n"))
-//  }
+  def promptNewGame(): Unit = {
+    println("Creating a new game!")
+  }
 }

@@ -36,22 +36,22 @@ class Parser {
     }
   }
 
-
-  /** ✅ Parses player names (ensures non-empty input) */
-  def parsePlayerName(input: String): Option[String] = {
-    val name = input.trim
-    if (name.nonEmpty) Some(name)
-    else {
-      println("❌ Player name cannot be empty!")
-      None
-    }
-  }
-
   /** ✅ Parses game-related commands */
   def parseCommand(input: String): Option[TuiKeys] = {
     TuiKeys.values.find(_.key.equalsIgnoreCase(input)).orElse {
       println(s"❌ Unknown command: '$input'. Try again.")
       None
+    }
+  }
+
+  def parseStartGame(input: String): Option[(String, String)] = {
+    val args = input.stripPrefix(TuiKeys.StartGame.key).trim.split("\\s+").toList
+    args match {
+      case player1 :: player2 :: Nil =>
+        Some((player1, player2))
+      case _ =>
+        println("❌ Invalid input! Use: ':start player1 player2'")
+        None
     }
   }
 }
