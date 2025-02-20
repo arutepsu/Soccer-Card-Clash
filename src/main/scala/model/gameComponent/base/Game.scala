@@ -11,11 +11,25 @@ import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.manager.ActionManager
 import util.UndoManager
+import play.api.libs.json._
+import scala.xml._
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.util.Try
 
-class Game extends IGame {
+import com.google.inject.{Inject, Singleton}
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
+import play.api.libs.json.{JsObject, Json}
+import model.playerComponent.factories.IPlayerFactory
+import model.playingFiledComponent.factories._
+@Singleton
+class Game @Inject() (
+                       playerFactory: IPlayerFactory,
+                       playingFieldFactory: IPlayingFieldFactory,
+                       actionManagerFactory: IActionManagerFactory
+                     ) extends IGame {
+
   private var player1: IPlayer = _
   private var player2: IPlayer = _
   private var playingField: IPlayingField = _
@@ -24,59 +38,51 @@ class Game extends IGame {
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-  def getGameManager: ActionManager = actionManager
+  override def getActionManager: ActionManager = actionManager
 
-
+  /** ✅ Creates Players using Injected Factory */
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
     val deck = DeckFactory.createDeck()
-
     DeckFactory.shuffleDeck(deck)
 
-    val hand1 = for (_ <- 1 to 26) yield deck.dequeue()
-    val hand2 = for (_ <- 1 to 26) yield deck.dequeue()
+    val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
+    val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
-    val player1 = PlayerFactory.createPlayer(playerName1, hand1.toList)
-    val player2 = PlayerFactory.createPlayer(playerName2, hand2.toList)
+    val p1 = playerFactory.createPlayer(playerName1, hand1)
+    val p2 = playerFactory.createPlayer(playerName2, hand2)
 
-    (player1, player2)
+    (p1, p2)
   }
 
-
+  /** ✅ Starts the Game with Injected Dependencies */
   override def startGame(playerName1: String, playerName2: String): Unit = {
-
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
 
-    playingField = new PlayingField(player1, player2)
-
+    playingField = playingFieldFactory.createPlayingField(player1, player2)
     playingField.getDataManager.initializePlayerHands(player1.getCards, player2.getCards)
-
     playingField.setPlayingField()
 
-    actionManager = new ActionManager(playingField)
+    actionManager = actionManagerFactory.createActionManager(playingField)
   }
 
-
-  override def selectDefenderPosition(): Int =
+  override def selectDefenderPosition(): Int = {
     if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
+  }
 
   override def saveGame(): Unit = {
-    val jsonString = Json.prettyPrint(this.toJson)
-    Files.write(Paths.get("game_save.json"), jsonString.getBytes(StandardCharsets.UTF_8))
+
   }
 
   override def loadGame(): Unit = {
     val jsonString = new String(Files.readAllBytes(Paths.get("game_save.json")), StandardCharsets.UTF_8)
     val gameJson = Json.parse(jsonString)
-
-    player1 = PlayerFactory.loadPlayerFromJson((gameJson \ "player1").get)
-    player2 = PlayerFactory.loadPlayerFromJson((gameJson \ "player2").get)
-    playingField = PlayingField.loadFromJson((gameJson \ "playingField").get)
-    actionManager = ActionManager.loadFromJson((gameJson \ "actions").get)
+//
+//    player1 = playerFactory.loadPlayerFromJson((gameJson \ "player1").get)
+//    player2 = playerFactory.loadPlayerFromJson((gameJson \ "player2").get)
+//    playingField = playingFieldFactory.loadFromJson((gameJson \ "playingField").get)
+//    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
   }
-
-  override def toJson: JsObject = super.toJson
-
-  override def toXml: Elem = super.toXml
+  
 }

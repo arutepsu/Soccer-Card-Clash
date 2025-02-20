@@ -3,6 +3,8 @@ package model.playerComponent.base
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
 import model.playerComponent.playerAction.*
+import play.api.libs.json._
+import scala.xml._
 case class Player(
                    name: String,
                    cards: List[ICard],
@@ -33,27 +35,5 @@ case class Player(
     this.copy(actionStates = newActionStates)
   }
 
-  override def toJson: JsObject = super.toJson + ("type" -> JsString("Player"))
-
-  override def toXml: Elem =
-    <Player>
-      <Name>
-        {name}
-      </Name>
-      <Cards>
-        {cards.map(_.toXml)}
-      </Cards>
-      <ActionStates>
-        {actionStates.map { case (action, state) =>
-        <Action>
-          <Name>
-            {action.toString}
-          </Name>
-          <State>
-            {state.toString}
-          </State>
-        </Action>
-      }}
-      </ActionStates>
-    </Player>
+  
 }

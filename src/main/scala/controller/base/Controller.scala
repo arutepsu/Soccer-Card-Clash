@@ -15,11 +15,11 @@ import util.{Observer, UndoManager}
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.collection.mutable
 import scala.util.Try
+import com.google.inject.Inject
 
-class Controller extends IController {
-  private var game: IGame = new Game()
+class Controller @Inject() (private val game: IGame) extends IController {
   private val undoManager = new UndoManager
-  
+
   def startGame(player1: String, player2: String): Unit = {
     game.startGame(player1, player2)
     notifyObservers(Events.StartGame)
@@ -28,36 +28,36 @@ class Controller extends IController {
   def getPlayingField: IPlayingField = game.getPlayingField
   def getPlayer1: IPlayer = game.getPlayer1
   def getPlayer2: IPlayer = game.getPlayer2
-  
+
   private def executeCommand(command: ICommand, event: Events): Unit = {
     undoManager.doStep(command)
     notifyObservers(event)
   }
 
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
-    executeCommand(new SingleAttackCommand(defenderPosition, game.getGameManager), Events.RegularAttack)
+    executeCommand(new SingleAttackCommand(defenderPosition, game.getActionManager), Events.RegularAttack)
   }
 
   def executeDoubleAttackCommand(defenderPosition: Int): Unit = {
-    executeCommand(new DoubleAttackCommand(defenderPosition, game.getGameManager), Events.DoubleAttack)
+    executeCommand(new DoubleAttackCommand(defenderPosition, game.getActionManager), Events.DoubleAttack)
   }
 
   def boostDefender(defenderPosition: Int): Unit = {
-    executeCommand(new BoostDefenderCommand(defenderPosition, game.getGameManager), Events.BoostDefender)
+    executeCommand(new BoostDefenderCommand(defenderPosition, game.getActionManager), Events.BoostDefender)
   }
 
   def boostGoalkeeper(): Unit = {
-    executeCommand(new BoostGoalkeeperCommand(game.getGameManager), Events.BoostGoalkeeper)
+    executeCommand(new BoostGoalkeeperCommand(game.getActionManager), Events.BoostGoalkeeper)
   }
 
   def regularSwap(index: Int): Unit = {
-    executeCommand(new HandSwapCommand(index, game.getGameManager), Events.RegularSwap)
+    executeCommand(new HandSwapCommand(index, game.getActionManager), Events.RegularSwap)
   }
 
   def circularSwap(index: Int): Unit = {
-    executeCommand(new CircularSwapCommand(index, game.getGameManager), Events.CircularSwap)
+    executeCommand(new CircularSwapCommand(index, game.getActionManager), Events.CircularSwap)
   }
-  
+
   def selectDefenderPosition(): Int = game.selectDefenderPosition()
 
   def undo(): Unit = {
@@ -78,4 +78,3 @@ class Controller extends IController {
     notifyObservers(Events.LoadGame)
   }
 }
-

@@ -4,7 +4,8 @@ import model.cardComponent.ICard
 import model.cardComponent.base.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
 import model.cardComponent.base.Value.{Value, *}
 import model.cardComponent.base.{Card, RegularCard, Suit, Value}
-
+import play.api.libs.json._
+import scala.xml._
 class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 0)
   extends Card(baseCard.suit) {
 

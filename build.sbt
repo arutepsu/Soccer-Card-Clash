@@ -38,7 +38,7 @@ lazy val root = project
     javaOptions += "-Dfile.encoding=UTF-8",
     scalaVersion := scala3Version,
     libraryDependencies += "com.google.inject" % "guice" % "5.1.0",
-    libraryDependencies += "net.codingwell" %% "scala-guice" % "5.1.0",
+    libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test",

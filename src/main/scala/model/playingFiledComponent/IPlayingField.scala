@@ -21,31 +21,5 @@ trait IPlayingField extends Observable with Serializable{
   def getRoles: RolesManager
 
   def getScores: PlayerScores
-
-  override def toJson: JsObject = Json.obj(
-    "attacker" -> getAttacker.toJson,
-    "defender" -> getDefender.toJson,
-    "scores" -> Json.obj(
-      "attackerScore" -> getPlayerScore(getAttacker),
-      "defenderScore" -> getPlayerScore(getDefender)
-    )
-  )
-
-  override def toXml: Elem =
-    <PlayingField>
-      <Attacker>
-        {getAttacker.toXml}
-      </Attacker>
-      <Defender>
-        {getDefender.toXml}
-      </Defender>
-      <Scores>
-        <AttackerScore>
-          {getPlayerScore(getAttacker)}
-        </AttackerScore>
-        <DefenderScore>
-          {getPlayerScore(getDefender)}
-        </DefenderScore>
-      </Scores>
-    </PlayingField>
+  
 }

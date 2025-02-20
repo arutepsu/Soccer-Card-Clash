@@ -1,5 +1,6 @@
 package model.playingFiledComponent.manager
-
+import play.api.libs.json._
+import scala.xml._
 import model.cardComponent.cardFactory.DeckFactory
 import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.*
@@ -11,7 +12,7 @@ import util.*
 
 import scala.collection.mutable.ListBuffer
 
-class ActionManager(val playingField: IPlayingField) {
+class ActionManager(val playingField: IPlayingField) extends Serializable{
 
   val boostManager = new BoostManager(playingField, playingField.getRoles, playingField.getDataManager)
   val getPlayingField: IPlayingField = playingField
@@ -48,4 +49,5 @@ class ActionManager(val playingField: IPlayingField) {
   def boostDefender(cardIndex: Int): Unit = {
     boostManager.chooseBoostCardDefender(cardIndex)
   }
+
 }

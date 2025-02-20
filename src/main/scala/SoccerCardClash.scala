@@ -6,9 +6,11 @@ import view.gui.Gui
 import view.tui.Tui
 
 import scala.io.StdIn.readLine
-
+import com.google.inject.{Guice, Injector}
 object SoccerCardClash {
-  private val controller: IController = new Controller()
+  private val injector: Injector = Guice.createInjector(new SoccerCardClashModule())
+
+  private val controller: IController = injector.getInstance(classOf[IController])
   private val gui: Gui = Gui(controller)
   private val tui: Tui = Tui(controller)
 

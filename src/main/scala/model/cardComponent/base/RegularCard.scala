@@ -4,7 +4,8 @@ import model.cardComponent.base.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
 import model.cardComponent.base.Value.{Value, *}
 import model.cardComponent.base.{Card, Suit, Value}
 import model.cardComponent.boosting.BoostingPolicies
-
+import play.api.libs.json._
+import scala.xml._
 class RegularCard(initialValue: Value, override val suit: Suit) extends Card(suit) {
 
   private var _value: Value = initialValue

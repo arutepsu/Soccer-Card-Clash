@@ -10,6 +10,8 @@ import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.scoringStrategy.PlayerScores
 import model.playingFiledComponent.strategy.swapStrategy.*
 import util.Observable
+import play.api.libs.json._
+import scala.xml._
 
 import scala.collection.mutable
 import scala.util.Try
@@ -39,8 +41,5 @@ class PlayingField(
 
   override def getScores: PlayerScores = scores
 
-  override def toJson: JsObject = super.toJson
-
-  override def toXml: Elem = super.toXml
 }
 
