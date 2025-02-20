@@ -61,12 +61,22 @@ class Game extends IGame {
   override def selectDefenderPosition(): Int =
     if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
 
-  override def saveGame(): Unit =
-    Try {
+  override def saveGame(): Unit = {
+    val jsonString = Json.prettyPrint(this.toJson)
+    Files.write(Paths.get("game_save.json"), jsonString.getBytes(StandardCharsets.UTF_8))
+  }
 
-    }
+  override def loadGame(): Unit = {
+    val jsonString = new String(Files.readAllBytes(Paths.get("game_save.json")), StandardCharsets.UTF_8)
+    val gameJson = Json.parse(jsonString)
 
-  override def loadGame(): Unit =
-    Try {
-    }
+    player1 = PlayerFactory.loadPlayerFromJson((gameJson \ "player1").get)
+    player2 = PlayerFactory.loadPlayerFromJson((gameJson \ "player2").get)
+    playingField = PlayingField.loadFromJson((gameJson \ "playingField").get)
+    actionManager = ActionManager.loadFromJson((gameJson \ "actions").get)
+  }
+
+  override def toJson: JsObject = super.toJson
+
+  override def toXml: Elem = super.toXml
 }

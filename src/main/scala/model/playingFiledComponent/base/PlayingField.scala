@@ -38,5 +38,9 @@ class PlayingField(
   override def getRoles: RolesManager = roles
 
   override def getScores: PlayerScores = scores
+
+  override def toJson: JsObject = super.toJson
+
+  override def toXml: Elem = super.toXml
 }
 

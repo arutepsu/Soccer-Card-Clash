@@ -37,6 +37,8 @@ lazy val root = project
     scalacOptions ++= Seq("-encoding", "UTF-8"),
     javaOptions += "-Dfile.encoding=UTF-8",
     scalaVersion := scala3Version,
+    libraryDependencies += "com.google.inject" % "guice" % "5.1.0",
+    libraryDependencies += "net.codingwell" %% "scala-guice" % "5.1.0",
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test",
@@ -45,5 +47,6 @@ lazy val root = project
       ),
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.3",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
+
     libraryDependencies ++= (Seq() ++ setJavaFXVersion.value),
   )
