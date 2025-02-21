@@ -6,44 +6,53 @@ import controller.command.commandTypes.swapCommands.HandSwapCommand
 import model.cardComponent.cardFactory.DeckFactory
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer
-import model.playerComponent.playerFactory.PlayerFactory
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
 import model.cardComponent.cardFactory.IDeckFactory
 import util.UndoManager
-import play.api.libs.json._
-import scala.xml._
+import play.api.libs.json.*
+
+import scala.xml.*
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.util.Try
 import com.google.inject.{Inject, Singleton}
+
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import play.api.libs.json.{JsObject, Json}
 import model.playerComponent.base.factories.IPlayerFactory
-import model.playingFiledComponent.factories._
+import model.playingFiledComponent.factories.*
 import model.playingFiledComponent.manager.base.ActionManager
+import com.google.inject.{Inject, Singleton}
+import model.playerComponent.IPlayer
+import model.playerComponent.base.factories.IPlayerFactory
+import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.factories.IPlayingFieldFactory
+import model.cardComponent.cardFactory.IDeckFactory
+import model.playingFiledComponent.manager.IActionManager
+
+import java.nio.file.{Files, Paths}
+import java.nio.charset.StandardCharsets
+import play.api.libs.json.Json
 
 @Singleton
 class Game @Inject() (
                        playerFactory: IPlayerFactory,
-                       playingFieldFactory: IPlayingFieldFactory, // ✅ Factory injection
-                       actionManagerFactory: IActionManagerFactory,
+                       playingFieldFactory: IPlayingFieldFactory,
                        deckFactory: IDeckFactory
                      ) extends IGame {
 
   private var player1: IPlayer = _
   private var player2: IPlayer = _
   private var playingField: IPlayingField = _
-  private var actionManager: ActionManager = _
 
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-  override def getActionManager: ActionManager = actionManager
-
+  override def getActionManager: ActionManager = playingField.getActionManager.asInstanceOf[ActionManager]
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
-    val deck = deckFactory.createDeck() // ✅ Use injected instance
-    deckFactory.shuffleDeck(deck)       // ✅ Use injected instance
+    val deck = deckFactory.createDeck()
+    deckFactory.shuffleDeck(deck)
 
     val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
@@ -64,7 +73,7 @@ class Game @Inject() (
     playingField.getDataManager.initializePlayerHands(player1.getCards, player2.getCards)
     playingField.setPlayingField()
 
-    actionManager = actionManagerFactory.createActionManager(playingField)
+//    actionManager = actionManagerFactory.createActionManager(playingField)
   }
 
   override def selectDefenderPosition(): Int = {
@@ -78,11 +87,11 @@ class Game @Inject() (
   override def loadGame(): Unit = {
     val jsonString = new String(Files.readAllBytes(Paths.get("game_save.json")), StandardCharsets.UTF_8)
     val gameJson = Json.parse(jsonString)
-//
-//    player1 = playerFactory.loadPlayerFromJson((gameJson \ "player1").get)
-//    player2 = playerFactory.loadPlayerFromJson((gameJson \ "player2").get)
-//    playingField = playingFieldFactory.loadFromJson((gameJson \ "playingField").get)
-//    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
+    //
+    //    player1 = playerFactory.loadPlayerFromJson((gameJson \ "player1").get)
+    //    player2 = playerFactory.loadPlayerFromJson((gameJson \ "player2").get)
+    //    playingField = playingFieldFactory.loadFromJson((gameJson \ "playingField").get)
+    //    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
   }
 
 }

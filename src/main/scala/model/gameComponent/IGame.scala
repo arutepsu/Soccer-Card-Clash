@@ -7,7 +7,7 @@ import play.api.libs.json._
 import scala.xml._
 import scala.util.Try
 
-trait IGame extends Serializable{
+trait IGame extends Serializable {
   def startGame(player1: String, player2: String): Unit
 
   def getPlayingField: IPlayingField
@@ -16,12 +16,11 @@ trait IGame extends Serializable{
 
   def getPlayer2: IPlayer
 
-  def getActionManager: ActionManager
+  def getActionManager: ActionManager // ✅ Changed from ActionManager to IActionManager
 
   def selectDefenderPosition(): Int
 
   def saveGame(): Unit
 
   def loadGame(): Unit
-  
 }

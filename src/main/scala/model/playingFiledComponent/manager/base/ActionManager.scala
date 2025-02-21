@@ -17,12 +17,11 @@ import scala.xml.*
 
 class ActionManager @Inject()(val playingField: IPlayingField) extends IActionManager{
 
-  val bManager = new BoostManager(playingField, playingField.getRoles, playingField.getDataManager)
-  val getPlayingField: IPlayingField = playingField
+  val bManager = new BoostManager(playingField)
+  def getPlayingField: IPlayingField = playingField
   var attackHandler = new AttackHandler(new SingleAttackStrategy())
-  var swapHandler = new SwapHandler(playingField, playingField.getRoles)
+  var swapHandler = new SwapHandler(playingField)
   override def boostManager : BoostManager = bManager
-  
   override def attack(defenderIndex: Int): Boolean = {
     attackHandler.setStrategy(new SingleAttackStrategy())
     val success = attackHandler.executeAttack(playingField, defenderIndex)

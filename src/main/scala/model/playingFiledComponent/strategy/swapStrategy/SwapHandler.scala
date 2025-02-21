@@ -2,13 +2,12 @@ package model.playingFiledComponent.strategy.swapStrategy
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
-
-class SwapHandler(
+import javax.inject.Inject
+class SwapHandler @Inject()(
                    playingField: IPlayingField,
-                   roles: IRolesManager,
                    private var swapStrategy: SwapStrategy = new HandSwapStrategy()
                  ) {
-  
+  private lazy val roles: IRolesManager = playingField.getRoles
   def setSwapStrategy(newStrategy: SwapStrategy): Unit = {
     swapStrategy = newStrategy
   }
