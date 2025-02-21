@@ -3,6 +3,7 @@ package model.gameComponent
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.base.ActionManager
+import model.playingFiledComponent.manager.IActionManager
 import play.api.libs.json._
 import scala.xml._
 import scala.util.Try
@@ -16,8 +17,7 @@ trait IGame extends Serializable {
 
   def getPlayer2: IPlayer
 
-  def getActionManager: ActionManager // ✅ Changed from ActionManager to IActionManager
-
+  def getActionManager: IActionManager
   def selectDefenderPosition(): Int
 
   def saveGame(): Unit

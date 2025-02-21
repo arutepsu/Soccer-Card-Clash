@@ -3,9 +3,9 @@ package controller.command.memento
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.base.ActionManager
+import model.playingFiledComponent.manager.IActionManager
 
-class MementoManager(private var gameManager: ActionManager) {
+class MementoManager(private var gameManager: IActionManager) {
 
   def createMemento(): Memento = {
     val playingField = gameManager.getPlayingField

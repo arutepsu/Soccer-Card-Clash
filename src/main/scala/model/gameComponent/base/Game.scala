@@ -49,7 +49,8 @@ class Game @Inject() (
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-  override def getActionManager: ActionManager = playingField.getActionManager.asInstanceOf[ActionManager]
+//  override def getActionManager: ActionManager = playingField.getActionManager.asInstanceOf[ActionManager]
+  override def getActionManager: IActionManager = playingField.getActionManager
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
     val deck = deckFactory.createDeck()
     deckFactory.shuffleDeck(deck)
