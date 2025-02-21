@@ -1,8 +1,13 @@
 package model.playingFiledComponent
-
+import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.manager.IActionManager
+import model.playerComponent.playerRole.RolesManager
+//import model.playerComponent.factories.IRolesManagerFactory
+import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import model.playerComponent.playerRole.IRolesManager
 import model.playerComponent.IPlayer
 import model.playerComponent.playerRole.RolesManager
-import model.playingFiledComponent.manager.{ActionManager, DataManager}
+import model.playingFiledComponent.manager.base.{ActionManager, DataManager}
 import model.playingFiledComponent.strategy.scoringStrategy.PlayerScores
 import util.Observable
 import play.api.libs.json._
@@ -14,12 +19,12 @@ trait IPlayingField extends Observable with Serializable{
 
   def getDefender: IPlayer
 
-  def getDataManager: DataManager
+  def getDataManager: IDataManager
 
-  def getActionManager: ActionManager
+  def getActionManager: IActionManager
 
-  def getRoles: RolesManager
+  def getRoles: IRolesManager
 
-  def getScores: PlayerScores
-  
+  def getScores: IPlayerScores
+
 }

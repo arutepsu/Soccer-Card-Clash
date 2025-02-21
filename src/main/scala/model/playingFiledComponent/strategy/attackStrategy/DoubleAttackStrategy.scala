@@ -3,11 +3,11 @@ package model.playingFiledComponent.strategy.attackStrategy
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
+import model.playingFiledComponent.strategy.boostStrategy.BoostManager
 
 import scala.util.{Failure, Success, Try}
 
 class DoubleAttackStrategy extends AttackStrategy {
-
   override def execute(playingField: IPlayingField, defenderIndex: Int): Boolean = {
     val roles = playingField.getRoles
     val fieldState = playingField.getDataManager

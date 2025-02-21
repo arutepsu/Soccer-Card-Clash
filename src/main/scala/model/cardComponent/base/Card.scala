@@ -1,8 +1,9 @@
 package model.cardComponent.base
 
 import model.cardComponent.ICard
-import model.cardComponent.base.Suit.Suit
-import model.cardComponent.base.Value.Value
+import model.cardComponent.base.components.Suit.Suit
+import model.cardComponent.base.components.Value.Value
+import model.cardComponent.base.components.{Suit, Value}
 
 object Card {
   def apply(value: Value, suit: Suit): ICard = new RegularCard(value, suit)

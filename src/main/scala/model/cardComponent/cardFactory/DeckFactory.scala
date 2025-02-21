@@ -1,25 +1,30 @@
 package model.cardComponent.cardFactory
 
 import model.cardComponent.ICard
-import model.cardComponent.base.{Suit, Value}
 import model.cardComponent.cardFactory.CardFactory
-
 import scala.collection.mutable
 import scala.util.Random
+import com.google.inject.{Inject, Singleton}
+import model.cardComponent.base.components.{Suit, Value}
 
-object DeckFactory {
+@Singleton
+class DeckFactory @Inject() (cardFactory: ICardFactory) extends IDeckFactory {
 
-  def createDeck(): mutable.Queue[ICard] = {
+  override def createDeck(): mutable.Queue[ICard] = {
     val deck = for {
       suit <- Suit.allSuits
       value <- Value.allValues
-    } yield CardFactory.createCard(value, suit)
+    } yield cardFactory.createCard(value, suit)
     mutable.Queue(deck: _*)
   }
 
-  def shuffleDeck(deck: mutable.Queue[ICard]): Unit = {
+  override def shuffleDeck(deck: mutable.Queue[ICard]): Unit = {
     val shuffled = Random.shuffle(deck)
     deck.clear()
     deck.enqueueAll(shuffled)
   }
+}
+trait IDeckFactory {
+  def createDeck(): mutable.Queue[ICard]
+  def shuffleDeck(deck: mutable.Queue[ICard]): Unit
 }

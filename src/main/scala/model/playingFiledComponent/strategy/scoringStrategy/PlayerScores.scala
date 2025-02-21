@@ -2,25 +2,29 @@ package model.playingFiledComponent.strategy.scoringStrategy
 
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
+import com.google.inject.{Inject, Singleton}
+import model.playerComponent.base.factories.IPlayerFactory
 
-class PlayerScores(
-                    playingField: IPlayingField,
-                    player1: IPlayer,
-                    player2: IPlayer,
-                    private var scoringStrategy: ScoringStrategy = new StandardScoring()
-                  ) {
+@Singleton
+class PlayerScores @Inject() (
+                               playingField: IPlayingField,
+                               player1: IPlayer,
+                               player2: IPlayer,
+                               private var scoringStrategy: ScoringStrategy = new StandardScoring()
+                             ) extends IPlayerScores {
+
   private var player1Score: Int = 0
   private var player2Score: Int = 0
 
-  def getScorePlayer1: Int = player1Score
-  def getScorePlayer2: Int = player2Score
+  override def getScorePlayer1: Int = player1Score
+  override def getScorePlayer2: Int = player2Score
 
-  def setScoringStrategy(strategy: ScoringStrategy): Unit = {
+  override def setScoringStrategy(strategy: ScoringStrategy): Unit = {
     scoringStrategy = strategy
     println(s"🔄 Scoring strategy updated to: ${strategy.getClass.getSimpleName}")
   }
 
-  def scoreGoal(player: IPlayer): Unit = {
+  override def scoreGoal(player: IPlayer): Unit = {
     if (player == player1) {
       player1Score = scoringStrategy.calculatePoints(player1Score)
     } else {
@@ -29,12 +33,12 @@ class PlayerScores(
     playingField.notifyObservers()
   }
 
-  def setScorePlayer1(score: Int): Unit = {
+  override def setScorePlayer1(score: Int): Unit = {
     player1Score = score
     playingField.notifyObservers()
   }
 
-  def setScorePlayer2(score: Int): Unit = {
+  override def setScorePlayer2(score: Int): Unit = {
     player2Score = score
     playingField.notifyObservers()
   }

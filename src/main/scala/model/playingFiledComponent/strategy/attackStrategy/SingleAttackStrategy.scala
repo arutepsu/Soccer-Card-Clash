@@ -2,6 +2,7 @@ package model.playingFiledComponent.strategy.attackStrategy
 
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
+import model.playingFiledComponent.strategy.boostStrategy.BoostManager
 
 import scala.util.{Failure, Success, Try}
 

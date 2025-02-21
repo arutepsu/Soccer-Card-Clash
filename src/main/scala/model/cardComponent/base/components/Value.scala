@@ -1,4 +1,4 @@
-package model.cardComponent.base
+package model.cardComponent.base.components
 
 object Value {
   val allValues: List[Value] = List(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King)

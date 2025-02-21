@@ -1,6 +1,6 @@
 package view.gui.components
 
-import model.cardComponent.base.{Suit, Value}
+import model.cardComponent.base.components.{Suit, Value}
 import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
 import scalafx.scene.layout.{HBox, VBox}

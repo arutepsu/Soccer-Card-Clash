@@ -1,4 +1,4 @@
-package model.cardComponent.base
+package model.cardComponent.base.components
 
 object Suit extends Enumeration {
   type Suit = Value

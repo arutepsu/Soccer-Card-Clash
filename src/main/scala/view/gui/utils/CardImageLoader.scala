@@ -1,7 +1,7 @@
 package view.gui.utils
 
 import model.cardComponent.ICard
-import model.cardComponent.base.{Suit, Value}
+import model.cardComponent.base.components.{Suit, Value}
 import scalafx.animation.ScaleTransition
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.HBox

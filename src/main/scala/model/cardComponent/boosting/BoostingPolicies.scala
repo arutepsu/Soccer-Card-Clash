@@ -1,7 +1,7 @@
 package model.cardComponent.boosting
 
-import model.cardComponent.base.Value
-import model.cardComponent.base.Value.*
+import model.cardComponent.base.components.Value.*
+import model.cardComponent.base.components.Value
 
 object BoostingPolicies {
 

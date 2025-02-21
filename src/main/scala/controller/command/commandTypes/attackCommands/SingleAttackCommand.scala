@@ -1,7 +1,7 @@
 package controller.command.commandTypes.attackCommands
 
 import controller.command.base.Command
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 
 class SingleAttackCommand(defenderIndex: Int, gc: ActionManager) extends Command(gc) {
   private var attackSuccessful: Boolean = false

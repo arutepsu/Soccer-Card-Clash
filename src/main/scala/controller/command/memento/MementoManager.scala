@@ -3,7 +3,7 @@ package controller.command.memento
 import model.cardComponent.base.BoostedCard
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 
 class MementoManager(private var gameManager: ActionManager) {
 

@@ -2,7 +2,7 @@ package controller.command.base
 
 import controller.command.ICommand
 import controller.command.memento.*
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 
 abstract class Command(val gameController: ActionManager) extends ICommand {
   protected val mementoManager = new MementoManager(gameController)

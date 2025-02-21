@@ -1,4 +1,5 @@
-package model.playerComponent.factories
+package model.playerComponent.base.factories
+
 import model.cardComponent.ICard
 import play.api.libs.json._
 import com.google.inject.Singleton
@@ -11,7 +12,8 @@ class PlayerFactory @Inject()() extends IPlayerFactory {
   override def createPlayer(name: String, cards: List[ICard]): IPlayer = {
     Player(name, cards)
   }
+}
+trait IPlayerFactory {
+  def createPlayer(name: String, cards: List[ICard]): IPlayer
 
-//  override def loadPlayerFromJson(json: JsObject): IPlayer = {
-//  }
 }

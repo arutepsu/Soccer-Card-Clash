@@ -1,8 +1,9 @@
 package model.cardComponent.base
 
-import model.cardComponent.base.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
-import model.cardComponent.base.Value.{Value, *}
-import model.cardComponent.base.{Card, Suit, Value}
+import model.cardComponent.base.components.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
+import model.cardComponent.base.components.Value.*
+import model.cardComponent.base.components.{Suit, Value}
+import model.cardComponent.base.Card
 import model.cardComponent.boosting.BoostingPolicies
 import play.api.libs.json._
 import scala.xml._

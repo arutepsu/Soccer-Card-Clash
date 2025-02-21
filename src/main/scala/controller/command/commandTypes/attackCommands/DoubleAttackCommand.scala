@@ -1,7 +1,7 @@
 package controller.command.commandTypes.attackCommands
 
 import controller.command.base.Command
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 import model.playingFiledComponent.strategy.attackStrategy.{DoubleAttackStrategy, SingleAttackStrategy}
 
 import scala.collection.mutable

@@ -2,7 +2,7 @@ package model.gameComponent
 
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 import play.api.libs.json._
 import scala.xml._
 import scala.util.Try

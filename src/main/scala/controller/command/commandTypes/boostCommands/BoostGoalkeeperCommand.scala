@@ -2,7 +2,7 @@ package controller.command.commandTypes.boostCommands
 
 import controller.command.ICommand
 import controller.command.base.Command
-import model.playingFiledComponent.manager.ActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 
 class BoostGoalkeeperCommand(gc: ActionManager) extends Command(gc) {
   private var boostValue: Int = 0

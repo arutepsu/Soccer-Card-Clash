@@ -1,6 +1,6 @@
 package model.cardComponent
-import model.cardComponent.base.Suit.Suit
-import model.cardComponent.base.Value.Value
+import model.cardComponent.base.components.Suit.Suit
+import model.cardComponent.base.components.Value.Value
 import util.Serializable
 import play.api.libs.json._
 import scala.xml._

@@ -9,25 +9,26 @@ import model.playerComponent.IPlayer
 import model.playerComponent.playerFactory.PlayerFactory
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
-import model.playingFiledComponent.manager.ActionManager
+import model.cardComponent.cardFactory.IDeckFactory
 import util.UndoManager
 import play.api.libs.json._
 import scala.xml._
-
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import scala.util.Try
-
 import com.google.inject.{Inject, Singleton}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import play.api.libs.json.{JsObject, Json}
-import model.playerComponent.factories.IPlayerFactory
+import model.playerComponent.base.factories.IPlayerFactory
 import model.playingFiledComponent.factories._
+import model.playingFiledComponent.manager.base.ActionManager
+
 @Singleton
 class Game @Inject() (
                        playerFactory: IPlayerFactory,
-                       playingFieldFactory: IPlayingFieldFactory,
-                       actionManagerFactory: IActionManagerFactory
+                       playingFieldFactory: IPlayingFieldFactory, // ✅ Factory injection
+                       actionManagerFactory: IActionManagerFactory,
+                       deckFactory: IDeckFactory
                      ) extends IGame {
 
   private var player1: IPlayer = _
@@ -40,10 +41,9 @@ class Game @Inject() (
   override def getPlayer2: IPlayer = player2
   override def getActionManager: ActionManager = actionManager
 
-  /** ✅ Creates Players using Injected Factory */
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
-    val deck = DeckFactory.createDeck()
-    DeckFactory.shuffleDeck(deck)
+    val deck = deckFactory.createDeck() // ✅ Use injected instance
+    deckFactory.shuffleDeck(deck)       // ✅ Use injected instance
 
     val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
@@ -54,7 +54,7 @@ class Game @Inject() (
     (p1, p2)
   }
 
-  /** ✅ Starts the Game with Injected Dependencies */
+
   override def startGame(playerName1: String, playerName2: String): Unit = {
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
@@ -84,5 +84,5 @@ class Game @Inject() (
 //    playingField = playingFieldFactory.loadFromJson((gameJson \ "playingField").get)
 //    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
   }
-  
+
 }

@@ -1,11 +1,11 @@
 package model.playingFiledComponent.strategy.swapStrategy
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playerComponent.playerRole.RolesManager
+import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
 
 class SwapHandler(
                    playingField: IPlayingField,
-                   roles: RolesManager,
+                   roles: IRolesManager,
                    private var swapStrategy: SwapStrategy = new HandSwapStrategy()
                  ) {
   

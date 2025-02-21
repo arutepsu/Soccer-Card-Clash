@@ -3,14 +3,15 @@ package model.playingFiledComponent.strategy.boostStrategy
 import model.cardComponent.ICard
 import model.cardComponent.base.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playerComponent.playerRole.RolesManager
+import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.DataManager
+import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.manager.base.DataManager
 
 class BoostManager(
                     playingField: IPlayingField,
-                    roles: RolesManager,
-                    fieldState: DataManager
+                    roles: IRolesManager,
+                    fieldState: IDataManager
                   ) {
 
   def chooseBoostCardDefender(index: Int): Unit = {
