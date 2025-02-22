@@ -1,14 +1,14 @@
 package model.playingFiledComponent.strategy.refillStrategy.base
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.manager.base.DataManager
+import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
 import scala.collection.mutable
 
 class RefillField {
 
-  def refill(fieldState: DataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit = {
+  def refill(fieldState: IDataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit = {
     val defenders = fieldState.getPlayerDefenders(player)
     val goalkeeper = fieldState.getPlayerGoalkeeper(player)
 
@@ -41,7 +41,7 @@ class RefillField {
   }
 
   private def updateFieldState(
-                                fieldState: DataManager,
+                                fieldState: IDataManager,
                                 player: IPlayer,
                                 field: List[ICard],
                                 goalkeeper: Option[ICard],

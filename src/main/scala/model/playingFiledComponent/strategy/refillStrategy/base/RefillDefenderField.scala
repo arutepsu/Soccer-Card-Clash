@@ -1,13 +1,13 @@
 package model.playingFiledComponent.strategy.refillStrategy.base
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playingFiledComponent.manager.base.DataManager
+import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
 
 class RefillDefenderField {
 
-  def refill(fieldState: DataManager, defender: IPlayer): Unit = {
+  def refill(fieldState: IDataManager, defender: IPlayer): Unit = {
     val defenderField = fieldState.getPlayerDefenders(defender)
     val goalkeeperOpt = fieldState.getPlayerGoalkeeper(defender)
     val defenderHand = fieldState.getPlayerHand(defender)
@@ -20,7 +20,7 @@ class RefillDefenderField {
   }
 
   private def refillCompletely(
-                                fieldState: DataManager,
+                                fieldState: IDataManager,
                                 defender: IPlayer,
                                 defenderHand: IHandCardsQueue
                               ): Unit = {
@@ -34,7 +34,7 @@ class RefillDefenderField {
   }
 
   private def refillPartial(
-                             fieldState: DataManager,
+                             fieldState: IDataManager,
                              defender: IPlayer,
                              defenderHand: IHandCardsQueue,
                              defenderField: List[ICard],
