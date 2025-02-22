@@ -1,0 +1,72 @@
+package model.playingFiledComponent.strategy.refillStrategy.base
+import model.cardComponent.ICard
+import model.playerComponent.IPlayer
+import model.playingFiledComponent.manager.base.DataManager
+import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
+import model.playingFiledComponent.dataStructure.IHandCardsQueue
+
+class RefillDefenderField {
+
+  def refill(fieldState: DataManager, defender: IPlayer): Unit = {
+    val defenderField = fieldState.getPlayerDefenders(defender)
+    val goalkeeperOpt = fieldState.getPlayerGoalkeeper(defender)
+    val defenderHand = fieldState.getPlayerHand(defender)
+
+    if (goalkeeperOpt.isEmpty && defenderField.isEmpty) {
+      refillCompletely(fieldState, defender, defenderHand)
+    } else if (defenderField.size < 3) {
+      refillPartial(fieldState, defender, defenderHand, defenderField, goalkeeperOpt)
+    }
+  }
+
+  private def refillCompletely(
+                                fieldState: DataManager,
+                                defender: IPlayer,
+                                defenderHand: IHandCardsQueue
+                              ): Unit = {
+    val newFieldCards = defenderHand.takeRight(4).toList
+    defenderHand.dropRightInPlace(4)
+
+    val (goalkeeper, defenders) = extractGoalkeeper(newFieldCards)
+
+    fieldState.setPlayerGoalkeeper(defender, Some(goalkeeper))
+    fieldState.setPlayerDefenders(defender, defenders)
+  }
+
+  private def refillPartial(
+                             fieldState: DataManager,
+                             defender: IPlayer,
+                             defenderHand: IHandCardsQueue,
+                             defenderField: List[ICard],
+                             goalkeeperOpt: Option[ICard]
+                           ): Unit = {
+    val neededDefenders = 3 - defenderField.size
+    val additionalCards = defenderHand.takeRight(neededDefenders).toList
+    defenderHand.dropRightInPlace(neededDefenders)
+
+    val updatedDefenders = defenderField ++ additionalCards
+    val (goalkeeper, defenders) = adjustGoalkeeper(updatedDefenders, goalkeeperOpt)
+
+    fieldState.setPlayerGoalkeeper(defender, Some(goalkeeper))
+    fieldState.setPlayerDefenders(defender, defenders)
+  }
+
+  private def extractGoalkeeper(cards: List[ICard]): (ICard, List[ICard]) = {
+    val highestCard = cards.maxBy(_.valueToInt)
+    (highestCard, cards.filterNot(_ == highestCard))
+  }
+
+  private def adjustGoalkeeper(updatedDefenders: List[ICard], goalkeeperOpt: Option[ICard]): (ICard, List[ICard]) = {
+    goalkeeperOpt match {
+      case Some(goalkeeper) =>
+        val highestDefender = updatedDefenders.maxBy(_.valueToInt)
+        if (highestDefender.valueToInt > goalkeeper.valueToInt) {
+          (highestDefender, updatedDefenders.filterNot(_ == highestDefender) :+ goalkeeper)
+        } else {
+          (goalkeeper, updatedDefenders)
+        }
+      case None =>
+        extractGoalkeeper(updatedDefenders)
+    }
+  }
+}
