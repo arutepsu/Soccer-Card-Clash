@@ -1,4 +1,4 @@
-package controller.command.actionCommandTypes.boostCommands
+package controller.command.actionCommandTypes.boostActionCommands
 
 import controller.command.ICommand
 import controller.command.base.action.ActionCommand

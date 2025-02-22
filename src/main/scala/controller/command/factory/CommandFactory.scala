@@ -1,11 +1,11 @@
 package controller.command.factory
 import controller.command.ICommand
-import controller.command.actionCommandTypes.attackCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
-import controller.command.actionCommandTypes.boostCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
-import controller.command.actionCommandTypes.swapCommands.{CircularSwapActionCommand, HandSwapActionCommand}
+import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
+import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
+import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapActionCommand, HandSwapActionCommand}
 import com.google.inject.Inject
 import model.gameComponent.IGame
-import controller.command.base.workflow.{LoadGameCommand, QuitCommand, SaveGameCommand, StartGameCommand, WorkflowCommand}
+import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, StartGameWorkflowCommand, WorkflowCommand}
 class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
     new SingleAttackActionCommand(defenderPosition, game)
@@ -26,16 +26,16 @@ class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
     new CircularSwapActionCommand(index, game)
 
   override def createStartGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand =
-    new StartGameCommand(game, player1, player2)
+    new StartGameWorkflowCommand(game, player1, player2)
 
   override def createQuitCommand(game: IGame): WorkflowCommand =
-    new QuitCommand(game)
+    new QuitWorkflowCommand(game)
 
   override def createLoadGameCommand(): WorkflowCommand =
-    new LoadGameCommand
+    new LoadGameWorkflowCommand
 
   override def createSaveGameCommand(): WorkflowCommand =
-    new SaveGameCommand
+    new SaveGameWorkflowCommand
 }
 trait ICommandFactory {
   def createSingleAttackCommand(defenderPosition: Int): ICommand

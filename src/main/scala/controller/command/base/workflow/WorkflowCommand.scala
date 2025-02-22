@@ -9,18 +9,18 @@ abstract class WorkflowCommand extends ICommand {
   override def redoStep(): Unit = doStep()
 }
 
-class StartGameCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
+class StartGameWorkflowCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
   override def doStep(): Unit = game.startGame(player1, player2)
 }
 
-class QuitCommand(val game: IGame) extends WorkflowCommand {
+class QuitWorkflowCommand(val game: IGame) extends WorkflowCommand {
   override def doStep(): Unit = game.exit()
 }
 
-class SaveGameCommand() extends WorkflowCommand {
+class SaveGameWorkflowCommand() extends WorkflowCommand {
   override def doStep(): Unit = println("Game saved")
 }
 
-class LoadGameCommand() extends WorkflowCommand {
+class LoadGameWorkflowCommand() extends WorkflowCommand {
   override def doStep(): Unit = println("Game loaded")
 }

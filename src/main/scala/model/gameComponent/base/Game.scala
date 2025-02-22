@@ -1,8 +1,8 @@
 package model.gameComponent.base
 
-import controller.command.actionCommandTypes.attackCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
-import controller.command.actionCommandTypes.boostCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
-import controller.command.actionCommandTypes.swapCommands.HandSwapActionCommand
+import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
+import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
+import controller.command.actionCommandTypes.swapActionCommands.HandSwapActionCommand
 import model.cardComponent.factory.DeckFactory
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer

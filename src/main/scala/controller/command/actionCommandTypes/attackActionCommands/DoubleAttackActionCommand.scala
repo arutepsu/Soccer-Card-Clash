@@ -1,4 +1,4 @@
-package controller.command.actionCommandTypes.attackCommands
+package controller.command.actionCommandTypes.attackActionCommands
 
 import controller.command.base.action.ActionCommand
 import model.playingFiledComponent.manager.IActionManager
