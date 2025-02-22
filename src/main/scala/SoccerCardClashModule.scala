@@ -7,7 +7,7 @@ import model.playingFiledComponent.factory.{IPlayingFieldFactory, PlayingFieldFa
 import model.playingFiledComponent.factory.{ActionManagerFactory, IActionManagerFactory}
 import controller.IController
 import controller.base.Controller
-import controller.command.factories.*
+import controller.command.factory.*
 import model.playingFiledComponent.strategy.swapStrategy.*
 import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.attackStrategy.*

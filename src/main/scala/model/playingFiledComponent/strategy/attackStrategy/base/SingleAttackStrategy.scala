@@ -13,8 +13,6 @@ import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import model.playerComponent.playerRole.IRolesManager
 import scala.util.{Failure, Success, Try}
 
-import scala.util.{Try, Success, Failure}
-
 class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
   override def execute(playingField: IPlayingField): Boolean = {

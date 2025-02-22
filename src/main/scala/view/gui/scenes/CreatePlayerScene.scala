@@ -79,7 +79,6 @@ class CreatePlayerScene(controller: IController) extends VBox with Observer {
       return
     }
     controller.startGame(playerNames.head, playerNames(1))
-    controller.notifyObservers(Events.PlayingField)
   }
 
 

@@ -21,5 +21,5 @@ trait IController extends Observable {
   def redo(): Unit
   def saveGame(): Unit
   def loadGame(): Unit
-  def selectDefenderPosition(): Int
+  def quit(): Unit
 }

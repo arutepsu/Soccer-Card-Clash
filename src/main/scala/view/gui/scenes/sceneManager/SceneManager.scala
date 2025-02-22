@@ -138,7 +138,7 @@ import scalafx.util.Duration
 import util.{Observable, ObservableEvent, Observer}
 import view.gui.scenes._
 import view.gui.scenes.CreatePlayerScene
-object SceneManager extends Observable with Observer { // ✅ SceneManager is now also an Observer
+object SceneManager extends Observable with Observer {
   private var stage: Stage = _
   private var lastSceneWidth: Double = 800
   private var lastSceneHeight: Double = 600
@@ -213,43 +213,31 @@ object SceneManager extends Observable with Observer { // ✅ SceneManager is no
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println(s"🔄 SceneManager Handling Event: $e")
 
       e match {
         case Events.MainMenu =>
-          println("📌 Switching to Main Menu!")
           switchScene(mainMenuScene)
 
-        case Events.CreatePlayer =>
-          println("🎮 Switching to Create Player Scene!")
-          switchScene(createPlayerScene)
-//
-//        case ControllerEvents.LoadGame =>
-//          println("📂 Loading a Saved Game!")
-//          switchScene(loadGameScene) // ✅ Now correctly reinstated
-
-        case Events.StartGame =>
-          println("⚽ Starting Game!")
+        case Events.CreatePlayers =>
           switchScene(createPlayerScene)
 
         case Events.PlayingField =>
-          println("⚽ Starting Game!")
           switchScene(playingFieldScene)
 
         case Events.AttackerHandCards =>
-          println("⚽ Starting Game!")
           switchScene(attackerHandScene)
 
         case Events.AttackerDefenderCards =>
-          println("⚽ Starting Game!")
           switchScene(attackerDefendersScene)
 
         case Events.Quit =>
           println("❌ Exiting Game!")
-          sys.exit(0)
-
+          controller.quit()
+        //
+        //        case ControllerEvents.LoadGame =>
+        //          println("📂 Loading a Saved Game!")
+        //          switchScene(loadGameScene) // ✅ Now correctly reinstated
         case _ =>
-          println(s"🔕 Ignoring unhandled event: $e")
       }
     })
   }

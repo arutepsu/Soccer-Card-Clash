@@ -12,24 +12,31 @@ import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutp
 import scala.collection.mutable
 import scala.util.Try
 import com.google.inject.Inject
-import controller.command.factories.ICommandFactory
+import controller.command.factory.ICommandFactory
 import model.playingFiledComponent.manager.base.ActionManager
 
 class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController {
   private val undoManager = new UndoManager
+  def getPlayingField: IPlayingField = game.getPlayingField
 
-  def startGame(player1: String, player2: String): Unit = {
-    game.startGame(player1, player2)
-    notifyObservers(Events.StartGame)
+  def getPlayer1: IPlayer = game.getPlayer1
+
+  def getPlayer2: IPlayer = game.getPlayer2
+
+  def undo(): Unit = {
+    undoManager.undoStep()
+    notifyObservers(Events.Undo)
+  }
+
+  def redo(): Unit = {
+    undoManager.redoStep()
+    notifyObservers(Events.Redo)
   }
 
   private def executeCommand(command: ICommand, event: Events): Unit = {
     undoManager.doStep(command)
     notifyObservers(event)
   }
-  def getPlayingField: IPlayingField = game.getPlayingField
-  def getPlayer1: IPlayer = game.getPlayer1
-  def getPlayer2: IPlayer = game.getPlayer2
 
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     executeCommand(commandFactory.createSingleAttackCommand(defenderPosition), Events.RegularAttack)
@@ -55,23 +62,16 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
     executeCommand(commandFactory.createCircularSwapCommand(index), Events.CircularSwap)
   }
 
-  def selectDefenderPosition(): Int = game.selectDefenderPosition()
+  def startGame(player1: String, player2: String): Unit =
+    executeCommand(commandFactory.createStartGameCommand(game, player1, player2), Events.PlayingField)
 
-  def undo(): Unit = {
-    undoManager.undoStep()
-    notifyObservers(Events.Undo)
-  }
+  def quit(): Unit =
+    executeCommand(commandFactory.createQuitCommand(game), Events.Quit)
 
-  def redo(): Unit = {
-    undoManager.redoStep()
-    notifyObservers(Events.Redo)
-  }
+  def saveGame(): Unit =
+    executeCommand(commandFactory.createSaveGameCommand(), Events.SaveGame)
 
-  def saveGame(): Unit = {
-    notifyObservers(Events.SaveGame)
-  }
-
-  def loadGame(): Unit = {
-    notifyObservers(Events.LoadGame)
-  }
+  def loadGame(): Unit =
+    executeCommand(commandFactory.createLoadGameCommand(), Events.LoadGame)
+  
 }

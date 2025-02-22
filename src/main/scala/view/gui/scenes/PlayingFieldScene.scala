@@ -24,6 +24,7 @@ case class PlayingFieldScene(
                             ) extends Scene(windowWidth, windowHeight) with Observer {
 
   this.getStylesheets.add(Styles.playingFieldCss)
+  controller.add(this)
 
   if (controller.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
@@ -97,7 +98,7 @@ case class PlayingFieldScene(
     )
   }
   override def update(e: ObservableEvent): Unit = {
-    updateDisplay()
+    Platform.runLater(() => updateDisplay())
   }
   
   def updateDisplay(): Unit = {

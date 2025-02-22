@@ -32,7 +32,7 @@ class MainMenuScene(controller: IController) extends Observer {
           styleClass.add("title-label")
         },
         GameButtonFactory.createGameButton("Create New Game", 200, 80) {
-          () => controller.notifyObservers(Events.StartGame) // ✅ Notify Observers instead
+          () => controller.notifyObservers(Events.CreatePlayers) // ✅ Notify Observers instead
         },
         GameButtonFactory.createGameButton("Load Game", 200, 80) {
           () => controller.notifyObservers(Events.LoadGame) // ✅ Notify Observers instead

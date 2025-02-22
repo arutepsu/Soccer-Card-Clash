@@ -1,8 +1,8 @@
 package model.gameComponent.base
 
-import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
-import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
-import controller.command.commandTypes.swapCommands.HandSwapCommand
+import controller.command.actionCommandTypes.attackCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
+import controller.command.actionCommandTypes.boostCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
+import controller.command.actionCommandTypes.swapCommands.HandSwapActionCommand
 import model.cardComponent.factory.DeckFactory
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer
@@ -73,7 +73,6 @@ class Game @Inject() (
     playingField.getDataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
 
-//    actionManager = actionManagerFactory.createActionManager(playingField)
   }
 
   override def selectDefenderPosition(): Int = {
@@ -94,4 +93,7 @@ class Game @Inject() (
     //    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
   }
 
+  override def exit(): Unit = {
+    System.exit(0)
+  }
 }

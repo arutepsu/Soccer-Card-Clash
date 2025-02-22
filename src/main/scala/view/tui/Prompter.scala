@@ -1,10 +1,12 @@
 package view.tui
 
-class Prompter {
+import controller.IController
+
+class Prompter(controller: IController) {
 
   /** 🏆 Ask for Player Name */
-  def promptPlayerName(): Unit = {
-    println("📝 Enter player name:")
+  def promptPlayersName(): Unit = {
+    println("📝 Enter players name:")
   }
 
   /** 🎯 Ask for Attack */
@@ -23,5 +25,41 @@ class Prompter {
   }
   def promptNewGame(): Unit = {
     println("Creating a new game!")
+  }
+
+  def promptPlayingField(): Unit = {
+    println("Game started!:")
+  }
+
+  def printGameState(): Unit = {
+    val playingField = controller.getPlayingField
+    val attacker = playingField.getAttacker
+    val defender = playingField.getDefender
+
+    println("\n===================================")
+    println("🏆 **CURRENT GAME STATE**")
+    println("===================================")
+
+    // 🎭 **Attacker & Defender**
+    println(f"⚔️ Attacker: ${attacker.name}")
+    println(f"🛡️ Defender: ${defender.name}")
+    println("-----------------------------------")
+
+    // 🃏 **Attacker's Hand**
+    val attackerHand = playingField.getDataManager.getPlayerHand(attacker)
+    println(s"🎴 ${attacker.name}'s Hand: " +
+      (if (attackerHand.nonEmpty) attackerHand.mkString(", ") else "No cards left!")
+    )
+
+    // 🛡️ **Defender's Field**
+    val defenderField = playingField.getDataManager.getPlayerDefenders(defender)
+    println(s"🏟️ ${defender.name}'s Defenders: " +
+      (if (defenderField.nonEmpty) defenderField.mkString(", ") else "No defenders!")
+    )
+
+    println("===================================")
+  }
+  def promptExit(): Unit = {
+    println("👋 Goodbye!")
   }
 }

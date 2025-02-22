@@ -23,16 +23,22 @@ object SoccerCardClash {
   private val gui: Gui = Gui(controller)
   private val tui: Tui = Tui(controller)
 
+  @volatile private var input: String = ""
+
   def main(args: Array[String]): Unit = {
-    new Thread(() => {
-      gui.main(Array.empty)
-    }).start()
+    startGui()
 
-    var input: String = ""
-
-    while (input != ":quit") {
-      input = readLine()
+    while ({ input = readLine().trim; input } != ":quit") {
       tui.processInputLine(input)
     }
+
+    println("Exiting game. Goodbye!")
+    System.exit(0)
+  }
+
+  private def startGui(): Unit = {
+    val guiThread = new Thread(() => gui.main(Array.empty))
+    guiThread.setDaemon(true) // Ensures GUI thread does not block app exit
+    guiThread.start()
   }
 }

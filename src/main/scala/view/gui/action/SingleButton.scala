@@ -17,7 +17,7 @@ case class SingleButton() extends ActionButton[PlayingFieldScene]  {
         case Some(defenderIndex) =>
           println(s"🔥 Attacking defender at index: $defenderIndex")
           controller.executeSingleAttackCommand(defenderIndex)
-          playingFieldScene.updateDisplay()
+//          playingFieldScene.updateDisplay()
           defenderFieldBar.resetSelectedDefender()
 
         case None =>

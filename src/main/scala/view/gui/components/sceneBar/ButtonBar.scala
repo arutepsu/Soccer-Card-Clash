@@ -42,7 +42,7 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
     height = 50
   ) { () =>
     controller.undo()
-    playingFieldScene.updateDisplay()
+    playingFieldScene.update(Events.Undo)
     gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
   }
 
