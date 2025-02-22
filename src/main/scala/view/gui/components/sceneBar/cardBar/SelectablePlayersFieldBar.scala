@@ -1,7 +1,7 @@
 package view.gui.components.sceneBar.cardBar
 
 import model.cardComponent.ICard
-import model.cardComponent.base.BoostedCard
+import model.cardComponent.base.types.BoostedCard
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import scalafx.Includes.*

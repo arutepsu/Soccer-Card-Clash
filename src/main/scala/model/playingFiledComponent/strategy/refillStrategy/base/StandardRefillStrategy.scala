@@ -1,12 +1,13 @@
-package model.playingFiledComponent.strategy.refillStrategy
+package model.playingFiledComponent.strategy.refillStrategy.base
 
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.manager.base.DataManager
+import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
 
 import scala.collection.mutable
 
-class StandardRefillStrategy extends RefillStrategy {
+class StandardRefillStrategy extends IRefillStrategy {
 
   override def refillDefenderField(fieldState: DataManager, defender: IPlayer): Unit = {
     val defenderField = fieldState.getPlayerDefenders(defender)

@@ -4,10 +4,10 @@ import controller.command.ICommand
 import controller.command.base.Command
 import model.playingFiledComponent.manager.IActionManager
 
-class BoostDefenderCommand(cardIndex: Int, gc: IActionManager) extends Command(gc) {
+class BoostDefenderCommand(cardIndex: Int, actionManager: IActionManager) extends Command(actionManager) {
 
   override protected def executeAction(): Unit = {
-    gc.boostDefender(cardIndex)
+    actionManager.boostDefender(cardIndex)
   }
 
   override def undoStep(): Unit = {

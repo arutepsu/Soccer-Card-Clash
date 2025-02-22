@@ -1,4 +1,4 @@
-package model.playingFiledComponent.factories
+package model.playingFiledComponent.factory
 
 import com.google.inject.Singleton
 import model.playingFiledComponent.IPlayingField

@@ -1,17 +1,18 @@
-package model.playingFiledComponent.strategy.attackStrategy
+package model.playingFiledComponent.strategy.attackStrategy.base
 
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.strategy.attackStrategy.AttackStrategy
-import model.playingFiledComponent.strategy.boostStrategy.BoostManager
+import model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
+import model.playingFiledComponent.strategy.boostStrategy.{BoostManager, RevertBoostStrategy}
 
 import scala.util.{Failure, Success, Try}
 
-class DoubleAttackStrategy extends AttackStrategy {
-  override def execute(playingField: IPlayingField, defenderIndex: Int): Boolean = {
+class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
+  override def execute(playingField: IPlayingField): Boolean = {
     val roles = playingField.getRoles
     val fieldState = playingField.getDataManager
-    val boostManager = playingField.getActionManager.boostManager
+    val boostManager = playingField.getActionManager.getBoostManager
+    val revertStrategy = boostManager.getRevertStrategy
     val scores = playingField.getScores
 
     val attacker = roles.attacker
@@ -37,7 +38,7 @@ class DoubleAttackStrategy extends AttackStrategy {
         if (attackValue > goalkeeperValue) {
           attackerHand.addCard(attackingCard1)
           attackerHand.addCard(attackingCard2)
-          attackerHand.addCard(boostManager.revertCard(goalkeeper))
+          attackerHand.addCard(revertStrategy.revertCard(goalkeeper))
           fieldState.removeDefenderGoalkeeper(defender)
           fieldState.setPlayerGoalkeeper(defender, None)
           fieldState.setPlayerDefenders(defender, List.empty)
@@ -50,7 +51,7 @@ class DoubleAttackStrategy extends AttackStrategy {
         } else {
           defenderHand.addCard(attackingCard1)
           defenderHand.addCard(attackingCard2)
-          defenderHand.addCard(boostManager.revertCard(goalkeeper))
+          defenderHand.addCard(revertStrategy.revertCard(goalkeeper))
           fieldState.removeDefenderGoalkeeper(defender)
           fieldState.refillDefenderField(defender)
           roles.switchRoles()
@@ -65,13 +66,13 @@ class DoubleAttackStrategy extends AttackStrategy {
         if (attackValue > defenseValue) {
           attackerHand.addCard(attackingCard1)
           attackerHand.addCard(attackingCard2)
-          attackerHand.addCard(boostManager.revertCard(defenderCard))
+          attackerHand.addCard(revertStrategy.revertCard(defenderCard))
           fieldState.removeDefenderCard(defender, defenderCard)
           true
         } else {
           defenderHand.addCard(attackingCard1)
           defenderHand.addCard(attackingCard2)
-          defenderHand.addCard(boostManager.revertCard(defenderCard))
+          defenderHand.addCard(revertStrategy.revertCard(defenderCard))
 
           fieldState.removeDefenderCard(defender, defenderCard)
           fieldState.refillDefenderField(defender)

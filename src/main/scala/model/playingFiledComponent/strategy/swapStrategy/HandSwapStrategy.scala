@@ -2,9 +2,15 @@ package model.playingFiledComponent.strategy.swapStrategy
 
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import scala.collection.mutable
+import model.playingFiledComponent.manager.IDataManager
+import model.playerComponent.playerRole.IRolesManager
+import model.playingFiledComponent.IPlayingField
+class HandSwapStrategy(index: Int) extends ISwapStrategy {
+  override def swap(playingField: IPlayingField): Unit = {
+    lazy val data: IDataManager = playingField.getDataManager
+    lazy val roles: IRolesManager = playingField.getRoles
 
-class HandSwapStrategy extends SwapStrategy {
-  override def swap(attackerHand: HandCardsQueue, index: Int): Unit = {
+    val attackerHand = data.getPlayerHand(roles.attacker)
     if (attackerHand.getHandSize < 2) {
       return
     }

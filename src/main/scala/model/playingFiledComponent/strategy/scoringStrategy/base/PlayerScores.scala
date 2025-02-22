@@ -1,16 +1,18 @@
-package model.playingFiledComponent.strategy.scoringStrategy
+package model.playingFiledComponent.strategy.scoringStrategy.base
 
-import model.playerComponent.IPlayer
-import model.playingFiledComponent.IPlayingField
 import com.google.inject.{Inject, Singleton}
+import model.playerComponent.IPlayer
 import model.playerComponent.base.factories.IPlayerFactory
+import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.strategy.scoringStrategy.base.StandardScoring
+import model.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
 
 @Singleton
 class PlayerScores @Inject() (
                                playingField: IPlayingField,
                                player1: IPlayer,
                                player2: IPlayer,
-                               private var scoringStrategy: ScoringStrategy = new StandardScoring()
+                               private var scoringStrategy: IScoringStrategy = new StandardScoring() //now only one scoring strategy used
                              ) extends IPlayerScores {
 
   private var player1Score: Int = 0
@@ -19,9 +21,8 @@ class PlayerScores @Inject() (
   override def getScorePlayer1: Int = player1Score
   override def getScorePlayer2: Int = player2Score
 
-  override def setScoringStrategy(strategy: ScoringStrategy): Unit = {
+  override def setScoringStrategy(strategy: IScoringStrategy): Unit = {
     scoringStrategy = strategy
-    println(s"🔄 Scoring strategy updated to: ${strategy.getClass.getSimpleName}")
   }
 
   override def scoreGoal(player: IPlayer): Unit = {

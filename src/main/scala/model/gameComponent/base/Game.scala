@@ -3,12 +3,12 @@ package model.gameComponent.base
 import controller.command.commandTypes.attackCommands.{DoubleAttackCommand, SingleAttackCommand}
 import controller.command.commandTypes.boostCommands.{BoostDefenderCommand, BoostGoalkeeperCommand}
 import controller.command.commandTypes.swapCommands.HandSwapCommand
-import model.cardComponent.cardFactory.DeckFactory
+import model.cardComponent.factory.DeckFactory
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
-import model.cardComponent.cardFactory.IDeckFactory
+import model.cardComponent.factory.IDeckFactory
 import util.UndoManager
 import play.api.libs.json.*
 
@@ -21,14 +21,14 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import play.api.libs.json.{JsObject, Json}
 import model.playerComponent.base.factories.IPlayerFactory
-import model.playingFiledComponent.factories.*
+import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.manager.base.ActionManager
 import com.google.inject.{Inject, Singleton}
 import model.playerComponent.IPlayer
 import model.playerComponent.base.factories.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.factories.IPlayingFieldFactory
-import model.cardComponent.cardFactory.IDeckFactory
+import model.playingFiledComponent.factory.IPlayingFieldFactory
+import model.cardComponent.factory.IDeckFactory
 import model.playingFiledComponent.manager.IActionManager
 
 import java.nio.file.{Files, Paths}
@@ -49,7 +49,6 @@ class Game @Inject() (
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-//  override def getActionManager: ActionManager = playingField.getActionManager.asInstanceOf[ActionManager]
   override def getActionManager: IActionManager = playingField.getActionManager
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
     val deck = deckFactory.createDeck()

@@ -1,6 +1,6 @@
 package controller
 import controller.command.ICommand
-import model.cardComponent.cardFactory.DeckFactory
+import model.cardComponent.factory.DeckFactory
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import util.{Observable, ObservableEvent, Observer, UndoManager}

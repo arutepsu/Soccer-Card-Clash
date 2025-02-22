@@ -1,12 +1,14 @@
-package model.cardComponent.base
+package model.cardComponent.base.types
 
+import model.cardComponent.base.Card
 import model.cardComponent.base.components.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
 import model.cardComponent.base.components.Value.*
 import model.cardComponent.base.components.{Suit, Value}
-import model.cardComponent.base.Card
+import model.cardComponent.base.types.BoostedCard
 import model.cardComponent.boosting.BoostingPolicies
-import play.api.libs.json._
-import scala.xml._
+import play.api.libs.json.*
+
+import scala.xml.*
 class RegularCard(initialValue: Value, override val suit: Suit) extends Card(suit) {
 
   private var _value: Value = initialValue

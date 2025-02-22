@@ -3,8 +3,8 @@ import model.gameComponent.base.Game
 import com.google.inject.name.Names
 import model.gameComponent.IGame
 import model.playerComponent.base.factories.{IPlayerFactory, PlayerFactory}
-import model.playingFiledComponent.factories.{IPlayingFieldFactory, PlayingFieldFactory}
-import model.playingFiledComponent.factories.{ActionManagerFactory, IActionManagerFactory}
+import model.playingFiledComponent.factory.{IPlayingFieldFactory, PlayingFieldFactory}
+import model.playingFiledComponent.factory.{ActionManagerFactory, IActionManagerFactory}
 import controller.IController
 import controller.base.Controller
 import controller.command.factories.*
@@ -13,15 +13,14 @@ import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.attackStrategy.*
 import model.playingFiledComponent.strategy.refillStrategy.*
 import model.playingFiledComponent.strategy.swapStrategy.*
-import model.cardComponent.cardFactory.*
+import model.cardComponent.factory.*
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
 import model.playerComponent.playerRole.*
-import model.playingFiledComponent.strategy.scoringStrategy.PlayerScores
 import model.playingFiledComponent.manager.*
-import model.playingFiledComponent.factories.*
+import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import model.playerComponent.base.factories.*
 import com.google.inject.name.Names
@@ -37,6 +36,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import model.cardComponent.ICard
 import model.cardComponent.base.components.{Suit, Value}
 import model.playingFiledComponent.manager.base.{ActionManager, DataManager, PlayingFieldManager}
+import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, StandardScoring}
 class SoccerCardClashModule extends AbstractModule {
   override def configure(): Unit = {
     // Bind controllers and game components
@@ -66,7 +66,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IActionManager]).to(classOf[ActionManager])
     bind(classOf[IRolesManager]).to(classOf[RolesManager])
     bind(classOf[IPlayerScores]).to(classOf[PlayerScores])
-    bind(classOf[ScoringStrategy]).to(classOf[StandardScoring])
+    bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
   }
 
   @Provides

@@ -1,13 +1,15 @@
-package controller.command.memento
+package controller.command.memento.base
 
-import model.cardComponent.base.BoostedCard
+import controller.command.memento.IMementoManager
+import controller.command.memento.base.Memento
+import model.cardComponent.base.types.BoostedCard
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.IActionManager
 
-class MementoManager(private var gameManager: IActionManager) {
+class MementoManager(private var gameManager: IActionManager) extends IMementoManager {
 
-  def createMemento(): Memento = {
+  override def createMemento(): Memento = {
     val playingField = gameManager.getPlayingField
 
     Memento(
@@ -38,7 +40,7 @@ class MementoManager(private var gameManager: IActionManager) {
     )
   }
 
-  def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
+  override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
     val playingField = gameManager.getPlayingField
 
     if (lastBoostedIndex != -1) {
@@ -56,7 +58,7 @@ class MementoManager(private var gameManager: IActionManager) {
   }
 
 
-  def restoreGameState(memento: Memento): Unit = {
+  override def restoreGameState(memento: Memento): Unit = {
     val pf = gameManager.getPlayingField
 
     pf.getRoles.setRoles(memento.attacker, memento.defender)

@@ -5,7 +5,7 @@ import model.playingFiledComponent.manager.base.DataManager
 
 import scala.collection.mutable
 
-trait RefillStrategy {
+trait IRefillStrategy {
   def refillDefenderField(fieldState: DataManager, defender: IPlayer): Unit
   def refillField(fieldState: DataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit
 }

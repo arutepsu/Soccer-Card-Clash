@@ -4,7 +4,7 @@ import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
 import model.cardComponent.ICard
 import model.playingFiledComponent.dataStructure.HandCardsQueue
-import model.playingFiledComponent.strategy.refillStrategy.RefillStrategy
+import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
 
 trait IDataManager {
   def getPlayingField: IPlayingField
@@ -28,5 +28,5 @@ trait IDataManager {
   def refillDefenderField(defender: IPlayer): Unit
   def getPlayerField(player: IPlayer): List[ICard]
   def setPlayerField(player: IPlayer, newField: List[ICard]): Unit
-  def setRefillStrategy(strategy: RefillStrategy): Unit
+  def setRefillStrategy(strategy: IRefillStrategy): Unit
 }

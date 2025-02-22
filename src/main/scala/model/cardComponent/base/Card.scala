@@ -4,6 +4,7 @@ import model.cardComponent.ICard
 import model.cardComponent.base.components.Suit.Suit
 import model.cardComponent.base.components.Value.Value
 import model.cardComponent.base.components.{Suit, Value}
+import model.cardComponent.base.types.RegularCard
 
 object Card {
   def apply(value: Value, suit: Suit): ICard = new RegularCard(value, suit)

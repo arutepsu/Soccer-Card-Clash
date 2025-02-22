@@ -24,3 +24,11 @@ class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
   override def createCircularSwapCommand(index: Int): ICommand =
     new CircularSwapCommand(index, game.getActionManager)
 }
+trait ICommandFactory {
+  def createSingleAttackCommand(defenderPosition: Int): ICommand
+  def createDoubleAttackCommand(defenderPosition: Int): ICommand
+  def createBoostDefenderCommand(defenderPosition: Int): ICommand
+  def createBoostGoalkeeperCommand(): ICommand
+  def createRegularSwapCommand(index: Int): ICommand
+  def createCircularSwapCommand(index: Int): ICommand
+}

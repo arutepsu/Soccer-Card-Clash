@@ -4,7 +4,7 @@ import controller.command.ICommand
 import controller.command.base.Command
 import model.playingFiledComponent.manager.IActionManager
 
-class BoostGoalkeeperCommand(gc: IActionManager) extends Command(gc) {
+class BoostGoalkeeperCommand(actionManager: IActionManager) extends Command(actionManager) {
   private var boostValue: Int = 0
 
   override protected def executeAction(): Unit = {

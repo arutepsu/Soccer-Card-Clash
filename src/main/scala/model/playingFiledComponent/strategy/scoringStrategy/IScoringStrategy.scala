@@ -1,5 +1,5 @@
 package model.playingFiledComponent.strategy.scoringStrategy
 
-trait ScoringStrategy {
+trait IScoringStrategy {
   def calculatePoints(currentScore: Int): Int
 }

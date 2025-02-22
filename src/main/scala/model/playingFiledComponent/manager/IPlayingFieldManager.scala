@@ -5,7 +5,9 @@ import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.{IActionManager, IDataManager}
 import model.playingFiledComponent.manager.base.{ActionManager, DataManager}
-import model.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, PlayerScores}
+import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
+
 trait IPlayingFieldManager {
   def createDataManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IDataManager
   def createActionManager(playingField: IPlayingField): IActionManager

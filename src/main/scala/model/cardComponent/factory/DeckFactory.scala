@@ -1,7 +1,7 @@
-package model.cardComponent.cardFactory
+package model.cardComponent.factory
 
 import model.cardComponent.ICard
-import model.cardComponent.cardFactory.CardFactory
+import model.cardComponent.factory.CardFactory
 import scala.collection.mutable
 import scala.util.Random
 import com.google.inject.{Inject, Singleton}

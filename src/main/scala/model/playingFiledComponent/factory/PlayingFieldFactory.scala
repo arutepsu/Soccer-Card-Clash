@@ -1,5 +1,5 @@
-package model.playingFiledComponent.factories
-import model.playingFiledComponent.factories.IPlayingFieldFactory
+package model.playingFiledComponent.factory
+import model.playingFiledComponent.factory.IPlayingFieldFactory
 import play.api.libs.json.*
 import com.google.inject.Singleton
 import model.playerComponent.IPlayer

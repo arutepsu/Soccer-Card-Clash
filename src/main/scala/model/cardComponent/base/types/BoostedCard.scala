@@ -1,12 +1,13 @@
-package model.cardComponent.base
+package model.cardComponent.base.types
 
 import model.cardComponent.ICard
 import model.cardComponent.base.components.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
 import model.cardComponent.base.components.Value.*
 import model.cardComponent.base.components.{Suit, Value}
-import model.cardComponent.base.{Card, RegularCard}
-import play.api.libs.json._
-import scala.xml._
+import model.cardComponent.base.Card
+import play.api.libs.json.*
+
+import scala.xml.*
 class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 0)
   extends Card(baseCard.suit) {
 

@@ -8,6 +8,7 @@ import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.strategy.refillStrategy.*
+import model.playingFiledComponent.strategy.refillStrategy.base.StandardRefillStrategy
 
 import scala.collection.mutable
 @Singleton
@@ -37,9 +38,9 @@ class DataManager @Inject() (
   override def setPlayerHand(player: IPlayer, newHand: HandCardsQueue): Unit =
     if (player == player1) player1Hand = newHand else player2Hand = newHand
 
-  private var refillStrategy: RefillStrategy = new StandardRefillStrategy()
+  private var refillStrategy: IRefillStrategy = new StandardRefillStrategy()
 
-  override def setRefillStrategy(strategy: RefillStrategy): Unit = refillStrategy = strategy
+  override def setRefillStrategy(strategy: IRefillStrategy): Unit = refillStrategy = strategy
 
   override def refillDefenderField(defender: IPlayer): Unit =
     refillStrategy.refillDefenderField(this, defender)

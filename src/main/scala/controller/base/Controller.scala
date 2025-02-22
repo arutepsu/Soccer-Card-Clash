@@ -1,7 +1,7 @@
 package controller.base
 import controller.command.ICommand
 import controller.{Events, IController}
-import model.cardComponent.cardFactory.DeckFactory
+import model.cardComponent.factory.DeckFactory
 import model.gameComponent.IGame
 import model.gameComponent.base.Game
 import model.playerComponent.IPlayer

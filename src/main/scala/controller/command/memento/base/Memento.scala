@@ -1,4 +1,4 @@
-package controller.command.memento
+package controller.command.memento.base
 
 import controller.command.ICommand
 import model.cardComponent.ICard
