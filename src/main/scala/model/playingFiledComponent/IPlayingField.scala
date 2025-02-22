@@ -2,7 +2,6 @@ package model.playingFiledComponent
 import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.manager.IActionManager
 import model.playerComponent.playerRole.RolesManager
-//import model.playerComponent.factories.IRolesManagerFactory
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import model.playerComponent.playerRole.IRolesManager
 import model.playerComponent.IPlayer

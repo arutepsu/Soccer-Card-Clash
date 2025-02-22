@@ -20,12 +20,12 @@ import com.google.inject.{Inject, Singleton}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import play.api.libs.json.{JsObject, Json}
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.*
 import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.manager.base.ActionManager
 import com.google.inject.{Inject, Singleton}
 import model.playerComponent.IPlayer
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.IPlayingFieldFactory
 import model.cardComponent.factory.IDeckFactory
@@ -70,7 +70,7 @@ class Game @Inject() (
     player2 = p2
 
     playingField = playingFieldFactory.createPlayingField(player1, player2)
-    playingField.getDataManager.initializePlayerHands(player1.getCards, player2.getCards)
+    playingField.getDataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
 
 //    actionManager = actionManagerFactory.createActionManager(playingField)

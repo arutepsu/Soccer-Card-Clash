@@ -8,7 +8,7 @@ import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.{IActionManagerFactory, IDataManagerFactory, IPlayerScoresFactory}
 import model.playingFiledComponent.manager.*
 import model.playerComponent.playerRole.*
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.strategy.scoringStrategy.*
 import model.playingFiledComponent.strategy.attackStrategy.{AttackHandler, IAttackStrategy}
 import model.playingFiledComponent.strategy.boostStrategy.*

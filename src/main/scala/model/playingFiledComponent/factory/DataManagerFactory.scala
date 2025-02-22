@@ -3,7 +3,7 @@ package model.playingFiledComponent.factory
 import com.google.inject.Singleton
 import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.manager.base.DataManager
 

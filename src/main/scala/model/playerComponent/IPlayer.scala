@@ -1,8 +1,11 @@
 package model.playerComponent
 import model.cardComponent.ICard
 import model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
-import play.api.libs.json._
-import scala.xml._
+import play.api.libs.json.*
+
+import scala.xml.*
+
+import scala.collection.mutable
 trait IPlayer extends Serializable {
   def name: String
   def cards: List[ICard]

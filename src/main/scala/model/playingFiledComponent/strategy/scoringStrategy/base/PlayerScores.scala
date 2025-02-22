@@ -2,7 +2,7 @@ package model.playingFiledComponent.strategy.scoringStrategy.base
 
 import com.google.inject.{Inject, Singleton}
 import model.playerComponent.IPlayer
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.scoringStrategy.base.StandardScoring
 import model.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}

@@ -35,5 +35,4 @@ case class Player(
     this.copy(actionStates = newActionStates)
   }
 
-  
 }

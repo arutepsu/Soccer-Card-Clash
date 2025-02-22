@@ -1,4 +1,4 @@
-package model.playerComponent.base.factories
+package model.playerComponent.factory
 
 import model.cardComponent.ICard
 import play.api.libs.json._

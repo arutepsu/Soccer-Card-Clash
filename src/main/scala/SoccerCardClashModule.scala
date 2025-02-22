@@ -2,7 +2,7 @@ import com.google.inject.{AbstractModule, Provides, Singleton}
 import model.gameComponent.base.Game
 import com.google.inject.name.Names
 import model.gameComponent.IGame
-import model.playerComponent.base.factories.{IPlayerFactory, PlayerFactory}
+import model.playerComponent.factory.{IPlayerFactory, PlayerFactory}
 import model.playingFiledComponent.factory.{IPlayingFieldFactory, PlayingFieldFactory}
 import model.playingFiledComponent.factory.{ActionManagerFactory, IActionManagerFactory}
 import controller.IController
@@ -22,7 +22,7 @@ import model.playerComponent.playerRole.*
 import model.playingFiledComponent.manager.*
 import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import model.playerComponent.base.factories.*
+import model.playerComponent.factory.*
 import com.google.inject.name.Names
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.google.inject.assistedinject.FactoryModuleBuilder
@@ -84,7 +84,7 @@ class SoccerCardClashModule extends AbstractModule {
   }
 
 
-//  @Provides
-//  @Singleton
-//  def providePlayingFieldManager(): IPlayingFieldManager = new PlayingFieldManager
+  //  @Provides
+  //  @Singleton
+  //  def providePlayingFieldManager(): IPlayingFieldManager = new PlayingFieldManager
 }

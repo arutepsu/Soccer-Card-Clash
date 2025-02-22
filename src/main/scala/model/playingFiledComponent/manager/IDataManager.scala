@@ -3,7 +3,7 @@ package model.playingFiledComponent.manager
 import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
 import model.cardComponent.ICard
-import model.playingFiledComponent.dataStructure.HandCardsQueue
+import model.playingFiledComponent.dataStructure.IHandCardsQueue
 import model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
 
 trait IDataManager {
@@ -14,8 +14,8 @@ trait IDataManager {
   def initializeFields(): Unit
   def getAttackingCard: ICard
   def getDefenderCard: ICard
-  def getPlayerHand(player: IPlayer): HandCardsQueue
-  def setPlayerHand(player: IPlayer, newHand: HandCardsQueue): Unit
+  def getPlayerHand(player: IPlayer): IHandCardsQueue
+  def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
   def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit
   def getPlayerDefenders(player: IPlayer): List[ICard]

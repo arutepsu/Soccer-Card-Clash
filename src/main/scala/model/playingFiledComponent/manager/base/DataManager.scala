@@ -3,9 +3,9 @@ package model.playingFiledComponent.manager.base
 import com.google.inject.{Inject, Singleton}
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
-import model.playerComponent.base.factories.IPlayerFactory
+import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.dataStructure.HandCardsQueue
+import model.playingFiledComponent.dataStructure._
 import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.strategy.refillStrategy.*
 import model.playingFiledComponent.strategy.refillStrategy.base.StandardRefillStrategy
@@ -21,8 +21,8 @@ class DataManager @Inject() (
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
 
-  private var player1Hand: HandCardsQueue = new HandCardsQueue(List())
-  private var player2Hand: HandCardsQueue = new HandCardsQueue(List())
+  private var player1Hand: IHandCardsQueue = new HandCardsQueue(List())
+  private var player2Hand: IHandCardsQueue = new HandCardsQueue(List())
 
   override def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
     player1Hand = new HandCardsQueue(player1Cards)
@@ -32,10 +32,10 @@ class DataManager @Inject() (
   override def getAttackingCard: ICard = getPlayerHand(playingField.getAttacker).getCards.last
   override def getDefenderCard: ICard = getPlayerHand(playingField.getDefender).getCards.last
 
-  override def getPlayerHand(player: IPlayer): HandCardsQueue =
+  override def getPlayerHand(player: IPlayer): IHandCardsQueue =
     if (player == player1) player1Hand else player2Hand
 
-  override def setPlayerHand(player: IPlayer, newHand: HandCardsQueue): Unit =
+  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit =
     if (player == player1) player1Hand = newHand else player2Hand = newHand
 
   private var refillStrategy: IRefillStrategy = new StandardRefillStrategy()
@@ -45,7 +45,7 @@ class DataManager @Inject() (
   override def refillDefenderField(defender: IPlayer): Unit =
     refillStrategy.refillDefenderField(this, defender)
 
-  private def refillField(player: IPlayer, hand: HandCardsQueue): Unit =
+  private def refillField(player: IPlayer, hand: IHandCardsQueue): Unit =
     refillStrategy.refillField(this, player, hand.getCards)
 
   private var player1Field: List[ICard] = List()

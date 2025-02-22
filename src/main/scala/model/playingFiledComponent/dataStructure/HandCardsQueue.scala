@@ -4,15 +4,15 @@ import model.cardComponent.ICard
 
 import scala.collection.mutable
 
-class HandCardsQueue(initialCards: List[ICard]) extends mutable.Queue[ICard] {
+class HandCardsQueue(initialCards: List[ICard]) extends IHandCardsQueue{
 
   this.enqueueAll(initialCards)
 
-  def getCards: mutable.Queue[ICard] = this
+  override def getCards: mutable.Queue[ICard] = this
 
-  def addCard(card: ICard): Unit = this.prepend(card)
+  override def addCard(card: ICard): Unit = this.prepend(card)
 
-  def removeLastCard(): ICard = {
+  override def removeLastCard(): ICard = {
     if (this.nonEmpty) {
       this.remove(this.size - 1)
     } else {
@@ -20,5 +20,11 @@ class HandCardsQueue(initialCards: List[ICard]) extends mutable.Queue[ICard] {
     }
   }
 
-  def getHandSize: Int = this.size
+  override def getHandSize: Int = this.size
+}
+trait IHandCardsQueue extends mutable.Queue[ICard]  {
+  def getCards: mutable.Queue[ICard]
+  def addCard(card: ICard): Unit
+  def removeLastCard(): ICard
+  def getHandSize: Int
 }
