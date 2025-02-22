@@ -8,10 +8,15 @@ import model.playingFiledComponent.manager.base.{ActionManager, DataManager}
 import model.playingFiledComponent.manager.{IActionManager, IDataManager, IPlayingFieldManager}
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
+import com.google.inject.{Inject, Singleton}
+@Singleton
+class PlayingFieldManager @Inject() (
+                                      handManager: IPlayerHandManager,
+                                      fieldManager: IPlayerFieldManager
+                                    ) extends IPlayingFieldManager {
 
-class PlayingFieldManager extends IPlayingFieldManager {
   override def createDataManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IDataManager =
-    new DataManager(playingField, player1, player2)
+    new DataManager(playingField, player1, player2, handManager, fieldManager)
 
   override def createActionManager(playingField: IPlayingField): IActionManager =
     new ActionManager(playingField)

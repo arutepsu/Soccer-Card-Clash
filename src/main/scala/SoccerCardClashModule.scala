@@ -35,7 +35,7 @@ import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.google.inject.assistedinject.FactoryModuleBuilder
 import model.cardComponent.ICard
 import model.cardComponent.base.components.{Suit, Value}
-import model.playingFiledComponent.manager.base.{ActionManager, DataManager, PlayingFieldManager}
+import model.playingFiledComponent.manager.base.*
 import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, StandardScoring}
 class SoccerCardClashModule extends AbstractModule {
   override def configure(): Unit = {
@@ -60,7 +60,10 @@ class SoccerCardClashModule extends AbstractModule {
     // Bind player-related components
     // Bind factories
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
+    bind(classOf[IPlayerHandManager]).to(classOf[PlayerHandManager])
 
+    // Bind IPlayerFieldManager to DefaultPlayerFieldManager
+    bind(classOf[IPlayerFieldManager]).to(classOf[PlayerFieldManager])
     // Bind strategies and managers
     bind(classOf[IDataManager]).to(classOf[DataManager])
     bind(classOf[IActionManager]).to(classOf[ActionManager])

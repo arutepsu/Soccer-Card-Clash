@@ -15,101 +15,64 @@ import scala.collection.mutable
 class DataManager @Inject() (
                               playingField: IPlayingField,
                               player1: IPlayer,
-                              player2: IPlayer
+                              player2: IPlayer,
+                              handManager: IPlayerHandManager,
+                              fieldManager: IPlayerFieldManager
                             ) extends IDataManager {
+
+  private var refillStrategy: IRefillStrategy = new StandardRefillStrategy()
+
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
 
-  private var player1Hand: IHandCardsQueue = new HandCardsQueue(List())
-  private var player2Hand: IHandCardsQueue = new HandCardsQueue(List())
-
+  /** Hand Management **/
   override def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
-    player1Hand = new HandCardsQueue(player1Cards)
-    player2Hand = new HandCardsQueue(player2Cards)
+    handManager.initializePlayerHands(player1, player1Cards, player2, player2Cards)
   }
 
-  override def getAttackingCard: ICard = getPlayerHand(playingField.getAttacker).getCards.last
-  override def getDefenderCard: ICard = getPlayerHand(playingField.getDefender).getCards.last
+  override def getDefenderCard(player: IPlayer, index: Int): ICard = {
+    fieldManager.getDefenderCard(player, index)
+  }
 
-  override def getPlayerHand(player: IPlayer): IHandCardsQueue =
-    if (player == player1) player1Hand else player2Hand
+  override def getAttackingCard: ICard = handManager.getAttackingCard(playingField.getAttacker)
+  override def getDefenderCard: ICard = handManager.getDefenderCard(playingField.getDefender)
 
-  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit =
-    if (player == player1) player1Hand = newHand else player2Hand = newHand
+  override def getPlayerHand(player: IPlayer): IHandCardsQueue = handManager.getPlayerHand(player)
+  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit = handManager.setPlayerHand(player, newHand)
 
-  private var refillStrategy: IRefillStrategy = new StandardRefillStrategy()
+  /** Field Management **/
+  override def getPlayerField(player: IPlayer): List[ICard] = fieldManager.getPlayerField(player)
+  override def setPlayerField(player: IPlayer, newField: List[ICard]): Unit = fieldManager.setPlayerField(player, newField)
 
+  override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] = fieldManager.getPlayerGoalkeeper(player)
+  override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit = fieldManager.setPlayerGoalkeeper(player, goalkeeper)
+
+  override def getPlayerDefenders(player: IPlayer): List[ICard] = fieldManager.getPlayerDefenders(player)
+  override def setPlayerDefenders(player: IPlayer, newDefenders: List[ICard]): Unit = fieldManager.setPlayerDefenders(player, newDefenders)
+
+  override def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit =
+    fieldManager.removeDefenderCard(currentDefender, defenderCard)
+
+  override def removeDefenderGoalkeeper(currentDefender: IPlayer): Unit =
+    fieldManager.removeDefenderGoalkeeper(currentDefender)
+
+  override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
+    fieldManager.allDefendersBeaten(currentDefender)
+
+  /** Refill Strategies **/
   override def setRefillStrategy(strategy: IRefillStrategy): Unit = refillStrategy = strategy
 
   override def refillDefenderField(defender: IPlayer): Unit =
     refillStrategy.refillDefenderField(this, defender)
 
-  private def refillField(player: IPlayer, hand: IHandCardsQueue): Unit =
-    refillStrategy.refillField(this, player, hand.getCards)
-
-  private var player1Field: List[ICard] = List()
-  private var player2Field: List[ICard] = List()
-
-  private var player1Goalkeeper: Option[ICard] = None
-  private var player1Defenders: List[ICard] = List()
-
-  private var player2Goalkeeper: Option[ICard] = None
-  private var player2Defenders: List[ICard] = List()
-
-  override def getPlayerField(player: IPlayer): List[ICard] =
-    if (player == player1) player1Field else player2Field
-
-  override  def setPlayerField(player: IPlayer, newField: List[ICard]): Unit =
-    if (player == player1) player1Field = newField else player2Field = newField
-
-  override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] =
-    if (player == player1) player1Goalkeeper else player2Goalkeeper
-
-  override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit =
-    if (player == player1) player1Goalkeeper = goalkeeper else player2Goalkeeper = goalkeeper
-
-  override def getPlayerDefenders(player: IPlayer): List[ICard] =
-    if (player == player1) player1Defenders else player2Defenders
-
-  override def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit =
-    if (player == player1) player1Defenders = newDefenderField else player2Defenders = newDefenderField
+  override def initializeFields(): Unit = {
+    refillStrategy.refillField(this, player1, handManager.getPlayerHand(player1).getCards)
+    refillStrategy.refillField(this, player2, handManager.getPlayerHand(player2).getCards)
+  }
 
   override def setGoalkeeperForAttacker(card: ICard): Unit = {
-    if (playingField.getAttacker == player1) player1Goalkeeper = Some(card)
-    else player2Goalkeeper = Some(card)
-
-    playingField.notifyObservers()
+    fieldManager.setGoalkeeperForAttacker(playingField, card)
   }
 
-  override def initializeFields(): Unit = {
-    refillField(player1, player1Hand)
-    refillField(player2, player2Hand)
-  }
-  override def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit = {
-    val cardExists = (if (currentDefender == player1) player1Defenders else player2Defenders).contains(defenderCard)
-
-    if (currentDefender == player1) {
-      player1Defenders = player1Defenders.filterNot(_ == defenderCard)
-    } else {
-      player2Defenders = player2Defenders.filterNot(_ == defenderCard)
-    }
-  }
-  override def removeDefenderGoalkeeper(currentDefender: IPlayer): Unit = {
-    if (currentDefender == player1) {
-      player1Goalkeeper = None
-    } else {
-      player2Goalkeeper = None
-    }
-  }
-
-  override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
-    getPlayerDefenders(currentDefender).isEmpty
-
-  override def getDefenderCard(player: IPlayer, index: Int): ICard = {
-    val defenders = if (player == player1) player1Defenders else player2Defenders
-    if (index < 0 || index >= defenders.size)
-      throw new IndexOutOfBoundsException("Invalid defender index")
-    defenders(index)
-  }
 }
