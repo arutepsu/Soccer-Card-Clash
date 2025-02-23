@@ -5,6 +5,10 @@ import scalafx.application.Platform
 import util.{Observable, ObservableEvent, Observer}
 import view.gui.scenes.sceneManager.SceneManager.{attackerDefendersScene, attackerHandScene, controller, createPlayerScene, mainMenuScene, playingFieldScene, switchScene}
 import view.tui.PromptState
+import view.tui.tuiCommand.base.ITuiCommand
+import view.tui.tuiCommand.factory.{ITuiCommandFactory, TuiCommandFactory}
+import view.tui.tuiCommand.tuiCommandTypes.CreatePlayersNameTuiCommand
+
 enum PromptState {
   case None            // No active prompt
   case StartGame
@@ -34,7 +38,7 @@ class Tui(controller: IController) extends Observer {
     TuiKeys.Attack.key -> tuiCommandFactory.createAttackTuiCommand(),
     TuiKeys.BoostDefender.key -> tuiCommandFactory.createBoostDefenderTuiCommand(),
     TuiKeys.RegularSwap.key -> tuiCommandFactory.createRegularSwapTuiCommand(),
-    TuiKeys.DoubleAttack.key -> tuiCommandFactory.createDoubleAttackCommand()
+    TuiKeys.DoubleAttack.key -> tuiCommandFactory.createDoubleAttackTuiCommand()
   )
 
   def processInputLine(input: String): Unit = {

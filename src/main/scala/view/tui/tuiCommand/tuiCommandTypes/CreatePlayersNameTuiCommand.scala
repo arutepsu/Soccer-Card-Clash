@@ -1,5 +1,8 @@
-package view.tui
+package view.tui.tuiCommand.tuiCommandTypes
+
 import controller.{Events, IController}
+import view.tui.tuiCommand.tuiCommandTypes.StartGameTuiCommand
+import view.tui.tuiCommand.base.ITuiCommand
 
 class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForNames: Boolean = false

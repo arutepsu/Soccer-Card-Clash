@@ -1,10 +1,14 @@
-package view.tui
+package view.tui.tuiCommand.factory
+
 import controller.IController
 import controller.command.actionCommandTypes.boostActionCommands.BoostDefenderActionCommand
+import view.tui.tuiCommand.factory.*
+import view.tui.tuiCommand.base.ITuiCommand
+import view.tui.tuiCommand.tuiCommandTypes.*
 
 trait ITuiCommandFactory {
   def createAttackTuiCommand(): ITuiCommand
-  def createDoubleAttackCommand(): ITuiCommand
+  def createDoubleAttackTuiCommand(): ITuiCommand
   def createBoostDefenderTuiCommand(): ITuiCommand
   def createRegularSwapTuiCommand(): ITuiCommand
   def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand
@@ -15,7 +19,7 @@ class TuiCommandFactory(controller: IController) extends ITuiCommandFactory {
 
   override def createAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
 
-  override def createDoubleAttackCommand(): ITuiCommand = new DoubleAttackCommand(controller)
+  override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
 
   override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostTuiCommand(controller)
 

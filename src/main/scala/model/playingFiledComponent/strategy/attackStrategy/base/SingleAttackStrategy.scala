@@ -156,6 +156,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           extraDefenderCard)
       }
       fieldState.removeDefenderCard(roles.defender, defenderCard)
+      roles.switchRoles()
     } else {
       roles.switchRoles()
     }

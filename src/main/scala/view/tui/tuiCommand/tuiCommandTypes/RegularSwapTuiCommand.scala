@@ -1,5 +1,7 @@
-package view.tui
+package view.tui.tuiCommand.tuiCommandTypes
+
 import controller.{Events, IController}
+import view.tui.tuiCommand.base.ITuiCommand
 
 class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false

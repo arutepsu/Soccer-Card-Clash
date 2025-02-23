@@ -1,5 +1,7 @@
-package view.tui
+package view.tui.tuiCommand.tuiCommandTypes
+
 import controller.{Events, IController}
+import view.tui.tuiCommand.base.ITuiCommand
 
 class BoostTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
