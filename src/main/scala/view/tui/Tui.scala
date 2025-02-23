@@ -11,7 +11,7 @@ import view.tui.tuiCommand.tuiCommandTypes.CreatePlayersNameTuiCommand
 
 enum PromptState {
   case None            // No active prompt
-  case StartGame
+  case STARTGAME
   case LoadGame
   case SaveGame
   case SingleAttack
@@ -38,7 +38,10 @@ class Tui(controller: IController) extends Observer {
     TuiKeys.Attack.key -> tuiCommandFactory.createAttackTuiCommand(),
     TuiKeys.BoostDefender.key -> tuiCommandFactory.createBoostDefenderTuiCommand(),
     TuiKeys.RegularSwap.key -> tuiCommandFactory.createRegularSwapTuiCommand(),
-    TuiKeys.DoubleAttack.key -> tuiCommandFactory.createDoubleAttackTuiCommand()
+    TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
+    TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
+    TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
+    TuiKeys.Exit.key -> tuiCommandFactory.createExitTuiCommand()
   )
 
   def processInputLine(input: String): Unit = {
@@ -60,7 +63,14 @@ class Tui(controller: IController) extends Observer {
       waitingForNames = true
       return
     }
-
+    commandKey match {
+      case TuiKeys.Attack.key => prompter.promptRegularAttack()
+      case TuiKeys.BoostDefender.key => prompter.promptBoost()
+      case TuiKeys.DoubleAttack.key => prompter.promptDoubleAttack()
+      case TuiKeys.RegularSwap.key => prompter.promptSwap()
+      case TuiKeys.CreatePlayers.key => prompter.promptCreatePlayers()
+      case _ => // No prompt for other commands
+    }
 
     // ✅ Step 3: Process Regular Commands Using `TuiKeys`
     commands.get(commandKey) match {
@@ -117,26 +127,30 @@ class Tui(controller: IController) extends Observer {
 
       case Events.RegularAttack =>
         promptState = PromptState.SingleAttack
-        prompter.promptRegularAttack()
+        prompter.promptShowDefendersField()
+        prompter.promptShowAttackersHand()
 
       case Events.DoubleAttack =>
         promptState = PromptState.DoubleAttack
-        prompter.promptDoubleAttack()
+        prompter.promptShowDefendersField()
+        prompter.promptShowAttackersHand()
 
       case Events.BoostDefender =>
         promptState = PromptState.Boost
-        prompter.promptBoost()
+        prompter.promptShowDefendersField()
 
       case Events.RegularSwap =>
         promptState = PromptState.RegularSwap
-        prompter.promptSwap()
+        prompter.promptShowAttackersHand()
 
       case Events.LoadGame =>
-        println("✅ Game loaded successfully!")
+        promptState = PromptState.LoadGame
+        prompter.promptLoadGame()
 
       /** 💾 Save Game */
       case Events.SaveGame =>
-        println("✅ Game saved successfully!")
+        promptState = PromptState.SaveGame
+        prompter.promptSaveGame()
 
       /** 🔄 Default: Refresh Game Status */
       case _ => println("error")

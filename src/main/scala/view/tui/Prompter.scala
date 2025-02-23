@@ -35,6 +35,47 @@ class Prompter(controller: IController) {
     println("Game started!:")
   }
 
+  def promptShowAttackersField(): Unit = {
+    val playingField = controller.getPlayingField
+    val attacker = playingField.getAttacker
+
+    println("\n===================================")
+    println(f"${attacker.name} field cards after boost: ")
+    println(f"${playingField.getDataManager.getPlayerField(attacker)}")
+    println("===================================")
+  }
+  
+  def promptShowAttackersHand(): Unit = {
+    val playingField = controller.getPlayingField
+    val attacker = playingField.getAttacker
+
+    println("\n===================================")
+    println(f"${attacker.name} field cards after swap: ")
+    println(f"${playingField.getDataManager.getPlayerHand(attacker)}")
+    println("===================================")
+  }
+  
+  def promptShowDefendersField() : Unit = {
+    val playingField = controller.getPlayingField
+    val defender = playingField.getDefender
+
+    println("\n===================================")
+    println(f"${defender.name} field cards after attack: ")
+    println(f"${playingField.getDataManager.getPlayerField(defender)}")
+    println("===================================")
+  }
+
+  def promptShowDefendersHand(): Unit = {
+    val playingField = controller.getPlayingField
+    val defender = playingField.getDefender
+
+    println("\n===================================")
+    println(f"${defender.name} field cards after switch: ")
+    println(f"${playingField.getDataManager.getPlayerHand(defender)}")
+    println("===================================")
+  }
+  
+  
   def printGameState(): Unit = {
     val playingField = controller.getPlayingField
     val attacker = playingField.getAttacker
@@ -76,8 +117,15 @@ class Prompter(controller: IController) {
     println(":exit - Exit")
 
   }
-
   def promptCreatePlayers() : Unit ={
     println("Creating Players....")
+  }
+  
+  def promptLoadGame(): Unit = {
+    println("✅ Game loaded successfully!")
+  }
+
+  def promptSaveGame(): Unit = {
+    println("✅ Game saved successfully!")
   }
 }

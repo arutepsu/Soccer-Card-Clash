@@ -12,4 +12,5 @@ enum TuiKeys(val key: String) {
   case CreatePlayers extends TuiKeys(":create players")
   case RegularSwap extends TuiKeys(":regular swap")
   case BoostDefender extends TuiKeys(":boost defender")
+  case Exit extends TuiKeys(":exit")
 }
