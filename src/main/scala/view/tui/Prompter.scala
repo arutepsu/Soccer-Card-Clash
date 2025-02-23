@@ -6,11 +6,15 @@ class Prompter(controller: IController) {
 
   /** 🏆 Ask for Player Name */
   def promptPlayersName(): Unit = {
-    println("📝 Enter players name:")
+    println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
   }
 
   /** 🎯 Ask for Attack */
-  def promptAttack(): Unit = {
+  def promptRegularAttack(): Unit = {
+    println("⚔️ Select a defender to attack (enter position):")
+  }
+
+  def promptDoubleAttack(): Unit = {
     println("⚔️ Select a defender to attack (enter position):")
   }
 
@@ -61,5 +65,19 @@ class Prompter(controller: IController) {
   }
   def promptExit(): Unit = {
     println("👋 Goodbye!")
+  }
+  def promptMainMenu(): Unit = {
+    println("=========================================")
+    println("      Welcome to Soccer Card Clash!      ")
+    println("=========================================")
+    println("\nMain Menu:")
+    println(":start - Create New Game")
+    println(":load - Load Game")
+    println(":exit - Exit")
+
+  }
+
+  def promptCreatePlayers() : Unit ={
+    println("Creating Players....")
   }
 }

@@ -1,7 +1,7 @@
 package view.tui
 import controller.{Events, IController}
 
-class AttackCommand(controller: IController) extends TuiCommand {
+class AttackTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
     input match {
       case Some(indexStr) =>

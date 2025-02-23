@@ -1,7 +1,7 @@
 package view.tui
 import controller.{Events, IController}
 
-class RegularSwapCommand(controller: IController) extends TuiCommand {
+class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false
 
   /** 🔄 Step 1: Show Hand Cards and Ask for Input */

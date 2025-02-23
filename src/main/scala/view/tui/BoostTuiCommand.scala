@@ -1,7 +1,7 @@
 package view.tui
 import controller.{Events, IController}
 
-class BoostCommand(controller: IController) extends TuiCommand {
+class BoostTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
     val attacker = controller.getPlayingField.getAttacker
     val defenders = controller.getPlayingField.getDataManager.getPlayerDefenders(attacker)

@@ -7,29 +7,34 @@ import view.gui.scenes.sceneManager.SceneManager.{attackerDefendersScene, attack
 import view.tui.PromptState
 enum PromptState {
   case None            // No active prompt
-  case StartGame        // New game setup
-  case LoadGame        // Loading game
-  case SaveGame        // Saving game
-  case Attack          // Selecting an attack
+  case StartGame
+  case LoadGame
+  case SaveGame
+  case SingleAttack
   case DoubleAttack
-  case Swap            // Swapping cards
-  case Redo        // Undo/Redo operations
-  case Undo        // Undo/Redo operations
+  case RegularSwap
+  case Redo
+  case Undo
   case Boost
   case PlayingField
+  case MainMenu
+  case CreatePlayers
+  case Exit
 }
 class Tui(controller: IController) extends Observer {
+  controller.add(this)
+
   private var promptState: PromptState = PromptState.None
-  private val startGameCommand = new StartGameCommand(controller)
-  private val attackCommand = new AttackCommand(controller)
-  private val boostCommand = new BoostCommand(controller)
-  private val regularSwapCommand = new RegularSwapCommand(controller)
+  private val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller)
+  private val createPlayersNameTuiCommand: CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
   private val prompter = new Prompter(controller)
-  private val commands: Map[String, TuiCommand] = Map(
-    TuiKeys.StartGame.key -> startGameCommand,
-    TuiKeys.Attack.key -> attackCommand,
-    TuiKeys.BoostDefender.key -> boostCommand,
-    TuiKeys.RegularSwap.key -> regularSwapCommand
+  private var waitingForNames: Boolean = false
+
+  private val commands: Map[String, ITuiCommand] = Map(
+    TuiKeys.Attack.key -> tuiCommandFactory.createAttackTuiCommand(),
+    TuiKeys.BoostDefender.key -> tuiCommandFactory.createBoostDefenderTuiCommand(),
+    TuiKeys.RegularSwap.key -> tuiCommandFactory.createRegularSwapTuiCommand(),
+    TuiKeys.DoubleAttack.key -> tuiCommandFactory.createDoubleAttackCommand()
   )
 
   def processInputLine(input: String): Unit = {
@@ -39,56 +44,91 @@ class Tui(controller: IController) extends Observer {
     val commandKey = parts.head
     val commandArg = if (parts.length > 1) Some(parts(1)) else None
 
-    // ✅ Step 1: Check if handling player name input
-    if (startGameCommand.handlePlayerNames(input)) return
+    // ✅ Step 1: Handle player name input if waiting for names
+    if (waitingForNames && createPlayersNameTuiCommand.handlePlayerNames(input)) {
+      waitingForNames = false
+      return
+    }
 
-      // ✅ Step 2: Process Regular Commands Using `TuiKeys`
-      commands.get(commandKey) match {
-        case Some(command: TuiCommand) =>
-          command.execute(commandArg)
+    // ✅ Step 2: If StartGame is selected, ask for names first
+    if (commandKey == TuiKeys.StartGame.key) {
+      createPlayersNameTuiCommand.execute() // Trigger name input prompt
+      waitingForNames = true
+      return
+    }
 
-        case None=> // Handle swap input separately
-          ()
 
-        case _ =>
-          println("❌ Unknown command. Try again.")
-      }
+    // ✅ Step 3: Process Regular Commands Using `TuiKeys`
+    commands.get(commandKey) match {
+      case Some(command: ITuiCommand) =>
+        command.execute(commandArg)
+
+      case None =>
+        println("❌ Unknown command. Try again.")
+    }
   }
 
+  private def handlePlayerNames(input: String): Boolean = {
+    val playerNames = input.split(" ").map(_.trim).filter(_.nonEmpty)
+
+    if (playerNames.length == 2) {
+      val player1 = playerNames(0)
+      val player2 = playerNames(1)
+
+      println(s"✅ Players set: $player1 & $player2") // Debugging print
+      waitingForNames = false // Reset state
+
+      // Create StartGameCommand dynamically and execute it
+      val startGameCommand = tuiCommandFactory.createStartGameTuiCommand(player1, player2)
+      startGameCommand.execute()
+
+      return true
+    } else {
+      println("❌ Invalid format! Enter names in the format: `player1 player2`.")
+    }
+    false
+  }
   override def update(e: ObservableEvent): Unit = {
     e match {
+
+      case Events.MainMenu =>
+        promptState = PromptState.MainMenu
+        prompter.promptMainMenu()
+
+      case Events.CreatePlayers =>
+        promptState = PromptState.CreatePlayers
+        prompter.promptCreatePlayers()
 
       case Events.StartGame =>
         promptState = PromptState.StartGame
         prompter.promptNewGame()
 
-      /** 🔴 Quit the game */
       case Events.Quit =>
+        promptState = PromptState.Exit
         prompter.promptExit()
 
       case Events.PlayingField =>
-        println("⚽ Game Started! Displaying playing field.")
-       prompter.promptPlayingField()
+        promptState = PromptState.PlayingField
+        prompter.promptPlayingField()
 
-      /** 🛡️ Prompt for Attacking a Defender */
       case Events.RegularAttack =>
-        promptState = PromptState.Attack
-        prompter.promptAttack()
+        promptState = PromptState.SingleAttack
+        prompter.promptRegularAttack()
 
-      /** ⚡ Prompt for Boosting a Defender */
+      case Events.DoubleAttack =>
+        promptState = PromptState.DoubleAttack
+        prompter.promptDoubleAttack()
+
       case Events.BoostDefender =>
         promptState = PromptState.Boost
         prompter.promptBoost()
 
-      /** 🔄 Prompt for Swapping a Card */
       case Events.RegularSwap =>
-        promptState = PromptState.Swap
+        promptState = PromptState.RegularSwap
         prompter.promptSwap()
 
-      /** 💾 Load Game */
       case Events.LoadGame =>
         println("✅ Game loaded successfully!")
-      //        printStatusScreen()
 
       /** 💾 Save Game */
       case Events.SaveGame =>

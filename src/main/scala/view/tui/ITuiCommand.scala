@@ -1,5 +1,5 @@
 package view.tui
 
-trait TuiCommand {
+trait ITuiCommand {
   def execute(input: Option[String] = None): Unit
 }
