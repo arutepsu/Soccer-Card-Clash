@@ -6,7 +6,7 @@ import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image
 import scalafx.stage.Stage
 import util.*
-import view.gui.scenes.MainMenuScene
+//import view.gui.scenes.MainMenuScene
 import view.gui.scenes.sceneManager.SceneManager
 
 class Gui(controller: IController) extends JFXApp3 with Observer {

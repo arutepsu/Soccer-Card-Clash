@@ -1,0 +1,20 @@
+.menu-background {
+    -fx-background-image: url("../images/data/images/menu.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.button {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-border-color: white;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-text-fill: black;
+}

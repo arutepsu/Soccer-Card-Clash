@@ -36,33 +36,33 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   padding = Insets(20)
 
 
-  val undoButton: Button = GameButtonFactory.createGameButton(
-    text = "Undo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.undo()
-    playingFieldScene.update(Events.Undo)
-    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
-  }
-
-  val redoButton: Button = GameButtonFactory.createGameButton(
-    text = "Redo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.redo()
-    playingFieldScene.updateDisplay()
-    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
-  }
-
-  val mainMenuButton: Button = GameButtonFactory.createGameButton(
-    text = "Main Menu",
-    width = 180,
-    height = 50
-  ) { () =>
-    controller.notifyObservers(Events.MainMenu)
-  }
+//  val undoButton: Button = GameButtonFactory.createGameButton(
+//    text = "Undo",
+//    width = 150,
+//    height = 50
+//  ) { () =>
+//    controller.undo()
+//    playingFieldScene.update(Events.Undo)
+//    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
+//  }
+//
+//  val redoButton: Button = GameButtonFactory.createGameButton(
+//    text = "Redo",
+//    width = 150,
+//    height = 50
+//  ) { () =>
+//    controller.redo()
+//    playingFieldScene.updateDisplay()
+//    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
+//  }
+//
+//  val mainMenuButton: Button = GameButtonFactory.createGameButton(
+//    text = "Main Menu",
+//    width = 180,
+//    height = 50
+//  ) { () =>
+//    controller.notifyObservers(Events.MainMenu)
+//  }
 
   val showDefendersButton: Button = GameButtonFactory.createGameButton(
     text = "Show Defenders",
@@ -71,6 +71,14 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   ) { () =>
     controller.notifyObservers(Events.AttackerDefenderCards)
   }
+  val pause: Button = GameButtonFactory.createGameButton(
+    text = "Pause",
+    width = 180,
+    height = 50
+  ) { () =>
+    controller.notifyObservers(Events.PauseGame)
+  }
+
 
   val makeSwapButton: Button = GameButtonFactory.createGameButton(
     text = "Make Swap",
@@ -83,9 +91,10 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   children = Seq(
     singleAttackButton,
     doubleAttackButton,
-    undoButton,
-    redoButton,
-    mainMenuButton,
+//    undoButton,
+//    redoButton,
+//    mainMenuButton,
+    pause,
     showDefendersButton,
     makeSwapButton)
 }

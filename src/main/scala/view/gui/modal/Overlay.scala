@@ -2,6 +2,7 @@ package view.gui.modal
 
 import scalafx.Includes.*
 import scalafx.animation.FadeTransition
+import scalafx.application.Platform
 import scalafx.geometry.Pos
 import scalafx.scene.Node
 import scalafx.scene.effect.BoxBlur
@@ -32,19 +33,40 @@ class Overlay(
   }
 
   def updateSnapshot(): Unit = {
-    // Take a snapshot of the content
-    val snapshot = new WritableImage(windowWidth.toInt, windowHeight.toInt)
-    sceneContent().snapshot(null, snapshot)
+    Platform.runLater {
+      val snapshot = new WritableImage(windowWidth.toInt, windowHeight.toInt)
+      val node = sceneContent()
 
-    imageView.image = snapshot
+      node.delegate match {
+        case parent: javafx.scene.Parent =>
+          parent.applyCss() // ✅ Ensure styles are applied before capturing
+          parent.layout() // ✅ Force a UI refresh before taking the snapshot
+        case _ =>
+          println("⚠️ Warning: Node is not a Parent, skipping layout update.")
+      }
 
-    // Update the ImageView with the blurred snapshot
-    imageView.effect = new BoxBlur{
-      width = 5
-      height = 5
-      iterations = 3
+      println(s"📷 Taking snapshot of: ${node.getClass.getSimpleName}")
+
+      node.snapshot(null, snapshot) // ✅ Capture full scene, including cards and buttons
+
+      // ✅ Free previous image memory before setting a new snapshot
+      if (imageView.image() != null) {
+        imageView.image().cancel() // ✅ This ensures the previous image gets released
+      }
+
+      imageView.image = snapshot // ✅ Assign the new snapshot to ImageView
+
+      // ✅ Apply blur effect AFTER assigning image
+      imageView.effect = new BoxBlur {
+        width = 10
+        height = 10
+        iterations = 3
+      }
+
+      println("✅ Snapshot captured & blurred!")
     }
   }
+
 
   def openModal(fadeIn: Boolean = false): Unit = {
     updateSnapshot()
@@ -93,6 +115,7 @@ class Overlay(
 
   val modal = new StackPane {
     children = Seq(
+      imageView,  // ✅ Add blurred snapshot as a background
       overlay,
       modalBox
     )
@@ -101,4 +124,5 @@ class Overlay(
     prefWidth = windowWidth
     prefHeight = windowHeight
   }
+
 }

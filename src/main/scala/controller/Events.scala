@@ -12,6 +12,8 @@ enum Events extends ObservableEvent {
   case AttackerHandCards, AttackerDefenderCards, PlayingField
 
   case Quit
-
+  
+  case PauseGame
+  
   case Undo, Redo, SaveGame
 }

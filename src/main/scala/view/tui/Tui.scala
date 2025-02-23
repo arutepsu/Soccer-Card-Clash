@@ -114,7 +114,7 @@ class Tui(controller: IController) extends Observer {
         prompter.promptCreatePlayers()
 
       case Events.StartGame =>
-        promptState = PromptState.StartGame
+        promptState = PromptState.STARTGAME
         prompter.promptNewGame()
 
       case Events.Quit =>
