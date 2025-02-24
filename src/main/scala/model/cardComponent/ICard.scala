@@ -16,15 +16,6 @@ trait ICard extends Serializable {
   def copy(): ICard
   def hashCode(): Int
   def equals(obj: Any): Boolean
-
-  override def toJson: JsObject = Json.obj(
-    "value" -> value.toString,
-    "suit" -> suit.toString
-  )
-
-  override def toXml: Elem =
-    <Card>
-      <Value>{value.toString}</Value>
-      <Suit>{suit.toString}</Suit>
-    </Card>
+  def toJson: JsObject
+  def toXml: Elem
 }

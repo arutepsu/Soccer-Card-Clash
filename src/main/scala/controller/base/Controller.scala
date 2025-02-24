@@ -15,8 +15,9 @@ import com.google.inject.Inject
 import controller.command.factory.ICommandFactory
 import model.playingFiledComponent.manager.base.ActionManager
 
-class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController {
+class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController{
   private val undoManager = new UndoManager
+
   def getPlayingField: IPlayingField = game.getPlayingField
 
   def getPlayer1: IPlayer = game.getPlayer1
@@ -37,7 +38,7 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
     undoManager.doStep(command)
     notifyObservers(event)
   }
-
+  def selectDefenderPosition(): Int = game.selectDefenderPosition()
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     executeCommand(commandFactory.createSingleAttackCommand(defenderPosition), Events.RegularAttack)
   }
@@ -73,5 +74,5 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
 
   def loadGame(): Unit =
     executeCommand(commandFactory.createLoadGameCommand(), Events.LoadGame)
-  
+
 }

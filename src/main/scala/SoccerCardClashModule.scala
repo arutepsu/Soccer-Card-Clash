@@ -33,7 +33,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import model.playingFiledComponent.strategy.scoringStrategy.*
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.google.inject.assistedinject.FactoryModuleBuilder
-import model.cardComponent.ICard
+import model.cardComponent.{CardDeserializer, ICard}
 import model.cardComponent.base.components.{Suit, Value}
 import model.playingFiledComponent.manager.base.*
 import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, StandardScoring}
@@ -48,7 +48,8 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IPlayingFieldFactory]).to(classOf[PlayingFieldFactory])
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
-
+    bind(classOf[CardDeserializer]).asEagerSingleton()
+    bind(classOf[PlayerDeserializer]).asEagerSingleton()
     // Bind deck & card factories
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])

@@ -1,11 +1,13 @@
 package model.gameComponent
 
+import controller.IController
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.base.ActionManager
 import model.playingFiledComponent.manager.IActionManager
-import play.api.libs.json._
-import scala.xml._
+import play.api.libs.json.*
+
+import scala.xml.*
 import scala.util.Try
 
 trait IGame extends Serializable {

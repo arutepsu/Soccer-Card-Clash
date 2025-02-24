@@ -4,7 +4,9 @@ import model.cardComponent.ICard
 import model.cardComponent.base.components.Suit.Suit
 import model.cardComponent.base.components.Value.Value
 import model.cardComponent.base.components.{Suit, Value}
-import model.cardComponent.base.types.RegularCard
+import model.cardComponent.base.types.*
+import play.api.libs.json.{Json, JsObject}
+import scala.xml.Elem
 
 object Card {
   def apply(value: Value, suit: Suit): ICard = new RegularCard(value, suit)
@@ -39,5 +41,50 @@ abstract class Card(val suit: Suit) extends ICard {
   override def equals(obj: Any): Boolean = obj match {
     case card: ICard => this.value == card.value && this.suit == card.suit
     case _ => false
+  }
+
+  final override def toXml: Elem = this match {
+    case regularCard: RegularCard =>
+      <Card>
+        <suit>
+          {suit}
+        </suit>
+        <value>
+          {regularCard.value}
+        </value>
+        <type>Regular</type>
+      </Card>
+
+    case boostedCard: BoostedCard =>
+      <Card>
+        <suit>
+          {suit}
+        </suit>
+        <value>
+          {boostedCard.value}
+        </value>
+        <type>Boosted</type>
+        <additionalValue>
+          {boostedCard.additionalValue}
+        </additionalValue>
+      </Card>
+  }
+
+  // JSON representation with pattern matching
+  final override def toJson: JsObject = this match {
+    case regularCard: RegularCard =>
+      Json.obj(
+        "suit" -> suit.toString,
+        "value" -> regularCard.value.toString,
+        "type" -> "Regular"
+      )
+
+    case boostedCard: BoostedCard =>
+      Json.obj(
+        "suit" -> suit.toString,
+        "value" -> boostedCard.value.toString,
+        "type" -> "Boosted",
+        "additionalValue" -> boostedCard.additionalValue
+      )
   }
 }

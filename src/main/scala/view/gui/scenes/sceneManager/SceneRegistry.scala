@@ -40,18 +40,16 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     _playingFieldScene.get
   }
 
-  def getAttackerHandScene: Scene = {
-    if (_attackerHandScene.isEmpty) {
-      _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(controller, Option(controller.getPlayingField), 800, 600))
-    }
-    _attackerHandScene.get
+  def getAttackerDefendersScene: Scene = {
+    // 🔄 Always create a fresh instance to ensure UI updates when roles switch
+    _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(controller, Option(controller.getPlayingField), 800, 600))
+    _attackerDefendersScene.get
   }
 
-  def getAttackerDefendersScene: Scene = {
-    if (_attackerDefendersScene.isEmpty) {
-      _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(controller, Option(controller.getPlayingField), 800, 600))
-    }
-    _attackerDefendersScene.get
+  def getAttackerHandScene: Scene = {
+    // 🔄 Always create a fresh instance for the hand scene as well
+    _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(controller, Option(controller.getPlayingField), 800, 600))
+    _attackerHandScene.get
   }
 
   def getMenuScene: Scene = {

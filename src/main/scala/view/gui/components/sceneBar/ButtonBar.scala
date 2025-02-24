@@ -36,25 +36,25 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   padding = Insets(20)
 
 
-//  val undoButton: Button = GameButtonFactory.createGameButton(
-//    text = "Undo",
-//    width = 150,
-//    height = 50
-//  ) { () =>
-//    controller.undo()
-//    playingFieldScene.update(Events.Undo)
-//    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
-//  }
+  val undoButton: Button = GameButtonFactory.createGameButton(
+    text = "Undo",
+    width = 150,
+    height = 50
+  ) { () =>
+    controller.undo()
+    playingFieldScene.update(Events.Undo)
+    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
+  }
 //
-//  val redoButton: Button = GameButtonFactory.createGameButton(
-//    text = "Redo",
-//    width = 150,
-//    height = 50
-//  ) { () =>
-//    controller.redo()
-//    playingFieldScene.updateDisplay()
-//    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
-//  }
+  val redoButton: Button = GameButtonFactory.createGameButton(
+    text = "Redo",
+    width = 150,
+    height = 50
+  ) { () =>
+    controller.redo()
+    playingFieldScene.updateDisplay()
+    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
+  }
 //
 //  val mainMenuButton: Button = GameButtonFactory.createGameButton(
 //    text = "Main Menu",
@@ -91,8 +91,8 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   children = Seq(
     singleAttackButton,
     doubleAttackButton,
-//    undoButton,
-//    redoButton,
+    undoButton,
+    redoButton,
 //    mainMenuButton,
     pause,
     showDefendersButton,

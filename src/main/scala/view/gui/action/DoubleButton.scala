@@ -10,7 +10,11 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
                         playingFieldScene: PlayingFieldScene,
                         gameStatusBar: GameStatusBar): Unit = {
 
-    val defenderFieldBar = if (playingFieldScene.playingField.getDefender == playingFieldScene.player1) playingFieldScene.player1FieldBar else playingFieldScene.player2FieldBar
+    val defenderFieldBar =
+      if (playingFieldScene.playingField.getDefender == playingFieldScene.player1)
+        playingFieldScene.player1FieldBar
+      else
+        playingFieldScene.player2FieldBar
     val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getDefender)
 
     if (defenderCards.nonEmpty) {

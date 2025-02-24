@@ -14,6 +14,7 @@ import view.gui.scenes.sceneManager.SceneManager
 import scalafx.application.Platform
 import view.gui.components.sceneBar.cardBar.SelectablePlayersFieldBar
 import view.gui.action.{ActionButtonFactory, BoostButton}
+import view.gui.utils.Styles
 case class AttackerDefendersScene(
                                    controller: IController,
                                    playingField: Option[IPlayingField],
@@ -21,15 +22,18 @@ case class AttackerDefendersScene(
                                    windowHeight: Double,
                                  ) extends Scene(windowWidth, windowHeight) with Observer {
 
-  val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
-    new SelectablePlayersFieldBar(pf.getRoles.attacker, pf)
-  }
+//  this.getStylesheets.add(Styles.attackerDefendersSceneCss)
+  var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
-  val playerGoalkeeper: Option[ICard] = attackerDefenderField.flatMap(_.getGoalkeeperCard)
-  val playerDefenders: Option[Seq[ICard]] = attackerDefenderField.map(_.getDefenderCards)
 
   val backgroundView = new Region {
     style = "-fx-background-color: black;"
+  }
+
+  val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
+    val fieldBar = new SelectablePlayersFieldBar(pf.getRoles.attacker, pf)
+    fieldBar.styleClass.add("selectable-field-bar")
+    fieldBar
   }
 
   // ✅ Back to Game button
@@ -38,10 +42,11 @@ case class AttackerDefendersScene(
     width = 180,
     height = 50
   ) {
-    () =>
-      controller.notifyObservers(Events.PlayingField)
+    () => controller.notifyObservers(Events.PlayingField)
   }
+  backButton.styleClass.add("button")
 
+  // ✅ Boost Button
   val boostButton: Button = ActionButtonFactory.createBoostButton(
     BoostButton(),
     "Boost Card",
@@ -50,8 +55,11 @@ case class AttackerDefendersScene(
     this,
     controller
   )
+  boostButton.styleClass.add("button")
 
+  // ✅ Button Layout
   val buttonLayout = new HBox {
+    styleClass.add("button-layout")
     alignment = Pos.CENTER
     spacing = 15
     children = Seq(boostButton, backButton)
@@ -65,16 +73,13 @@ case class AttackerDefendersScene(
   }
 
   root = new StackPane {
-    children = Seq(
-      backgroundView,
-      layout
-    )
+    styleClass.add("attacker-defenders-scene")
+    children = Seq(backgroundView, layout)
   }
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 GUI Received Event: $e")
-
       SceneManager.update(e)
     })
   }

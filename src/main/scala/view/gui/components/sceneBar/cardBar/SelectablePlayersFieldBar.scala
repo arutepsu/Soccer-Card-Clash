@@ -41,7 +41,7 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) ex
   override def createDefenderRow(): HBox = {
     val defenderCards = getDefenderCards
 
-    println(s"🛡️ Creating selectable defender row for ${player.name} with cards: $defenderCards")
+    println(s"🛡️!!!!!!!!!!!!!! Creating selectable defender row for ${player.name} with cards: $defenderCards")
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
@@ -79,9 +79,9 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) ex
     }
   }
   private var _isGoalkeeperSelected: Boolean = false
-  
+
   def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
-  
+
   override def createGoalkeeperRow(): HBox = {
     val goalkeeperCard = playingField.getDataManager.getPlayerGoalkeeper(player) match {
       case Some(card) => new FieldCard(flipped = false, card = card)
@@ -118,24 +118,24 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) ex
     }
 
     new HBox {
-        alignment = Pos.CENTER
-        spacing = 10
-        children = Seq(goalkeeperCard)
-      }
+      alignment = Pos.CENTER
+      spacing = 10
+      children = Seq(goalkeeperCard)
+    }
   }
   children = Seq(createDefenderRow(), createGoalkeeperRow())
   // ✅ Update UI with selectable cards
-    override def updateBar(): Unit = {
+  override def updateBar(): Unit = {
+    println("selectable called")
+    // ✅ Remove all previous UI components
+    children.clear()
 
-      // ✅ Remove all previous UI components
-      children.clear()
+    // ✅ Re-add only the existing rows (NO new rows created)
+    children.addAll(createDefenderRow(), createGoalkeeperRow())
 
-      // ✅ Re-add only the existing rows (NO new rows created)
-      children.addAll(createDefenderRow(), createGoalkeeperRow())
-
-      // ✅ Ensure the UI refreshes properly
-      playingField.notifyObservers()
-    }
+    // ✅ Ensure the UI refreshes properly
+    playingField.notifyObservers()
+  }
 
 
 }

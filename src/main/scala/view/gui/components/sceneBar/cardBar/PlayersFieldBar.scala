@@ -17,7 +17,7 @@ import view.gui.components.cardView.FieldCard
 import view.gui.components.uiFactory.CardAnimationFactory
 import view.gui.utils.Styles
 import model.playingFiledComponent.IPlayingField
-class PlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends VBox {
+class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends VBox {
 
   alignment = Pos.CENTER
   spacing = 10
@@ -148,8 +148,20 @@ class PlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends VBox
 
   /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
   def updateBar(): Unit = {
+    val newDefender = playingField.getDefender
+    val newAttacker = playingField.getAttacker
+    println("field bar called")
+    // Check if the player is now the new defender
+    val isNowDefender = player == newDefender
+
+    if (!isNowDefender) {
+      println(s"🛑 Resetting selected defender for ${player.name} because they are no longer the defender.")
+      resetSelectedDefender()
+    }
+
     children.clear()
-    children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow()) // No updateGoalkeeper()
+    children.addAll(statusLabel, playerLabel, createDefenderRow(), createGoalkeeperRow())
+
     playingField.notifyObservers() // ✅ Ensure UI refreshes
   }
 

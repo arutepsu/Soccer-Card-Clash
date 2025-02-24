@@ -43,8 +43,10 @@ lazy val root = project
     libraryDependencies += "javax.inject" % "javax.inject" % "1",
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test",
-    libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33" excludeAll (
+    libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0",
+      libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33" excludeAll (
       ExclusionRule(organization = "org.openjfx")
       ),
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.3",

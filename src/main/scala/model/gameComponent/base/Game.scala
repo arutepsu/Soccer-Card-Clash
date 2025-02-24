@@ -72,7 +72,7 @@ class Game @Inject() (
     playingField = playingFieldFactory.createPlayingField(player1, player2)
     playingField.getDataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
-
+    
   }
 
   override def selectDefenderPosition(): Int = {

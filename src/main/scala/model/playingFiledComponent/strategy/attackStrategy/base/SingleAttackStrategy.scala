@@ -116,12 +116,14 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       case r if r > 0 =>
         attackerWins(attackerHand, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
+        print(f"roles : attacker : ${attacker}, defender ${defender}")
         true
       case _ =>
         defenderWins(defenderHand, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
         fieldState.refillDefenderField(defender)
         roles.switchRoles()
+        print(f"roles : attacker : ${attacker}, defender ${defender}")
         false
     }
   }

@@ -19,23 +19,10 @@ class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 
 
   override def boost(): ICard = this
 
-  override def revertBoost(): Card = new RegularCard(originalValue, baseCard.suit)
-
+  override def revertBoost(): Card = {
+    println(s"♻️ Reverting BoostedCard: $this -> ${new RegularCard(originalValue, baseCard.suit)}")
+    new RegularCard(originalValue, baseCard.suit)
+  }
   override def copy(): Card = new BoostedCard(baseCard, additionalValue)
-
-  override def toJson: JsObject = super.toJson ++ Json.obj(
-    "type" -> JsString("Boosted"),
-    "baseCard" -> baseCard.toJson,
-    "additionalValue" -> additionalValue
-  )
-
-  override def toXml: Elem =
-    <BoostedCard>
-      <BaseCard>
-        {baseCard.toXml}
-      </BaseCard>
-      <AdditionalValue>
-        {additionalValue}
-      </AdditionalValue>
-    </BoostedCard>
+  
 }

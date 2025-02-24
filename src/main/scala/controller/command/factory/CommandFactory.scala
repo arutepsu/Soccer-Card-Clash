@@ -4,8 +4,10 @@ import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackA
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapActionCommand, HandSwapActionCommand}
 import com.google.inject.Inject
+import controller.Events
 import model.gameComponent.IGame
 import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, StartGameWorkflowCommand, WorkflowCommand}
+import model.cardComponent.ICard
 class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
     new SingleAttackActionCommand(defenderPosition, game)
@@ -36,6 +38,10 @@ class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
 
   override def createSaveGameCommand(): WorkflowCommand =
     new SaveGameWorkflowCommand
+
+//  override def createRevertBoostCommand(card: ICard) : ICommand= {
+//    new RevertedCard(card)
+//  }
 }
 trait ICommandFactory {
   def createSingleAttackCommand(defenderPosition: Int): ICommand
@@ -48,4 +54,5 @@ trait ICommandFactory {
   def createQuitCommand(game: IGame): WorkflowCommand
   def createSaveGameCommand(): WorkflowCommand
   def createLoadGameCommand(): WorkflowCommand
+//  def createRevertBoostCommand(card: ICard) : ICommand
 }

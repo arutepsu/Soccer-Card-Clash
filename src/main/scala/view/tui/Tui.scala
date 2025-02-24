@@ -3,7 +3,7 @@ package view.tui
 import controller.{Events, IController}
 import scalafx.application.Platform
 import util.{Observable, ObservableEvent, Observer}
-import view.gui.scenes.sceneManager.SceneManager.{attackerDefendersScene, attackerHandScene, controller, createPlayerScene, mainMenuScene, playingFieldScene, switchScene}
+//import view.gui.scenes.sceneManager.SceneManager.{attackerDefendersScene, attackerHandScene, controller, createPlayerScene, mainMenuScene, playingFieldScene, switchScene}
 import view.tui.PromptState
 import view.tui.tuiCommand.base.ITuiCommand
 import view.tui.tuiCommand.factory.{ITuiCommandFactory, TuiCommandFactory}
@@ -24,6 +24,7 @@ enum PromptState {
   case MainMenu
   case CreatePlayers
   case Exit
+  case Reverted
 }
 class Tui(controller: IController) extends Observer {
   controller.add(this)
@@ -152,8 +153,15 @@ class Tui(controller: IController) extends Observer {
         promptState = PromptState.SaveGame
         prompter.promptSaveGame()
 
+      case Events.Undo =>
+        promptState = PromptState.Undo
+        println("Undo")
+
+      case Events.Redo =>
+        promptState = PromptState.Redo
+        println("Redo")
       /** 🔄 Default: Refresh Game Status */
-      case _ => println("error")
+      case _ => println("in tui error")
     }
   }
 

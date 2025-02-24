@@ -43,7 +43,6 @@ case class PlayingFieldScene(
 
   val attackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
   val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
-  var attackersDefenders = new SelectablePlayersFieldBar(playingField.getRoles.attacker, playingField)
 
   val gameStatusBar = new GameStatusBar
 
@@ -70,7 +69,7 @@ case class PlayingFieldScene(
   }
 
   val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
-  
+
 
   val playersBar = new PlayersBar(controller)
 
@@ -100,11 +99,10 @@ case class PlayingFieldScene(
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => updateDisplay())
   }
-  
+
   def updateDisplay(): Unit = {
     attacker = playingField.getAttacker
     defender = playingField.getDefender
-
     val newAttackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
     val newDefenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
 
@@ -118,11 +116,10 @@ case class PlayingFieldScene(
 
     player1ScoreLabel.text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
     player2ScoreLabel.text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
-
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()
 
-    println(controller.getPlayingField) // Print current game state in TUI for debugging
+//    println(controller.getPlayingField) // Print current game state in TUI for debugging
   }
 
 }
