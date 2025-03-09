@@ -15,6 +15,24 @@ trait IPlayer extends Serializable {
   def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer
   def setHandCards(newCards: List[ICard]): IPlayer
   def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer
-  def toXml: Elem
-  def toJson: JsObject
+
+  def toXml: Elem =
+    <Player name={name}>
+      <Cards>
+        {cards.map(_.toXml)}
+      </Cards>
+      <ActionStates>
+        {actionStates.map { case (policy, state) =>
+        <ActionState policy={policy.toString}>
+          {state.toString}
+        </ActionState>
+      }}
+      </ActionStates>
+    </Player>
+
+  def toJson: JsObject = Json.obj(
+    "name" -> name,
+    "cards" -> cards.map(_.toJson),
+    "actionStates" -> actionStates.map { case (policy, state) => policy.toString -> state.toString }
+  )
 }

@@ -24,5 +24,5 @@ class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 
     new RegularCard(originalValue, baseCard.suit)
   }
   override def copy(): Card = new BoostedCard(baseCard, additionalValue)
-  
+
 }

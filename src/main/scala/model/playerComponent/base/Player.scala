@@ -34,26 +34,5 @@ case class Player(
   override def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer = {
     this.copy(actionStates = newActionStates)
   }
-  override def toXml: Elem =
-    <Player>
-      <name>{name}</name>
-      <cards>
-        {cards.map(_.toXml)}
-      </cards>
-      <actionStates>
-        {actionStates.map { case (policy, state) =>
-        <action>
-          <policy>{policy.toString}</policy>
-          <state>{state.toString}</state>
-        </action>
-      }}
-      </actionStates>
-    </Player>
 
-  // ✅ Convert Player to JSON
-  override def toJson: JsObject = Json.obj(
-    "name" -> name,
-    "cards" -> cards.map(_.toJson),
-    "actionStates" -> actionStates.map { case (policy, state) => policy.toString -> state.toString }
-  )
 }

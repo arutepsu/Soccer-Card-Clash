@@ -2,60 +2,52 @@ package model.playerComponent.factory
 
 import play.api.libs.json.{JsObject, Json}
 import scala.xml.Elem
-import com.google.inject.{Inject, Singleton}
+//import com.google.inject.{Inject, Singleton}
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
-import model.cardComponent.{ICard, CardDeserializer}
+import model.cardComponent.{ICard}
+import util.Deserializer
 import model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
+import play.api.libs.json._
+import javax.inject.Singleton
+import model.cardComponent.CardDeserializer
 
 @Singleton
-class PlayerDeserializer @Inject()(cardDeserializer: CardDeserializer, playerFactory: IPlayerFactory) {
+object PlayerDeserializer extends Deserializer[IPlayer] {
 
-  /** Deserialize a list of players from XML */
-  def playerListFromXml(xml: Elem): List[IPlayer] = {
-    (xml \ "Player").collect { case e: Elem => fromXml(e) }.toList
+  private given playerFactory: IPlayerFactory = summon[IPlayerFactory]
+
+  override def fromXml(xml: Elem): IPlayer = {
+    val name = (xml \ "@name").text.trim
+    val cards = (xml \ "Cards" \ "Card").map { node =>
+      CardDeserializer.fromXml(node.asInstanceOf[Elem])
+    }.toList
+
+    val actionStates = (xml \ "ActionStates" \ "ActionState").map { node =>
+      val policy = PlayerActionPolicies.values.find(_.toString == (node \ "@policy").text.trim)
+        .getOrElse(throw new IllegalArgumentException(s"Unknown policy: ${(node \ "@policy").text.trim}"))
+
+      val state = PlayerActionState.fromString(node.text.trim)
+
+      policy -> state
+    }.toMap
+
+    playerFactory.createPlayer(name, cards).setActionStates(actionStates)
   }
 
-  /** Deserialize a single Player from XML */
-  def fromXml(xml: Elem): IPlayer = {
-    val name = (xml \ "name").text
-    val cards = (xml \ "cards" \ "Card").collect { case e: Elem => cardDeserializer.fromXml(e) }.toList
+  override def fromJson(json: JsObject): IPlayer = {
+    val name = (json \ "name").as[String].trim
+    val cards = (json \ "cards").asOpt[List[JsObject]].getOrElse(Nil).map(CardDeserializer.fromJson)
 
-    val player = playerFactory.createPlayer(name, cards) // Create player without action states
+    val actionStates = (json \ "actionStates").asOpt[Map[String, String]].getOrElse(Map()).map { case (key, value) =>
+      val policy = PlayerActionPolicies.values.find(_.toString == key)
+        .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $key"))
 
-    var actionStates: Map[PlayerActionPolicies, PlayerActionState] =
-      (xml \ "actionStates" \ "action").collect { case actionNode: Elem =>
-        val policy = PlayerActionPolicies.fromString((actionNode \ "policy").text)
-          .getOrElse(throw new IllegalArgumentException(s"Invalid policy: ${(actionNode \ "policy").text}"))
-        val state = PlayerActionState.fromString((actionNode \ "state").text)
-        policy -> state
-      }.toMap
+      val state = PlayerActionState.fromString(value)
 
-    player match {
-      case p: Player => p.copy(actionStates = actionStates) // ✅ Safe casting
-      case _ => throw new IllegalStateException("Deserialization failed: PlayerFactory returned an unexpected type")
+      policy -> state
     }
-  }
 
-  /** Deserialize a single Player from JSON */
-  def fromJson(json: JsObject): IPlayer = {
-    val name = (json \ "name").as[String]
-    val cards = (json \ "cards").as[List[JsObject]].map(cardDeserializer.fromJson)
-
-    val player = playerFactory.createPlayer(name, cards) // Create player without action states
-
-    var actionStates: Map[PlayerActionPolicies, PlayerActionState] =
-      (json \ "actionStates").as[Map[String, String]].map {
-        case (policyStr, stateStr) =>
-          val policy = PlayerActionPolicies.fromString(policyStr)
-            .getOrElse(throw new IllegalArgumentException(s"Invalid policy: $policyStr"))
-          val state = PlayerActionState.fromString(stateStr)
-          policy -> state
-      }
-
-    player match {
-      case p: Player => p.copy(actionStates = actionStates) // ✅ Safe casting
-      case _ => throw new IllegalStateException("Deserialization failed: PlayerFactory returned an unexpected type")
-    }
+    playerFactory.createPlayer(name, cards).setActionStates(actionStates)
   }
 }

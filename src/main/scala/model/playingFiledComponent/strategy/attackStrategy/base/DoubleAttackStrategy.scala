@@ -95,7 +95,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(
       throw new NoSuchElementException("Goalkeeper not found.")
     )
-
+    val revertedGoalkeeper = revertStrategy.revertCard(goalkeeper)
     val goalkeeperValue = goalkeeper.valueToInt
 
     if (attackValue > goalkeeperValue) {
@@ -131,14 +131,16 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                                    ): Boolean = {
     val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
     val defenseValue = defenderCard.valueToInt
-
+    val revertedCard = revertStrategy.revertCard(defenderCard)
     if (attackValue > defenseValue) {
       attackerWins(attackerHand, attackingCard1, attackingCard2, revertStrategy.revertCard(defenderCard))
       fieldState.removeDefenderCard(defender, defenderCard)
+      fieldState.removeDefenderCard(defender, revertedCard)
       true
     } else if (attackValue < defenseValue) {
       defenderWins(defenderHand, attackingCard1, attackingCard2, revertStrategy.revertCard(defenderCard))
       fieldState.removeDefenderCard(defender, defenderCard)
+      fieldState.removeDefenderCard(defender, revertedCard)
       fieldState.refillDefenderField(defender)
       roles.switchRoles()
       false
@@ -170,6 +172,11 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
       val extraAttackerCard = attackerHand.removeLastCard()
       val extraDefenderCard = defenderHand.removeLastCard()
+      val revertedExtraAttackerCard = revertStrategy.revertCard(extraAttackerCard)
+      val revertedExtraDefenderCard = revertStrategy.revertCard(extraDefenderCard)
+
+      val defenderCard = fieldState.getDefenderCard(defender, defenderIndex) // ✅ Retrieve defender card
+      val revertedDefenderCard = revertStrategy.revertCard(defenderCard) // ✅
       val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
       if (tiebreakerResult > 0) {
@@ -180,6 +187,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           revertStrategy.revertCard(extraAttackerCard),
           revertStrategy.revertCard(extraDefenderCard))
         fieldState.removeDefenderCard(defender, fieldState.getDefenderCard(defender, defenderIndex))
+        fieldState.removeDefenderCard(defender, revertedDefenderCard)
         true
       } else {
         defenderWins(
@@ -189,6 +197,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           revertStrategy.revertCard(extraAttackerCard),
           revertStrategy.revertCard(extraDefenderCard))
         fieldState.removeDefenderCard(defender, fieldState.getDefenderCard(defender, defenderIndex))
+        fieldState.removeDefenderCard(defender, revertedDefenderCard)
         fieldState.refillDefenderField(defender)
         roles.switchRoles()
         false

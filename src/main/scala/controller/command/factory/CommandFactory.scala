@@ -33,15 +33,13 @@ class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
   override def createQuitCommand(game: IGame): WorkflowCommand =
     new QuitWorkflowCommand(game)
 
+
   override def createLoadGameCommand(): WorkflowCommand =
-    new LoadGameWorkflowCommand
+    new LoadGameWorkflowCommand(game)
 
   override def createSaveGameCommand(): WorkflowCommand =
-    new SaveGameWorkflowCommand
-
-//  override def createRevertBoostCommand(card: ICard) : ICommand= {
-//    new RevertedCard(card)
-//  }
+    new SaveGameWorkflowCommand(game)
+  
 }
 trait ICommandFactory {
   def createSingleAttackCommand(defenderPosition: Int): ICommand
@@ -54,5 +52,5 @@ trait ICommandFactory {
   def createQuitCommand(game: IGame): WorkflowCommand
   def createSaveGameCommand(): WorkflowCommand
   def createLoadGameCommand(): WorkflowCommand
-//  def createRevertBoostCommand(card: ICard) : ICommand
+
 }

@@ -14,12 +14,16 @@ abstract class ActionCommand(val game: IGame) extends ICommand {
   protected var memento: Option[Memento] = None
 
   override def doStep(): Unit = {
-    memento = Some(mementoManager.createMemento())
+    memento = Some(mementoManager.createMemento()) // ✅ Save current state before executing
     executeAction()
+    game.updateGameState() // ✅ Ensure new game state is stored
   }
 
   override def undoStep(): Unit = {
-    memento.foreach(mementoManager.restoreGameState)
+    memento.foreach { savedMemento =>
+      mementoManager.restoreGameState(savedMemento) // ✅ Restore previous game state
+      game.updateGameState() // ✅ Ensure game updates correctly
+    }
   }
 
   override def redoStep(): Unit = {

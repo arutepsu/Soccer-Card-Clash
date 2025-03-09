@@ -17,10 +17,27 @@ class QuitWorkflowCommand(val game: IGame) extends WorkflowCommand {
   override def doStep(): Unit = game.exit()
 }
 
-class SaveGameWorkflowCommand() extends WorkflowCommand {
-  override def doStep(): Unit = println("Game saved")
+class SaveGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
+  override def doStep(): Unit = {
+    try {
+      game.saveGame()
+      println("✅ SaveGameWorkflowCommand: Game saved successfully.")
+    } catch {
+      case e: Exception =>
+        println(s"❌ SaveGameWorkflowCommand: Error saving game - ${e.getMessage}")
+    }
+  }
 }
 
-class LoadGameWorkflowCommand() extends WorkflowCommand {
-  override def doStep(): Unit = println("Game loaded")
+class LoadGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
+  override def doStep(): Unit = {
+    try {
+      game.loadGame()
+      println("✅ LoadGameWorkflowCommand: Game loaded successfully.")
+    } catch {
+      case e: Exception =>
+        println(s"❌ LoadGameWorkflowCommand: Error loading game - ${e.getMessage}")
+    }
+  }
 }
+

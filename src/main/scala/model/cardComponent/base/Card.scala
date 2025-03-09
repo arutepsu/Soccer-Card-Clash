@@ -42,49 +42,5 @@ abstract class Card(val suit: Suit) extends ICard {
     case card: ICard => this.value == card.value && this.suit == card.suit
     case _ => false
   }
-
-  final override def toXml: Elem = this match {
-    case regularCard: RegularCard =>
-      <Card>
-        <suit>
-          {suit}
-        </suit>
-        <value>
-          {regularCard.value}
-        </value>
-        <type>Regular</type>
-      </Card>
-
-    case boostedCard: BoostedCard =>
-      <Card>
-        <suit>
-          {suit}
-        </suit>
-        <value>
-          {boostedCard.value}
-        </value>
-        <type>Boosted</type>
-        <additionalValue>
-          {boostedCard.additionalValue}
-        </additionalValue>
-      </Card>
-  }
-
-  // JSON representation with pattern matching
-  final override def toJson: JsObject = this match {
-    case regularCard: RegularCard =>
-      Json.obj(
-        "suit" -> suit.toString,
-        "value" -> regularCard.value.toString,
-        "type" -> "Regular"
-      )
-
-    case boostedCard: BoostedCard =>
-      Json.obj(
-        "suit" -> suit.toString,
-        "value" -> boostedCard.value.toString,
-        "type" -> "Boosted",
-        "additionalValue" -> boostedCard.additionalValue
-      )
-  }
+  
 }

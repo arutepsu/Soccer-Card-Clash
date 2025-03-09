@@ -77,7 +77,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(
       throw new NoSuchElementException("Goalkeeper not found")
     )
-
+    val revertedGoalkeeper = revertStrategy.revertCard(goalkeeper)
     val comparisonResult = attackingCard.compare(goalkeeper)
 
     if (comparisonResult > 0) {
@@ -109,6 +109,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                                      roles: IRolesManager
                                    ): Boolean = {
     val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
+    val revertedCard = revertStrategy.revertCard(defenderCard)
     val comparisonResult = attackingCard.compare(defenderCard)
 
     comparisonResult match {
@@ -116,11 +117,13 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       case r if r > 0 =>
         attackerWins(attackerHand, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
+        fieldState.removeDefenderCard(defender, revertedCard)
         print(f"roles : attacker : ${attacker}, defender ${defender}")
         true
       case _ =>
         defenderWins(defenderHand, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
+        fieldState.removeDefenderCard(defender, revertedCard)
         fieldState.refillDefenderField(defender)
         roles.switchRoles()
         print(f"roles : attacker : ${attacker}, defender ${defender}")
@@ -137,6 +140,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                          revertStrategy: IRevertStrategy,
                          roles: IRolesManager
                        ): Boolean = {
+    val revertedCard = revertStrategy.revertCard(defenderCard)
     if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
       val extraAttackerCard = attackerHand.removeLastCard()
       val extraDefenderCard = defenderHand.removeLastCard()
@@ -158,6 +162,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           extraDefenderCard)
       }
       fieldState.removeDefenderCard(roles.defender, defenderCard)
+      fieldState.removeDefenderCard(roles.defender, revertedCard)
       roles.switchRoles()
     } else {
       roles.switchRoles()

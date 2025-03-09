@@ -38,7 +38,7 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
     undoManager.doStep(command)
     notifyObservers(event)
   }
-  def selectDefenderPosition(): Int = game.selectDefenderPosition()
+//  def selectDefenderPosition(): Int = game.selectDefenderPosition()
   def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     executeCommand(commandFactory.createSingleAttackCommand(defenderPosition), Events.RegularAttack)
   }

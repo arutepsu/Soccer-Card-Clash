@@ -13,6 +13,7 @@ class StandardRefillStrategy extends IRefillStrategy {
   private val fieldRefill = new RefillField()
 
   override def refillDefenderField(fieldState: IDataManager, defender: IPlayer): Unit = {
+    println("refil!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     defenderFieldRefill.refill(fieldState, defender)
   }
 

@@ -11,6 +11,7 @@ import model.playingFiledComponent.base.PlayingField
 import model.cardComponent.factory.IDeckFactory
 import util.UndoManager
 import play.api.libs.json.*
+import model.gameComponent.factory.{GameStateFactory, IGameState}
 
 import scala.xml.*
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
@@ -30,26 +31,32 @@ import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.IPlayingFieldFactory
 import model.cardComponent.factory.IDeckFactory
 import model.playingFiledComponent.manager.IActionManager
+import model.fileIOComponent.IFileIO
+import model.playingFiledComponent.dataStructure.HandCardsQueue
 
 import java.nio.file.{Files, Paths}
 import java.nio.charset.StandardCharsets
 import play.api.libs.json.Json
-
+import model.gameComponent.factory.IGameStateFactory
 @Singleton
-class Game @Inject() (
-                       playerFactory: IPlayerFactory,
-                       playingFieldFactory: IPlayingFieldFactory,
-                       deckFactory: IDeckFactory
-                     ) extends IGame {
+class Game @Inject()(
+                      playerFactory: IPlayerFactory,
+                      playingFieldFactory: IPlayingFieldFactory,
+                      deckFactory: IDeckFactory,
+                      fileIO: IFileIO,
+                      gameStateFactory: IGameStateFactory  // ✅ Inject GameStateFactory
+                    ) extends IGame {
 
   private var player1: IPlayer = _
   private var player2: IPlayer = _
   private var playingField: IPlayingField = _
+  private var gameState: IGameState = _  // ✅ Game state variable to store/load game data
 
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
   override def getActionManager: IActionManager = playingField.getActionManager
+
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
     val deck = deckFactory.createDeck()
     deckFactory.shuffleDeck(deck)
@@ -63,36 +70,100 @@ class Game @Inject() (
     (p1, p2)
   }
 
-
   override def startGame(playerName1: String, playerName2: String): Unit = {
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
 
     playingField = playingFieldFactory.createPlayingField(player1, player2)
-    playingField.getDataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
+    val dataManager = playingField.getDataManager // ✅ Store DataManager reference for reuse
+
+    // ✅ Initialize player hands
+    dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
-    
+
+    // ✅ Retrieve necessary game state information
+    val player1Hand = new HandCardsQueue(player1.getCards.toList)
+    val player2Hand = new HandCardsQueue(player2.getCards.toList)
+
+    val player1Field = dataManager.getPlayerField(player1)
+    val player2Field = dataManager.getPlayerField(player2)
+
+    val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
+    val player2Goalkeeper = dataManager.getPlayerGoalkeeper(player2)
+
+    val player1Score = playingField.getScores.getScorePlayer1
+    val player2Score = playingField.getScores.getScorePlayer2
+
+    gameState = gameStateFactory.create(
+      playingField,
+      player1,
+      player2,
+      player1Hand,
+      player2Hand,
+      player1Field,
+      player2Field,
+      player1Goalkeeper,
+      player2Goalkeeper,
+      player1Score,
+      player2Score
+    )
+
   }
 
+  override def updateGameState(): Unit = {
+    val dataManager = playingField.getDataManager
+
+    gameState = gameStateFactory.create(
+      playingField,
+      player1,
+      player2,
+      new HandCardsQueue(player1.getCards.toList),
+      new HandCardsQueue(player2.getCards.toList),
+      dataManager.getPlayerField(player1),
+      dataManager.getPlayerField(player2),
+      dataManager.getPlayerGoalkeeper(player1),
+      dataManager.getPlayerGoalkeeper(player2),
+      playingField.getScores.getScorePlayer1,
+      playingField.getScores.getScorePlayer2
+    )
+  }
   override def selectDefenderPosition(): Int = {
     if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
   }
 
   override def saveGame(): Unit = {
-
+    if (gameState != null) {
+      try {
+        fileIO.saveGame(gameState)
+        println("✅ Game saved successfully using FileIO.")
+      } catch {
+        case e: Exception => println(s"❌ Error saving game: ${e.getMessage}")
+      }
+    } else {
+      println("❌ Cannot save: Game state is not initialized.")
+    }
   }
 
   override def loadGame(): Unit = {
-    val jsonString = new String(Files.readAllBytes(Paths.get("game_save.json")), StandardCharsets.UTF_8)
-    val gameJson = Json.parse(jsonString)
-    //
-    //    player1 = playerFactory.loadPlayerFromJson((gameJson \ "player1").get)
-    //    player2 = playerFactory.loadPlayerFromJson((gameJson \ "player2").get)
-    //    playingField = playingFieldFactory.loadFromJson((gameJson \ "playingField").get)
-    //    actionManager = actionManagerFactory.loadFromJson((gameJson \ "actions").get)
-  }
+    try {
+      val loadedState = fileIO.loadGame
+      if (loadedState != null) {
+        gameState = loadedState
+        player1 = gameState.player1
+        player2 = gameState.player2
+        playingField = gameState.playingField
 
+        // ✅ Ensure playingField is properly initialized
+        playingField.setPlayingField()
+        println("✅ Game loaded successfully using FileIO.")
+      } else {
+        println("❌ Error: No valid game state found to load.")
+      }
+    } catch {
+      case e: Exception => println(s"❌ Error loading game: ${e.getMessage}")
+    }
+  }
   override def exit(): Unit = {
     System.exit(0)
   }

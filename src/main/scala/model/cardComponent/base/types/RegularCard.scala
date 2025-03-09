@@ -25,5 +25,8 @@ class RegularCard(initialValue: Value, override val suit: Suit) extends Card(sui
   override def copy(): Card = new RegularCard(value, suit)
 
   override def value: Value = _value
-  
+
+//  override def toJson: JsObject
+//
+//  override def toXml: Elem
 }

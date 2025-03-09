@@ -36,7 +36,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import model.cardComponent.{CardDeserializer, ICard}
 import model.cardComponent.base.components.{Suit, Value}
 import model.playingFiledComponent.manager.base.*
+import model.gameComponent.factory.*
 import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, StandardScoring}
+import model.fileIOComponent.*
 class SoccerCardClashModule extends AbstractModule {
   override def configure(): Unit = {
     // Bind controllers and game components
@@ -48,8 +50,6 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IPlayingFieldFactory]).to(classOf[PlayingFieldFactory])
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
-    bind(classOf[CardDeserializer]).asEagerSingleton()
-    bind(classOf[PlayerDeserializer]).asEagerSingleton()
     // Bind deck & card factories
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
@@ -57,7 +57,9 @@ class SoccerCardClashModule extends AbstractModule {
     // Bind playing field-related components
     bind(classOf[IPlayingField]).to(classOf[PlayingField])
     bind(classOf[IPlayingFieldManager]).to(classOf[PlayingFieldManager])
-
+//    given gameStateFactory: IGameStateFactory = new GameStateFactory()
+    bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
+    bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()
     // Bind player-related components
     // Bind factories
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
@@ -87,8 +89,4 @@ class SoccerCardClashModule extends AbstractModule {
     cardFactory.createCard(defaultValue, defaultSuit) // FIXED TYPO
   }
 
-
-  //  @Provides
-  //  @Singleton
-  //  def providePlayingFieldManager(): IPlayingFieldManager = new PlayingFieldManager
 }

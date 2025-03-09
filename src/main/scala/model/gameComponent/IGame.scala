@@ -26,4 +26,5 @@ trait IGame extends Serializable {
 
   def loadGame(): Unit
   def exit(): Unit
+  def updateGameState() : Unit
 }

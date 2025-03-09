@@ -26,4 +26,19 @@ trait IPlayingField extends Observable with Serializable{
 
   def getScores: IPlayerScores
 
+  // XML Serialization
+  def toXml: Elem = {
+    <PlayingField>
+      <Attacker>{getAttacker.toXml}</Attacker>
+      <Defender>{getDefender.toXml}</Defender>
+      <Scores>{getScores.toXml}</Scores>
+    </PlayingField>
+  }
+
+  // JSON Serialization
+  def toJson: JsObject = Json.obj(
+    "attacker" -> getAttacker.toJson,
+    "defender" -> getDefender.toJson,
+    "scores" -> getScores.toJson
+  )
 }

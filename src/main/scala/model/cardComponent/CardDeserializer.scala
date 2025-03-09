@@ -1,53 +1,63 @@
 package model.cardComponent
 
 import play.api.libs.json.{JsObject, Json}
+import util.Deserializer
 import scala.xml.Elem
-import com.google.inject.{Inject, Singleton}
+//import com.google.inject.{Inject, Singleton}
 import model.cardComponent.base.components.Suit.Suit
 import model.cardComponent.base.components.Value.Value
 import model.cardComponent.base.components.{Suit, Value}
-import model.cardComponent.base.types.*
+import model.cardComponent.base.types.{BoostedCard, *}
 import model.cardComponent.factory.ICardFactory
 
+import scala.xml.*
+import play.api.libs.json.*
+
+import javax.inject.{Inject, Singleton}
+import scala.xml.*
+import play.api.libs.json.*
+
+import scala.util.Try
+
+import javax.inject.{Inject, Singleton}
+import scala.util.Try
+import play.api.libs.json.{JsObject, Json}
+//import javax.inject.{Inject, Singleton}
 @Singleton
-class CardDeserializer @Inject()(cardFactory: ICardFactory) {
+object CardDeserializer extends Deserializer[ICard] {
+  
+  private given cardFactory: ICardFactory = summon[ICardFactory]
 
-  /** Deserialize a list of cards from XML */
-  def cardListFromXml(xml: Elem): List[ICard] = {
-    (xml \ "Card").flatMap(node => node.headOption.collect {
-      case e: Elem => fromXml(e)
-    }).toList
+  override def fromXml(xml: Elem): ICard = {
+    val suit = Suit.withName((xml \ "suit").text.trim)
+    val value = Value.fromString((xml \ "value").text.trim)
+      .getOrElse(throw new IllegalArgumentException(s"Invalid card value: ${(xml \ "value").text.trim}"))
+    val cardType = (xml \ "type").text.trim
+
+    cardType match {
+      case "Regular" => cardFactory.createCard(value, suit)
+      case "Boosted" =>
+        val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
+        val baseCard = cardFactory.createCard(value, suit) // Use factory for consistency
+        new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+      case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
+    }
   }
 
-  /** Deserialize a single card from XML */
-  def fromXml(xml: Elem): ICard = {
-    val suit = Suit.withName((xml \ "suit").text) // ✅ Works with Enumeration
-    val value = Value.fromString((xml \ "value").text).getOrElse(
-      throw new IllegalArgumentException(s"Invalid value: ${(xml \ "value").text}")
-    ) // ✅ Fix for Value case objects
+  override def fromJson(json: JsObject): ICard = {
+    val suit = Suit.withName((json \ "suit").as[String])
+    val value = Value.fromString((json \ "value").as[String])
+      .getOrElse(throw new IllegalArgumentException(s"Invalid card value: ${(json \ "value").as[String]}"))
+    val cardType = (json \ "type").as[String]
 
-    val isBoosted = (xml \ "boosted").headOption.exists(_.text.toBoolean)
-    val additionalValue = (xml \ "additionalValue").headOption.map(_.text.toInt).getOrElse(0)
-
-    val baseCard = cardFactory.createCard(value, suit)
-
-    if (isBoosted) new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
-    else baseCard
-  }
-
-  /** Deserialize a single card from JSON */
-  def fromJson(json: JsObject): ICard = {
-    val suit = Suit.withName((json \ "suit").as[String]) // ✅ Works with Enumeration
-    val value = Value.fromString((json \ "value").as[String]).getOrElse(
-      throw new IllegalArgumentException(s"Invalid value: ${(json \ "value").as[String]}")
-    ) // ✅ Fix for Value case objects
-
-    val isBoosted = (json \ "boosted").asOpt[Boolean].getOrElse(false)
-    val additionalValue = (json \ "additionalValue").asOpt[Int].getOrElse(0)
-
-    val baseCard = cardFactory.createCard(value, suit)
-
-    if (isBoosted) new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
-    else baseCard
+    cardType match {
+      case "Regular" => cardFactory.createCard(value, suit)
+      case "Boosted" =>
+        val additionalValue = (json \ "additionalValue").asOpt[Int].getOrElse(0)
+        val baseCard = cardFactory.createCard(value, suit)
+        new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+      case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
+    }
   }
 }
+
