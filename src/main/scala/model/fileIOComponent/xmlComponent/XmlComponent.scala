@@ -5,7 +5,12 @@ import java.io.{File, PrintWriter}
 import scala.xml.{Elem, PrettyPrinter, XML}
 import model.gameComponent.factory.*
 
-object XmlComponent {
+import java.io.{File, PrintWriter}
+import javax.inject.{Inject, Singleton}
+import scala.xml.{Elem, PrettyPrinter, XML}
+
+@Singleton
+class XmlComponent @Inject() (gameDeserializer: GameDeserializer) {
 
   private val folderPath = "games/" // ✅ Define the folder for game saves
   private val filePath = folderPath + "game.xml" // ✅ Save inside the folder
@@ -19,20 +24,27 @@ object XmlComponent {
   }
 
   // ✅ Load Game State from XML
-  def load(): Option[IGameState] = {
+  def load(fileName: String): Option[IGameState] = {
     ensureFolderExists() // ✅ Ensure folder exists before loading
+    val filePath = s"games/$fileName"
+
     try {
+      println(s"📂 XmlComponent: Loading game from XML file: $filePath")
+
       val file = XML.loadFile(filePath)
       if (file == null) {
-        println("❌ XML file not found.")
+        println(s"❌ XML file '$fileName' not found.")
         None
       } else {
-        println("✅ Game loaded from XML!")
-        Some(GameDeserializer.fromXml((file \\ "GameState").head.asInstanceOf[Elem]))
+        println(s"📜 XmlComponent: Successfully loaded XML.")
+        val gameState = gameDeserializer.fromXml((file \\ "GameState").head.asInstanceOf[Elem]) // ✅ Use injected gameDeserializer
+        println(s"✅ XmlComponent: Successfully deserialized game state.")
+
+        Some(gameState)
       }
     } catch {
       case e: Exception =>
-        println(s"❌ Error loading XML: ${e.getMessage}")
+        println(s"❌ XmlComponent: Error loading XML file '$fileName': ${e.getMessage}")
         None
     }
   }
@@ -46,9 +58,9 @@ object XmlComponent {
       val xml = prettyPrinter.format(gameState.toXml)
       pw.write(xml)
       pw.close()
-      println(s"✅ Game successfully saved to $filePath")
+      println(s"✅ XmlComponent: Game successfully saved to $filePath")
     } catch {
-      case e: Exception => println(s"❌ Error saving XML: ${e.getMessage}")
+      case e: Exception => println(s"❌ XmlComponent: Error saving XML: ${e.getMessage}")
     }
   }
 }

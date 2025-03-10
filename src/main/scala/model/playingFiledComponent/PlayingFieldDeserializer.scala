@@ -5,25 +5,46 @@ import model.playingFiledComponent.factory.IPlayingFieldFactory
 import util.Deserializer
 import scala.xml.*
 import play.api.libs.json.*
-import com.google.inject.Singleton
+import com.google.inject.{Singleton, Inject}
 
 @Singleton
-object PlayingFieldDeserializer extends Deserializer[IPlayingField] {
-
-  // Summon the IPlayingFieldFactory instance (ensuring it exists in the given scope)
-  private given playingFieldFactory: IPlayingFieldFactory = summon[IPlayingFieldFactory]
+class PlayingFieldDeserializer @Inject()() (
+                                           playingFieldFactory: IPlayingFieldFactory,
+                                           playerDeserializer: PlayerDeserializer
+                                         ) extends Deserializer[IPlayingField] {
 
   override def fromXml(xml: Elem): IPlayingField = {
-    val player1 = PlayerDeserializer.fromXml((xml \ "Player1").head.asInstanceOf[Elem])
-    val player2 = PlayerDeserializer.fromXml((xml \ "Player2").head.asInstanceOf[Elem])
+    println("DEBUG: Entering PlayingFieldDeserializer.fromXml")
 
-    playingFieldFactory.createPlayingField(player1, player2) // ✅ Uses summoned factory
+    val player1 = playerDeserializer.fromXml((xml \ "attacker").head.asInstanceOf[Elem])
+    val player2 = playerDeserializer.fromXml((xml \ "defender").head.asInstanceOf[Elem])
+
+    println(s"DEBUG: Extracted players - Player1: $player1, Player2: $player2")
+
+    val playingField = playingFieldFactory.createPlayingField(player1, player2)
+    println(s"DEBUG: Created playingField: $playingField")
+
+    playingField
   }
 
   override def fromJson(json: JsObject): IPlayingField = {
-    val player1 = PlayerDeserializer.fromJson((json \ "player1").as[JsObject])
-    val player2 = PlayerDeserializer.fromJson((json \ "player2").as[JsObject])
+    println("DEBUG: Entering PlayingFieldDeserializer.fromJson")
 
-    playingFieldFactory.createPlayingField(player1, player2) // ✅ Uses summoned factory
+    val player1Json = (json \ "attacker").as[JsObject]
+    val player2Json = (json \ "defender").as[JsObject]
+
+    println(s"DEBUG: Extracted attacker JSON: $player1Json")
+    println(s"DEBUG: Extracted defender JSON: $player2Json")
+
+    val player1 = playerDeserializer.fromJson(player1Json)
+    println(s"DEBUG: Deserialized player1: $player1")
+
+    val player2 = playerDeserializer.fromJson(player2Json)
+    println(s"DEBUG: Deserialized player2: $player2")
+
+    val playingField = playingFieldFactory.createPlayingField(player1, player2)
+    println(s"DEBUG: Created playingField: $playingField")
+
+    playingField
   }
 }

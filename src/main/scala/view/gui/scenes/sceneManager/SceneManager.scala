@@ -50,6 +50,9 @@ object SceneManager extends Observable with Observer {
         case Events.PauseGame =>
           switchScene(sceneRegistry.getMenuScene)
 
+        case Events.LoadGame =>
+          switchScene(sceneRegistry.getLoadGameScene)
+
         case Events.Quit =>
           println("❌ Exiting Game!")
           controller.quit()

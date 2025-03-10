@@ -18,7 +18,7 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   private var _attackerHandScene: Option[Scene] = None
   private var _attackerDefendersScene: Option[Scene] = None
   private var _menuScene: Option[Scene] = None
-
+  private var _loadGameScene: Option[Scene] = None
   def getMainMenuScene: Scene = {
     if (_mainMenuScene.isEmpty) {
       _mainMenuScene = Some(new MainMenuScene(controller).mainMenuScene())
@@ -26,6 +26,12 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     _mainMenuScene.get
   }
 
+  def getLoadGameScene: Scene = {
+    if(_loadGameScene.isEmpty) {
+      _loadGameScene = Some(new LoadGameScene(controller))
+    }
+    _loadGameScene.get
+  }
   def getCreatePlayerScene: Scene = {
     if (_createPlayerScene.isEmpty) {
       _createPlayerScene = Some(new Scene { root = new CreatePlayerScene(controller) })

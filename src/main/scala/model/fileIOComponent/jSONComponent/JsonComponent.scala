@@ -7,7 +7,13 @@ import model.gameComponent.factory.GameDeserializer
 import model.gameComponent.factory.*
 
 
-object JsonComponent {
+import java.io.{File, PrintWriter}
+import javax.inject.{Inject, Singleton}
+import scala.io.Source
+import play.api.libs.json._
+
+@Singleton
+class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
 
   private val folderPath = "games/" // ✅ Define the folder for game saves
   private val filePath = folderPath + "game.json" // ✅ Save inside the folder
@@ -21,20 +27,30 @@ object JsonComponent {
   }
 
   // ✅ Load Game State from JSON
-  def load(): Option[IGameState] = {
+  def load(fileName: String): Option[IGameState] = {
     ensureFolderExists() // ✅ Ensure folder exists before loading
-    try {
-      val source = Source.fromFile(filePath).getLines.mkString
-      val json = Json.parse(source)
+    val filePath = s"games/$fileName"
 
-      println(s"✅ Game loaded from $filePath")
-      Some(GameDeserializer.fromJson(json.as[JsObject]))
+    try {
+      println(s"📂 JsonComponent: Loading game from JSON file: $filePath")
+
+      val source = Source.fromFile(filePath).getLines.mkString
+      println(s"📜 JsonComponent: Loaded JSON content: ${source.take(200)}...") // Prevent excessive logging
+
+      val json = Json.parse(source).as[JsObject]
+      println(s"🔍 JsonComponent: Successfully parsed JSON.")
+
+      val gameState = gameDeserializer.fromJson(json) // ✅ Use injected gameDeserializer
+      println(s"✅ JsonComponent: Successfully deserialized game state.")
+
+      Some(gameState)
     } catch {
       case _: java.io.FileNotFoundException =>
-        println("❌ JSON file not found.")
+        println(s"❌ JsonComponent: JSON file '$fileName' not found.")
         None
       case e: Exception =>
-        println(s"❌ Error loading JSON: ${e.getMessage}")
+        println(s"❌ JsonComponent: ERROR loading JSON file '$fileName': ${e.getMessage}")
+        e.printStackTrace()
         None
     }
   }

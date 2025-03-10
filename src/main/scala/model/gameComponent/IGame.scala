@@ -23,8 +23,7 @@ trait IGame extends Serializable {
   def selectDefenderPosition(): Int
 
   def saveGame(): Unit
-
-  def loadGame(): Unit
+  def loadGame(fileName: String): Unit
   def exit(): Unit
   def updateGameState() : Unit
 }

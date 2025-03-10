@@ -2,7 +2,7 @@ package controller.command.base.workflow
 
 import controller.command.ICommand
 import model.gameComponent.IGame
-
+import controller.{Events, IController}
 
 abstract class WorkflowCommand extends ICommand {
   override def undoStep(): Unit = {}
@@ -29,15 +29,22 @@ class SaveGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
   }
 }
 
-class LoadGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
+class LoadGameWorkflowCommand(val game: IGame, val fileName: String, val controller: IController) extends WorkflowCommand {
+
   override def doStep(): Unit = {
     try {
-      game.loadGame()
-      println("✅ LoadGameWorkflowCommand: Game loaded successfully.")
+      game.loadGame(fileName) // Load the specific game file
+      println(s"✅ LoadGameWorkflowCommand: Game '$fileName' loaded successfully.")
+
+      // 🔥 FIX: Notify observers from the controller
+      controller.notifyObservers(Events.PlayingField)
+
     } catch {
       case e: Exception =>
-        println(s"❌ LoadGameWorkflowCommand: Error loading game - ${e.getMessage}")
+        println(s"❌ LoadGameWorkflowCommand: Error loading game '$fileName' - ${e.getMessage}")
     }
   }
 }
+
+
 

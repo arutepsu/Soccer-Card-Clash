@@ -88,18 +88,15 @@ class GameState(
   }
 
   override def toJson: JsObject = Json.obj(
-    "playingField" -> playingField.toJson,
-    "player1" -> player1.toJson,
-    "player2" -> player2.toJson,
+    "playingField" -> playingField.toJson,  // Contains attacker, defender, and scores
     "player1Hand" -> player1Hand.getCards.map(_.toJson),
     "player2Hand" -> player2Hand.getCards.map(_.toJson),
     "player1Field" -> player1Field.map(_.toJson),
     "player2Field" -> player2Field.map(_.toJson),
     "player1Goalkeeper" -> player1Goalkeeper.map(_.toJson),
-    "player2Goalkeeper" -> player2Goalkeeper.map(_.toJson),
-    "player1Score" -> player1Score,
-    "player2Score" -> player2Score
+    "player2Goalkeeper" -> player2Goalkeeper.map(_.toJson)
   )
+
 }
 trait IGameStateFactory {
   def create(

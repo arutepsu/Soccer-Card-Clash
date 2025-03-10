@@ -8,7 +8,8 @@ import controller.Events
 import model.gameComponent.IGame
 import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, StartGameWorkflowCommand, WorkflowCommand}
 import model.cardComponent.ICard
-class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
+import controller.IController
+class CommandFactory @Inject() (game: IGame, controller: IController) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
     new SingleAttackActionCommand(defenderPosition, game)
 
@@ -34,8 +35,9 @@ class CommandFactory @Inject() (game: IGame) extends ICommandFactory {
     new QuitWorkflowCommand(game)
 
 
-  override def createLoadGameCommand(): WorkflowCommand =
-    new LoadGameWorkflowCommand(game)
+  override def createLoadGameCommand(fileName: String, controller: IController): WorkflowCommand =
+    new LoadGameWorkflowCommand(game, fileName, controller)
+
 
   override def createSaveGameCommand(): WorkflowCommand =
     new SaveGameWorkflowCommand(game)
@@ -51,6 +53,6 @@ trait ICommandFactory {
   def createStartGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand
   def createQuitCommand(game: IGame): WorkflowCommand
   def createSaveGameCommand(): WorkflowCommand
-  def createLoadGameCommand(): WorkflowCommand
+  def createLoadGameCommand(fileName: String, controller: IController): WorkflowCommand
 
 }

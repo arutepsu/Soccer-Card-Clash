@@ -20,6 +20,6 @@ trait IController extends Observable {
   def undo(): Unit
   def redo(): Unit
   def saveGame(): Unit
-  def loadGame(): Unit
+  def loadGame(fileName: String): Unit
   def quit(): Unit
 }

@@ -9,45 +9,67 @@ import model.cardComponent.{ICard}
 import util.Deserializer
 import model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
 import play.api.libs.json._
-import javax.inject.Singleton
+import javax.inject.{Singleton, Inject}
 import model.cardComponent.CardDeserializer
 
 @Singleton
-object PlayerDeserializer extends Deserializer[IPlayer] {
-
-  private given playerFactory: IPlayerFactory = summon[IPlayerFactory]
+class PlayerDeserializer @Inject() (
+                                     playerFactory: IPlayerFactory,
+                                     cardDeserializer: CardDeserializer
+                                   ) extends Deserializer[IPlayer] {
 
   override def fromXml(xml: Elem): IPlayer = {
+    println("DEBUG: Entering PlayerDeserializer.fromXml")
+
     val name = (xml \ "@name").text.trim
+    println(s"DEBUG: Extracted name: $name")
+
     val cards = (xml \ "Cards" \ "Card").map { node =>
-      CardDeserializer.fromXml(node.asInstanceOf[Elem])
+      val card = cardDeserializer.fromXml(node.asInstanceOf[Elem]) // ✅ Use injected cardDeserializer
+      println(s"DEBUG: Extracted card: $card")
+      card
     }.toList
+    println(s"DEBUG: Extracted cards: $cards")
 
     val actionStates = (xml \ "ActionStates" \ "ActionState").map { node =>
-      val policy = PlayerActionPolicies.values.find(_.toString == (node \ "@policy").text.trim)
-        .getOrElse(throw new IllegalArgumentException(s"Unknown policy: ${(node \ "@policy").text.trim}"))
+      val policyStr = (node \ "@policy").text.trim
+      val policy = PlayerActionPolicies.values.find(_.toString == policyStr)
+        .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $policyStr"))
 
       val state = PlayerActionState.fromString(node.text.trim)
+      println(s"DEBUG: Extracted action state: $policy -> $state")
 
       policy -> state
     }.toMap
+    println(s"DEBUG: Extracted actionStates: $actionStates")
 
-    playerFactory.createPlayer(name, cards).setActionStates(actionStates)
+    val player = playerFactory.createPlayer(name, cards).setActionStates(actionStates)
+    println(s"DEBUG: Created player: $player")
+
+    player
   }
 
   override def fromJson(json: JsObject): IPlayer = {
+    println("DEBUG: Entering PlayerDeserializer.fromJson")
+
     val name = (json \ "name").as[String].trim
-    val cards = (json \ "cards").asOpt[List[JsObject]].getOrElse(Nil).map(CardDeserializer.fromJson)
+    println(s"DEBUG: Extracted name: $name")
+
+    val cards = (json \ "cards").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson) // ✅ Use injected cardDeserializer
+    println(s"DEBUG: Extracted cards: $cards")
 
     val actionStates = (json \ "actionStates").asOpt[Map[String, String]].getOrElse(Map()).map { case (key, value) =>
       val policy = PlayerActionPolicies.values.find(_.toString == key)
         .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $key"))
 
       val state = PlayerActionState.fromString(value)
-
       policy -> state
     }
+    println(s"DEBUG: Extracted actionStates: $actionStates")
 
-    playerFactory.createPlayer(name, cards).setActionStates(actionStates)
+    val player = playerFactory.createPlayer(name, cards).setActionStates(actionStates)
+    println(s"DEBUG: Created player: $player")
+
+    player
   }
 }

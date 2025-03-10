@@ -145,25 +145,38 @@ class Game @Inject()(
     }
   }
 
-  override def loadGame(): Unit = {
+  override def loadGame(fileName: String): Unit = {
+    println(s"📂 Attempting to load game: $fileName")
+
     try {
-      val loadedState = fileIO.loadGame
+      val loadedState = fileIO.loadGame(fileName) // 🔥 Check if this triggers recursion
+      println(s"🔍 Loaded game state: ${if (loadedState != null) "Success" else "Failed"}")
+
       if (loadedState != null) {
         gameState = loadedState
+        println(s"🎮 Updating player references...")
+
         player1 = gameState.player1
         player2 = gameState.player2
         playingField = gameState.playingField
 
-        // ✅ Ensure playingField is properly initialized
-        playingField.setPlayingField()
-        println("✅ Game loaded successfully using FileIO.")
+        println(s"🛠 Setting up playing field...")
+//        playingField.setPlayingField() // 🔥 Check if recursion happens here
+
+        println(s"✅ Game '$fileName' loaded successfully using FileIO.")
+
+
       } else {
-        println("❌ Error: No valid game state found to load.")
+        println(s"❌ Error: No valid game state found in '$fileName'.")
       }
     } catch {
-      case e: Exception => println(s"❌ Error loading game: ${e.getMessage}")
+      case e: Exception =>
+        println(s"❌ ERROR loading game '$fileName': ${e.getMessage}")
+        e.printStackTrace()
     }
   }
+
+
   override def exit(): Unit = {
     System.exit(0)
   }
