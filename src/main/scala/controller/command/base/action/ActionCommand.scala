@@ -8,21 +8,20 @@ import model.playingFiledComponent.manager.IActionManager
 
 abstract class ActionCommand(val game: IGame) extends ICommand {
   protected val actionManager: IActionManager = game.getActionManager
-//  protected val mementoManager: IMementoManager = new MementoManager(actionManager)
   protected val mementoManager: IMementoManager = new MementoManager(game)
 
   protected var memento: Option[Memento] = None
 
   override def doStep(): Unit = {
-    memento = Some(mementoManager.createMemento()) // ✅ Save current state before executing
+    memento = Some(mementoManager.createMemento())
     executeAction()
-    game.updateGameState() // ✅ Ensure new game state is stored
+    game.updateGameState()
   }
 
   override def undoStep(): Unit = {
     memento.foreach { savedMemento =>
-      mementoManager.restoreGameState(savedMemento) // ✅ Restore previous game state
-      game.updateGameState() // ✅ Ensure game updates correctly
+      mementoManager.restoreGameState(savedMemento)
+      game.updateGameState()
     }
   }
 

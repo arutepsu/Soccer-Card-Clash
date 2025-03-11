@@ -8,7 +8,7 @@ import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.IActionManager
 import model.gameComponent.IGame
-//class MementoManager(private var gameManager: IActionManager) extends IMementoManager {
+
 class MementoManager(private val game: IGame) extends IMementoManager {
 
   override def createMemento(): Memento = {
@@ -111,7 +111,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
 //  }
   override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
     val playingField = game.getPlayingField
-    val revertStrategy = game.getActionManager.getBoostManager.getRevertStrategy // ✅ Updated to use IGame
+    val revertStrategy = game.getActionManager.getBoostManager.getRevertStrategy
 
     if (lastBoostedIndex != -1) {
       val attacker = memento.attacker
@@ -125,59 +125,15 @@ class MementoManager(private val game: IGame) extends IMementoManager {
             defenders = defenders.updated(lastBoostedIndex, revertedCard)
             playingField.getDataManager.setPlayerDefenders(attacker, defenders)
 
-            println(s"✅ Defender reverted using revertStrategy: ${revertedCard}")
-
-            // ✅ Trigger UI refresh
             playingField.notifyObservers(Events.Reverted)
-            println("🔄 UI Refresh Triggered After Reverting Boost!")
 
           case _ =>
-            println("❌ No BoostedCard found, skipping restoration")
+            throw new RuntimeException("Error while reverting boost")
         }
       }
     }
   }
-
-//  override def restoreGameState(memento: Memento): Unit = {
-//    val pf = game.getPlayingField
-//
-//    pf.getRoles.setRoles(memento.attacker, memento.defender)
-//    pf.getDataManager.setPlayerDefenders(memento.attacker, memento.player1Defenders.map(_.copy()))
-//    pf.getDataManager.setPlayerDefenders(memento.defender, memento.player2Defenders.map(_.copy()))
-//    pf.getDataManager.setPlayerGoalkeeper(memento.attacker, memento.player1Goalkeeper.map(_.copy()))
-//    pf.getDataManager.setPlayerGoalkeeper(memento.defender, memento.player2Goalkeeper.map(_.copy()))
-//
-//    val attackerHand = pf.getDataManager.getPlayerHand(memento.attacker)
-//    attackerHand.clear()
-//    attackerHand.enqueueAll(memento.player1Hand.map(_.copy()))
-//
-//    val defenderHand = pf.getDataManager.getPlayerHand(memento.defender)
-//    defenderHand.clear()
-//    defenderHand.enqueueAll(memento.player2Hand.map(_.copy()))
-//
-//    pf.getScores.setScorePlayer1(memento.player1Score)
-//    pf.getScores.setScorePlayer2(memento.player2Score)
-//
-//    val restoredPlayer1 = memento.attacker.setActionStates(
-//      memento.player1Actions.map {
-//        case (action, remainingUses) =>
-//          action -> (if (remainingUses > 0) CanPerformAction(remainingUses) else OutOfActions)
-//      }
-//    )
-//
-//    val restoredPlayer2 = memento.defender.setActionStates(
-//      memento.player2Actions.map {
-//        case (action, remainingUses) =>
-//          action -> (if (remainingUses > 0) CanPerformAction(remainingUses) else OutOfActions)
-//      }
-//    )
-//
-//    pf.getRoles.setRoles(restoredPlayer1, restoredPlayer2)
-//
-//    pf.notifyObservers()
-//  }
   override def restoreGameState(memento: Memento): Unit = {
-  println("resoreeeeeeeeeeeeeeeeed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     val pf = game.getPlayingField
 
     pf.getRoles.setRoles(memento.attacker, memento.defender)
@@ -213,7 +169,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
 
     pf.getRoles.setRoles(restoredPlayer1, restoredPlayer2)
 
-    pf.notifyObservers() // ✅ Ensure UI refresh
+    pf.notifyObservers()
   }
 
 }

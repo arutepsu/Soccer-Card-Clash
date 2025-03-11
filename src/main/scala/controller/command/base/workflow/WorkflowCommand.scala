@@ -21,10 +21,9 @@ class SaveGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
   override def doStep(): Unit = {
     try {
       game.saveGame()
-      println("✅ SaveGameWorkflowCommand: Game saved successfully.")
     } catch {
       case e: Exception =>
-        println(s"❌ SaveGameWorkflowCommand: Error saving game - ${e.getMessage}")
+        throw new RuntimeException("Error while saving the game", e)
     }
   }
 }
@@ -36,7 +35,7 @@ class LoadGameWorkflowCommand(val game: IGame, val fileName: String) extends Wor
       game.loadGame(fileName)
     } catch {
       case e: Exception =>
-        println(s"❌ LoadGameWorkflowCommand: Error loading game '$fileName' - ${e.getMessage}")
+        throw new RuntimeException("Error while loading the game", e)
     }
   }
 }
