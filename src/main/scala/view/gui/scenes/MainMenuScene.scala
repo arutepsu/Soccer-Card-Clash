@@ -35,7 +35,7 @@ class MainMenuScene(controller: IController) extends Observer {
           () => controller.notifyObservers(Events.CreatePlayers) // ✅ Notify Observers instead
         },
         GameButtonFactory.createGameButton("Load Game", 200, 80) {
-          () => controller.notifyObservers(Events.LoadGame) // ✅ Notify Observers instead
+          () => controller.notifyObservers(Events.LoadGame)
         },
         GameButtonFactory.createGameButton("Quit", 200, 80) {
           () => controller.notifyObservers(Events.Quit)
@@ -44,32 +44,6 @@ class MainMenuScene(controller: IController) extends Observer {
     }
   }
 
-  // ✅ Create Game Scene
-  def createGameScene(): Scene = new Scene {
-    root = new CreatePlayerScene(controller)
-  }
-
-  // ✅ Load Game Scene
-  def loadGameScene(): Scene = {
-    val listView = new ListView(savedGames)
-    val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
-      () => controller.notifyObservers(Events.LoadGame) // ✅ Notify Observers instead
-    }
-
-    new Scene {
-      root = new VBox {
-        spacing = 10
-        alignment = Pos.Center
-        children = Seq(
-          new GameLabel("Select a Saved Game"),
-          listView,
-          backButton
-        )
-      }
-    }
-  }
-
-  // ✅ Observer Pattern: Handle Scene Transitions Here
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 GUI Received Event: $e")

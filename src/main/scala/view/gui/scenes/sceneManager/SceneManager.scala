@@ -24,7 +24,7 @@ object SceneManager extends Observable with Observer {
     stage = primaryStage
     controller = ctrl
     controller.add(this)
-    
+
     sceneRegistry = new SceneRegistry(controller, this)
   }
 
@@ -74,6 +74,7 @@ object SceneManager extends Observable with Observer {
 
   def switchScene(newScene: Scene): Unit = {
     Platform.runLater(() => {
+      println(s"🔄 Switching to scene: ${newScene.getClass}") // ✅ Debuggin
       val oldSceneOpt = Option(stage.scene)
       lastSceneWidth = stage.width()
       lastSceneHeight = stage.height()

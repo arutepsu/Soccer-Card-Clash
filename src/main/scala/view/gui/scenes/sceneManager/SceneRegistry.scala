@@ -27,9 +27,8 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   }
 
   def getLoadGameScene: Scene = {
-    if(_loadGameScene.isEmpty) {
-      _loadGameScene = Some(new LoadGameScene(controller))
-    }
+    // ✅ Always create a new instance to ensure the scene refreshes correctly
+    _loadGameScene = Some(new LoadGameScene(controller))
     _loadGameScene.get
   }
   def getCreatePlayerScene: Scene = {

@@ -1,13 +1,16 @@
 package view.tui
-
-import controller.IController
+import java.io.File
+import scala.io.StdIn
+import controller.{Events, IController}
+import view.tui.tuiCommand.factory.ITuiCommandFactory
+import view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 
 class Prompter(controller: IController) {
-  
+
   def promptPlayersName(): Unit = {
     println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
   }
-  
+
   def promptRegularAttack(): Unit = {
     println("⚔️ Select a defender to attack (enter position):")
   }
@@ -15,11 +18,11 @@ class Prompter(controller: IController) {
   def promptDoubleAttack(): Unit = {
     println("⚔️ Select a defender to attack (enter position):")
   }
-  
+
   def promptBoost(): Unit = {
     println("🔥 Choose a defender to boost (enter position):")
   }
-  
+
   def promptSwap(): Unit = {
     println("🔄 Choose a card to swap from attacker's hand (enter position):")
   }
@@ -113,12 +116,97 @@ class Prompter(controller: IController) {
   def promptCreatePlayers() : Unit ={
     println("Creating Players....")
   }
-  
-  def promptLoadGame(): Unit = {
-    println("✅ Game loaded successfully!")
+
+  def promptLoadGame(factory: ITuiCommandFactory): Unit = {
+    val selectedFile = promptUserForFile()
+
+    if (selectedFile.nonEmpty) {
+      val loadGameCommand = factory.createLoadGameTuiCommand(selectedFile)
+      loadGameCommand.execute()
+    } else {
+      println("❌ No valid game selected. Aborting load.")
+    }
+  }
+  def showAvailableGames(): Unit = {
+    val saveDirectory = new File("games")
+
+    if (!saveDirectory.exists() || !saveDirectory.isDirectory) {
+      println("❌ ERROR: The save directory 'games/' does not exist.")
+      return
+    }
+
+    val savedGames = saveDirectory.listFiles()
+      .filter(file => file.getName.endsWith(".xml") || file.getName.endsWith(".json"))
+      .map(_.getName)
+
+    if (savedGames.isEmpty) {
+      println("⚠️ No saved games found in 'games/'.")
+      return
+    }
+
+    println("\n📂 Available saved games:")
+    savedGames.zipWithIndex.foreach { case (fileName, index) =>
+      println(s"  ${index + 1}. $fileName")
+    }
+
+    println("\n📝 Type 'select <number>' to load a game.")
+  }
+
+  def loadSelectedGame(index: Int, factory: ITuiCommandFactory): Unit = {
+    val saveDirectory = new File("games")
+    val savedGames = saveDirectory.listFiles()
+      .filter(file => file.getName.endsWith(".xml") || file.getName.endsWith(".json"))
+      .map(_.getName)
+
+    if (index >= 0 && index < savedGames.length) {
+      val selectedFile = savedGames(index)
+      val loadGameCommand = factory.createLoadGameTuiCommand(selectedFile)
+      loadGameCommand.execute()
+    } else {
+      println("❌ Invalid selection.")
+    }
   }
 
   def promptSaveGame(): Unit = {
     println("✅ Game saved successfully!")
+  }
+
+  def promptUserForFile(): String = {
+    controller.notifyObservers(Events.LoadGame)
+    val saveDirectory = new File("games")
+
+    if (!saveDirectory.exists() || !saveDirectory.isDirectory) {
+      println("❌ ERROR: The save directory 'games/' does not exist.")
+      return ""
+    }
+
+    val savedGames = saveDirectory.listFiles()
+      .filter(file => file.getName.endsWith(".xml") || file.getName.endsWith(".json"))
+      .map(_.getName)
+
+    if (savedGames.isEmpty) {
+      println("⚠️ No saved games found in 'games/'.")
+      return ""
+    }
+
+    println("\n📂 Available saved games:")
+    savedGames.zipWithIndex.foreach { case (fileName, index) =>
+      println(s"  ${index + 1}. $fileName")
+    }
+
+    print("\n✏️ Enter the number of the game you want to load: ")
+    val choice = StdIn.readLine().trim
+
+    if (choice.forall(_.isDigit)) {
+      val index = choice.toInt - 1
+      if (index >= 0 && index < savedGames.length) {
+        val selectedFile = savedGames(index)
+        println(s"✅ Game '$selectedFile' selected.")
+        return s"games/$selectedFile"
+      }
+    }
+
+    println("❌ Invalid selection. Returning empty filename.")
+    ""
   }
 }

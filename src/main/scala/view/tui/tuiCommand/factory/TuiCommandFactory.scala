@@ -12,6 +12,8 @@ trait ITuiCommandFactory {
   def createBoostDefenderTuiCommand(): ITuiCommand
   def createRegularSwapTuiCommand(): ITuiCommand
   def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand
+  def createSaveGameTuiCommand(): ITuiCommand
+  def createLoadGameTuiCommand(fileName: String): ITuiCommand
   def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand
   def createUndoTuiCommand(): ITuiCommand
   def createRedoTuiCommand(): ITuiCommand
@@ -20,7 +22,7 @@ trait ITuiCommandFactory {
 }
 
 class TuiCommandFactory(controller: IController) extends ITuiCommandFactory {
-  
+
   override def createAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
   override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
   override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostTuiCommand(controller)
@@ -31,6 +33,13 @@ class TuiCommandFactory(controller: IController) extends ITuiCommandFactory {
 
   override def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand =
     new StartGameTuiCommand(controller, player1, player2)
+
+  override def createSaveGameTuiCommand(): ITuiCommand =
+    new SaveGameTuiCommand(controller)
+
+  def createLoadGameTuiCommand(fileName: String): ITuiCommand = {
+    new LoadGameTuiCommand(controller, fileName)
+  }
 
   override def createUndoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.undo())
   override def createRedoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.redo())
