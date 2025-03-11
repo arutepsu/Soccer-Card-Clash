@@ -15,12 +15,14 @@ import model.playingFiledComponent.factory.PlayingFieldDeserializer
 import play.api.libs.json._
 import scala.xml._
 import javax.inject.{Singleton, Inject}
+import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
 @Singleton
 class GameDeserializer @Inject() (
                                    gameStateFactory: IGameStateFactory,
                                    playingFieldDeserializer: PlayingFieldDeserializer,
                                    playerDeserializer: PlayerDeserializer,
                                    handCardsQueueDeserializer: HandCardsQueueDeserializer,
+                                   handCardsQueueFactory: IHandCardsQueueFactory,
                                    cardDeserializer: CardDeserializer
                                  ) extends Deserializer[IGameState] {
 
@@ -52,17 +54,17 @@ class GameDeserializer @Inject() (
     val player1Hand = (xml \ "player1Hand").headOption match {
       case Some(handElem) =>
         val cards = (handElem \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
-        HandCardsQueueFactory.create(cards)
+        handCardsQueueFactory.create(cards)
       case None =>
-        HandCardsQueueFactory.create(Nil)
+        handCardsQueueFactory.create(Nil)
     }
 
     val player2Hand = (xml \ "player2Hand").headOption match {
       case Some(handElem) =>
         val cards = (handElem \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
-        HandCardsQueueFactory.create(cards)
+        handCardsQueueFactory.create(cards)
       case None =>
-        HandCardsQueueFactory.create(Nil)
+        handCardsQueueFactory.create(Nil)
     }
 
     val player1Field = (xml \ "player1Field" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
@@ -127,12 +129,12 @@ class GameDeserializer @Inject() (
 
     val player1Hand = (json \ "player1Hand").validateOpt[JsArray].map {
       case Some(jsArray) => handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
-      case None => HandCardsQueueFactory.create(Nil)
+      case None => handCardsQueueFactory.create(Nil)
     }.get
 
     val player2Hand = (json \ "player2Hand").validateOpt[JsArray].map {
       case Some(jsArray) => handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
-      case None => HandCardsQueueFactory.create(Nil)
+      case None => handCardsQueueFactory.create(Nil)
     }.get
 
     val player1Field = (json \ "player1Field").validate[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)

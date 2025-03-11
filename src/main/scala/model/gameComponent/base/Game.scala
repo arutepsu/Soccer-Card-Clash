@@ -18,7 +18,7 @@ import model.playingFiledComponent.manager.IActionManager
 import model.playingFiledComponent.manager.base.ActionManager
 import util.UndoManager
 import play.api.libs.json.*
-
+import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
@@ -32,6 +32,7 @@ class Game @Inject()(
                       deckFactory: IDeckFactory,
                       fileIO: IFileIO,
                       gameStateFactory: IGameStateFactory,
+                      handCardsQueueFactory: IHandCardsQueueFactory
                     ) extends IGame {
 
   private var player1: IPlayer = _
@@ -72,8 +73,8 @@ class Game @Inject()(
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
 
-    val player1Hand = new HandCardsQueue(player1.getCards.toList)
-    val player2Hand = new HandCardsQueue(player2.getCards.toList)
+    val player1Hand = handCardsQueueFactory.create(player1.getCards.toList)
+    val player2Hand = handCardsQueueFactory.create(player2.getCards.toList)
 
     val player1Field = dataManager.getPlayerField(player1)
     val player2Field = dataManager.getPlayerField(player2)
@@ -106,8 +107,8 @@ class Game @Inject()(
     val player1Field = dataManager.getPlayerDefenders(player1)
     val player2Field = dataManager.getPlayerDefenders(player2)
 
-    val player1Hand = new HandCardsQueue(dataManager.getPlayerHand(player1).toList)
-    val player2Hand = new HandCardsQueue(dataManager.getPlayerHand(player2).toList)
+    val player1Hand = handCardsQueueFactory.create(dataManager.getPlayerHand(player1).toList)
+    val player2Hand = handCardsQueueFactory.create(dataManager.getPlayerHand(player2).toList)
 
     val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
     val player2Goalkeeper = dataManager.getPlayerGoalkeeper(player2)

@@ -8,31 +8,27 @@ import scala.collection.mutable
 import model.cardComponent.ICard
 import model.cardComponent.factory.CardDeserializer
 
+trait IHandCardsQueueFactory {
+  def create(cards: List[ICard]): IHandCardsQueue
+}
+
 @Singleton
-class HandCardsQueueDeserializer @Inject() (cardDeserializer: CardDeserializer) extends Deserializer[IHandCardsQueue] {
-
-  override def fromXml(xml: Elem): IHandCardsQueue = {
-
-    val cards = (xml \ "cards" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
-
-    val handCardsQueue = HandCardsQueueFactory.create(cards)
-
-    handCardsQueue
-  }
-
-
-  override def fromJson(json: JsObject): IHandCardsQueue = {
-
-    val cards = (json \ "cards").as[List[JsObject]].map(cardDeserializer.fromJson)
-
-    val handCardsQueue = HandCardsQueueFactory.create(cards)
-
-    handCardsQueue
+class HandCardsQueueFactory @Inject()() extends IHandCardsQueueFactory {
+  override def create(cards: List[ICard]): IHandCardsQueue = {
+    new HandCardsQueue(cards)
   }
 }
 
-object HandCardsQueueFactory {
-  def create(cards: List[ICard]): IHandCardsQueue = {
-    new HandCardsQueue(cards)
+@Singleton
+class HandCardsQueueDeserializer @Inject()(cardDeserializer: CardDeserializer, handCardsQueueFactory: IHandCardsQueueFactory) extends Deserializer[IHandCardsQueue] {
+
+  override def fromXml(xml: Elem): IHandCardsQueue = {
+    val cards = (xml \ "cards" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    handCardsQueueFactory.create(cards)
+  }
+
+  override def fromJson(json: JsObject): IHandCardsQueue = {
+    val cards = (json \ "cards").as[List[JsObject]].map(cardDeserializer.fromJson)
+    handCardsQueueFactory.create(cards)
   }
 }

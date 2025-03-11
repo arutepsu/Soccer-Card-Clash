@@ -20,7 +20,7 @@ import model.playerComponent.factory.*
 import model.playerComponent.playerRole.*
 import model.playingFiledComponent.*
 import model.playingFiledComponent.base.PlayingField
-import model.playingFiledComponent.dataStructure.HandCardsQueueDeserializer
+import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueueFactory, HandCardsQueueFactory}
 import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.manager.*
 import model.playingFiledComponent.manager.base.*
@@ -45,7 +45,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
-    
+    bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
 
     bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
     bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()
@@ -70,8 +70,11 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[PlayingFieldDeserializer])
       .toConstructor(classOf[PlayingFieldDeserializer].getConstructor(classOf[IPlayingFieldFactory], classOf[PlayerDeserializer]))
 
+//    bind(classOf[HandCardsQueueDeserializer])
+//      .toConstructor(classOf[HandCardsQueueDeserializer].getConstructor(classOf[CardDeserializer]))
     bind(classOf[HandCardsQueueDeserializer])
-      .toConstructor(classOf[HandCardsQueueDeserializer].getConstructor(classOf[CardDeserializer]))
+      .toConstructor(classOf[HandCardsQueueDeserializer].getConstructor(classOf[CardDeserializer], classOf[IHandCardsQueueFactory]))
+
 
     bind(classOf[GameDeserializer])
       .toConstructor(classOf[GameDeserializer].getConstructor(
@@ -79,7 +82,8 @@ class SoccerCardClashModule extends AbstractModule {
         classOf[PlayingFieldDeserializer],
         classOf[PlayerDeserializer],
         classOf[HandCardsQueueDeserializer],
-        classOf[CardDeserializer]
+        classOf[IHandCardsQueueFactory],
+        classOf[CardDeserializer],
       ))
     
     bind(classOf[JsonComponent])
