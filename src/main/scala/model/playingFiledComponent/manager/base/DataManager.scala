@@ -25,8 +25,7 @@ class DataManager @Inject() (
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
   override def getPlayer2: IPlayer = player2
-
-  /** Hand Management **/
+  
   override def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
     handManager.initializePlayerHands(player1, player1Cards, player2, player2Cards)
   }
@@ -40,8 +39,7 @@ class DataManager @Inject() (
 
   override def getPlayerHand(player: IPlayer): IHandCardsQueue = handManager.getPlayerHand(player)
   override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit = handManager.setPlayerHand(player, newHand)
-
-  /** Field Management **/
+  
   override def getPlayerField(player: IPlayer): List[ICard] = fieldManager.getPlayerField(player)
   override def setPlayerField(player: IPlayer, newField: List[ICard]): Unit = fieldManager.setPlayerField(player, newField)
 
@@ -59,8 +57,7 @@ class DataManager @Inject() (
 
   override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
     fieldManager.allDefendersBeaten(currentDefender)
-
-  /** Refill Strategies **/
+  
   override def setRefillStrategy(strategy: IRefillStrategy): Unit = refillStrategy = strategy
 
   override def refillDefenderField(defender: IPlayer): Unit =

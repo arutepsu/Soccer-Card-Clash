@@ -34,8 +34,7 @@ trait IHandCardsQueue extends mutable.Queue[ICard]  {
       {getCards.map(_.toXml)}
     </HandCardsQueue>
   }
-
-  // ✅ JSON Serialization
+  
   def toJson: JsObject = Json.obj(
     "cards" -> getCards.map(_.toJson)
   )

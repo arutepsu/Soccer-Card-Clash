@@ -15,7 +15,7 @@ import play.api.libs.json.JsObject
 
 class PlayingFieldFactory @Inject() (manager: IPlayingFieldManager) extends IPlayingFieldFactory {
   override def createPlayingField(player1: IPlayer, player2: IPlayer): IPlayingField =
-    new PlayingField(player1, player2)(using manager) // Pass manager explicitly
+    new PlayingField(player1, player2)(using manager)
 }
 trait IPlayerScoresFactory {
   def createPlayerScores(playingField: IPlayingField, player1:IPlayer, player2: IPlayer): IPlayerScores

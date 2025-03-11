@@ -23,6 +23,5 @@ class RevertCardActionCommand(card: ICard, revertStrategy: IRevertStrategy, game
   def revert(): Unit = {
     val revertedCard = revertStrategy.revertCard(card)
     game.updateGameState()
-    println(s"✅ Card reverted: $card -> $revertedCard")
   }
 }

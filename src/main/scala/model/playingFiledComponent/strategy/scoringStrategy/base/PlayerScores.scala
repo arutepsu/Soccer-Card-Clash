@@ -12,7 +12,7 @@ class PlayerScores @Inject() (
                                playingField: IPlayingField,
                                player1: IPlayer,
                                player2: IPlayer,
-                               private var scoringStrategy: IScoringStrategy = new StandardScoring() //now only one scoring strategy used
+                               private var scoringStrategy: IScoringStrategy = new StandardScoring()
                              ) extends IPlayerScores {
 
   private var player1Score: Int = 0

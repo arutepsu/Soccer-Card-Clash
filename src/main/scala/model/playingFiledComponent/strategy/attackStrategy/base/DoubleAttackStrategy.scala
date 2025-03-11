@@ -175,8 +175,8 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       val revertedExtraAttackerCard = revertStrategy.revertCard(extraAttackerCard)
       val revertedExtraDefenderCard = revertStrategy.revertCard(extraDefenderCard)
 
-      val defenderCard = fieldState.getDefenderCard(defender, defenderIndex) // ✅ Retrieve defender card
-      val revertedDefenderCard = revertStrategy.revertCard(defenderCard) // ✅
+      val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
+      val revertedDefenderCard = revertStrategy.revertCard(defenderCard)
       val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
       if (tiebreakerResult > 0) {

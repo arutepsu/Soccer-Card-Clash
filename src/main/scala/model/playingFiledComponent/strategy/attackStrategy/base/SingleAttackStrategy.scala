@@ -58,7 +58,6 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     } match {
       case Success(result) => result
       case Failure(exception) =>
-        println(s"Error during attack execution: ${exception.getMessage}")
         false
     }
   }
@@ -118,7 +117,6 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
         attackerWins(attackerHand, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
         fieldState.removeDefenderCard(defender, revertedCard)
-        print(f"roles : attacker : ${attacker}, defender ${defender}")
         true
       case _ =>
         defenderWins(defenderHand, attackingCard, revertStrategy.revertCard(defenderCard))
@@ -126,7 +124,6 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
         fieldState.removeDefenderCard(defender, revertedCard)
         fieldState.refillDefenderField(defender)
         roles.switchRoles()
-        print(f"roles : attacker : ${attacker}, defender ${defender}")
         false
     }
   }
