@@ -1,9 +1,7 @@
 package model.gameComponent.factory
 import controller.command.memento.base.Memento
-import model.cardComponent.CardDeserializer
 import model.gameComponent.IGame
 import model.playerComponent.factory.PlayerDeserializer
-import model.playingFiledComponent.PlayingFieldDeserializer
 import util.{Deserializer, Serializable}
 import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueue}
 import play.api.libs.json.*
@@ -11,7 +9,9 @@ import model.playerComponent.IPlayer
 import scala.xml.*
 import model.playingFiledComponent.dataStructure.*
 import model.cardComponent.ICard
+import model.cardComponent.factory.CardDeserializer
 import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.factory.PlayingFieldDeserializer
 import javax.inject.Singleton
 trait IGameState extends Serializable {
   def playingField: IPlayingField

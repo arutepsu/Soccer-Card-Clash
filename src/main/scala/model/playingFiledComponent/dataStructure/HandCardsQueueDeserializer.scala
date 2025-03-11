@@ -1,12 +1,12 @@
 package model.playingFiledComponent.dataStructure
 
 import util.Deserializer
-import model.cardComponent.CardDeserializer
 import scala.xml.*
 import play.api.libs.json.*
 import javax.inject.{Singleton, Inject}
 import scala.collection.mutable
 import model.cardComponent.ICard
+import model.cardComponent.factory.CardDeserializer
 
 @Singleton
 class HandCardsQueueDeserializer @Inject() (cardDeserializer: CardDeserializer) extends Deserializer[IHandCardsQueue] {

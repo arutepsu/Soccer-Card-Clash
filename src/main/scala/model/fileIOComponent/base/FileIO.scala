@@ -1,9 +1,9 @@
-package model.fileIOComponent
+package model.fileIOComponent.base
 
-import model.fileIOComponent.xmlComponent.XmlComponent
+import model.fileIOComponent.IFileIO
 import model.fileIOComponent.jSONComponent.JsonComponent
+import model.fileIOComponent.xmlComponent.XmlComponent
 import model.gameComponent.factory.IGameState
-import javax.inject.Singleton
 
 import javax.inject.{Inject, Singleton}
 

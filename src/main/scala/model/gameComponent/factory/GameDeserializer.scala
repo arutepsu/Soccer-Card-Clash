@@ -1,8 +1,6 @@
 package model.gameComponent.factory
-import model.cardComponent.CardDeserializer
 import model.gameComponent.IGame
 import model.playerComponent.factory.PlayerDeserializer
-import model.playingFiledComponent.PlayingFieldDeserializer
 import model.playingFiledComponent.dataStructure.HandCardsQueueFactory
 import util.{Deserializer, Serializable}
 import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueue}
@@ -11,7 +9,9 @@ import model.playerComponent.IPlayer
 import scala.xml.*
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
 import model.cardComponent.ICard
+import model.cardComponent.factory.CardDeserializer
 import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.factory.PlayingFieldDeserializer
 import play.api.libs.json._
 import scala.xml._
 import javax.inject.{Singleton, Inject}

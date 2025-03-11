@@ -5,11 +5,11 @@ import scala.xml.Elem
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.cardComponent.ICard
+import model.cardComponent.factory.CardDeserializer
 import util.Deserializer
 import model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
 import play.api.libs.json._
 import javax.inject.{Singleton, Inject}
-import model.cardComponent.CardDeserializer
 
 @Singleton
 class PlayerDeserializer @Inject() (

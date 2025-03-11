@@ -33,7 +33,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import model.playingFiledComponent.strategy.scoringStrategy.*
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.google.inject.assistedinject.FactoryModuleBuilder
-import model.cardComponent.{CardDeserializer, ICard}
+import model.cardComponent.ICard
 import model.cardComponent.base.components.{Suit, Value}
 import model.playingFiledComponent.manager.base.*
 import model.gameComponent.factory.*
@@ -44,6 +44,7 @@ import model.fileIOComponent.xmlComponent.XmlComponent
 import model.playingFiledComponent.dataStructure.HandCardsQueueDeserializer
 import util.{Deserializer, Observable}
 import com.google.inject.TypeLiteral
+import model.fileIOComponent.base.FileIO
 
 class SoccerCardClashModule extends AbstractModule {
   override def configure(): Unit = {

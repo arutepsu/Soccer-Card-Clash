@@ -1,11 +1,13 @@
-package model.playingFiledComponent
+package model.playingFiledComponent.factory
 
+import com.google.inject.{Inject, Singleton}
 import model.playerComponent.factory.PlayerDeserializer
+import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.IPlayingFieldFactory
 import util.Deserializer
-import scala.xml.*
 import play.api.libs.json.*
-import com.google.inject.{Singleton, Inject}
+
+import scala.xml.*
 
 @Singleton
 class PlayingFieldDeserializer @Inject()() (

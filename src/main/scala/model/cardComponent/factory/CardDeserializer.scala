@@ -1,24 +1,17 @@
-package model.cardComponent
+package model.cardComponent.factory
 
-import play.api.libs.json.{JsObject, Json}
-import util.Deserializer
-import scala.xml.Elem
+import model.cardComponent.ICard
 import model.cardComponent.base.components.Suit.Suit
 import model.cardComponent.base.components.Value.Value
 import model.cardComponent.base.components.{Suit, Value}
-import model.cardComponent.base.types.{BoostedCard, *}
+import model.cardComponent.base.types.*
 import model.cardComponent.factory.ICardFactory
-
-import scala.xml.*
+import util.Deserializer
 import play.api.libs.json.*
-import scala.xml.*
-import play.api.libs.json.*
-
-import scala.util.Try
 
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
-import play.api.libs.json.{JsObject, Json}
+import scala.xml.*
 
 @Singleton
 class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deserializer[ICard]{
