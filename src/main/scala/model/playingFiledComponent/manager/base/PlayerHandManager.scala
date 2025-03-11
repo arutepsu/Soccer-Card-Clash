@@ -15,14 +15,26 @@ class PlayerHandManager extends IPlayerHandManager{
                                      player1Cards: List[ICard],
                                      player2: IPlayer,
                                      player2Cards: List[ICard]): Unit = {
+    println(s"🔄 Initializing hands for players: ${player1.name} (${player1.hashCode()}), ${player2.name} (${player2.hashCode()})")
+
     playerHands = Map(
       player1 -> new HandCardsQueue(player1Cards),
       player2 -> new HandCardsQueue(player2Cards)
     )
+    println("✅ Player hands initialized successfully!")
+    println(s"Existing players in Map: ${playerHands.keys.map(p => s"${p.name} (${p.hashCode()})").mkString(", ")}")
   }
 
 
-  override def getPlayerHand(player: IPlayer): IHandCardsQueue = playerHands(player)
+//  override def getPlayerHand(player: IPlayer): IHandCardsQueue = playerHands(player)
+  override def getPlayerHand(player: IPlayer): IHandCardsQueue = {
+    if (!playerHands.contains(player)) {
+      println(s"❌ ERROR: Player hand not found for player: ${player.name} (HashCode: ${player.hashCode()})")
+      println(s"Existing Players in Map: ${playerHands.keys.map(p => s"${p.name} (Hash: ${p.hashCode()})").mkString(", ")}")
+      throw new NoSuchElementException(s"Player hand not found: ${player.name}")
+    }
+    playerHands(player)
+  }
 
   override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit = playerHands = playerHands.updated(player, newHand)
 

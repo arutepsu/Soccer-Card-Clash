@@ -45,6 +45,7 @@ class Tui(controller: IController) extends Observer {
     TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
     TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
     TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
+    TuiKeys.Save.key -> tuiCommandFactory.createSaveGameTuiCommand(),
     TuiKeys.Exit.key -> tuiCommandFactory.createExitTuiCommand()
   )
 
@@ -98,6 +99,10 @@ class Tui(controller: IController) extends Observer {
 
       case TuiKeys.CreatePlayers.key =>
         prompter.promptCreatePlayers()
+        waitingForGameSelection = false
+
+      case TuiKeys.Save.key =>
+        prompter.promptSaveGame()
         waitingForGameSelection = false
 
       case TuiKeys.Load.key =>

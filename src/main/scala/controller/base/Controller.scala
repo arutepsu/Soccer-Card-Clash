@@ -75,4 +75,7 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
   def loadGame(fileName: String): Unit = {
     executeCommand(commandFactory.createLoadGameCommand(fileName), Events.PlayingField)
   }
+  def reset(): Unit = {
+    game.resetPlayingField()
+  }
 }

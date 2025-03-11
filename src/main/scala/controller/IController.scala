@@ -22,4 +22,5 @@ trait IController extends Observable {
   def saveGame(): Unit
   def loadGame(fileName: String): Unit
   def quit(): Unit
+  def reset(): Unit
 }

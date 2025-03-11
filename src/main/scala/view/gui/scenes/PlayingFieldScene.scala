@@ -118,8 +118,7 @@ case class PlayingFieldScene(
     player2ScoreLabel.text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()
-
-//    println(controller.getPlayingField) // Print current game state in TUI for debugging
+    
   }
 
 }

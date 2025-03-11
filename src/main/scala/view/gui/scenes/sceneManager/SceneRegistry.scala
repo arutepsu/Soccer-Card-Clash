@@ -19,7 +19,35 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   private var _attackerDefendersScene: Option[Scene] = None
   private var _menuScene: Option[Scene] = None
   private var _loadGameScene: Option[Scene] = None
+
+  private def clearScenes(): Unit = {
+    println("Clearing all scenes...")
+
+    _createPlayerScene = None
+    println("✅ Cleared _createPlayerScene")
+
+    _playingFieldScene = None
+    println("✅ Cleared _playingFieldScene")
+
+    _attackerHandScene = None
+    println("✅ Cleared _attackerHandScene")
+
+    _attackerDefendersScene = None
+    println("✅ Cleared _attackerDefendersScene")
+
+    _menuScene = None
+    println("✅ Cleared _menuScene")
+
+    _loadGameScene = None
+    println("✅ Cleared _loadGameScene")
+
+    println("Resetting controller...")
+//    controller.reset()
+    println("✅ Controller reset completed")
+  }
+
   def getMainMenuScene: Scene = {
+    clearScenes()
     if (_mainMenuScene.isEmpty) {
       _mainMenuScene = Some(new MainMenuScene(controller).mainMenuScene())
     }
@@ -32,9 +60,7 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     _loadGameScene.get
   }
   def getCreatePlayerScene: Scene = {
-    if (_createPlayerScene.isEmpty) {
-      _createPlayerScene = Some(new Scene { root = new CreatePlayerScene(controller) })
-    }
+    _createPlayerScene = Some(new Scene { root = new CreatePlayerScene(controller) })
     _createPlayerScene.get
   }
 

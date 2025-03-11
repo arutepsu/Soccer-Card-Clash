@@ -45,6 +45,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
+    
 
     bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
     bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()

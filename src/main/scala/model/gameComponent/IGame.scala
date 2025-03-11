@@ -2,6 +2,7 @@ package model.gameComponent
 
 import controller.IController
 import controller.command.memento.base.Memento
+import model.gameComponent.factory.IGameState
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.base.ActionManager
@@ -27,4 +28,5 @@ trait IGame extends Serializable {
   def loadGame(fileName: String): Unit
   def exit(): Unit
   def updateGameState(): Unit
+  def resetPlayingField(): Unit
 }

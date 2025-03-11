@@ -7,7 +7,7 @@ import controller.command.actionCommandTypes.swapActionCommands.HandSwapActionCo
 import model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import model.fileIOComponent.IFileIO
 import model.gameComponent.IGame
-import model.gameComponent.factory.{GameStateFactory, IGameState, IGameStateFactory}
+import model.gameComponent.factory.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.*
 import model.playingFiledComponent.IPlayingField
@@ -24,13 +24,14 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import scala.util.Try
 import scala.xml.*
+import model.cardComponent.ICard
 @Singleton
 class Game @Inject()(
                       playerFactory: IPlayerFactory,
                       playingFieldFactory: IPlayingFieldFactory,
                       deckFactory: IDeckFactory,
                       fileIO: IFileIO,
-                      gameStateFactory: IGameStateFactory
+                      gameStateFactory: IGameStateFactory,
                     ) extends IGame {
 
   private var player1: IPlayer = _
@@ -39,8 +40,11 @@ class Game @Inject()(
   private var gameState: IGameState = _
 
   override def getPlayingField: IPlayingField = playingField
+
   override def getPlayer1: IPlayer = player1
+
   override def getPlayer2: IPlayer = player2
+
   override def getActionManager: IActionManager = playingField.getActionManager
 
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
@@ -57,10 +61,11 @@ class Game @Inject()(
   }
 
   override def startGame(playerName1: String, playerName2: String): Unit = {
+    resetPlayingField()
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
-
+    println("players created")
     playingField = playingFieldFactory.createPlayingField(player1, player2)
     val dataManager = playingField.getDataManager
 
@@ -134,7 +139,7 @@ class Game @Inject()(
       try {
         fileIO.saveGame(gameState)
       } catch {
-        case e: Exception =>  throw new RuntimeException("Failed to save the game", e)
+        case e: Exception => throw new RuntimeException("Failed to save the game", e)
       }
     } else {
     }
@@ -178,6 +183,13 @@ class Game @Inject()(
         e.printStackTrace()
         throw new RuntimeException(s"Failed to load game '$fileName'", e)
     }
+  }
+
+  def resetPlayingField(): Unit = {
+    playingField = null
+    gameState = null
+    player1 = null
+    player2 = null
   }
 
   override def exit(): Unit = {

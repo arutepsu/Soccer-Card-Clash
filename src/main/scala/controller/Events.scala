@@ -13,7 +13,7 @@ enum Events extends ObservableEvent {
 
   case Quit
   
-  case PauseGame
+  case PauseGame, ResetGame
   
   case Undo, Redo, SaveGame
 }
