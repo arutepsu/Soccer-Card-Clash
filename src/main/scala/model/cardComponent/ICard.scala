@@ -19,11 +19,6 @@ trait ICard extends Serializable {
   def copy(): ICard
   def hashCode(): Int
   def equals(obj: Any): Boolean
-
-//  def toJson: JsObject
-//
-//  def toXml: Elem
-
   def toXml: Elem = this match {
     case regularCard: RegularCard =>
       <Card>

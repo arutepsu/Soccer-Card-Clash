@@ -20,7 +20,6 @@ class BoostedCard(private val baseCard: RegularCard, var additionalValue: Int = 
   override def boost(): ICard = this
 
   override def revertBoost(): Card = {
-    println(s"♻️ Reverting BoostedCard: $this -> ${new RegularCard(originalValue, baseCard.suit)}")
     new RegularCard(originalValue, baseCard.suit)
   }
   override def copy(): Card = new BoostedCard(baseCard, additionalValue)

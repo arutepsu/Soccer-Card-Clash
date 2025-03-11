@@ -13,5 +13,4 @@ object BoostingPolicies {
   )
 
   def getBoostAmount(value: Value): Int = boostValues.getOrElse(value, 0)
-
 }
