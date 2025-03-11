@@ -20,7 +20,6 @@ class PlayingFieldDeserializer @Inject()() (
     val playingFieldXml = (xml \\ "playingField").headOption
       .map(_.asInstanceOf[Elem])
       .getOrElse {
-        println("❌ ERROR: <playingField> not found in XML!")
         throw new IllegalArgumentException("ERROR: Missing 'playingField' in XML.")
       }
 
@@ -28,14 +27,12 @@ class PlayingFieldDeserializer @Inject()() (
     val attackerXml = (playingFieldXml \ "Attacker").headOption
       .map(_.asInstanceOf[Elem])
       .getOrElse {
-        println("❌ ERROR: <Attacker> not found inside <playingField>!")
         throw new IllegalArgumentException("ERROR: Missing 'Attacker' in XML.")
       }
 
     val defenderXml = (playingFieldXml \ "Defender").headOption
       .map(_.asInstanceOf[Elem])
       .getOrElse {
-        println("❌ ERROR: <Defender> not found inside <playingField>!")
         throw new IllegalArgumentException("ERROR: Missing 'Defender' in XML.")
       }
 
@@ -48,7 +45,6 @@ class PlayingFieldDeserializer @Inject()() (
     val player2Xml = (playingFieldXml \ "Defender" \ "Player").headOption
     .map(_.asInstanceOf[Elem])
     .getOrElse {
-      println("❌ ERROR: Missing <Player> inside <Defender> in XML!")
       throw new IllegalArgumentException("ERROR: Missing 'Player' inside <Defender> in XML.")
     }
 
