@@ -10,7 +10,7 @@ import javax.inject.{Inject, Singleton}
 import scala.xml.{Elem, PrettyPrinter, XML}
 
 @Singleton
-class XmlComponent @Inject() (gameDeserializer: GameDeserializer) {
+class XmlComponent @Inject()(gameDeserializer: GameDeserializer) {
 
   private val folderPath = "games/" // ✅ Define the folder for game saves
   private val filePath = folderPath + "game.xml" // ✅ Save inside the folder
@@ -31,36 +31,42 @@ class XmlComponent @Inject() (gameDeserializer: GameDeserializer) {
     try {
       println(s"📂 XmlComponent: Loading game from XML file: $filePath")
 
-      val file = XML.loadFile(filePath)
-      if (file == null) {
-        println(s"❌ XML file '$fileName' not found.")
-        None
-      } else {
-        println(s"📜 XmlComponent: Successfully loaded XML.")
-        val gameState = gameDeserializer.fromXml((file \\ "GameState").head.asInstanceOf[Elem]) // ✅ Use injected gameDeserializer
-        println(s"✅ XmlComponent: Successfully deserialized game state.")
+      val source = XML.loadFile(filePath) // ✅ Load XML file
+      println(s"📜 XmlComponent: Loaded XML content.")
 
-        Some(gameState)
-      }
+      val gameState = gameDeserializer.fromXml(source.asInstanceOf[Elem]) // ✅ FIXED: No need to extract "GameState"
+      println(s"✅ XmlComponent: Successfully deserialized game state.")
+
+      Some(gameState)
     } catch {
+      case _: java.io.FileNotFoundException =>
+        println(s"❌ XmlComponent: XML file '$fileName' not found.")
+        None
       case e: Exception =>
-        println(s"❌ XmlComponent: Error loading XML file '$fileName': ${e.getMessage}")
+        println(s"❌ XmlComponent: ERROR loading XML file '$fileName': ${e.getMessage}")
+        e.printStackTrace()
         None
     }
   }
 
+
   // ✅ Save Game State as XML
+  // ✅ Save the latest game state, not an old memento
   def save(gameState: IGameState): Unit = {
     ensureFolderExists() // ✅ Ensure folder exists before saving
+
     try {
-      val pw = new PrintWriter(new File(filePath))
+      val xml = gameState.toXml // 🔍 Ensure this correctly reflects the current state
       val prettyPrinter = new PrettyPrinter(120, 4)
-      val xml = prettyPrinter.format(gameState.toXml)
-      pw.write(xml)
+      val formattedXml = prettyPrinter.format(xml)
+
+      val pw = new PrintWriter(new File(filePath))
+      pw.write(formattedXml)
       pw.close()
-      println(s"✅ XmlComponent: Game successfully saved to $filePath")
+
+      println(s"✅ Game successfully saved to $filePath")
     } catch {
-      case e: Exception => println(s"❌ XmlComponent: Error saving XML: ${e.getMessage}")
+      case e: Exception => println(s"❌ Error saving XML: ${e.getMessage}")
     }
   }
 }

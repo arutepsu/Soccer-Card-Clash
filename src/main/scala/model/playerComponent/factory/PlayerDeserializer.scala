@@ -22,14 +22,17 @@ class PlayerDeserializer @Inject() (
     println("DEBUG: Entering PlayerDeserializer.fromXml")
 
     val name = (xml \ "@name").text.trim
-    println(s"DEBUG: Extracted name: $name")
+    if (name.isEmpty) {
+      println("❌ ERROR: Missing 'name' attribute in Player XML!")
+      throw new IllegalArgumentException("ERROR: Missing 'name' attribute in Player XML.")
+    }
+    println(s"✅ DEBUG: Extracted name: '$name'")
 
     val cards = (xml \ "Cards" \ "Card").map { node =>
-      val card = cardDeserializer.fromXml(node.asInstanceOf[Elem]) // ✅ Use injected cardDeserializer
-      println(s"DEBUG: Extracted card: $card")
+      val card = cardDeserializer.fromXml(node.asInstanceOf[Elem])
+      println(s"✅ DEBUG: Extracted card: $card")
       card
     }.toList
-    println(s"DEBUG: Extracted cards: $cards")
 
     val actionStates = (xml \ "ActionStates" \ "ActionState").map { node =>
       val policyStr = (node \ "@policy").text.trim
@@ -37,14 +40,18 @@ class PlayerDeserializer @Inject() (
         .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $policyStr"))
 
       val state = PlayerActionState.fromString(node.text.trim)
-      println(s"DEBUG: Extracted action state: $policy -> $state")
+      println(s"✅ DEBUG: Extracted action state: $policy -> $state")
 
       policy -> state
     }.toMap
-    println(s"DEBUG: Extracted actionStates: $actionStates")
+
+    println(s"✅ DEBUG: Extracted actionStates: $actionStates")
 
     val player = playerFactory.createPlayer(name, cards).setActionStates(actionStates)
-    println(s"DEBUG: Created player: $player")
+    println(s"✅ DEBUG: Created player: $player")
+
+
+    println(s"✅ DEBUG: Player '${player.name}' registered in PlayerHandManager.")
 
     player
   }

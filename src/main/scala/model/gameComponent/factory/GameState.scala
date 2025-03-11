@@ -82,18 +82,19 @@ class GameState(
     )
 
   override def toXml: Elem = {
-    <GameState player1Score={player1Score.toString} player2Score={player2Score.toString}>
-      <PlayingField>{playingField.toXml}</PlayingField>
-      <Player1>{player1.toXml}</Player1>
-      <Player2>{player2.toXml}</Player2>
-      <Player1Hand>{player1Hand.getCards.map(_.toXml)}</Player1Hand>
-      <Player2Hand>{player2Hand.getCards.map(_.toXml)}</Player2Hand>
-      <Player1Field>{player1Defenders.map(_.toXml)}</Player1Field>
-      <Player2Field>{player2Defenders.map(_.toXml)}</Player2Field>
-      {player1Goalkeeper.map(gk => <Player1Goalkeeper>{gk.toXml}</Player1Goalkeeper>).getOrElse(Nil)}
-      {player2Goalkeeper.map(gk => <Player2Goalkeeper>{gk.toXml}</Player2Goalkeeper>).getOrElse(Nil)}
-    </GameState>
+    <root>
+      {playingField.toXml}  <!-- ✅ No extra <playingField> wrapper -->
+      <player1Hand>{player1Hand.getCards.map(_.toXml)}</player1Hand>
+      <player2Hand>{player2Hand.getCards.map(_.toXml)}</player2Hand>
+      <player1Field>{player1Defenders.map(_.toXml)}</player1Field>
+      <player2Field>{player2Defenders.map(_.toXml)}</player2Field>
+      <player1Goalkeeper>{player1Goalkeeper.map(_.toXml).getOrElse(<empty/>)}</player1Goalkeeper>
+      <player2Goalkeeper>{player2Goalkeeper.map(_.toXml).getOrElse(<empty/>)}</player2Goalkeeper>
+      <player1Score>{player1Score}</player1Score>
+      <player2Score>{player2Score}</player2Score>
+    </root>
   }
+
 
   override def toJson: JsObject = Json.obj(
     "playingField" -> playingField.toJson,

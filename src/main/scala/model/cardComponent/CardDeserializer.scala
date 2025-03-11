@@ -25,24 +25,61 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
 
   override def fromXml(xml: Elem): ICard = {
     println("DEBUG: Entering CardDeserializer.fromXml")
+    println(s"DEBUG: Received Card XML:\n$xml") // ✅ Print the full card XML
 
-    val suit = Suit.withName((xml \ "suit").text.trim)
-    val value = Value.fromString((xml \ "value").text.trim)
-      .getOrElse(throw new IllegalArgumentException(s"Invalid card value: ${(xml \ "value").text.trim}"))
+    // ✅ Extract raw suit text and print it
+    val rawSuitText = (xml \ "suit").text
+    println(s"DEBUG: Extracted raw suit value: '$rawSuitText'")
+
+    val suitText = rawSuitText.trim
+    println(s"DEBUG: Trimmed suit value: '$suitText'")
+
+    if (suitText.isEmpty) {
+      println("❌ ERROR: Missing <suit> in this card XML:\n" + xml)
+      throw new IllegalArgumentException("ERROR: Missing 'suit' value in XML.")
+    }
+
+    val cleanSuitText = suitText.replaceAll("\\s+", "") // ✅ Remove unexpected spaces
+
+    val suit = try {
+      Suit.withName(cleanSuitText)
+    } catch {
+      case _: NoSuchElementException =>
+        println(s"❌ ERROR: Invalid suit value after cleanup: '$cleanSuitText' in XML:\n$xml")
+        throw new IllegalArgumentException(s"ERROR: Invalid suit value: '$cleanSuitText'")
+    }
+
+    // ✅ Extract and validate `<value>`
+    val valueText = (xml \ "value").text.trim
+    if (valueText.isEmpty) {
+      println("❌ ERROR: Missing <value> in this card XML:\n" + xml)
+      throw new IllegalArgumentException("ERROR: Missing 'value' for card in XML.")
+    }
+
+    val value = Value.fromString(valueText)
+      .getOrElse(throw new IllegalArgumentException(s"Invalid card value: '$valueText'"))
+
+    // ✅ Extract and validate `<type>`
     val cardType = (xml \ "type").text.trim
+    if (cardType.isEmpty) {
+      println("❌ ERROR: Missing <type> in this card XML:\n" + xml)
+      throw new IllegalArgumentException("ERROR: Missing 'type' for card in XML.")
+    }
 
-    println(s"DEBUG: Extracted card data - Suit: $suit, Value: $value, Type: $cardType")
+    println(s"✅ DEBUG: Extracted card data - Suit: '$suit', Value: '$value', Type: '$cardType'")
 
     val card = cardType match {
       case "Regular" => cardFactory.createCard(value, suit)
       case "Boosted" =>
         val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
-        val baseCard = cardFactory.createCard(value, suit) // Use factory for consistency
+        val baseCard = cardFactory.createCard(value, suit)
         new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
-      case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
+      case _ =>
+        println(s"❌ ERROR: Unknown card type '$cardType' in XML:\n$xml")
+        throw new IllegalArgumentException(s"Unknown card type: $cardType")
     }
 
-    println(s"DEBUG: Created card: $card")
+    println(s"✅ DEBUG: Created card: $card")
     card
   }
 

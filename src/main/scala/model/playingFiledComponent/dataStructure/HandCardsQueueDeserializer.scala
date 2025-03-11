@@ -14,7 +14,7 @@ class HandCardsQueueDeserializer @Inject() (cardDeserializer: CardDeserializer) 
   override def fromXml(xml: Elem): IHandCardsQueue = {
     println("DEBUG: Entering HandCardsQueueDeserializer.fromXml")
 
-    val cards = (xml \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    val cards = (xml \ "cards" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
     println(s"DEBUG: Extracted hand cards: $cards")
 
     val handCardsQueue = HandCardsQueueFactory.create(cards)
@@ -22,6 +22,7 @@ class HandCardsQueueDeserializer @Inject() (cardDeserializer: CardDeserializer) 
 
     handCardsQueue
   }
+
 
   override def fromJson(json: JsObject): IHandCardsQueue = {
     println("DEBUG: Entering HandCardsQueueDeserializer.fromJson")
