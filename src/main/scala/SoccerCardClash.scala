@@ -38,7 +38,7 @@ object SoccerCardClash {
 
   private def startGui(): Unit = {
     val guiThread = new Thread(() => gui.main(Array.empty))
-    guiThread.setDaemon(true) // Ensures GUI thread does not block app exit
+    guiThread.setDaemon(true)
     guiThread.start()
   }
 }
