@@ -1,56 +1,42 @@
 package model.gameComponent.base
 
+import com.google.inject.{Inject, Singleton}
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import controller.command.actionCommandTypes.swapActionCommands.HandSwapActionCommand
-import model.cardComponent.factory.DeckFactory
+import model.cardComponent.factory.{DeckFactory, IDeckFactory}
+import model.fileIOComponent.IFileIO
 import model.gameComponent.IGame
+import model.gameComponent.factory.{GameStateFactory, IGameState, IGameStateFactory}
 import model.playerComponent.IPlayer
+import model.playerComponent.factory.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
-import model.cardComponent.factory.IDeckFactory
+import model.playingFiledComponent.dataStructure.HandCardsQueue
+import model.playingFiledComponent.factory.*
+import model.playingFiledComponent.manager.IActionManager
+import model.playingFiledComponent.manager.base.ActionManager
 import util.UndoManager
 import play.api.libs.json.*
-import model.gameComponent.factory.{GameStateFactory, IGameState}
 
-import scala.xml.*
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
 import scala.util.Try
-import com.google.inject.{Inject, Singleton}
-
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Paths}
-import play.api.libs.json.{JsObject, Json}
-import model.playerComponent.factory.*
-import model.playingFiledComponent.factory.*
-import model.playingFiledComponent.manager.base.ActionManager
-import com.google.inject.{Inject, Singleton}
-import model.playerComponent.IPlayer
-import model.playerComponent.factory.IPlayerFactory
-import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.factory.IPlayingFieldFactory
-import model.cardComponent.factory.IDeckFactory
-import model.playingFiledComponent.manager.IActionManager
-import model.fileIOComponent.IFileIO
-import model.playingFiledComponent.dataStructure.HandCardsQueue
-
-import java.nio.file.{Files, Paths}
-import java.nio.charset.StandardCharsets
-import play.api.libs.json.Json
-import model.gameComponent.factory.IGameStateFactory
+import scala.xml.*
 @Singleton
 class Game @Inject()(
                       playerFactory: IPlayerFactory,
                       playingFieldFactory: IPlayingFieldFactory,
                       deckFactory: IDeckFactory,
                       fileIO: IFileIO,
-                      gameStateFactory: IGameStateFactory  // ✅ Inject GameStateFactory
+                      gameStateFactory: IGameStateFactory
                     ) extends IGame {
 
   private var player1: IPlayer = _
   private var player2: IPlayer = _
   private var playingField: IPlayingField = _
-  private var gameState: IGameState = _  // ✅ Game state variable to store/load game data
+  private var gameState: IGameState = _
 
   override def getPlayingField: IPlayingField = playingField
   override def getPlayer1: IPlayer = player1
@@ -76,13 +62,11 @@ class Game @Inject()(
     player2 = p2
 
     playingField = playingFieldFactory.createPlayingField(player1, player2)
-    val dataManager = playingField.getDataManager // ✅ Store DataManager reference for reuse
+    val dataManager = playingField.getDataManager
 
-    // ✅ Initialize player hands
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
     playingField.setPlayingField()
 
-    // ✅ Retrieve necessary game state information
     val player1Hand = new HandCardsQueue(player1.getCards.toList)
     val player2Hand = new HandCardsQueue(player2.getCards.toList)
 
@@ -114,13 +98,10 @@ class Game @Inject()(
   override def updateGameState(): Unit = {
     val dataManager = playingField.getDataManager
 
-    println(s"🔄 Updating Game State from DataManager...")
+    val player1Field = dataManager.getPlayerDefenders(player1)
+    val player2Field = dataManager.getPlayerDefenders(player2)
 
-    // ✅ Fetch latest values from dataManager
-    val player1Field = dataManager.getPlayerDefenders(player1) // ✅ Ensure we use the correct method
-    val player2Field = dataManager.getPlayerDefenders(player2) // ✅ Ensure we use the correct method
-
-    val player1Hand = new HandCardsQueue(dataManager.getPlayerHand(player1).toList) // ✅ Always pull from DataManager
+    val player1Hand = new HandCardsQueue(dataManager.getPlayerHand(player1).toList)
     val player2Hand = new HandCardsQueue(dataManager.getPlayerHand(player2).toList)
 
     val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
@@ -129,13 +110,6 @@ class Game @Inject()(
     val player1Score = playingField.getScores.getScorePlayer1
     val player2Score = playingField.getScores.getScorePlayer2
 
-    // ✅ Debugging before updating game state
-    println(s"🛡 Before Update - Player1 Field: ${gameState.player1Defenders}")
-    println(s"🛡 Before Update - Player2 Field: ${gameState.player2Defenders}")
-    println(s"📊 DataManager Player1 Field: $player1Field")
-    println(s"📊 DataManager Player2 Field: $player2Field")
-
-    // ✅ Replace gameState with fresh data
     gameState = gameStateFactory.create(
       playingField,
       player1,
@@ -149,10 +123,6 @@ class Game @Inject()(
       player1Score,
       player2Score
     )
-
-    // ✅ Debugging after updating game state
-    println(s"✅ Updated Player1 Field: ${gameState.player1Defenders}")
-    println(s"✅ Updated Player2 Field: ${gameState.player2Defenders}")
   }
 
   override def selectDefenderPosition(): Int = {
@@ -163,68 +133,50 @@ class Game @Inject()(
     if (gameState != null) {
       try {
         fileIO.saveGame(gameState)
-        println("✅ Game saved successfully using FileIO.")
       } catch {
-        case e: Exception => println(s"❌ Error saving game: ${e.getMessage}")
+        case e: Exception =>  throw new RuntimeException("Failed to save the game", e)
       }
     } else {
-      println("❌ Cannot save: Game state is not initialized.")
     }
   }
 
   override def loadGame(fileName: String): Unit = {
-    println(s"📂 Attempting to load game: $fileName")
 
     try {
       val loadedState = fileIO.loadGame(fileName)
-      println(s"🔍 Loaded game state: ${if (loadedState != null) "Success" else "Failed"}")
 
       if (loadedState != null) {
-        gameState = loadedState // ✅ Directly assign the loaded state
+        gameState = loadedState
 
-        // ✅ Update core game objects
         player1 = gameState.player1
         player2 = gameState.player2
         playingField = gameState.playingField
 
-        println(s"🔄 Player1: ${player1.name}, Player2: ${player2.name}")
-
         val dataManager = playingField.getDataManager
 
-        // ✅ Restore player hands from `gameState` instead of recreating them
         dataManager.initializePlayerHands(gameState.player1Hand.getCards.toList, gameState.player2Hand.getCards.toList)
-        println("✅ Player hands reinitialized successfully.")
 
-        // ✅ Restore player fields & goalkeepers **directly from `gameState`**
-        dataManager.setPlayerDefenders(player1, gameState.player1Defenders) // ✅ Use the loaded values
+        dataManager.setPlayerDefenders(player1, gameState.player1Defenders)
         dataManager.setPlayerDefenders(player2, gameState.player2Defenders)
 
         dataManager.setPlayerGoalkeeper(player1, gameState.player1Goalkeeper)
         dataManager.setPlayerGoalkeeper(player2, gameState.player2Goalkeeper)
 
-        println(s"🧤 Player1 Goalkeeper after loading: ${gameState.player1Goalkeeper}")
-        println(s"🧤 Player2 Goalkeeper after loading: ${gameState.player2Goalkeeper}")
-
         if (gameState.player1Goalkeeper.isEmpty || gameState.player2Goalkeeper.isEmpty) {
-          throw new IllegalStateException("❌ Goalkeeper is missing! The game logic must always have one.")
+          throw new IllegalStateException("Goalkeeper is missing! The game logic must always have one.")
         }
         playingField.getScores.setScorePlayer1(gameState.player1Score)
         playingField.getScores.setScorePlayer2(gameState.player2Score)
-        // ✅ Restore scores **directly from `gameState`** (No need to reassign)
-        println(s"🏆 Player1 Score: ${gameState.player1Score}, Player2 Score: ${gameState.player2Score}")
 
-        // ✅ Ensure playing field is set up properly
         playingField.setPlayingField()
 
-        println(s"🛠 Setting up playing field...")
-        println(s"✅ Game '$fileName' loaded successfully using FileIO.")
       } else {
-        println(s"❌ Error: No valid game state found in '$fileName'.")
+        throw new RuntimeException(s"Failed to load game: No valid game state found in '$fileName'")
       }
     } catch {
       case e: Exception =>
-        println(s"❌ ERROR loading game '$fileName': ${e.getMessage}")
         e.printStackTrace()
+        throw new RuntimeException(s"Failed to load game '$fileName'", e)
     }
   }
 

@@ -1,12 +1,9 @@
 package model.gameComponent.factory
-//import model.playingFiledComponent.{IPlayingField, PlayingFieldDeserializer}
-//import model.cardComponent.{CardDeserializer, ICard}
 import controller.command.memento.base.Memento
 import model.cardComponent.CardDeserializer
 import model.gameComponent.IGame
 import model.playerComponent.factory.PlayerDeserializer
 import model.playingFiledComponent.PlayingFieldDeserializer
-//import model.playerComponent.factory.PlayerDeserializer
 import util.{Deserializer, Serializable}
 import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueue}
 import play.api.libs.json.*
@@ -49,7 +46,6 @@ class GameState(
                  override val player2Score: Int
                ) extends IGameState {
 
-  /** Save current game state into a Memento */
   override def saveState(): Memento = Memento(
     attacker = player1,
     defender = player2,
@@ -65,7 +61,6 @@ class GameState(
     player2Actions = Map.empty
   )
 
-  /** Restore game state from a Memento (returns a new GameState) */
   override def restoreState(memento: Memento): IGameState =
     new GameState(
       playingField,
@@ -83,7 +78,7 @@ class GameState(
 
   override def toXml: Elem = {
     <root>
-      {playingField.toXml}  <!-- ✅ No extra <playingField> wrapper -->
+      {playingField.toXml}
       <player1Hand>{player1Hand.getCards.map(_.toXml)}</player1Hand>
       <player2Hand>{player2Hand.getCards.map(_.toXml)}</player2Hand>
       <player1Field>{player1Defenders.map(_.toXml)}</player1Field>
