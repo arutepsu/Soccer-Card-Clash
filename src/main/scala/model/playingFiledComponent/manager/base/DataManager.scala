@@ -14,20 +14,19 @@ import scala.collection.mutable
 @Singleton
 class DataManager @Inject() (
                               playingField: IPlayingField,
-                              player1: IPlayer,
-                              player2: IPlayer,
                               handManager: IPlayerHandManager,
                               fieldManager: IPlayerFieldManager
                             ) extends IDataManager {
 
+
   private var refillStrategy: IRefillStrategy = new StandardRefillStrategy()
 
   override def getPlayingField: IPlayingField = playingField
-  override def getPlayer1: IPlayer = player1
-  override def getPlayer2: IPlayer = player2
+  override def getPlayer1: IPlayer = playingField.getAttacker
+  override def getPlayer2: IPlayer = playingField.getDefender
   
   override def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit = {
-    handManager.initializePlayerHands(player1, player1Cards, player2, player2Cards)
+    handManager.initializePlayerHands(getPlayer1, player1Cards, getPlayer2, player2Cards)
   }
 
   override def getDefenderCard(player: IPlayer, index: Int): ICard = {
@@ -64,8 +63,8 @@ class DataManager @Inject() (
     refillStrategy.refillDefenderField(this, defender)
 
   override def initializeFields(): Unit = {
-    refillStrategy.refillField(this, player1, handManager.getPlayerHand(player1).getCards)
-    refillStrategy.refillField(this, player2, handManager.getPlayerHand(player2).getCards)
+    refillStrategy.refillField(this, getPlayer1, handManager.getPlayerHand(getPlayer1).getCards)
+    refillStrategy.refillField(this, getPlayer2, handManager.getPlayerHand(getPlayer2).getCards)
   }
 
   override def setGoalkeeperForAttacker(card: ICard): Unit = {

@@ -29,9 +29,9 @@ class PlayerHandManager extends IPlayerHandManager{
 //  override def getPlayerHand(player: IPlayer): IHandCardsQueue = playerHands(player)
   override def getPlayerHand(player: IPlayer): IHandCardsQueue = {
     if (!playerHands.contains(player)) {
-      println(s"❌ ERROR: Player hand not found for player: ${player.name} (HashCode: ${player.hashCode()})")
-      println(s"Existing Players in Map: ${playerHands.keys.map(p => s"${p.name} (Hash: ${p.hashCode()})").mkString(", ")}")
-      throw new NoSuchElementException(s"Player hand not found: ${player.name}")
+//      println(s"❌ ERROR: Player hand not found for player: ${player.name} (HashCode: ${player.hashCode()})")
+//      println(s"Existing Players in Map: ${playerHands.keys.map(p => s"${p.name} (Hash: ${p.hashCode()})").mkString(", ")}")
+//      throw new NoSuchElementException(s"Player hand not found: ${player.name}")
     }
     playerHands(player)
   }

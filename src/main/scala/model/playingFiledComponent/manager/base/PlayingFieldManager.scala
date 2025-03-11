@@ -16,7 +16,7 @@ class PlayingFieldManager @Inject() (
                                     ) extends IPlayingFieldManager {
 
   override def createDataManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IDataManager =
-    new DataManager(playingField, player1, player2, handManager, fieldManager)
+    new DataManager(playingField, handManager, fieldManager)
 
   override def createActionManager(playingField: IPlayingField): IActionManager =
     new ActionManager(playingField)
