@@ -52,7 +52,7 @@ class SoccerCardClashModule extends AbstractModule {
     
     bind(classOf[IPlayingField]).to(classOf[PlayingField])
     bind(classOf[IPlayingFieldManager]).to(classOf[PlayingFieldManager])
-    bind(classOf[IPlayerHandManager]).to(classOf[PlayerHandManager])
+//    bind(classOf[IPlayerHandManager]).to(classOf[PlayerHandManager])
     bind(classOf[IPlayerFieldManager]).to(classOf[PlayerFieldManager])
     
     bind(classOf[IDataManager]).to(classOf[DataManager])
@@ -74,7 +74,8 @@ class SoccerCardClashModule extends AbstractModule {
 //      .toConstructor(classOf[HandCardsQueueDeserializer].getConstructor(classOf[CardDeserializer]))
     bind(classOf[HandCardsQueueDeserializer])
       .toConstructor(classOf[HandCardsQueueDeserializer].getConstructor(classOf[CardDeserializer], classOf[IHandCardsQueueFactory]))
-
+    bind(classOf[IPlayerHandManager])
+      .toConstructor(classOf[PlayerHandManager].getConstructor(classOf[IHandCardsQueueFactory]))
 
     bind(classOf[GameDeserializer])
       .toConstructor(classOf[GameDeserializer].getConstructor(
