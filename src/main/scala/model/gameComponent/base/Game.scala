@@ -114,20 +114,47 @@ class Game @Inject()(
   override def updateGameState(): Unit = {
     val dataManager = playingField.getDataManager
 
+    println(s"🔄 Updating Game State from DataManager...")
+
+    // ✅ Fetch latest values from dataManager
+    val player1Field = dataManager.getPlayerDefenders(player1) // ✅ Ensure we use the correct method
+    val player2Field = dataManager.getPlayerDefenders(player2) // ✅ Ensure we use the correct method
+
+    val player1Hand = new HandCardsQueue(dataManager.getPlayerHand(player1).toList) // ✅ Always pull from DataManager
+    val player2Hand = new HandCardsQueue(dataManager.getPlayerHand(player2).toList)
+
+    val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
+    val player2Goalkeeper = dataManager.getPlayerGoalkeeper(player2)
+
+    val player1Score = playingField.getScores.getScorePlayer1
+    val player2Score = playingField.getScores.getScorePlayer2
+
+    // ✅ Debugging before updating game state
+    println(s"🛡 Before Update - Player1 Field: ${gameState.player1Defenders}")
+    println(s"🛡 Before Update - Player2 Field: ${gameState.player2Defenders}")
+    println(s"📊 DataManager Player1 Field: $player1Field")
+    println(s"📊 DataManager Player2 Field: $player2Field")
+
+    // ✅ Replace gameState with fresh data
     gameState = gameStateFactory.create(
       playingField,
       player1,
       player2,
-      new HandCardsQueue(player1.getCards.toList),
-      new HandCardsQueue(player2.getCards.toList),
-      dataManager.getPlayerField(player1),
-      dataManager.getPlayerField(player2),
-      dataManager.getPlayerGoalkeeper(player1),
-      dataManager.getPlayerGoalkeeper(player2),
-      playingField.getScores.getScorePlayer1,
-      playingField.getScores.getScorePlayer2
+      player1Hand,
+      player2Hand,
+      player1Field,
+      player2Field,
+      player1Goalkeeper,
+      player2Goalkeeper,
+      player1Score,
+      player2Score
     )
+
+    // ✅ Debugging after updating game state
+    println(s"✅ Updated Player1 Field: ${gameState.player1Defenders}")
+    println(s"✅ Updated Player2 Field: ${gameState.player2Defenders}")
   }
+
   override def selectDefenderPosition(): Int = {
     if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
   }
@@ -149,23 +176,48 @@ class Game @Inject()(
     println(s"📂 Attempting to load game: $fileName")
 
     try {
-      val loadedState = fileIO.loadGame(fileName) // 🔥 Check if this triggers recursion
+      val loadedState = fileIO.loadGame(fileName)
       println(s"🔍 Loaded game state: ${if (loadedState != null) "Success" else "Failed"}")
 
       if (loadedState != null) {
-        gameState = loadedState
-        println(s"🎮 Updating player references...")
+        gameState = loadedState // ✅ Directly assign the loaded state
 
+        // ✅ Update core game objects
         player1 = gameState.player1
         player2 = gameState.player2
         playingField = gameState.playingField
 
+        println(s"🔄 Player1: ${player1.name}, Player2: ${player2.name}")
+
+        val dataManager = playingField.getDataManager
+
+        // ✅ Restore player hands from `gameState` instead of recreating them
+        dataManager.initializePlayerHands(gameState.player1Hand.getCards.toList, gameState.player2Hand.getCards.toList)
+        println("✅ Player hands reinitialized successfully.")
+
+        // ✅ Restore player fields & goalkeepers **directly from `gameState`**
+        dataManager.setPlayerDefenders(player1, gameState.player1Defenders) // ✅ Use the loaded values
+        dataManager.setPlayerDefenders(player2, gameState.player2Defenders)
+
+        dataManager.setPlayerGoalkeeper(player1, gameState.player1Goalkeeper)
+        dataManager.setPlayerGoalkeeper(player2, gameState.player2Goalkeeper)
+
+        println(s"🧤 Player1 Goalkeeper after loading: ${gameState.player1Goalkeeper}")
+        println(s"🧤 Player2 Goalkeeper after loading: ${gameState.player2Goalkeeper}")
+
+        if (gameState.player1Goalkeeper.isEmpty || gameState.player2Goalkeeper.isEmpty) {
+          throw new IllegalStateException("❌ Goalkeeper is missing! The game logic must always have one.")
+        }
+        playingField.getScores.setScorePlayer1(gameState.player1Score)
+        playingField.getScores.setScorePlayer2(gameState.player2Score)
+        // ✅ Restore scores **directly from `gameState`** (No need to reassign)
+        println(s"🏆 Player1 Score: ${gameState.player1Score}, Player2 Score: ${gameState.player2Score}")
+
+        // ✅ Ensure playing field is set up properly
+        playingField.setPlayingField()
+
         println(s"🛠 Setting up playing field...")
-//        playingField.setPlayingField() // 🔥 Check if recursion happens here
-
         println(s"✅ Game '$fileName' loaded successfully using FileIO.")
-
-
       } else {
         println(s"❌ Error: No valid game state found in '$fileName'.")
       }
@@ -175,7 +227,6 @@ class Game @Inject()(
         e.printStackTrace()
     }
   }
-
 
   override def exit(): Unit = {
     System.exit(0)

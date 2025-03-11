@@ -56,15 +56,20 @@ class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
   }
 
   // ✅ Save Game State as JSON
+  // ✅ Save the latest game state, not an old memento
   def save(gameState: IGameState): Unit = {
     ensureFolderExists() // ✅ Ensure folder exists before saving
+
     try {
+      val json = gameState.toJson // 🔍 Check if this actually reflects the current state
       val pw = new PrintWriter(new File(filePath))
-      pw.write(Json.prettyPrint(gameState.toJson))
+      pw.write(Json.prettyPrint(json))
       pw.close()
+
       println(s"✅ Game successfully saved to $filePath")
     } catch {
       case e: Exception => println(s"❌ Error saving JSON: ${e.getMessage}")
     }
   }
+
 }

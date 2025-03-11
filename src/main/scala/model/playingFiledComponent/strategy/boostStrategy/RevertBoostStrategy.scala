@@ -21,7 +21,7 @@ trait IRevertStrategy {
 class RevertCardActionCommand(card: ICard, revertStrategy: IRevertStrategy, game: IGame) {
 
   def revert(): Unit = {
-    val revertedCard = revertStrategy.revertCard(card) 
+    val revertedCard = revertStrategy.revertCard(card)
     game.updateGameState()
     println(s"✅ Card reverted: $card -> $revertedCard")
   }

@@ -28,27 +28,41 @@ class GameDeserializer @Inject() (
   override def fromXml(xml: Elem): IGameState = {
     println("DEBUG: Entering GameDeserializer.fromXml")
 
-    val playingField = playingFieldDeserializer.fromXml((xml \ "PlayingField").head.asInstanceOf[Elem])
-    println(s"DEBUG: Extracted playingField: $playingField")
+    val playingField = (xml \ "PlayingField").headOption.map(_.asInstanceOf[Elem])
+      .map(playingFieldDeserializer.fromXml)
+      .getOrElse(throw new IllegalArgumentException("ERROR: Missing 'PlayingField' element in XML."))
 
-    val player1 = playerDeserializer.fromXml((xml \ "Player1").head.asInstanceOf[Elem])
-    val player2 = playerDeserializer.fromXml((xml \ "Player2").head.asInstanceOf[Elem])
+    val player1 = (xml \ "Player1").headOption.map(_.asInstanceOf[Elem])
+      .map(playerDeserializer.fromXml)
+      .getOrElse(throw new IllegalArgumentException("ERROR: Missing 'Player1' element in XML."))
+
+    val player2 = (xml \ "Player2").headOption.map(_.asInstanceOf[Elem])
+      .map(playerDeserializer.fromXml)
+      .getOrElse(throw new IllegalArgumentException("ERROR: Missing 'Player2' element in XML."))
+
     println(s"DEBUG: Extracted players - Player1: $player1, Player2: $player2")
 
-    val player1Hand = handCardsQueueDeserializer.fromXml((xml \ "Player1Hand").head.asInstanceOf[Elem])
-    val player2Hand = handCardsQueueDeserializer.fromXml((xml \ "Player2Hand").head.asInstanceOf[Elem])
-    println(s"DEBUG: Extracted hand cards.")
+    val player1Hand = (xml \ "Player1Hand").headOption.map(_.asInstanceOf[Elem])
+    .map(handCardsQueueDeserializer.fromXml)
+    .getOrElse(HandCardsQueueFactory.create(Nil))  // ✅ Use Factory
+
+    val player2Hand = (xml \ "Player2Hand").headOption.map(_.asInstanceOf[Elem])
+    .map(handCardsQueueDeserializer.fromXml)
+    .getOrElse(HandCardsQueueFactory.create(Nil))  // ✅ Use Factory
 
     val player1Field = (xml \ "Player1Field" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
     val player2Field = (xml \ "Player2Field" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+
     println(s"DEBUG: Extracted field cards.")
 
     val player1Goalkeeper = (xml \ "Player1Goalkeeper").headOption.map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem]))
     val player2Goalkeeper = (xml \ "Player2Goalkeeper").headOption.map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem]))
+
     println(s"DEBUG: Extracted goalkeepers.")
 
-    val player1Score = (xml \ "@player1Score").text.toInt
-    val player2Score = (xml \ "@player2Score").text.toInt
+    val player1Score = (xml \ "@player1Score").text.toIntOption.getOrElse(0)
+    val player2Score = (xml \ "@player2Score").text.toIntOption.getOrElse(0)
+
     println(s"DEBUG: Extracted scores - Player1: $player1Score, Player2: $player2Score")
 
     gameStateFactory.create(
@@ -67,91 +81,66 @@ class GameDeserializer @Inject() (
   }
 
   override def fromJson(json: JsObject): IGameState = {
-    println(s"DEBUG: Entering GameDeserializer.fromJson")
+    println("DEBUG: Entering GameDeserializer.fromJson")
     println(s"DEBUG: Full JSON before parsing: ${Json.prettyPrint(json)}")
 
     val availableKeys = json.keys.mkString(", ")
     println(s"DEBUG: Available JSON keys: $availableKeys")
 
-    val playingFieldJson = (json \ "playingField").validate[JsObject] match {
-      case JsSuccess(jsObj, _) => jsObj
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Invalid JSON format for 'playingField': $errors")
-    }
+    val playingFieldJsonOpt = (json \ "playingField").validateOpt[JsObject].getOrElse(None)
+    val playingFieldJson = playingFieldJsonOpt.getOrElse(
+      throw new IllegalArgumentException("ERROR: Missing or invalid 'playingField' in JSON.")
+    )
 
     val playingField = playingFieldDeserializer.fromJson(playingFieldJson)
 
-    val player1Json = (playingFieldJson \ "attacker").validate[JsObject] match {
-      case JsSuccess(jsObj, _) => jsObj
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Invalid JSON format for 'attacker': $errors")
-    }
+    val player1Json = (playingFieldJsonOpt.flatMap(js => (js \ "attacker").asOpt[JsObject])).getOrElse(
+      throw new IllegalArgumentException("ERROR: Missing or invalid 'attacker' in JSON.")
+    )
     val player1 = playerDeserializer.fromJson(player1Json)
 
-    val player2Json = (playingFieldJson \ "defender").validate[JsObject] match {
-      case JsSuccess(jsObj, _) => jsObj
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Invalid JSON format for 'defender': $errors")
-    }
+    val player2Json = (playingFieldJsonOpt.flatMap(js => (js \ "defender").asOpt[JsObject])).getOrElse(
+      throw new IllegalArgumentException("ERROR: Missing or invalid 'defender' in JSON.")
+    )
     val player2 = playerDeserializer.fromJson(player2Json)
-
 
     println(s"DEBUG: Extracted players - Player1: $player1, Player2: $player2")
 
-    // Check if 'player1Hand' exists
-    if (!(json \ "player1Hand").isDefined) {
-      throw new IllegalArgumentException("ERROR: 'player1Hand' field is missing from JSON!")
+    // ✅ Fix: Deserialize hand cards from JSON instead of XML
+    val player1Hand = (json \ "player1Hand").validateOpt[JsArray].map {
+      case Some(jsArray) => handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
+      case None => HandCardsQueueFactory.create(Nil)
+    }.get
+
+    val player2Hand = (json \ "player2Hand").validateOpt[JsArray].map {
+      case Some(jsArray) => handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
+      case None => HandCardsQueueFactory.create(Nil)
+    }.get
+
+    println("DEBUG: Extracted hand cards.")
+
+    val player1Field = (json \ "player1Field").validate[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+    val player2Field = (json \ "player2Field").validate[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+
+    println("DEBUG: Extracted field cards.")
+
+    val player1Goalkeeper = (json \ "player1Goalkeeper").validateOpt[JsObject] match {
+      case JsSuccess(Some(jsObj), _) => Some(cardDeserializer.fromJson(jsObj))
+      case _ => None
     }
 
-    val player1Hand = (json \ "player1Hand").validate[JsArray] match {
-      case JsSuccess(jsArray, _) =>
-        val queue = handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
-        println(s"DEBUG: Successfully deserialized player1Hand: $queue")
-        queue
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Invalid JSON format for 'player1Hand': $errors")
+    val player2Goalkeeper = (json \ "player2Goalkeeper").validateOpt[JsObject] match {
+      case JsSuccess(Some(jsObj), _) => Some(cardDeserializer.fromJson(jsObj))
+      case _ => None
     }
 
-    val player2Hand = (json \ "player2Hand").validate[JsArray] match {
-      case JsSuccess(jsArray, _) =>
-        val queue = handCardsQueueDeserializer.fromJson(Json.obj("cards" -> jsArray))
-        println(s"DEBUG: Successfully deserialized player2Hand: $queue")
-        queue
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Invalid JSON format for 'player2Hand': $errors")
-    }
 
-    println(s"DEBUG: Extracted hand cards.")
+    println("DEBUG: Extracted goalkeepers.")
 
-    val player1Field = (json \ "player1Field").validate[List[JsObject]] match {
-      case JsSuccess(jsList, _) => jsList.map(cardDeserializer.fromJson)
-      case JsError(errors) => throw new IllegalArgumentException(s"Invalid JSON format for 'player1Field': $errors")
-    }
+    val scoresJsonOpt = (json \ "playingField" \ "scores").validateOpt[JsObject].getOrElse(None)
 
-    val player2Field = (json \ "player2Field").validate[List[JsObject]] match {
-      case JsSuccess(jsList, _) => jsList.map(cardDeserializer.fromJson)
-      case JsError(errors) => throw new IllegalArgumentException(s"Invalid JSON format for 'player2Field': $errors")
-    }
-
-    println(s"DEBUG: Extracted field cards.")
-
-    val player1Goalkeeper = (json \ "player1Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
-    val player2Goalkeeper = (json \ "player2Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
-
-    println(s"DEBUG: Extracted goalkeepers.")
-
-    val scoresJson = (json \ "playingField" \ "scores").validate[JsObject] match {
-      case JsSuccess(jsObj, _) => jsObj
-      case JsError(errors) =>
-        throw new IllegalArgumentException(s"Missing or invalid 'scores' object inside 'playingField': $errors")
-    }
-
-    val player1Score = (scoresJson \ "scorePlayer1").validate[Int].getOrElse {
-      throw new IllegalArgumentException("Missing or invalid 'scorePlayer1' field in scores")
-    }
-    val player2Score = (scoresJson \ "scorePlayer2").validate[Int].getOrElse {
-      throw new IllegalArgumentException("Missing or invalid 'scorePlayer2' field in scores")
-    }
+    val player1Score = scoresJsonOpt.flatMap(js => (js \ "scorePlayer1").asOpt[Int]).getOrElse(0)
+    val player2Score = scoresJsonOpt.flatMap(js => (js \ "scorePlayer2").asOpt[Int]).getOrElse(0)
 
 
     println(s"DEBUG: Extracted scores - Player1: $player1Score, Player2: $player2Score")

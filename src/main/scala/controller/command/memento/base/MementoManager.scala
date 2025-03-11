@@ -177,6 +177,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
 //    pf.notifyObservers()
 //  }
   override def restoreGameState(memento: Memento): Unit = {
+  println("resoreeeeeeeeeeeeeeeeed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     val pf = game.getPlayingField
 
     pf.getRoles.setRoles(memento.attacker, memento.defender)

@@ -73,6 +73,6 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
     executeCommand(commandFactory.createSaveGameCommand(), Events.SaveGame)
 
   def loadGame(fileName: String): Unit = {
-    executeCommand(commandFactory.createLoadGameCommand(fileName, this), Events.LoadGame)
+    executeCommand(commandFactory.createLoadGameCommand(fileName), Events.PlayingField)
   }
 }

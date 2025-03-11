@@ -35,8 +35,8 @@ class CommandFactory @Inject() (game: IGame, controller: IController) extends IC
     new QuitWorkflowCommand(game)
 
 
-  override def createLoadGameCommand(fileName: String, controller: IController): WorkflowCommand =
-    new LoadGameWorkflowCommand(game, fileName, controller)
+  override def createLoadGameCommand(fileName: String): WorkflowCommand =
+    new LoadGameWorkflowCommand(game, fileName)
 
 
   override def createSaveGameCommand(): WorkflowCommand =
@@ -53,6 +53,6 @@ trait ICommandFactory {
   def createStartGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand
   def createQuitCommand(game: IGame): WorkflowCommand
   def createSaveGameCommand(): WorkflowCommand
-  def createLoadGameCommand(fileName: String, controller: IController): WorkflowCommand
+  def createLoadGameCommand(fileName: String): WorkflowCommand
 
 }
