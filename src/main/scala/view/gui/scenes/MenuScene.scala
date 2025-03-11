@@ -16,7 +16,7 @@ import scalafx.geometry.Pos
 
 class MenuScene(controller: IController, playingFieldScene: PlayingFieldScene, sceneManager: SceneManager.type)
   extends Scene (
-    new StackPane { // ✅ Wrap everything in StackPane for proper layering
+    new StackPane {
       val backgroundImage = new ImageView(new Image("/images/data/images/menu.png")) {
         fitWidth = 800  // ✅ Adjust dynamically if needed
         fitHeight = 600
@@ -37,8 +37,8 @@ class MenuScene(controller: IController, playingFieldScene: PlayingFieldScene, s
       }
 
       children = Seq(
-        backgroundImage, // ✅ Background image as the first element
-        menuLayout       // ✅ Menu buttons above background
+        backgroundImage,
+        menuLayout      
       )
     }
   )

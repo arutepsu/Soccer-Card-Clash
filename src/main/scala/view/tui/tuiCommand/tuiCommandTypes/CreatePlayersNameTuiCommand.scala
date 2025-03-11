@@ -20,14 +20,13 @@ class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
       val player1 = playerNames(0)
       val player2 = playerNames(1)
 
-      println(s"✅ Players set: $player1 & $player2") // Debugging print
+      println(s"✅ Players set: $player1 & $player2")
       controller.notifyObservers(Events.CreatePlayers)
 
-      // Execute StartGameCommand with the collected names
       val startGameCommand = new StartGameTuiCommand(controller, player1, player2)
       startGameCommand.execute()
 
-      waitingForNames = false // Reset state
+      waitingForNames = false
       return true
     } else {
       println("❌ Invalid format! Enter names in the format: `player1 player2`.")

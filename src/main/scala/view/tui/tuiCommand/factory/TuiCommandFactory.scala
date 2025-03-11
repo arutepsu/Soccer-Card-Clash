@@ -20,8 +20,7 @@ trait ITuiCommandFactory {
 }
 
 class TuiCommandFactory(controller: IController) extends ITuiCommandFactory {
-
-  // ✅ Action Commands (Game Mechanics)
+  
   override def createAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
   override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
   override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostTuiCommand(controller)

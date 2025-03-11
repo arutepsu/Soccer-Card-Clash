@@ -19,14 +19,12 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
       println("⚠️ No defenders to attack!")
       return
     }
-
-    // ✅ Step 2: Print Defender's Field Cards with Indexes
+    
     println("\n🛡 Defender's Field Cards:")
     defendersField.zipWithIndex.foreach { case (card, index) =>
       println(s"[$index] $card")
     }
-
-    // ✅ Step 3: Ask for Index to Attack
+    
     print("\n💥 Choose a position to attack: ")
     val inputStr = scala.io.StdIn.readLine().trim
 
@@ -36,7 +34,6 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
       if (position < 0 || position >= defendersField.length) {
         println("❌ Error: Invalid position! Choose a valid index from the list.")
       } else {
-        // ✅ Step 4: Check if Goalkeeper (Index 3) is Attacked First
         if (position == 3 && defendersField.exists(_ != null)) {
           println("⚠️ You must beat the defenders before attacking the goalkeeper!")
           return
@@ -44,8 +41,7 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
 
         println(s"⚔️ Executing attack on position: $position")
         controller.executeSingleAttackCommand(position)
-
-        // ✅ Step 5: Show Comparison Result
+        
         val result = attackingCard.valueToInt - defendersField(position).valueToInt
         println(s"\n📊 Result: ${attackingCard} vs ${defendersField(position)}")
         println(s"🏆 Winner: ${if (result > 0) "Attacker" else if (result < 0) "Defender" else "Draw"}")

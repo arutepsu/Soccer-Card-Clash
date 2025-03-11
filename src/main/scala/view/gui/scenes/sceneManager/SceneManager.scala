@@ -24,8 +24,7 @@ object SceneManager extends Observable with Observer {
     stage = primaryStage
     controller = ctrl
     controller.add(this)
-
-    // Initialize scene registry
+    
     sceneRegistry = new SceneRegistry(controller, this)
   }
 
@@ -39,7 +38,6 @@ object SceneManager extends Observable with Observer {
           switchScene(sceneRegistry.getCreatePlayerScene)
 
         case Events.PlayingField =>
-          println("!!!!!!!!!!!!!Pf")
           switchScene(sceneRegistry.getPlayingFieldScene)
 
         case Events.AttackerHandCards =>
@@ -52,11 +50,9 @@ object SceneManager extends Observable with Observer {
           switchScene(sceneRegistry.getMenuScene)
 
         case Events.LoadGame =>
-          println("!!!!!!!!!!!!!Load")
           switchScene(sceneRegistry.getLoadGameScene)
 
         case Events.Quit =>
-          println("❌ Exiting Game!")
           controller.quit()
 
         case _ =>

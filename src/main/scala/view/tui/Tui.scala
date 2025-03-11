@@ -10,7 +10,7 @@ import view.tui.tuiCommand.factory.{ITuiCommandFactory, TuiCommandFactory}
 import view.tui.tuiCommand.tuiCommandTypes.CreatePlayersNameTuiCommand
 
 enum PromptState {
-  case None            // No active prompt
+  case None     
   case STARTGAME
   case LoadGame
   case SaveGame
@@ -46,21 +46,19 @@ class Tui(controller: IController) extends Observer {
   )
 
   def processInputLine(input: String): Unit = {
-    println(s"🛠 Received input: '$input'") // Debug print
+    println(s"🛠 Received input: '$input'")
 
     val parts = input.split(" ").map(_.trim)
     val commandKey = parts.head
     val commandArg = if (parts.length > 1) Some(parts(1)) else None
-
-    // ✅ Step 1: Handle player name input if waiting for names
+    
     if (waitingForNames && createPlayersNameTuiCommand.handlePlayerNames(input)) {
       waitingForNames = false
       return
     }
-
-    // ✅ Step 2: If StartGame is selected, ask for names first
+    
     if (commandKey == TuiKeys.StartGame.key) {
-      createPlayersNameTuiCommand.execute() // Trigger name input prompt
+      createPlayersNameTuiCommand.execute()
       waitingForNames = true
       return
     }
@@ -70,10 +68,9 @@ class Tui(controller: IController) extends Observer {
       case TuiKeys.DoubleAttack.key => prompter.promptDoubleAttack()
       case TuiKeys.RegularSwap.key => prompter.promptSwap()
       case TuiKeys.CreatePlayers.key => prompter.promptCreatePlayers()
-      case _ => // No prompt for other commands
+      case _ =>
     }
-
-    // ✅ Step 3: Process Regular Commands Using `TuiKeys`
+    
     commands.get(commandKey) match {
       case Some(command: ITuiCommand) =>
         command.execute(commandArg)
@@ -90,8 +87,8 @@ class Tui(controller: IController) extends Observer {
       val player1 = playerNames(0)
       val player2 = playerNames(1)
 
-      println(s"✅ Players set: $player1 & $player2") // Debugging print
-      waitingForNames = false // Reset state
+      println(s"✅ Players set: $player1 & $player2")
+      waitingForNames = false
 
       // Create StartGameCommand dynamically and execute it
       val startGameCommand = tuiCommandFactory.createStartGameTuiCommand(player1, player2)
@@ -160,8 +157,7 @@ class Tui(controller: IController) extends Observer {
       case Events.Redo =>
         promptState = PromptState.Redo
         println("Redo")
-      /** 🔄 Default: Refresh Game Status */
-      case _ => println("in tui error")
+      case _ =>
     }
   }
 

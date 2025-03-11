@@ -5,8 +5,7 @@ import view.tui.tuiCommand.base.ITuiCommand
 
 class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false
-
-  /** 🔄 Step 1: Show Hand Cards and Ask for Input */
+  
   override def execute(input: Option[String]): Unit = {
     val attacker = controller.getPlayingField.getAttacker
     val handCards = controller.getPlayingField.getDataManager.getPlayerHand(attacker)
@@ -25,10 +24,9 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
       waitingForIndex = true
     }
   }
-
-  /** 🔄 Step 2: Handle Index Input */
+  
   def handleSwapInput(input: String): Unit = {
-    if (!waitingForIndex) return // Ignore if not in swap mode
+    if (!waitingForIndex) return
 
     val attacker = controller.getPlayingField.getAttacker
     val handCards = controller.getPlayingField.getDataManager.getPlayerHand(attacker)
@@ -47,6 +45,6 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
         println("❌ Error: Invalid input! Enter a number corresponding to the card index.")
     }
 
-    waitingForIndex = false // Reset after swapping
+    waitingForIndex = false
   }
 }

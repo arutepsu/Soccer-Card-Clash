@@ -20,8 +20,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
     SceneManager.init(stage, controller)
     controller.notifyObservers(Events.MainMenu)
   }
-
-  /** ✅ Observer Pattern: Refresh the GUI whenever notified */
+  
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 GUI Received Event: $e")

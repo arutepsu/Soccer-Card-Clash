@@ -3,13 +3,11 @@ package view.tui
 import controller.IController
 
 class Prompter(controller: IController) {
-
-  /** 🏆 Ask for Player Name */
+  
   def promptPlayersName(): Unit = {
     println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
   }
-
-  /** 🎯 Ask for Attack */
+  
   def promptRegularAttack(): Unit = {
     println("⚔️ Select a defender to attack (enter position):")
   }
@@ -17,13 +15,11 @@ class Prompter(controller: IController) {
   def promptDoubleAttack(): Unit = {
     println("⚔️ Select a defender to attack (enter position):")
   }
-
-  /** ⚡ Ask for Boost */
+  
   def promptBoost(): Unit = {
     println("🔥 Choose a defender to boost (enter position):")
   }
-
-  /** 🔄 Ask for Swap */
+  
   def promptSwap(): Unit = {
     println("🔄 Choose a card to swap from attacker's hand (enter position):")
   }
@@ -85,18 +81,15 @@ class Prompter(controller: IController) {
     println("🏆 **CURRENT GAME STATE**")
     println("===================================")
 
-    // 🎭 **Attacker & Defender**
     println(f"⚔️ Attacker: ${attacker.name}")
     println(f"🛡️ Defender: ${defender.name}")
     println("-----------------------------------")
 
-    // 🃏 **Attacker's Hand**
     val attackerHand = playingField.getDataManager.getPlayerHand(attacker)
     println(s"🎴 ${attacker.name}'s Hand: " +
       (if (attackerHand.nonEmpty) attackerHand.mkString(", ") else "No cards left!")
     )
 
-    // 🛡️ **Defender's Field**
     val defenderField = playingField.getDataManager.getPlayerDefenders(defender)
     println(s"🏟️ ${defender.name}'s Defenders: " +
       (if (defenderField.nonEmpty) defenderField.mkString(", ") else "No defenders!")
