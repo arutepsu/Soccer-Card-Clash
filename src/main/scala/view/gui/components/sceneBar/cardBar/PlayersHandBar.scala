@@ -24,7 +24,7 @@ class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: B
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
   spacing = Math.max(-30 + (playingField.getDataManager.getPlayerHand(player).getHandSize * -2), -50)
 
-
+  
   private var selectedCard: Option[HandCard] = None
 
   /** Label indicating whose hand this is */
@@ -35,8 +35,12 @@ class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: B
 
   /** Creates ImageViews for all Hand Cards with visual effects */
   def createHandCardRow(): HBox = {
+    println(f"!!!!PlayersHandBar name to be get:${player} ")
+//    val hand = playingField.getDataManager.getPlayerHand(player)
     val hand = playingField.getDataManager.getPlayerHand(player)
+
     val handCards = hand.zipWithIndex.map { case (card, index) =>
+      
       val isLastCard = index == hand.getHandSize - 1
 //      val handCard = new HandCard(flipped = !isLastCard, card = card)
       val handCard = new HandCard(flipped = false, card = card)

@@ -39,4 +39,5 @@ trait IPlayingField extends Observable with Serializable{
     "defender" -> getDefender.toJson,
     "scores" -> getScores.toJson
   )
+  def reset(): Unit
 }

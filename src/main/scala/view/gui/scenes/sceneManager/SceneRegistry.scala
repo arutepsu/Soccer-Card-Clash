@@ -40,10 +40,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
 
     _loadGameScene = None
     println("✅ Cleared _loadGameScene")
-
-    println("Resetting controller...")
-//    controller.reset()
-    println("✅ Controller reset completed")
   }
 
   def getMainMenuScene: Scene = {

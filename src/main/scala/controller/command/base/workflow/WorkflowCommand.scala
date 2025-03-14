@@ -10,8 +10,17 @@ abstract class WorkflowCommand extends ICommand {
 }
 
 class StartGameWorkflowCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
-  override def doStep(): Unit = game.startGame(player1, player2)
+
+  override def doStep(): Unit = {
+    if (game.getPlayingField != null) {
+      game.getPlayingField.reset()
+      println("[DEBUG] Playing field reset.")
+    }
+
+    game.startGame(player1, player2)  // ✅ Now it runs inside doStep() properly!
+  }
 }
+
 
 class QuitWorkflowCommand(val game: IGame) extends WorkflowCommand {
   override def doStep(): Unit = game.exit()

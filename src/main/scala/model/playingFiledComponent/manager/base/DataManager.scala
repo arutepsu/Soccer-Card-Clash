@@ -71,4 +71,9 @@ class DataManager @Inject() (
     fieldManager.setGoalkeeperForAttacker(playingField, card)
   }
 
+  override def clearAll(): Unit = {
+    handManager.clearAll()
+    fieldManager.clearAll()
+  }
+
 }

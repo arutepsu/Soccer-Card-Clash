@@ -3,6 +3,7 @@ package model.playerComponent.playerRole
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import com.google.inject.Inject
+import model.playerComponent.base.Player
 
 class RolesManager @Inject() (
                                private val playingField: IPlayingField,
@@ -20,5 +21,9 @@ class RolesManager @Inject() (
   override def setRoles(newAttacker: IPlayer, newDefender: IPlayer): Unit = {
     a = newAttacker
     d = newDefender
+  }
+  override def reset(): Unit = {
+    a = Player("NewAttacker", List()) // Provide a default or a factory-created player
+    d = Player("NewDefender", List())
   }
 }

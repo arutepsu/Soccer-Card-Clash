@@ -11,4 +11,5 @@ trait IActionManager{
   def boostDefender(cardIndex: Int): Unit
   def boostGoalkeeper(): Unit
   def getBoostManager: IBoostManager
+  def reset(): Unit
 }

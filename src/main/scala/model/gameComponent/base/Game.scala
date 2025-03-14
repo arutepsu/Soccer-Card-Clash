@@ -62,42 +62,37 @@ class Game @Inject()(
   }
 
   override def startGame(playerName1: String, playerName2: String): Unit = {
-    println(s"[DEBUG] Starting game with players: '$playerName1' vs '$playerName2'")
-
-    resetPlayingField()
-    println("[DEBUG] Playing field reset.")
+    reset()
+    if (playingField != null) {
+      playingField.reset()
+    }
 
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
-    println(s"[DEBUG] Players created: Player1 = ${player1.name}, Player2 = ${player2.name}")
+    
 
     playingField = playingFieldFactory.createPlayingField(player1, player2)
-    println("[DEBUG] Playing field created.")
+    val roles = playingField.getRoles
+    roles.setRoles(player1, player2)
 
     val dataManager = playingField.getDataManager
 
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
-    println(s"[DEBUG] Player hands initialized. Player1 hand size = ${player1.getCards.size}, Player2 hand size = ${player2.getCards.size}")
 
     playingField.setPlayingField()
-    println("[DEBUG] Playing field set.")
 
     val player1Hand = handCardsQueueFactory.create(player1.getCards.toList)
     val player2Hand = handCardsQueueFactory.create(player2.getCards.toList)
-    println(s"[DEBUG] Hand card queues created. Player1 hand size = ${player1Hand.getCards.size}, Player2 hand size = ${player2Hand.getCards.size}")
 
     val player1Field = dataManager.getPlayerField(player1)
     val player2Field = dataManager.getPlayerField(player2)
-    println(s"[DEBUG] Player fields retrieved. Player1 field size = ${player1Field.size}, Player2 field size = ${player2Field.size}")
 
     val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
     val player2Goalkeeper = dataManager.getPlayerGoalkeeper(player2)
-    println(s"[DEBUG] Goalkeepers retrieved. Player1 GK = ${player1Goalkeeper.map(_.toString).getOrElse("None")}, Player2 GK = ${player2Goalkeeper.map(_.toString).getOrElse("None")}")
 
     val player1Score = playingField.getScores.getScorePlayer1
     val player2Score = playingField.getScores.getScorePlayer2
-    println(s"[DEBUG] Initial scores retrieved. Player1 = $player1Score, Player2 = $player2Score")
 
     gameState = gameStateFactory.create(
       playingField,
@@ -113,7 +108,6 @@ class Game @Inject()(
       player2Score
     )
 
-    println("[DEBUG] Game state created successfully.")
   }
 
 
@@ -202,14 +196,16 @@ class Game @Inject()(
     }
   }
 
-  def resetPlayingField(): Unit = {
-    playingField = null
-    gameState = null
-    player1 = null
-    player2 = null
-  }
-
   override def exit(): Unit = {
     System.exit(0)
+  }
+
+  override def reset(): Unit = {
+    println("🔄 Resetting Game...")
+
+    if(playingField != null)
+      playingField.reset()
+
+    println("✅ Game reset completed!")
   }
 }

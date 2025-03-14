@@ -18,11 +18,23 @@ import model.playingFiledComponent.manager.base.ActionManager
 class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController{
   private val undoManager = new UndoManager
 
-  def getPlayingField: IPlayingField = game.getPlayingField
+  def getPlayingField: IPlayingField = {
+    val field = game.getPlayingField
+//    println(s"!!!!!!!!!!!!Playing Field: ${field.getAttacker}, ${field.getDefender}")
+    field
+  }
 
-  def getPlayer1: IPlayer = game.getPlayer1
+  def getPlayer1: IPlayer = {
+    val player1 = game.getPlayer1
+//    println(s"!!!!!!!!!!!!!!Player 1: ${player1.name}")
+    player1
+  }
 
-  def getPlayer2: IPlayer = game.getPlayer2
+  def getPlayer2: IPlayer = {
+    val player2 = game.getPlayer2
+//    println(s"!!!!!!!!!!!!Player 2: ${player2.name}")
+    player2
+  }
 
   def undo(): Unit = {
     undoManager.undoStep()
@@ -75,7 +87,14 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
   def loadGame(fileName: String): Unit = {
     executeCommand(commandFactory.createLoadGameCommand(fileName), Events.PlayingField)
   }
-  def reset(): Unit = {
-    game.resetPlayingField()
+
+  override def reset(): Unit = {
+    println("🔄 Resetting game controller...")
+
+    game.reset()
+
+    println("✅ Game controller reset completed!")
   }
+
+
 }

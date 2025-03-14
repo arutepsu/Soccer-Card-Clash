@@ -43,4 +43,14 @@ class PlayerScores @Inject() (
     player2Score = score
     playingField.notifyObservers()
   }
+
+  override def reset(): Unit = {
+    println("🔄 Resetting PlayerScores...")
+
+    player1Score = 0
+    player2Score = 0
+
+    playingField.notifyObservers()
+    println("✅ PlayerScores reset completed!")
+  }
 }

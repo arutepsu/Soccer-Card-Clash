@@ -8,4 +8,5 @@ trait IRolesManager {
     def defender: IPlayer
     def switchRoles(): Unit
     def setRoles(newAttacker: IPlayer, newDefender: IPlayer): Unit
+    def reset(): Unit
 }

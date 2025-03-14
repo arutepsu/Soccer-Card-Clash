@@ -53,5 +53,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 50
   ) { () =>
     controller.notifyObservers(Events.MainMenu)
+    controller.reset()
+//    controller.getPlayingField.reset()
   }
 }

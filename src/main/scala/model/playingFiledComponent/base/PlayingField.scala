@@ -23,8 +23,8 @@ import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStr
 import model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
 
 class PlayingField @Inject()(
-                    val player1: IPlayer,
-                    val player2: IPlayer
+                              private var player1: IPlayer,
+                              private var player2: IPlayer
                   )(using manager: IPlayingFieldManager) extends IPlayingField {
 
   private val dataManager: IDataManager = summon[IPlayingFieldManager].createDataManager(this, player1, player2)
@@ -47,4 +47,20 @@ class PlayingField @Inject()(
   override def getRoles: IRolesManager = roles
 
   override def getScores: IPlayerScores = scores
+
+  override def reset(): Unit = {
+    // ✅ Reset players to null or default instances
+    player1 = null.asInstanceOf[IPlayer]
+    player2 = null.asInstanceOf[IPlayer]
+
+    println("✅ PlayingField reset completed!")
+
+    println("🔄 Resetting PlayingField...")
+    dataManager.clearAll()
+    actionManager.reset()
+    roles.reset()
+    scores.reset()
+    println("✅ PlayingField reset completed!")
+  }
+
 }

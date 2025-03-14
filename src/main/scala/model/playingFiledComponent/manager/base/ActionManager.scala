@@ -20,7 +20,7 @@ import scala.xml.*
 class ActionManager @Inject()(val playingField: IPlayingField) extends IActionManager{
   def getPlayingField: IPlayingField = playingField
 
-  val boostStrategy = new BoostManager(playingField)
+  var boostStrategy = new BoostManager(playingField)
   var attackHandler = new AttackHandler(playingField)
   var swapStrategy = new SwapManager(playingField)
   def getBoostManager: IBoostManager = boostStrategy
@@ -51,4 +51,13 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
 
   }
 
+  override def reset() : Unit = {
+    println("🔄 Resetting ActionManager...")
+
+    attackHandler = new AttackHandler(playingField)
+    swapStrategy = new SwapManager(playingField)
+    boostStrategy = new BoostManager(playingField)
+
+    println("✅ ActionManager reset completed!")
+  }
 }

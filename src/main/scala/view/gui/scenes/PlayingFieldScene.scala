@@ -17,6 +17,8 @@ import controller.Events
 import scalafx.application.Platform
 import view.gui.components.sceneBar.ButtonBar
 import view.gui.components.sceneBar.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
+import model.playingFiledComponent.IPlayingField
+import model.playerComponent.IPlayer
 case class PlayingFieldScene(
                               controller: IController,
                               windowWidth: Double,
@@ -29,17 +31,20 @@ case class PlayingFieldScene(
   if (controller.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
   }
-  val player1 = controller.getPlayer1
-  val player2 = controller.getPlayer2
-  val playingField = controller.getPlayingField
+  def playingField: IPlayingField = controller.getPlayingField
+  def player1: IPlayer = controller.getPlayer1
+  def player2: IPlayer = controller.getPlayer2
+
 
   val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
   val player2HandBar = new PlayersHandBar(player2, playingField, isLeftSide = false)
   val player1FieldBar = new PlayersFieldBar(player1, playingField)
   val player2FieldBar = new PlayersFieldBar(player2, playingField)
 
-  var attacker = playingField.getAttacker
-  var defender = playingField.getDefender
+  def attacker: IPlayer = playingField.getRoles.attacker
+
+  def defender: IPlayer = playingField.getRoles.defender
+
 
   val attackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
   val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
@@ -101,10 +106,18 @@ case class PlayingFieldScene(
   }
 
   def updateDisplay(): Unit = {
-    attacker = playingField.getAttacker
-    defender = playingField.getDefender
-    val newAttackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
-    val newDefenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
+    // ✅ Always get the latest playing field and players
+    val currentPlayingField = controller.getPlayingField
+    val currentPlayer1 = controller.getPlayer1
+    val currentPlayer2 = controller.getPlayer2
+
+    val attacker = currentPlayingField.getRoles.attacker
+    val defender = currentPlayingField.getRoles.defender
+
+    println(s"PF attacker: ${attacker.name}, PF defender: ${defender.name}")
+
+    val newAttackerHandBar = if (attacker == currentPlayer1) player1HandBar else player2HandBar
+    val newDefenderFieldBar = if (defender == currentPlayer1) player1FieldBar else player2FieldBar
 
     playerFields.children.clear()
     playerFields.children.add(newDefenderFieldBar)
@@ -114,11 +127,10 @@ case class PlayingFieldScene(
 
     gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, attacker.name, defender.name)
 
-    player1ScoreLabel.text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
-    player2ScoreLabel.text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
+    player1ScoreLabel.text = s"${currentPlayer1.name} Score: ${currentPlayingField.getScores.getScorePlayer1}"
+    player2ScoreLabel.text = s"${currentPlayer2.name} Score: ${currentPlayingField.getScores.getScorePlayer2}"
+
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()
-
   }
-
 }

@@ -54,6 +54,14 @@ class PlayerFieldManager extends IPlayerFieldManager {
       throw new IndexOutOfBoundsException("Invalid defender index")
     playerDefenders(index)
   }
+
+  override def clearAll(): Unit = {
+    playerFields = Map().withDefaultValue(List())
+    goalkeepers = Map().withDefaultValue(None)
+    defenders = Map().withDefaultValue(List())
+    println("🔄 PlayerFieldManager cleared!")
+  }
+
 }
 trait IPlayerFieldManager {
   def getPlayerField(player: IPlayer): List[ICard]
@@ -77,4 +85,5 @@ trait IPlayerFieldManager {
   def allDefendersBeaten(currentDefender: IPlayer): Boolean
 
   def getDefenderCard(player: IPlayer, index: Int): ICard
+  def clearAll(): Unit
 }

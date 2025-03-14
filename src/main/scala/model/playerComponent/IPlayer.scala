@@ -35,4 +35,6 @@ trait IPlayer extends Serializable {
     "cards" -> cards.map(_.toJson),
     "actionStates" -> actionStates.map { case (policy, state) => policy.toString -> state.toString }
   )
+  def equals(obj: Any): Boolean
+  def hashCode(): Int
 }

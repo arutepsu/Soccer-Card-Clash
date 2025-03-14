@@ -33,5 +33,5 @@ trait IDataManager {
   def initializeFields(): Unit
   def refillDefenderField(defender: IPlayer): Unit
   def setRefillStrategy(strategy: IRefillStrategy): Unit
-  
+  def clearAll(): Unit
 }

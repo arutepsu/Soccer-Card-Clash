@@ -35,4 +35,11 @@ case class Player(
     this.copy(actionStates = newActionStates)
   }
 
+  override def equals(obj: Any): Boolean = obj match {
+    case other: Player => this.name == other.name
+    case _ => false
+  }
+
+  override def hashCode(): Int = name.hashCode
+
 }
