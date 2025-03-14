@@ -8,7 +8,6 @@ class CircularSwapButton extends ActionButton[AttackerHandScene] {
   override def execute(
                         controller: IController,
                         attackerHandScene: AttackerHandScene,
-                        gameStatusBar: GameStatusBar
                       ): Unit = {
     attackerHandScene.attackerHandBar match {
       case Some(handBar) =>
@@ -16,11 +15,12 @@ class CircularSwapButton extends ActionButton[AttackerHandScene] {
           case Some(index) =>
             println(s"🔄 Performing Circular Swap on card at index: $index")
             controller.circularSwap(index)
+            attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.CIRCULAR_SWAP_PERFORMED)
             attackerHandScene.playingField.foreach(_.notifyObservers())
             handBar.updateBar() 
           case None =>
             println("❌ No card selected for circular swap!")
-            gameStatusBar.updateStatus(GameStatusMessages.NO_CARD_SELECTED)
+            attackerHandScene.getPlayingField
         }
       case None =>
         println("❌ No valid attacker hand available!")

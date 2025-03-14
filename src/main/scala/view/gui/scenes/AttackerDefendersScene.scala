@@ -17,6 +17,7 @@ import view.gui.action.{ActionButtonFactory, BoostButton}
 import view.gui.utils.Styles
 case class AttackerDefendersScene(
                                    controller: IController,
+                                   playingFieldScene: PlayingFieldScene,
                                    playingField: Option[IPlayingField],
                                    windowWidth: Double,
                                    windowHeight: Double,

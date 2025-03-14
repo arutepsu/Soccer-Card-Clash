@@ -65,14 +65,13 @@ case class PlayingFieldScene(
 
   val player1ScoreLabel = new Label {
     text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
-    style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
+    styleClass.add("player-score-label")
   }
 
   val player2ScoreLabel = new Label {
     text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
-    style = "-fx-font-size: 20; -fx-text-fill: #FFFFFF; -fx-font-weight: bold;"
+    styleClass.add("player-score-label")
   }
-
   val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
 
 
@@ -125,11 +124,15 @@ case class PlayingFieldScene(
     playerHands.children.clear()
     playerHands.children.add(newAttackerHandBar)
 
-    gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, attacker.name, defender.name)
+    playersBar.refreshOnRoleSwitch()
 
-    player1ScoreLabel.text = s"${currentPlayer1.name} Score: ${currentPlayingField.getScores.getScorePlayer1}"
-    player2ScoreLabel.text = s"${currentPlayer2.name} Score: ${currentPlayingField.getScores.getScorePlayer2}"
+    val score1 = currentPlayingField.getScores.getScorePlayer1
+    val score2 = currentPlayingField.getScores.getScorePlayer2
 
+    player1ScoreLabel.text = s"${currentPlayer1.name} Score: $score1"
+    player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
+
+    // Highlight the leading player
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()
   }

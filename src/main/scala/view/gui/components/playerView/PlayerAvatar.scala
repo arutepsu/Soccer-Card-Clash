@@ -23,11 +23,7 @@ class PlayerAvatar(
       ImageUtils.importImageAsView("/images/data/players/player2.jpeg", scaleAvatar) // ✅ Fallback
   }
 
-  val playerNameButton = new Button(player.name) {
-    style = s"-fx-font-size: ${scaleFont * 12};"
-  }
-
   alignment = Pos.TOP_CENTER
   spacing = 5
-  children = Seq(avatar, playerNameButton)
+  children = Seq(avatar)
 }

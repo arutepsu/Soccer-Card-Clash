@@ -25,7 +25,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.undo()
     playingFieldScene.update(Events.Undo)
-//    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
+    playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
   }
 
   val redoButton: Button = GameButtonFactory.createGameButton(
@@ -35,7 +35,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.redo()
     playingFieldScene.updateDisplay()
-//    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
+    playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
 
   val saveGameButton: Button = GameButtonFactory.createGameButton(
@@ -44,7 +44,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 50
   ) { () =>
     controller.saveGame()
-//    gameStatusBar.updateStatus(GameStatusMessages.GAME_SAVED)
   }
 
   val mainMenuButton: Button = GameButtonFactory.createGameButton(
@@ -54,6 +53,5 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.notifyObservers(Events.MainMenu)
     controller.reset()
-//    controller.getPlayingField.reset()
   }
 }

@@ -38,7 +38,7 @@ class MenuScene(controller: IController, playingFieldScene: PlayingFieldScene, s
 
       children = Seq(
         backgroundImage,
-        menuLayout      
+        menuLayout
       )
     }
   )

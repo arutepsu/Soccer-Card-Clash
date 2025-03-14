@@ -19,7 +19,7 @@ object ActionButtonFactory {
       width = buttonWidth,
       height = buttonHeight
     ) { () =>
-      action.execute(controller, playingFieldScene, playingFieldScene.gameStatusBar)
+      action.execute(controller, playingFieldScene)
       playingFieldScene.updateDisplay()
     }
   }
@@ -37,7 +37,7 @@ object ActionButtonFactory {
       width = buttonWidth,
       height = buttonHeight
     ) { () =>
-      action.execute(controller, playingFieldScene, playingFieldScene.gameStatusBar)
+      action.execute(controller, playingFieldScene)
       playingFieldScene.updateDisplay()
     }
   }
@@ -55,7 +55,7 @@ object ActionButtonFactory {
       width = buttonWidth,
       height = buttonHeight
     ) { () =>
-      action.execute(controller, attackerHandScene, attackerHandScene.gameStatusBar)
+      action.execute(controller, attackerHandScene)
     }
   }
 
@@ -72,7 +72,7 @@ object ActionButtonFactory {
       width = buttonWidth,
       height = buttonHeight
     ) { () =>
-      action.execute(controller, attackerHandScene, attackerHandScene.gameStatusBar)
+      action.execute(controller, attackerHandScene)
     }
   }
 
@@ -89,7 +89,7 @@ object ActionButtonFactory {
       width = buttonWidth,
       height = buttonHeight
     ) { () =>
-      action.execute(controller, attackerDefendersScene, attackerDefendersScene.gameStatusBar)
+      action.execute(controller, attackerDefendersScene)
 
     }
   }

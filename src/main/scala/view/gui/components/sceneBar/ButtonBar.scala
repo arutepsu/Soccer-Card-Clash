@@ -16,7 +16,7 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
 
 
   val singleAttackButton: Button = ActionButtonFactory.createAttackButton(
-    SingleButton(), 
+    SingleButton(),
     "Attack",
     150,
     50,
@@ -30,39 +30,11 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
     50,
     playingFieldScene,
     controller)
-  
+
   alignment = Pos.CENTER_LEFT
   spacing = 10
   padding = Insets(20)
 
-
-  val undoButton: Button = GameButtonFactory.createGameButton(
-    text = "Undo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.undo()
-    playingFieldScene.update(Events.Undo)
-    gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
-  }
-//
-  val redoButton: Button = GameButtonFactory.createGameButton(
-    text = "Redo",
-    width = 150,
-    height = 50
-  ) { () =>
-    controller.redo()
-    playingFieldScene.updateDisplay()
-    gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
-  }
-//
-//  val mainMenuButton: Button = GameButtonFactory.createGameButton(
-//    text = "Main Menu",
-//    width = 180,
-//    height = 50
-//  ) { () =>
-//    controller.notifyObservers(Events.MainMenu)
-//  }
 
   val showDefendersButton: Button = GameButtonFactory.createGameButton(
     text = "Show Defenders",
@@ -89,12 +61,9 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
   }
 
   children = Seq(
+    pause,
     singleAttackButton,
     doubleAttackButton,
-    undoButton,
-    redoButton,
-//    mainMenuButton,
-    pause,
     showDefendersButton,
     makeSwapButton)
 }

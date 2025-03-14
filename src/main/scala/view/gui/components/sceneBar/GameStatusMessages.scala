@@ -12,4 +12,13 @@ object GameStatusMessages {
   val NOTHING_TO_REDO = "⚠️ Nothing to redo!"
   val NO_DEFENDER_SELECTED = "⚠️ No defender selected to attack!"
   val NO_CARD_SELECTED = "No card selected!"
+  val REGULAR_SWAP_PERFORMED = "Regular Swap performed!"
+  val CIRCULAR_SWAP_PERFORMED = "Circular Swap performed!"
+  val BOOST_PERFORMED = "Defender Boost performed!"
+
+  def format(message: String, attacker: String = "", defender: String = ""): String = {
+    message
+      .replace("{attacker}", attacker)
+      .replace("{defender}", defender)
+  }
 }

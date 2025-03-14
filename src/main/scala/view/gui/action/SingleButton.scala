@@ -8,7 +8,7 @@ case class SingleButton() extends ActionButton[PlayingFieldScene] {
   override def execute(
                         controller: IController,
                         playingFieldScene: PlayingFieldScene,
-                        gameStatusBar: GameStatusBar): Unit = {
+                        ): Unit = {
 
     val defenderFieldBar =
       if (playingFieldScene.playingField.getDefender == playingFieldScene.player1)
@@ -36,17 +36,18 @@ case class SingleButton() extends ActionButton[PlayingFieldScene] {
           println(s"🔥 Attacking defender at index: $defenderIndex")
           println(s"⚔️ Defender Card: ${defenderCards(defenderIndex)}")
           controller.executeSingleAttackCommand(defenderIndex)
-
+          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
           println("✅ Attack executed, resetting selection.")
           defenderFieldBar.resetSelectedDefender()
 
         case None =>
           println("❌ No defender selected! Cannot attack.")
-          gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
+          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
       }
     } else {
       println("⚽ All defenders are gone! Attacking the goalkeeper!")
       controller.executeSingleAttackCommand(0)
+      playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
     }
   }
 }

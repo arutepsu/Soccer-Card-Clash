@@ -16,6 +16,7 @@ import view.gui.components.sceneBar.cardBar.SelectablePlayersHandBar
 import view.gui.action.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
 case class AttackerHandScene(
                               controller: IController,
+                              playingFieldScene: PlayingFieldScene,
                               playingField: Option[IPlayingField],
                               windowWidth: Double,
                               windowHeight: Double,

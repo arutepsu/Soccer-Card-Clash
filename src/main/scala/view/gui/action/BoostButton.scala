@@ -8,7 +8,7 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
   override def execute(
                         controller: IController,
                         attackerDefendersScene: AttackerDefendersScene,
-                        gameStatusBar: GameStatusBar): Unit = {
+                        ): Unit = {
     attackerDefendersScene.attackerDefenderField match {
       case Some(field) =>
         if (field.isGoalkeeperSelected) {
@@ -18,6 +18,7 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
           case Some(index) =>
             println(s"⚡ Boosting defender at index: $index")
             controller.boostDefender(index)
+            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
           case None =>
             println("⚠️ No defender selected for boosting!")
         }

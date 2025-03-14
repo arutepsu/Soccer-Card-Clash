@@ -15,51 +15,69 @@ class PlayersBar(
 
   spacing = 10
   alignment = Pos.TOP_RIGHT
-  this.getStylesheets.add(Styles.playersBarCss) // ✅ Load external CSS
-  styleClass.add("players-bar") // ✅ Apply main styling
-  var attacker : IPlayer = _
-  var defender : IPlayer = _
-  updateBar()
+  this.getStylesheets.add(Styles.playersBarCss)
+  styleClass.add("players-bar")
 
-  /** Updates the display when the current player (attacker) changes */
+  updateBar()
+  
+  def updateAttackerHighlight(): Unit = {
+    val currentDefender = controller.getPlayingField.getDefender
+
+    children.foreach {
+      case node: javafx.scene.layout.VBox =>
+        node.getStyleClass.remove("current-player")
+        
+        node.getChildren.toArray.collectFirst {
+          case label: javafx.scene.control.Label if label.getText == currentDefender.name => label
+        } match {
+          case Some(_) => node.getStyleClass.add("current-player")
+          case None => 
+        }
+    }
+  }
+
+
   def updateBar(): Unit = {
     children.clear()
 
     val playingField = controller.getPlayingField
-    attacker = playingField.getAttacker
-    defender = playingField.getDefender
-    val players = List(attacker, defender)
+    val player1 = playingField.getAttacker
+    val player2 = playingField.getDefender
 
-    players.zipWithIndex.foreach { case (p, index) =>
-      val newPlayer = p
+    val players = List(player1, player2)
 
-      val playerAvatar = PlayerAvatar(
-        player = newPlayer,
-        playerIndex = index,
-        scaleAvatar = 0.2,
-        scaleFont = 0.1,
-        profilePicturePath = s"/images/data/players/player${index + 1}.jpeg",
-      )
-
-      val playerAvatarBox = new VBox {
-        styleClass.add("player-avatar-box") // ✅ Apply avatar box styling
-        spacing = 5
-        padding = Insets(3)
-        children = Seq(playerAvatar)
+    players.foreach { p =>
+      var profilePicturePath = if (p eq player1) {
+        "/images/data/players/player1.jpeg"
+      } else {
+        "/images/data/players/player2.jpeg"
       }
 
-      if (newPlayer == attacker) {
-        val currentPlayerText = new GameLabel("Attacker", scalingFactor = 0.5)
-        playerAvatarBox.children.add(currentPlayerText)
-        playerAvatarBox.styleClass.add("current-player") // ✅ Apply highlight for attacker
+      val playerAvatar = PlayerAvatar(
+        player = p,
+        playerIndex = if (p eq player1) 0 else 1,
+        scaleAvatar = 0.2,
+        scaleFont = 0.1,
+        profilePicturePath = profilePicturePath,
+      )
+
+      val playerName = new GameLabel(p.name, scalingFactor = 0.5)
+
+      val playerAvatarBox = new VBox {
+        styleClass.add("player-avatar-box")
+        spacing = 5
+        padding = Insets(3)
+        children = Seq(playerAvatar, playerName)
       }
 
       children.add(playerAvatarBox)
     }
+
+    updateAttackerHighlight()
   }
 
-  /** Call this method whenever roles switch */
+
   def refreshOnRoleSwitch(): Unit = {
-    updateBar()
+    updateAttackerHighlight()
   }
 }

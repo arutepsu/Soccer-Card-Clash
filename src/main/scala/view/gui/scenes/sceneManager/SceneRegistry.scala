@@ -68,12 +68,12 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   }
 
   def getAttackerDefendersScene: Scene = {
-    _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(controller, Option(controller.getPlayingField), 800, 600))
+    _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(controller, getPlayingFieldScene, Option(controller.getPlayingField), 800, 600))
     _attackerDefendersScene.get
   }
 
   def getAttackerHandScene: Scene = {
-    _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(controller, Option(controller.getPlayingField), 800, 600))
+    _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(controller,getPlayingFieldScene, Option(controller.getPlayingField), 800, 600))
     _attackerHandScene.get
   }
 

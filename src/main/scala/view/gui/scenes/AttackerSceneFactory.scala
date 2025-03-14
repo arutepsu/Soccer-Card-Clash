@@ -5,12 +5,12 @@ import model.playingFiledComponent.IPlayingField
 
 object AttackerSceneFactory {
   
-  def createAttackerDefendersScene(controller: IController, playingField: Option[IPlayingField], windowWidth: Double, windowHeight: Double): AttackerDefendersScene = {
-    AttackerDefendersScene(controller, playingField, windowWidth, windowHeight)
+  def createAttackerDefendersScene(controller: IController, playingFieldScene: PlayingFieldScene, playingField: Option[IPlayingField], windowWidth: Double, windowHeight: Double): AttackerDefendersScene = {
+    AttackerDefendersScene(controller,playingFieldScene, playingField, windowWidth, windowHeight)
   }
 
-  def createAttackerHandScene(controller: IController, playingField: Option[IPlayingField], windowWidth: Double, windowHeight: Double): AttackerHandScene = {
-    AttackerHandScene(controller, playingField, windowWidth, windowHeight)
+  def createAttackerHandScene(controller: IController, playingFieldScene: PlayingFieldScene, playingField: Option[IPlayingField], windowWidth: Double, windowHeight: Double): AttackerHandScene = {
+    AttackerHandScene(controller,playingFieldScene, playingField, windowWidth, windowHeight)
   }
 }
 
