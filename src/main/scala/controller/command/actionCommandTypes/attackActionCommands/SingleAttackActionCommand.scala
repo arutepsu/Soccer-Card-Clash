@@ -7,8 +7,9 @@ class SingleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionC
   private val actionManager: IActionManager = game.getActionManager
   private var attackSuccessful: Option[Boolean] = None
 
-  override protected def executeAction(): Unit = {
+  override protected def executeAction(): Boolean = {
     attackSuccessful = Some(actionManager.singleAttack(defenderIndex))
+    attackSuccessful.getOrElse(false) // Ensure executeAction() returns a Boolean
   }
 
   def wasAttackSuccessful: Boolean = attackSuccessful.getOrElse(false)

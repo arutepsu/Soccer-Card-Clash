@@ -1,7 +1,7 @@
 package controller.command
 
 trait ICommand {
-  def doStep(): Unit
+  def doStep(): Boolean
 
   def undoStep(): Unit
 

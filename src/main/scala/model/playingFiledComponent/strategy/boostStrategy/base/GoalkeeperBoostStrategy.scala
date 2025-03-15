@@ -11,7 +11,7 @@ import model.playingFiledComponent.strategy.boostStrategy.IBoostStrategy
 
 class GoalkeeperBoostStrategy extends IBoostStrategy {
   
-  override def boost(playingField: IPlayingField): Unit = {
+  override def boost(playingField: IPlayingField): Boolean = {
     lazy val data: IDataManager = playingField.getDataManager
     lazy val roles: IRolesManager = playingField.getRoles
     val attackersGoalkeeperOpt = data.getPlayerGoalkeeper(roles.attacker)
@@ -22,7 +22,8 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
         data.setGoalkeeperForAttacker(goalkeeper)
         roles.attacker.performAction(PlayerActionPolicies.Boost)
         playingField.notifyObservers()
-      case None =>
+        true
+      case None => false
     }
   }
 }

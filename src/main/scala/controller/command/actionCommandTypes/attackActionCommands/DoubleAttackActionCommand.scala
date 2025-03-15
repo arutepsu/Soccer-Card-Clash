@@ -10,8 +10,9 @@ class DoubleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionC
   private val actionManager: IActionManager = game.getActionManager
   private var attackSuccessful: Option[Boolean] = None
 
-  override protected def executeAction(): Unit = {
+  override protected def executeAction(): Boolean = {
     attackSuccessful = Some(actionManager.doubleAttack(defenderIndex))
+    attackSuccessful.getOrElse(false) // Ensure a Boolean is returned
   }
 
   def wasAttackSuccessful: Boolean = attackSuccessful.getOrElse(false)

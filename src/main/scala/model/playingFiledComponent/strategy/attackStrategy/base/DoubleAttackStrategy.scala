@@ -1,6 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy.base
 
-import model.playerComponent.playerAction.PlayerActionPolicies
+import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
 import model.playingFiledComponent.strategy.boostStrategy.BoostManager
@@ -26,11 +26,37 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val revertStrategy = boostManager.getRevertStrategy
     val scores = playingField.getScores
 
-    val attacker = roles.attacker
+    val attackerBeforeAction = roles.attacker
     val defender = roles.defender
-    attacker.performAction(PlayerActionPolicies.DoubleAttack)
 
-    val attackerHand = fieldState.getPlayerHand(attacker)
+    // Check if the attacker has any DoubleAttack actions left
+    attackerBeforeAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
+      case Some(OutOfActions) =>
+        println(s"[DEBUG] ${attackerBeforeAction.name} has no DoubleAttack actions left. Execution is prevented.")
+        return false
+      case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
+        println(s"[DEBUG] ${attackerBeforeAction.name} has no DoubleAttack actions left. Execution is prevented.")
+        return false
+      case _ => // Continue execution
+    }
+
+    // Perform the action and get an updated attacker instance
+    val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.DoubleAttack)
+
+    // Debug print for action state before updating
+    attackerAfterAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
+      case Some(CanPerformAction(remainingUses)) =>
+        println(s"[DEBUG] Remaining DoubleAttack uses for ${attackerAfterAction.name}: $remainingUses")
+      case Some(OutOfActions) =>
+        println(s"[DEBUG] ${attackerAfterAction.name} has no DoubleAttack actions left.")
+      case _ =>
+        println(s"[DEBUG] Unexpected state for DoubleAttack action.")
+    }
+
+    // Update the attacker's action state in the roles
+    roles.setRoles(attackerAfterAction, defender)
+
+    val attackerHand = fieldState.getPlayerHand(attackerAfterAction)
     val defenderHand = fieldState.getPlayerHand(defender)
 
     Try {
@@ -44,7 +70,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
       val result = if (fieldState.allDefendersBeaten(defender)) {
         processGoalkeeperAttack(
-          attacker,
+          attackerAfterAction,
           defender,
           attackerHand,
           defenderHand,
@@ -57,7 +83,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           roles)
       } else {
         processDefenderAttack(
-          attacker,
+          attackerAfterAction,
           defender,
           attackerHand,
           defenderHand,

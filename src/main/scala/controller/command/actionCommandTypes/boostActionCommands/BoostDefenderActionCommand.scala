@@ -8,12 +8,23 @@ import model.gameComponent.IGame
 
 class BoostDefenderActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
-  override protected def executeAction(): Unit = {
-    actionManager.boostDefender(cardIndex)
+  private var boostSuccessful: Option[Boolean] = None
+
+  override protected def executeAction(): Boolean = {
+    boostSuccessful = Some(actionManager.boostDefender(cardIndex))
+    boostSuccessful.getOrElse(false)
   }
 
   override def undoStep(): Unit = {
     memento.foreach(m => mementoManager.restoreBoosts(m, cardIndex))
-    println(s"✅ After restore: ${game.getPlayingField.getDataManager.getPlayerDefenders(game.getPlayingField.getAttacker)}")
+  }
+
+  override def redoStep(): Unit = {
+    memento match {
+      case Some(savedMemento) if boostSuccessful.contains(true) =>
+        mementoManager.restoreGameState(savedMemento)
+        executeAction()
+      case _ =>
+    }
   }
 }

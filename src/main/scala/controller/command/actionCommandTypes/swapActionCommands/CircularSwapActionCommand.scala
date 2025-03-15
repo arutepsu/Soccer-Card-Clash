@@ -5,7 +5,10 @@ import model.playingFiledComponent.manager.IActionManager
 import model.gameComponent.IGame
 class CircularSwapActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
-  override protected def executeAction(): Unit = {
-    actionManager.circularSwap(cardIndex)
+  private var swapSuccessful: Option[Boolean] = None // Declare swapSuccessful
+
+  override protected def executeAction(): Boolean = {
+    swapSuccessful = Some(actionManager.circularSwap(cardIndex)) // Assign result
+    swapSuccessful.getOrElse(false) // Ensure a Boolean is returned
   }
 }

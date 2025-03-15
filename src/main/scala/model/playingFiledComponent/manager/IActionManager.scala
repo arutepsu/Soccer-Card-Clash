@@ -6,10 +6,10 @@ trait IActionManager{
   def getPlayingField: IPlayingField
   def singleAttack(defenderIndex: Int): Boolean
   def doubleAttack(defenderIndex: Int): Boolean
-  def circularSwap(cardIndex: Int): Unit 
-  def handSwap(cardIndex: Int): Unit
-  def boostDefender(cardIndex: Int): Unit
-  def boostGoalkeeper(): Unit
+  def circularSwap(cardIndex: Int): Boolean
+  def handSwap(cardIndex: Int): Boolean
+  def boostDefender(cardIndex: Int): Boolean
+  def boostGoalkeeper(): Boolean
   def getBoostManager: IBoostManager
   def reset(): Unit
 }

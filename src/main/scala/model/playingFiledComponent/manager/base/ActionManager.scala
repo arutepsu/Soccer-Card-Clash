@@ -30,23 +30,24 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
 
   override def doubleAttack(defenderIndex: Int): Boolean = {
     attackHandler.executeAttack(new DoubleAttackStrategy(defenderIndex))
+    
   }
 
 
-  override def circularSwap(cardIndex: Int): Unit = {
+  override def circularSwap(cardIndex: Int): Boolean = {
     swapStrategy.swapAttacker(new CircularSwapStrategy(cardIndex))
   }
 
-  override def handSwap(cardIndex: Int): Unit = {
+  override def handSwap(cardIndex: Int): Boolean = {
     swapStrategy.swapAttacker(new HandSwapStrategy(cardIndex))
   }
 
 
-  override def boostDefender(cardIndex: Int): Unit = {
+  override def boostDefender(cardIndex: Int): Boolean = {
     boostStrategy.applyBoost(new DefenderBoostStrategy(cardIndex))
   }
 
-  override def boostGoalkeeper(): Unit = {
+  override def boostGoalkeeper(): Boolean = {
     boostStrategy.applyBoost(new GoalkeeperBoostStrategy())
 
   }

@@ -6,8 +6,10 @@ import model.gameComponent.IGame
 
 class HandSwapActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
+  private var swapSuccessful: Option[Boolean] = None // Declare swapSuccessful
 
-  override protected def executeAction(): Unit = {
-    actionManager.handSwap(cardIndex)
+  override protected def executeAction(): Boolean = {
+    swapSuccessful = Some(actionManager.handSwap(cardIndex)) // Assign result
+    swapSuccessful.getOrElse(false) // Ensure a Boolean is returned
   }
 }

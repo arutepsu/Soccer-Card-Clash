@@ -10,11 +10,11 @@ import model.playingFiledComponent.manager.base.DataManager
 class BoostManager(playingField: IPlayingField) extends IBoostManager {
   private val revertStrategy: IRevertStrategy = new RevertBoostStrategy(playingField)
   override def getRevertStrategy: IRevertStrategy = revertStrategy
-  override def applyBoost(boostStrategy: IBoostStrategy): Unit = {
+  override def applyBoost(boostStrategy: IBoostStrategy): Boolean = {
     boostStrategy.boost(playingField)
   }
 }
 trait IBoostManager{
   def getRevertStrategy: IRevertStrategy
-  def applyBoost(boostStrategy: IBoostStrategy): Unit
+  def applyBoost(boostStrategy: IBoostStrategy): Boolean
 }

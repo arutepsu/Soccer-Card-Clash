@@ -7,7 +7,7 @@ import model.gameComponent.IGame
 
 class BoostGoalkeeperActionCommand(game: IGame) extends ActionCommand(game) {
 
-  override protected def executeAction(): Unit = {
-
+  override protected def executeAction(): Boolean = {
+    false
   }
 }

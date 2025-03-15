@@ -23,7 +23,7 @@ class RolesManager @Inject() (
     d = newDefender
   }
   override def reset(): Unit = {
-    a = Player("NewAttacker", List()) // Provide a default or a factory-created player
+    a = Player("NewAttacker", List())
     d = Player("NewDefender", List())
   }
 }

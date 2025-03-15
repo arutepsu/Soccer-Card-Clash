@@ -8,9 +8,9 @@ trait PlayerActionState {
 }
 
 enum PlayerActionPolicies(val maxUses: Int) {
-  case Boost extends PlayerActionPolicies(5)
-  case DoubleAttack extends PlayerActionPolicies(4)
-  case Swap extends PlayerActionPolicies(3)
+  case Boost extends PlayerActionPolicies(1)
+  case DoubleAttack extends PlayerActionPolicies(1)
+  case Swap extends PlayerActionPolicies(1)
 }
 
 object PlayerActionPolicies {
