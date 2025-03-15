@@ -3,7 +3,7 @@ package controller.command.memento.base
 import controller.Events
 import controller.command.memento.IMementoManager
 import controller.command.memento.base.Memento
-import model.cardComponent.base.types.BoostedCard
+import model.cardComponent.base.types.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.IActionManager
@@ -14,6 +14,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
   override def createMemento(): Memento = {
     val playingField = game.getPlayingField
 
+    print(f"TO BE SAVED!!!!!!!!!!!!!!!!!!!!!!!!1 ${playingField.getDataManager.getPlayerGoalkeeper(playingField.getAttacker)}")
     Memento(
       attacker = playingField.getAttacker,
       defender = playingField.getDefender,
@@ -38,77 +39,6 @@ class MementoManager(private val game: IGame) extends IMementoManager {
     )
   }
 
-//  override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
-//    val playingField = game.getPlayingField
-//
-//    if (lastBoostedIndex != -1) {
-//
-//      playingField.getDataManager.getPlayerDefenders(memento.attacker).lift(lastBoostedIndex).foreach {
-//        case boosted: BoostedCard =>
-//          val revertedCard = boosted.revertBoost()
-//
-//          val updatedDefenders = playingField.getDataManager.getPlayerDefenders(memento.attacker).updated(lastBoostedIndex, revertedCard)
-//          playingField.getDataManager.setPlayerDefenders(memento.attacker, updatedDefenders)
-//
-//        case regular =>
-//      }
-//    }
-//  }
-//  override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
-//    val playingField = game.getPlayingField
-//
-//    if (lastBoostedIndex != -1) {
-//      val attacker = memento.attacker
-//      var defenders = playingField.getDataManager.getPlayerDefenders(attacker)
-//
-//      if (lastBoostedIndex >= 0 && lastBoostedIndex < defenders.size) {
-//        defenders(lastBoostedIndex) match {
-//          case boosted: BoostedCard =>
-//            val revertedCard = boosted.revertBoost()
-//
-//            // ✅ Force full replacement of defenders list
-//            defenders = defenders.updated(lastBoostedIndex, revertedCard)
-//            playingField.getDataManager.setPlayerDefenders(attacker, defenders)
-//
-//            println(s"✅ Defender reverted: ${defenders.mkString(", ")}") // Debugging
-//
-//          case _ =>
-//            println("❌ No BoostedCard found, skipping restoration")
-//        }
-//      }
-//    }
-//  }
-//  override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
-//    val playingField = game.getPlayingField
-//    val revertStrategy = playingField.getActionManager.getBoostManager.getRevertStrategy
-//
-//    if (lastBoostedIndex != -1) {
-//      val attacker = memento.attacker
-//      var defenders = playingField.getDataManager.getPlayerDefenders(attacker)
-//
-//      if (lastBoostedIndex >= 0 && lastBoostedIndex < defenders.size) {
-//        defenders(lastBoostedIndex) match {
-//          case boosted: BoostedCard =>
-//            // ✅ Use `revertStrategy.revertCard()` instead of `boosted.revertBoost()`
-//            val revertedCard = revertStrategy.revertCard(boosted)
-//
-//            // ✅ Replace the defender card with the reverted version
-//            defenders = defenders.updated(lastBoostedIndex, revertedCard)
-//            playingField.getDataManager.setPlayerDefenders(attacker, defenders)
-//
-//            println(s"✅ Defender reverted using revertStrategy: ${revertedCard}") // Debugging
-//
-//
-//            // ✅ **Force UI refresh**
-//
-//            println("🔄 UI Refresh Triggered After Reverting Boost!")
-//
-//          case _ =>
-//            println("❌ No BoostedCard found, skipping restoration")
-//        }
-//      }
-//    }
-//  }
   override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
     val playingField = game.getPlayingField
     val revertStrategy = game.getActionManager.getBoostManager.getRevertStrategy
@@ -133,6 +63,37 @@ class MementoManager(private val game: IGame) extends IMementoManager {
       }
     }
   }
+
+  override def restoreGoalkeeperBoost(memento: Memento): Unit = {
+    val playingField = game.getPlayingField
+    val revertStrategy = game.getActionManager.getBoostManager.getRevertStrategy
+
+    val attacker = memento.attacker
+    val goalkeeperOpt = memento.player1Goalkeeper
+
+    goalkeeperOpt match {
+      case Some(goalkeeper) =>
+        println(s"[DEBUG] Goalkeeper found in memento. Type: ${goalkeeper.getClass}")
+
+        goalkeeper match {
+          case boostedGoalkeeper: RegularCard => // ✅ Only enters this case if correctly identified
+            val revertedGoalkeeper = revertStrategy.revertCard(boostedGoalkeeper)
+            println(f"GOALKEEPERR TO BE SET : ${revertedGoalkeeper}")
+            playingField.getDataManager.setPlayerGoalkeeper(attacker, Some(revertedGoalkeeper))
+
+            playingField.notifyObservers(Events.Reverted)
+            println(s"[DEBUG] Goalkeeper boost reverted for ${attacker.name}.")
+
+          case _ =>
+            println(s"[ERROR] Goalkeeper was expected to be boosted but is of type: ${goalkeeper.getClass}")
+        }
+
+      case None =>
+        println(s"[ERROR] No goalkeeper found in memento. Cannot restore.")
+    }
+  }
+
+
   override def restoreGameState(memento: Memento): Unit = {
     val pf = game.getPlayingField
 

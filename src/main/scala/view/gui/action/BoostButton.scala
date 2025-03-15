@@ -14,6 +14,7 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
         if (field.isGoalkeeperSelected) {
           println("⚽ Boosting Goalkeeper!")
           controller.boostGoalkeeper()
+          attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
         } else field.selectedCardIndex match {
           case Some(index) =>
             println(s"⚡ Boosting defender at index: $index")

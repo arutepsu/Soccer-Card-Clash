@@ -6,8 +6,26 @@ import model.playingFiledComponent.manager.IActionManager
 import model.gameComponent.IGame
 
 class BoostGoalkeeperActionCommand(game: IGame) extends ActionCommand(game) {
+  private val actionManager: IActionManager = game.getActionManager
+  private var boostSuccessful: Option[Boolean] = None
 
   override protected def executeAction(): Boolean = {
-    false
+    boostSuccessful = Some(actionManager.boostGoalkeeper())
+    boostSuccessful.getOrElse(false)
+  }
+
+  override def undoStep(): Unit = {
+    memento.foreach(m => {
+      mementoManager.restoreGoalkeeperBoost(m)
+    })
+  }
+  
+  override def redoStep(): Unit = {
+    memento match {
+      case Some(savedMemento) if boostSuccessful.contains(true) =>
+        mementoManager.restoreGameState(savedMemento)
+        executeAction()
+      case _ =>
+    }
   }
 }

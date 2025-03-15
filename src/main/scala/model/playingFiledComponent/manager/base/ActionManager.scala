@@ -49,16 +49,13 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
 
   override def boostGoalkeeper(): Boolean = {
     boostStrategy.applyBoost(new GoalkeeperBoostStrategy())
-
   }
 
   override def reset() : Unit = {
-    println("🔄 Resetting ActionManager...")
 
     attackHandler = new AttackHandler(playingField)
     swapStrategy = new SwapManager(playingField)
     boostStrategy = new BoostManager(playingField)
 
-    println("✅ ActionManager reset completed!")
   }
 }
