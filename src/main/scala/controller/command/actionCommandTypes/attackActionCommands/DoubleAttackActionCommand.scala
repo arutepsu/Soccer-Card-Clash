@@ -12,7 +12,7 @@ class DoubleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionC
 
   override protected def executeAction(): Boolean = {
     attackSuccessful = Some(actionManager.doubleAttack(defenderIndex))
-    attackSuccessful.getOrElse(false) // Ensure a Boolean is returned
+    attackSuccessful.getOrElse(false)
   }
 
   def wasAttackSuccessful: Boolean = attackSuccessful.getOrElse(false)

@@ -9,7 +9,7 @@ class SingleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionC
 
   override protected def executeAction(): Boolean = {
     attackSuccessful = Some(actionManager.singleAttack(defenderIndex))
-    attackSuccessful.getOrElse(false) // Ensure executeAction() returns a Boolean
+    attackSuccessful.getOrElse(false)
   }
 
   def wasAttackSuccessful: Boolean = attackSuccessful.getOrElse(false)
