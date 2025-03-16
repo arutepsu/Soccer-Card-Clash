@@ -15,6 +15,7 @@ trait IPlayer extends Serializable {
   def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer
   def setHandCards(newCards: List[ICard]): IPlayer
   def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer
+  def getActionStates: Map[PlayerActionPolicies, PlayerActionState]
 
   def toXml: Elem =
     <Player name={name}>

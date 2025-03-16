@@ -48,6 +48,11 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
 
     bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
+
+    bind(classOf[IMementoFactory])
+      .toConstructor(classOf[MementoFactory].getConstructor(classOf[IHandCardsQueueFactory]))
+      .in(classOf[Singleton])
+
     bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()
     
     bind(classOf[IPlayingField]).to(classOf[PlayingField])
@@ -92,6 +97,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[XmlComponent])
       .toConstructor(classOf[XmlComponent].getConstructor(classOf[GameDeserializer]))
       .in(classOf[Singleton])
+
     bind(classOf[FileIO])
       .toConstructor(classOf[FileIO].getConstructor(classOf[JsonComponent], classOf[XmlComponent]))
       .in(classOf[Singleton])

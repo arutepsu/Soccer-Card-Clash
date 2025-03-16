@@ -34,6 +34,7 @@ case class Player(
   override def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer = {
     this.copy(actionStates = newActionStates)
   }
+  override def getActionStates: Map[PlayerActionPolicies, PlayerActionState] = actionStates
 
   override def equals(obj: Any): Boolean = obj match {
     case other: Player => this.name == other.name

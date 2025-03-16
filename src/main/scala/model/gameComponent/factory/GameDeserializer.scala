@@ -1,4 +1,5 @@
 package model.gameComponent.factory
+import controller.command.memento.base.Memento
 import model.gameComponent.IGame
 import model.playerComponent.factory.PlayerDeserializer
 import model.playingFiledComponent.dataStructure.HandCardsQueueFactory
@@ -6,15 +7,18 @@ import util.{Deserializer, Serializable}
 import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueue}
 import play.api.libs.json.*
 import model.playerComponent.IPlayer
+
 import scala.xml.*
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
 import model.cardComponent.ICard
 import model.cardComponent.factory.CardDeserializer
+import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.PlayingFieldDeserializer
-import play.api.libs.json._
-import scala.xml._
-import javax.inject.{Singleton, Inject}
+import play.api.libs.json.*
+
+import scala.xml.*
+import javax.inject.{Inject, Singleton}
 import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
 @Singleton
 class GameDeserializer @Inject() (
@@ -92,7 +96,17 @@ class GameDeserializer @Inject() (
       0
     }
 
-    gameStateFactory.create(
+    val player1Actions: Map[PlayerActionPolicies, Int] = player1.getActionStates.map {
+      case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+      case (policy, OutOfActions) => policy -> 0
+    }
+
+    val player2Actions: Map[PlayerActionPolicies, Int] = player2.getActionStates.map {
+      case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+      case (policy, OutOfActions) => policy -> 0
+    }
+
+    val gameState = gameStateFactory.create(
       playingField,
       player1,
       player2,
@@ -105,6 +119,23 @@ class GameDeserializer @Inject() (
       player1Score,
       player2Score
     )
+
+    val memento = Memento(
+      player1,
+      player2,
+      player1Field,
+      player2Field,
+      player1Goalkeeper,
+      player2Goalkeeper,
+      player1Hand.toList,
+      player2Hand.toList,
+      player1Score,
+      player2Score,
+      player1Actions,
+      player2Actions
+    )
+
+    gameState
   }
 
   override def fromJson(json: JsObject): IGameState = {
@@ -137,8 +168,25 @@ class GameDeserializer @Inject() (
       case None => handCardsQueueFactory.create(Nil)
     }.get
 
-    val player1Field = (json \ "player1Field").validate[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
-    val player2Field = (json \ "player2Field").validate[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+    val player1FieldJson = (json \ "player1Field").validate[List[JsObject]]
+    println(s"DEBUG: Extracted player1Field JSON: ${Json.prettyPrint(Json.toJson(player1FieldJson.getOrElse(Nil)))}")
+
+    val player1Field = player1FieldJson.getOrElse(Nil).map { cardJson =>
+      val card = cardDeserializer.fromJson(cardJson)
+      println(s"DEBUG: Deserialized card for player1Field: $card")
+      card
+    }
+
+    val player2FieldJson = (json \ "player2Field").validate[List[JsObject]]
+    println(s"DEBUG: Extracted player2Field JSON: ${Json.prettyPrint(Json.toJson(player2FieldJson.getOrElse(Nil)))}")
+
+    val player2Field = player2FieldJson.getOrElse(Nil).map { cardJson =>
+      val card = cardDeserializer.fromJson(cardJson)
+      println(s"DEBUG: Deserialized card for player2Field: $card")
+      card
+    }
+    println(f"playingFieldPlayer2: ${player2Field}")
+
 
     val player1Goalkeeper = (json \ "player1Goalkeeper").validateOpt[JsObject] match {
       case JsSuccess(Some(jsObj), _) => Some(cardDeserializer.fromJson(jsObj))
@@ -155,7 +203,17 @@ class GameDeserializer @Inject() (
     val player1Score = scoresJsonOpt.flatMap(js => (js \ "scorePlayer1").asOpt[Int]).getOrElse(0)
     val player2Score = scoresJsonOpt.flatMap(js => (js \ "scorePlayer2").asOpt[Int]).getOrElse(0)
 
-    gameStateFactory.create(
+    val player1Actions: Map[PlayerActionPolicies, Int] = player1.getActionStates.map {
+      case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+      case (policy, OutOfActions) => policy -> 0
+    }
+
+    val player2Actions: Map[PlayerActionPolicies, Int] = player2.getActionStates.map {
+      case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+      case (policy, OutOfActions) => policy -> 0
+    }
+
+    val gameState = gameStateFactory.create(
       playingField,
       player1,
       player2,
@@ -168,5 +226,23 @@ class GameDeserializer @Inject() (
       player1Score,
       player2Score
     )
+
+    val memento = Memento(
+      player1,
+      player2,
+      player1Field,
+      player2Field,
+      player1Goalkeeper,
+      player2Goalkeeper,
+      player1Hand.toList,
+      player2Hand.toList,
+      player1Score,
+      player2Score,
+      player1Actions,
+      player2Actions
+    )
+
+    gameState
   }
+ 
 }

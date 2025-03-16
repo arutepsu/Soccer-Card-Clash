@@ -38,8 +38,14 @@ case class PlayingFieldScene(
 
   val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
   val player2HandBar = new PlayersHandBar(player2, playingField, isLeftSide = false)
+  println(s"DEBUG: Creating PlayersFieldBar for Player 1 - ${player1.name}, PlayingField: $playingField")
   val player1FieldBar = new PlayersFieldBar(player1, playingField)
+  println(s"DEBUG: Player 1 FieldBar created successfully: ${player1FieldBar.getDefenderCards}")
+
+  println(s"DEBUG: Creating PlayersFieldBar for Player 2 - ${player2.name}, PlayingField: $playingField")
   val player2FieldBar = new PlayersFieldBar(player2, playingField)
+  println(s"DEBUG: Player 2 FieldBar created successfully: ${player2FieldBar.getDefenderCards}")
+
 
   def attacker: IPlayer = playingField.getRoles.attacker
 
@@ -105,7 +111,7 @@ case class PlayingFieldScene(
   }
 
   def updateDisplay(): Unit = {
-    // ✅ Always get the latest playing field and players
+
     val currentPlayingField = controller.getPlayingField
     val currentPlayer1 = controller.getPlayer1
     val currentPlayer2 = controller.getPlayer2
@@ -124,6 +130,9 @@ case class PlayingFieldScene(
     playerHands.children.clear()
     playerHands.children.add(newAttackerHandBar)
 
+    newAttackerHandBar.updateBar()
+    newDefenderFieldBar.updateBar()
+
     playersBar.refreshOnRoleSwitch()
 
     val score1 = currentPlayingField.getScores.getScorePlayer1
@@ -131,9 +140,5 @@ case class PlayingFieldScene(
 
     player1ScoreLabel.text = s"${currentPlayer1.name} Score: $score1"
     player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
-
-    // Highlight the leading player
-    newAttackerHandBar.updateBar()
-    newDefenderFieldBar.updateBar()
   }
 }

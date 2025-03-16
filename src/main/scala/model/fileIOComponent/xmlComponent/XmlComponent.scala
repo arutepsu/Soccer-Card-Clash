@@ -14,14 +14,14 @@ class XmlComponent @Inject()(gameDeserializer: GameDeserializer) {
 
   private val folderPath = "games/"
   private val filePath = folderPath + "game.xml"
-  
+
   private def ensureFolderExists(): Unit = {
     val folder = new File(folderPath)
     if (!folder.exists()) {
       folder.mkdir()
     }
   }
-  
+
   def load(fileName: String): Option[IGameState] = {
     ensureFolderExists()
     val filePath = s"games/$fileName"
@@ -41,7 +41,7 @@ class XmlComponent @Inject()(gameDeserializer: GameDeserializer) {
         None
     }
   }
-  
+
   def save(gameState: IGameState): Unit = {
     ensureFolderExists()
 
@@ -53,7 +53,7 @@ class XmlComponent @Inject()(gameDeserializer: GameDeserializer) {
       val pw = new PrintWriter(new File(filePath))
       pw.write(formattedXml)
       pw.close()
-      
+
     } catch {
       case e: Exception => println(s"❌ Error saving XML: ${e.getMessage}")
     }

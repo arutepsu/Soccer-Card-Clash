@@ -21,24 +21,19 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
 
   alignment = Pos.CENTER
   spacing = 10
-  this.getStylesheets.add(Styles.playersFieldBarCss) // ✅ Load external CSS
-  styleClass.add("players-field-bar") // ✅ Apply panel style
-  /** Label indicating the current game state */
-
+  this.getStylesheets.add(Styles.playersFieldBarCss)
+  styleClass.add("players-field-bar")
   private val statusLabel = new Label {
     text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
-    styleClass.add("status-label") // ✅ Apply CSS class
+    styleClass.add("status-label")
   }
 
-  /** Label indicating which player's field this is */
-  /** Label indicating which player's field this is */
   private val playerLabel = new Label {
     text = s"${player.name}'s Field"
-    styleClass.add("player-label") // ✅ Apply CSS class
+    styleClass.add("player-label")
   }
 
-  /** Retrieves defender cards */
-  private def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
+  def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
 
 
   private var selectedDefender: Option[FieldCard] = None // Track selected defender card

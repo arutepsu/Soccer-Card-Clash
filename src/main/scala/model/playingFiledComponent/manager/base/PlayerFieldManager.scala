@@ -25,7 +25,12 @@ class PlayerFieldManager extends IPlayerFieldManager {
     goalkeepers = goalkeepers.updated(player, goalkeeper)
   }
 
-  override def getPlayerDefenders(player: IPlayer): List[ICard] = defenders(player)
+  override def getPlayerDefenders(player: IPlayer): List[ICard] = {
+    val playerDefenders = defenders(player) // Retrieve the defenders
+    println(s"QQQQQQDEBUG: getPlayerDefenders called for ${player.name}, Defenders: $playerDefenders")
+    playerDefenders
+  }
+
 
   override def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit = {
     defenders = defenders.updated(player, newDefenderField)

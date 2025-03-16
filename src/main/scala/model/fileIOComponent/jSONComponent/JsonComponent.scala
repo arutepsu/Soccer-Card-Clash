@@ -1,30 +1,34 @@
 package model.fileIOComponent.jSONComponent
 
+import controller.IController
+import controller.command.memento.base.Memento
+
 import java.io.{File, PrintWriter}
 import scala.io.Source
-import play.api.libs.json._
+import play.api.libs.json.*
 import model.gameComponent.factory.GameDeserializer
 import model.gameComponent.factory.*
-
+import model.playerComponent.playerAction.PlayerActionPolicies
+import model.playingFiledComponent.factory.PlayingFieldDeserializer
 
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}
 import scala.io.Source
-import play.api.libs.json._
+import play.api.libs.json.*
 
 @Singleton
 class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
 
   private val folderPath = "games/"
   private val filePath = folderPath + "game.json"
-  
+
   private def ensureFolderExists(): Unit = {
     val folder = new File(folderPath)
     if (!folder.exists()) {
       folder.mkdir()
     }
   }
-  
+
   def load(fileName: String): Option[IGameState] = {
     ensureFolderExists()
     val filePath = s"games/$fileName"
@@ -56,7 +60,7 @@ class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
       val pw = new PrintWriter(new File(filePath))
       pw.write(Json.prettyPrint(json))
       pw.close()
-      
+
     } catch {
       case e: Exception => println(s"❌ Error saving JSON: ${e.getMessage}")
     }

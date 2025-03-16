@@ -6,13 +6,17 @@ import util.{Deserializer, Serializable}
 import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueue}
 import play.api.libs.json.*
 import model.playerComponent.IPlayer
+
 import scala.xml.*
 import model.playingFiledComponent.dataStructure.*
 import model.cardComponent.ICard
 import model.cardComponent.factory.CardDeserializer
+import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.PlayingFieldDeserializer
-import javax.inject.Singleton
+
+import javax.inject.{Inject, Singleton}
+
 trait IGameState extends Serializable {
   def playingField: IPlayingField
   def player1: IPlayer
@@ -25,9 +29,6 @@ trait IGameState extends Serializable {
   def player2Goalkeeper: Option[ICard]
   def player1Score: Int
   def player2Score: Int
-  def saveState(): Memento
-  def restoreState(memento: Memento): IGameState
-
   def toXml: Elem
   def toJson: JsObject
 }
@@ -46,35 +47,6 @@ class GameState(
                  override val player2Score: Int
                ) extends IGameState {
 
-  override def saveState(): Memento = Memento(
-    attacker = player1,
-    defender = player2,
-    player1Defenders = player1Defenders,
-    player2Defenders = player2Defenders,
-    player1Goalkeeper = player1Goalkeeper,
-    player2Goalkeeper = player2Goalkeeper,
-    player1Hand = player1Hand.getCards.toList,
-    player2Hand = player2Hand.getCards.toList,
-    player1Score = player1Score,
-    player2Score = player2Score,
-    player1Actions = Map.empty,
-    player2Actions = Map.empty
-  )
-
-  override def restoreState(memento: Memento): IGameState =
-    new GameState(
-      playingField,
-      memento.attacker,
-      memento.defender,
-      new HandCardsQueue(memento.player1Hand),
-      new HandCardsQueue(memento.player2Hand),
-      memento.player1Defenders,
-      memento.player2Defenders,
-      memento.player1Goalkeeper,
-      memento.player2Goalkeeper,
-      memento.player1Score,
-      memento.player2Score
-    )
 
   override def toXml: Elem = {
     <root>
@@ -118,8 +90,6 @@ trait IGameStateFactory {
               player1Score: Int,
               player2Score: Int
             ): IGameState
-
-  def createFromMemento(memento: Memento, playingField: IPlayingField): IGameState
 }
 
 @Singleton
@@ -137,7 +107,8 @@ class GameStateFactory extends IGameStateFactory {
                        player2Goalkeeper: Option[ICard],
                        player1Score: Int,
                        player2Score: Int
-                     ): IGameState =
+                     ): IGameState = {
+
     new GameState(
       playingField,
       player1,
@@ -151,14 +122,47 @@ class GameStateFactory extends IGameStateFactory {
       player1Score,
       player2Score
     )
+  }
+}
 
-  override def createFromMemento(memento: Memento, playingField: IPlayingField): IGameState =
+trait IMementoFactory {
+  def createMemento(gameState: IGameState): Memento
+  def restoreFromMemento(memento: Memento, playingField: IPlayingField): IGameState
+}
+
+@Singleton
+class MementoFactory @Inject() (handCardsQueueFactory: IHandCardsQueueFactory) extends IMementoFactory {
+
+  override def createMemento(gameState: IGameState): Memento = {
+    Memento(
+      gameState.player1,
+      gameState.player2,
+      gameState.player1Defenders,
+      gameState.player2Defenders,
+      gameState.player1Goalkeeper,
+      gameState.player2Goalkeeper,
+      gameState.player1Hand.toList,
+      gameState.player2Hand.toList,
+      gameState.player1Score,
+      gameState.player2Score,
+      gameState.player1.getActionStates.map {
+        case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+        case (policy, OutOfActions) => policy -> 0
+      },
+      gameState.player2.getActionStates.map {
+        case (policy, CanPerformAction(remainingUses)) => policy -> remainingUses
+        case (policy, OutOfActions) => policy -> 0
+      }
+    )
+  }
+
+  override def restoreFromMemento(memento: Memento, playingField: IPlayingField): IGameState = {
     new GameState(
       playingField,
       memento.attacker,
       memento.defender,
-      new HandCardsQueue(memento.player1Hand),
-      new HandCardsQueue(memento.player2Hand),
+      handCardsQueueFactory.create(memento.player1Hand),
+      handCardsQueueFactory.create(memento.player2Hand),
       memento.player1Defenders,
       memento.player2Defenders,
       memento.player1Goalkeeper,
@@ -166,5 +170,6 @@ class GameStateFactory extends IGameStateFactory {
       memento.player1Score,
       memento.player2Score
     )
+  }
 }
 

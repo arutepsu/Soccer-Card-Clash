@@ -16,24 +16,24 @@ import view.gui.components.uiFactory.{BoostLoader, CardAnimationFactory}
 import view.gui.components.sceneBar.cardBar.PlayersFieldBar
 
 class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends PlayersFieldBar(player, playingField) {
-  
+
   private var _selectedCardIndex: Option[Int] = None
-  
+
   def getSelectedCard: Option[FieldCard] = selectedCard
-  
+
   def selectedCardIndex: Option[Int] = _selectedCardIndex
-  
+
   def resetSelectedCard(): Unit = {
     _selectedCardIndex = None
   }
-  
+
   private var selectedCard: Option[FieldCard] = None
-  def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
+  override def getDefenderCards: List[ICard] = playingField.getDataManager.getPlayerDefenders(player)
   def getGoalkeeperCard: Option[ICard] = playingField.getDataManager.getPlayerGoalkeeper(player)
-  
+
   override def createDefenderRow(): HBox = {
     val defenderCards = getDefenderCards
-    
+
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
@@ -122,8 +122,8 @@ class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) ex
     children.clear()
 
     children.addAll(createDefenderRow(), createGoalkeeperRow())
-    
+
     playingField.notifyObservers()
   }
-  
+
 }
