@@ -8,15 +8,16 @@ import model.playingFiledComponent.base.PlayingField
 import com.google.inject.{Inject, Singleton}
 import com.google.inject.{Inject, Singleton}
 import com.google.inject.{Inject, Provider, Singleton}
-import model.playingFiledComponent.manager.IPlayingFieldManager
+import model.playingFiledComponent.factory.IPlayingFieldManagerFactory
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import play.api.libs.json.JsObject
 
 
-class PlayingFieldFactory @Inject() (manager: IPlayingFieldManager) extends IPlayingFieldFactory {
+class PlayingFieldFactory @Inject() (manager: IPlayingFieldManagerFactory) extends IPlayingFieldFactory {
   override def createPlayingField(player1: IPlayer, player2: IPlayer): IPlayingField =
     new PlayingField(player1, player2)(using manager)
 }
-trait IPlayerScoresFactory {
-  def createPlayerScores(playingField: IPlayingField, player1:IPlayer, player2: IPlayer): IPlayerScores
+trait IPlayingFieldFactory {
+  def createPlayingField(player1: IPlayer, player2: IPlayer): IPlayingField
 }
+

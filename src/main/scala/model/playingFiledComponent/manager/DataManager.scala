@@ -1,4 +1,4 @@
-package model.playingFiledComponent.manager.base
+package model.playingFiledComponent.manager
 
 import com.google.inject.{Inject, Singleton}
 import model.cardComponent.ICard
@@ -46,7 +46,10 @@ class DataManager @Inject() (
   override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit = fieldManager.setPlayerGoalkeeper(player, goalkeeper)
 
   override def getPlayerDefenders(player: IPlayer): List[ICard] = fieldManager.getPlayerDefenders(player)
-  override def setPlayerDefenders(player: IPlayer, newDefenders: List[ICard]): Unit = fieldManager.setPlayerDefenders(player, newDefenders)
+  override def setPlayerDefenders(player: IPlayer, defenders: List[ICard]): Unit = {
+    fieldManager.setPlayerField(player, defenders)
+  }
+
 
   override def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit =
     fieldManager.removeDefenderCard(currentDefender, defenderCard)
@@ -75,5 +78,33 @@ class DataManager @Inject() (
     handManager.clearAll()
     fieldManager.clearAll()
   }
+}
+trait IDataManager {
 
+  def getPlayingField: IPlayingField
+  def getPlayer1: IPlayer
+  def getPlayer2: IPlayer
+
+  def initializePlayerHands(player1Cards: List[ICard], player2Cards: List[ICard]): Unit
+  def getPlayerHand(player: IPlayer): IHandCardsQueue
+  def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit
+  def getAttackingCard: ICard
+  def getDefenderCard: ICard
+
+  def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
+  def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit
+  def getPlayerDefenders(player: IPlayer): List[ICard]
+  def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit
+  def setGoalkeeperForAttacker(card: ICard): Unit
+  def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit
+  def removeDefenderGoalkeeper(currentDefender: IPlayer): Unit
+  def allDefendersBeaten(currentDefender: IPlayer): Boolean
+  def getDefenderCard(player: IPlayer, index: Int): ICard
+  def getPlayerField(player: IPlayer): List[ICard]
+  def setPlayerField(player: IPlayer, newField: List[ICard]): Unit
+
+  def initializeFields(): Unit
+  def refillDefenderField(defender: IPlayer): Unit
+  def setRefillStrategy(strategy: IRefillStrategy): Unit
+  def clearAll(): Unit
 }

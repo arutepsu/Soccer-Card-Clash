@@ -1,4 +1,4 @@
-package model.playingFiledComponent.manager.base
+package model.playingFiledComponent.manager
 
 import com.google.inject.Inject
 import model.cardComponent.factory.DeckFactory
@@ -25,6 +25,7 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
   var swapStrategy = new SwapManager(playingField)
   def getBoostManager: IBoostManager = boostStrategy
   override def singleAttack(defenderIndex: Int): Boolean = {
+    println("!!!!!!DEBUG : Attack executed")
     attackHandler.executeAttack(new SingleAttackStrategy(defenderIndex))
   }
 
@@ -32,7 +33,6 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
     attackHandler.executeAttack(new DoubleAttackStrategy(defenderIndex))
     
   }
-
 
   override def circularSwap(cardIndex: Int): Boolean = {
     swapStrategy.swapAttacker(new CircularSwapStrategy(cardIndex))
@@ -58,4 +58,15 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
     boostStrategy = new BoostManager(playingField)
 
   }
+}
+trait IActionManager{
+  def getPlayingField: IPlayingField
+  def singleAttack(defenderIndex: Int): Boolean
+  def doubleAttack(defenderIndex: Int): Boolean
+  def circularSwap(cardIndex: Int): Boolean
+  def handSwap(cardIndex: Int): Boolean
+  def boostDefender(cardIndex: Int): Boolean
+  def boostGoalkeeper(): Boolean
+  def getBoostManager: IBoostManager
+  def reset(): Unit
 }

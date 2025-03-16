@@ -14,8 +14,7 @@ import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
 import model.playingFiledComponent.dataStructure.HandCardsQueue
 import model.playingFiledComponent.factory.*
-import model.playingFiledComponent.manager.IActionManager
-import model.playingFiledComponent.manager.base.ActionManager
+import model.playingFiledComponent.manager.{ActionManager, IActionManager}
 import util.UndoManager
 import play.api.libs.json.*
 import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
@@ -62,52 +61,25 @@ class Game @Inject()(
   }
 
   override def startGame(playerName1: String, playerName2: String): Unit = {
-    reset()
-    if (playingField != null) {
-      playingField.reset()
-    }
+    reset()  // ✅ Resets the game state and playingField internally
 
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
     player2 = p2
-    
 
     playingField = playingFieldFactory.createPlayingField(player1, player2)
     val roles = playingField.getRoles
     roles.setRoles(player1, player2)
 
     val dataManager = playingField.getDataManager
-
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
 
     playingField.setPlayingField()
 
-    val player1Hand = handCardsQueueFactory.create(player1.getCards.toList)
-    val player2Hand = handCardsQueueFactory.create(player2.getCards.toList)
+    // ✅ Initialize the game state
+    updateGameState()
 
-    val player1Field = dataManager.getPlayerField(player1)
-    val player2Field = dataManager.getPlayerField(player2)
-
-    val player1Goalkeeper = dataManager.getPlayerGoalkeeper(player1)
-    val player2Goalkeeper = dataManager.getPlayerGoalkeeper(player2)
-
-    val player1Score = playingField.getScores.getScorePlayer1
-    val player2Score = playingField.getScores.getScorePlayer2
-
-    gameState = gameStateFactory.create(
-      playingField,
-      player1,
-      player2,
-      player1Hand,
-      player2Hand,
-      player1Field,
-      player2Field,
-      player1Goalkeeper,
-      player2Goalkeeper,
-      player1Score,
-      player2Score
-    )
-
+    println("✅ Game started successfully!")
   }
 
 
@@ -158,73 +130,41 @@ class Game @Inject()(
 
   override def loadGame(fileName: String): Unit = {
     try {
-      println(s"DEBUG: Attempting to load game from file: $fileName")
-
       val loadedState = fileIO.loadGame(fileName)
-
-      if (loadedState != null) {
-        println("DEBUG: Game state successfully loaded.")
-
-        gameState = loadedState
-
-        player1 = gameState.player1
-        player2 = gameState.player2
-        playingField = gameState.playingField
-
-        println(s"DEBUG: Player 1 loaded: ${player1.name}")
-        println(s"DEBUG: Player 2 loaded: ${player2.name}")
-        println(s"DEBUG: Playing field loaded: $playingField")
-
-        val dataManager = playingField.getDataManager
-        println("DEBUG: DataManager retrieved from playing field.")
-
-        // Initialize player hands
-        val player1HandCards = gameState.player1Hand.getCards.toList
-        val player2HandCards = gameState.player2Hand.getCards.toList
-        println(s"DEBUG: Player 1 hand cards: $player1HandCards")
-        println(s"DEBUG: Player 2 hand cards: $player2HandCards")
-
-        dataManager.initializePlayerHands(player1HandCards, player2HandCards)
-
-        // Set player defenders
-        println(s"DEBUG: Setting defenders for Player 1: ${gameState.player1Defenders}")
-        println(s"DEBUG: Setting defenders for Player 2: ${gameState.player2Defenders}")
-
-        dataManager.setPlayerDefenders(player1, gameState.player1Defenders)
-        dataManager.setPlayerDefenders(player2, gameState.player2Defenders)
-
-        // Set player goalkeepers
-        println(s"DEBUG: Player 1 goalkeeper: ${gameState.player1Goalkeeper}")
-        println(s"DEBUG: Player 2 goalkeeper: ${gameState.player2Goalkeeper}")
-
-        dataManager.setPlayerGoalkeeper(player1, gameState.player1Goalkeeper)
-        dataManager.setPlayerGoalkeeper(player2, gameState.player2Goalkeeper)
-
-        if (gameState.player1Goalkeeper.isEmpty || gameState.player2Goalkeeper.isEmpty) {
-          println("ERROR: Goalkeeper is missing! The game logic must always have one.")
-          throw new IllegalStateException("Goalkeeper is missing! The game logic must always have one.")
-        }
-
-        // Set player scores
-        println(s"DEBUG: Setting Player 1 score: ${gameState.player1Score}")
-        println(s"DEBUG: Setting Player 2 score: ${gameState.player2Score}")
-
-        playingField.getScores.setScorePlayer1(gameState.player1Score)
-        playingField.getScores.setScorePlayer2(gameState.player2Score)
-
-        println("DEBUG: Setting up the playing field.")
-        playingField.setPlayingField()
-
-        println("✅ DEBUG: Game successfully loaded and initialized.")
-
-      } else {
-        println(s"❌ ERROR: Failed to load game. No valid game state found in '$fileName'.")
+      if (loadedState == null) {
         throw new RuntimeException(s"Failed to load game: No valid game state found in '$fileName'")
       }
+
+      reset()
+
+      gameState = loadedState
+
+      player1 = gameState.player1
+      player2 = gameState.player2
+
+      playingField = playingFieldFactory.createPlayingField(player1, player2)
+
+      val dataManager = playingField.getDataManager
+
+      val player1HandCards = gameState.player1Hand.getCards.toList
+      val player2HandCards = gameState.player2Hand.getCards.toList
+
+      dataManager.initializePlayerHands(player1HandCards, player2HandCards)
+      dataManager.setPlayerDefenders(player1, gameState.player1Defenders)
+      dataManager.setPlayerDefenders(player2, gameState.player2Defenders)
+
+      if (gameState.player1Goalkeeper.isEmpty || gameState.player2Goalkeeper.isEmpty) {
+        throw new IllegalStateException("Goalkeeper is missing! The game logic must always have one.")
+      }
+
+      dataManager.setPlayerGoalkeeper(player1, gameState.player1Goalkeeper)
+      dataManager.setPlayerGoalkeeper(player2, gameState.player2Goalkeeper)
+
+      playingField.setPlayingField()
+      updateGameState()
+
     } catch {
       case e: Exception =>
-        println(s"❌ ERROR: Exception while loading game '$fileName': ${e.getMessage}")
-        e.printStackTrace()
         throw new RuntimeException(s"Failed to load game '$fileName'", e)
     }
   }

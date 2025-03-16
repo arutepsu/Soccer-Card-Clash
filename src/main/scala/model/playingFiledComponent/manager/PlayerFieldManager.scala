@@ -1,4 +1,5 @@
-package model.playingFiledComponent.manager.base
+package model.playingFiledComponent.manager
+
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
@@ -16,32 +17,30 @@ class PlayerFieldManager extends IPlayerFieldManager {
   override def getPlayerField(player: IPlayer): List[ICard] = playerFields(player)
 
   override def setPlayerField(player: IPlayer, newField: List[ICard]): Unit = {
-    playerFields = playerFields.updated(player, newField)
+    defenders = defenders.updated(player, newField)
   }
 
-  override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] = goalkeepers(player)
+  override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] = {
+    goalkeepers.getOrElse(player, None)
+  }
+
 
   override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit = {
     goalkeepers = goalkeepers.updated(player, goalkeeper)
   }
 
   override def getPlayerDefenders(player: IPlayer): List[ICard] = {
-    val playerDefenders = defenders(player) // Retrieve the defenders
-    println(s"QQQQQQDEBUG: getPlayerDefenders called for ${player.name}, Defenders: $playerDefenders")
+    val playerDefenders = defenders(player)
     playerDefenders
   }
 
-
-  override def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit = {
-    defenders = defenders.updated(player, newDefenderField)
-  }
 
   override def setGoalkeeperForAttacker(playingField: IPlayingField, card: ICard): Unit = {
     val attacker = playingField.getAttacker
     goalkeepers = goalkeepers.updated(attacker, Some(card))
     playingField.notifyObservers()
   }
-  
+
   override def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): Unit = {
     defenders = defenders.updated(currentDefender, defenders(currentDefender).filterNot(_ == defenderCard))
   }
@@ -64,7 +63,9 @@ class PlayerFieldManager extends IPlayerFieldManager {
     playerFields = Map().withDefaultValue(List())
     goalkeepers = Map().withDefaultValue(None)
     defenders = Map().withDefaultValue(List())
-    println("🔄 PlayerFieldManager cleared!")
+    println("🚨 DEBUG: Current Player Fields: " + playerFields.keys.mkString(", "))
+    println("🚨 DEBUG: Current Goalkeepers: " + goalkeepers.keys.mkString(", "))
+    println("🚨 DEBUG: Current Defenders: " + defenders.keys.mkString(", "))
   }
 
 }
@@ -78,8 +79,6 @@ trait IPlayerFieldManager {
   def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): Unit
 
   def getPlayerDefenders(player: IPlayer): List[ICard]
-
-  def setPlayerDefenders(player: IPlayer, newDefenderField: List[ICard]): Unit
 
   def setGoalkeeperForAttacker(playingField: IPlayingField, card: ICard): Unit
 

@@ -14,7 +14,6 @@ class MementoManager(private val game: IGame) extends IMementoManager {
   override def createMemento(): Memento = {
     val playingField = game.getPlayingField
 
-    print(f"TO BE SAVED!!!!!!!!!!!!!!!!!!!!!!!!1 ${playingField.getDataManager.getPlayerGoalkeeper(playingField.getAttacker)}")
     Memento(
       attacker = playingField.getAttacker,
       defender = playingField.getDefender,
@@ -51,9 +50,18 @@ class MementoManager(private val game: IGame) extends IMementoManager {
         defenders(lastBoostedIndex) match {
           case boosted: BoostedCard =>
             val revertedCard = revertStrategy.revertCard(boosted)
-
             defenders = defenders.updated(lastBoostedIndex, revertedCard)
             playingField.getDataManager.setPlayerDefenders(attacker, defenders)
+
+            val restoredBoostCount = memento.player1Actions.getOrElse(PlayerActionPolicies.Boost, 0)
+            val updatedAttacker = attacker.setActionStates(
+              attacker.actionStates.updated(
+                PlayerActionPolicies.Boost,
+                if (restoredBoostCount > 0) CanPerformAction(restoredBoostCount) else OutOfActions
+              )
+            )
+
+            playingField.getRoles.setRoles(updatedAttacker, playingField.getRoles.defender)
 
             playingField.notifyObservers(Events.Reverted)
 
@@ -64,6 +72,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
     }
   }
 
+
   override def restoreGoalkeeperBoost(memento: Memento): Unit = {
     val playingField = game.getPlayingField
     val revertStrategy = game.getActionManager.getBoostManager.getRevertStrategy
@@ -73,23 +82,29 @@ class MementoManager(private val game: IGame) extends IMementoManager {
 
     goalkeeperOpt match {
       case Some(goalkeeper) =>
-        println(s"[DEBUG] Goalkeeper found in memento. Type: ${goalkeeper.getClass}")
 
         goalkeeper match {
-          case boostedGoalkeeper: RegularCard => // ✅ Only enters this case if correctly identified
+          case boostedGoalkeeper: RegularCard =>
             val revertedGoalkeeper = revertStrategy.revertCard(boostedGoalkeeper)
-            println(f"GOALKEEPERR TO BE SET : ${revertedGoalkeeper}")
             playingField.getDataManager.setPlayerGoalkeeper(attacker, Some(revertedGoalkeeper))
 
+            val restoredBoostCount = memento.player1Actions.getOrElse(PlayerActionPolicies.Boost, 0)
+            val updatedAttacker = attacker.setActionStates(
+              attacker.actionStates.updated(
+                PlayerActionPolicies.Boost,
+                if (restoredBoostCount > 0) CanPerformAction(restoredBoostCount) else OutOfActions
+              )
+            )
+
+            playingField.getRoles.setRoles(updatedAttacker, playingField.getRoles.defender)
+
             playingField.notifyObservers(Events.Reverted)
-            println(s"[DEBUG] Goalkeeper boost reverted for ${attacker.name}.")
 
           case _ =>
-            println(s"[ERROR] Goalkeeper was expected to be boosted but is of type: ${goalkeeper.getClass}")
+            throw new RuntimeException("Error while reverting boost")
         }
 
       case None =>
-        println(s"[ERROR] No goalkeeper found in memento. Cannot restore.")
     }
   }
 
@@ -115,18 +130,19 @@ class MementoManager(private val game: IGame) extends IMementoManager {
     pf.getScores.setScorePlayer2(memento.player2Score)
 
     val restoredPlayer1 = memento.attacker.setActionStates(
-      memento.player1Actions.map {
-        case (action, remainingUses) =>
-          action -> (if (remainingUses > 0) CanPerformAction(remainingUses) else OutOfActions)
+      memento.player1Actions.map { case (action, remainingUses) =>
+        val validUses = math.min(remainingUses, action.maxUses)
+        action -> (if (validUses > 0) CanPerformAction(validUses) else OutOfActions)
       }
     )
 
     val restoredPlayer2 = memento.defender.setActionStates(
-      memento.player2Actions.map {
-        case (action, remainingUses) =>
-          action -> (if (remainingUses > 0) CanPerformAction(remainingUses) else OutOfActions)
+      memento.player2Actions.map { case (action, remainingUses) =>
+        val validUses = math.min(remainingUses, action.maxUses)
+        action -> (if (validUses > 0) CanPerformAction(validUses) else OutOfActions)
       }
     )
+
 
     pf.getRoles.setRoles(restoredPlayer1, restoredPlayer2)
 

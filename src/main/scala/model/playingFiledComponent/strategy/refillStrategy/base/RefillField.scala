@@ -45,9 +45,17 @@ class RefillField {
                                 player: IPlayer,
                                 field: List[ICard],
                                 goalkeeper: Option[ICard],
-                                defenders: List[ICard]): Unit = {
+                                defenders: List[ICard]
+                              ): Unit = {
+    
+    val existingDefenders = fieldState.getPlayerDefenders(player)
+    if (existingDefenders.nonEmpty) {
+      return
+    }
+    
     fieldState.setPlayerField(player, field)
     fieldState.setPlayerGoalkeeper(player, goalkeeper)
     fieldState.setPlayerDefenders(player, defenders)
   }
+
 }

@@ -40,7 +40,7 @@ class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: B
     val hand = playingField.getDataManager.getPlayerHand(player)
 
     val handCards = hand.zipWithIndex.map { case (card, index) =>
-      
+
       val isLastCard = index == hand.getHandSize - 1
 //      val handCard = new HandCard(flipped = !isLastCard, card = card)
       val handCard = new HandCard(flipped = false, card = card)

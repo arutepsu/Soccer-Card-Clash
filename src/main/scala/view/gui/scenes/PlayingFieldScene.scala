@@ -31,20 +31,19 @@ case class PlayingFieldScene(
   if (controller.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
   }
+
   def playingField: IPlayingField = controller.getPlayingField
+
   def player1: IPlayer = controller.getPlayer1
+
   def player2: IPlayer = controller.getPlayer2
 
 
   val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
   val player2HandBar = new PlayersHandBar(player2, playingField, isLeftSide = false)
-  println(s"DEBUG: Creating PlayersFieldBar for Player 1 - ${player1.name}, PlayingField: $playingField")
-  val player1FieldBar = new PlayersFieldBar(player1, playingField)
-  println(s"DEBUG: Player 1 FieldBar created successfully: ${player1FieldBar.getDefenderCards}")
+  var player1FieldBar = new PlayersFieldBar(player1, playingField)
 
-  println(s"DEBUG: Creating PlayersFieldBar for Player 2 - ${player2.name}, PlayingField: $playingField")
-  val player2FieldBar = new PlayersFieldBar(player2, playingField)
-  println(s"DEBUG: Player 2 FieldBar created successfully: ${player2FieldBar.getDefenderCards}")
+  var player2FieldBar = new PlayersFieldBar(player2, playingField)
 
 
   def attacker: IPlayer = playingField.getRoles.attacker
@@ -106,29 +105,39 @@ case class PlayingFieldScene(
       }
     )
   }
+
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => updateDisplay())
   }
 
   def updateDisplay(): Unit = {
+    println("🔄 DEBUG: Updating Playing Field UI...")
 
     val currentPlayingField = controller.getPlayingField
+
+    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(controller.getPlayer1).isEmpty) {
+      println("⚠️ WARNING: PlayingField or Goalkeepers are not initialized. Skipping UI update.")
+      return
+    }
+
     val currentPlayer1 = controller.getPlayer1
     val currentPlayer2 = controller.getPlayer2
 
     val attacker = currentPlayingField.getRoles.attacker
     val defender = currentPlayingField.getRoles.defender
 
-    println(s"PF attacker: ${attacker.name}, PF defender: ${defender.name}")
+    // ✅ Recreate PlayersFieldBar for Player 1 and Player 2
+    player1FieldBar = new PlayersFieldBar(currentPlayer1, currentPlayingField)
+    player2FieldBar = new PlayersFieldBar(currentPlayer2, currentPlayingField)
 
     val newAttackerHandBar = if (attacker == currentPlayer1) player1HandBar else player2HandBar
     val newDefenderFieldBar = if (defender == currentPlayer1) player1FieldBar else player2FieldBar
 
     playerFields.children.clear()
-    playerFields.children.add(newDefenderFieldBar)
+    playerFields.children.add(newDefenderFieldBar) // ✅ Use new instance
 
     playerHands.children.clear()
-    playerHands.children.add(newAttackerHandBar)
+    playerHands.children.add(newAttackerHandBar) // ✅ Use new instance
 
     newAttackerHandBar.updateBar()
     newDefenderFieldBar.updateBar()
@@ -140,5 +149,7 @@ case class PlayingFieldScene(
 
     player1ScoreLabel.text = s"${currentPlayer1.name} Score: $score1"
     player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
+
+    println("✅ DEBUG: UI successfully refreshed with new playing field!")
   }
 }

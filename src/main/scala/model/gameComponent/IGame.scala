@@ -5,8 +5,7 @@ import controller.command.memento.base.Memento
 import model.gameComponent.factory.IGameState
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.base.ActionManager
-import model.playingFiledComponent.manager.IActionManager
+import model.playingFiledComponent.manager.{ActionManager, IActionManager}
 import play.api.libs.json.*
 
 import scala.xml.*

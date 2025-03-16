@@ -1,4 +1,5 @@
-package model.playingFiledComponent.manager.base
+package model.playingFiledComponent.manager
+
 import model.cardComponent.ICard
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
@@ -22,11 +23,9 @@ class PlayerHandManager @Inject()(handCardsQueueFactory: IHandCardsQueueFactory)
                                      player2: IPlayer,
                                      player2Cards: List[ICard]): Unit = {
     println(s"🔄 Initializing hands for players: ${player1.name} (${player1.hashCode()}), ${player2.name} (${player2.hashCode()})")
-    playerHands = Map.empty
-    playerHands = Map(
-      player1 -> handCardsQueueFactory.create(player1Cards),  // ✅ Use Factory
-      player2 -> handCardsQueueFactory.create(player2Cards)   // ✅ Use Factory
-    )
+
+    playerHands = playerHands.updated(player1, handCardsQueueFactory.create(player1Cards))
+    playerHands = playerHands.updated(player2, handCardsQueueFactory.create(player2Cards))
 
     println("✅ Player hands initialized successfully!")
     println(s"Existing players in Map: ${playerHands.keys.map(p => s"${p.name} (${p.hashCode()})").mkString(", ")}")
@@ -40,27 +39,27 @@ class PlayerHandManager @Inject()(handCardsQueueFactory: IHandCardsQueueFactory)
 //    playerHands(player)
 //  }
   override def getPlayerHand(player: IPlayer): IHandCardsQueue = {
-    if (!playerHands.contains(player)) {
-      println(s"⚠️ WARNING: Player hand not found for ${player.name}. Recreating a new empty hand queue.")
-
-      // ✅ Remove stale player reference
-      playerHands -= player
-
-      // ✅ Create a new empty hand queue
-      val newHandQueue = handCardsQueueFactory.create(List())
-
-      // ✅ Print the newly created hand queue
-      println(s"🆕 Recreated HandQueue for ${player.name}: ${newHandQueue.getCards.mkString(", ")}")
-
-      return newHandQueue
+    playerHands.find { case (p, _) => p.hashCode() == player.hashCode() } match {
+      case Some((_, handQueue)) =>
+        println(s"✅ DEBUG: Retrieved hand for ${player.name}: ${handQueue.getCards.mkString(", ")}")
+        handQueue
+      case None =>
+        println(s"⚠️ WARNING: Player hand not found for ${player.name}. Creating a new empty hand queue.")
+  
+        val newHandQueue = handCardsQueueFactory.create(List())
+        playerHands += (player -> newHandQueue) // Store new reference
+  
+        println(s"🆕 DEBUG: Recreated HandQueue for ${player.name}: ${newHandQueue.getCards.mkString(", ")}")
+        newHandQueue
     }
-
-    playerHands(player)
   }
 
 
-  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit =
+
+  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): Unit = {
+    println(s"🔄 DEBUG: Setting new hand for ${player.name}: ${newHand.getCards.mkString(", ")}")
     playerHands = playerHands.updated(player, newHand)
+  }
 
   override def getAttackingCard(attacker: IPlayer): ICard = getPlayerHand(attacker).getCards.last
 
@@ -68,7 +67,7 @@ class PlayerHandManager @Inject()(handCardsQueueFactory: IHandCardsQueueFactory)
 
   override def clearAll(): Unit = {
     playerHands = Map.empty// ✅ Reassign an empty Map
-    println("🔄 PlayerHandManager cleared!")
+    println("🚨 DEBUG: After clearAll, PlayerHands contains: " + playerHands.keys.mkString(", "))
   }
 
 }

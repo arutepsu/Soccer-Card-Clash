@@ -13,7 +13,7 @@ import scala.collection.mutable
 import scala.util.Try
 import com.google.inject.Inject
 import controller.command.factory.ICommandFactory
-import model.playingFiledComponent.manager.base.ActionManager
+import model.playingFiledComponent.manager.ActionManager
 
 class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController{
   private val undoManager = new UndoManager

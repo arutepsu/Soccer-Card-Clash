@@ -150,7 +150,6 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
     val isNowDefender = player == newDefender
 
     if (!isNowDefender) {
-      println(s"🛑 Resetting selected defender for ${player.name} because they are no longer the defender.")
       resetSelectedDefender()
     }
 
