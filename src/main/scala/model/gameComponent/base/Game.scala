@@ -60,8 +60,8 @@ class Game @Inject()(
     (p1, p2)
   }
 
-  override def startGame(playerName1: String, playerName2: String): Unit = {
-    reset()  // ✅ Resets the game state and playingField internally
+  override def createGame(playerName1: String, playerName2: String): Unit = {
+    reset()
 
     val (p1, p2) = createPlayers(playerName1, playerName2)
     player1 = p1
@@ -75,11 +75,8 @@ class Game @Inject()(
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
 
     playingField.setPlayingField()
-
-    // ✅ Initialize the game state
+    
     updateGameState()
-
-    println("✅ Game started successfully!")
   }
 
 
@@ -173,12 +170,13 @@ class Game @Inject()(
     System.exit(0)
   }
 
-  override def reset(): Unit = {
-    println("🔄 Resetting Game...")
-
-    if(playingField != null)
+  override def reset(): Boolean = {
+    if (playingField != null) {
       playingField.reset()
-
-    println("✅ Game reset completed!")
+      true
+    } else {
+      false
+    }
   }
+
 }

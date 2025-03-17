@@ -28,15 +28,15 @@ case class PlayingFieldScene(
   this.getStylesheets.add(Styles.playingFieldCss)
   controller.add(this)
 
-  if (controller.getPlayingField == null) {
+  if (controller.getCurrentGame.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
   }
 
-  def playingField: IPlayingField = controller.getPlayingField
+  def playingField: IPlayingField = controller.getCurrentGame.getPlayingField
 
-  def player1: IPlayer = controller.getPlayer1
+  def player1: IPlayer = controller.getCurrentGame.getPlayer1
 
-  def player2: IPlayer = controller.getPlayer2
+  def player2: IPlayer = controller.getCurrentGame.getPlayer2
 
 
   val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
@@ -107,21 +107,39 @@ case class PlayingFieldScene(
   }
 
   override def update(e: ObservableEvent): Unit = {
-    Platform.runLater(() => updateDisplay())
+    println(s"🔄 Received event: $e")
+
+    e match {
+      case Events.MainMenu =>
+        if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
+          return
+        }
+        controller.remove(this)
+        SceneManager.update(e)
+
+      case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.CircularSwap =>
+        // ✅ Prevent redundant UI updates
+          updateDisplay()
+
+      case _ =>
+        println(s"⚠️ Unhandled event: $e")
+    }
   }
 
+
   def updateDisplay(): Unit = {
-    println("🔄 DEBUG: Updating Playing Field UI...")
+    println("🔄 I AM CALLED !!!!!!!!!!!!!!! DEBUG: Updating Playing Field UI...")
 
-    val currentPlayingField = controller.getPlayingField
+    val currentPlayingField = controller.getCurrentGame.getPlayingField
 
-    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(controller.getPlayer1).isEmpty) {
+    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(
+      controller.getCurrentGame.getPlayer1).isEmpty) {
       println("⚠️ WARNING: PlayingField or Goalkeepers are not initialized. Skipping UI update.")
       return
     }
 
-    val currentPlayer1 = controller.getPlayer1
-    val currentPlayer2 = controller.getPlayer2
+    val currentPlayer1 = controller.getCurrentGame.getPlayer1
+    val currentPlayer2 = controller.getCurrentGame.getPlayer2
 
     val attacker = currentPlayingField.getRoles.attacker
     val defender = currentPlayingField.getRoles.defender

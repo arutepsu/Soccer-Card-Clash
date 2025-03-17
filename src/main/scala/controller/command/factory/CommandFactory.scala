@@ -6,9 +6,10 @@ import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapAct
 import com.google.inject.Inject
 import controller.Events
 import model.gameComponent.IGame
-import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, StartGameWorkflowCommand, WorkflowCommand}
+import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, CreateGameWorkflowCommand, WorkflowCommand}
 import model.cardComponent.ICard
 import controller.IController
+import controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
 class CommandFactory @Inject() (game: IGame, controller: IController) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
     new SingleAttackActionCommand(defenderPosition, game)
@@ -27,9 +28,11 @@ class CommandFactory @Inject() (game: IGame, controller: IController) extends IC
 
   override def createCircularSwapCommand(index: Int): ICommand =
     new CircularSwapActionCommand(index, game)
-
-  override def createStartGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand =
-    new StartGameWorkflowCommand(game, player1, player2)
+  override def createResetGameCommand(): ICommand =
+    new ResetGameCommand(game)
+    
+  override def createCreateGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand =
+    new CreateGameWorkflowCommand(game, player1, player2)
 
   override def createQuitCommand(game: IGame): WorkflowCommand =
     new QuitWorkflowCommand(game)
@@ -37,11 +40,11 @@ class CommandFactory @Inject() (game: IGame, controller: IController) extends IC
 
   override def createLoadGameCommand(fileName: String): WorkflowCommand =
     new LoadGameWorkflowCommand(game, fileName)
-
-
+  
   override def createSaveGameCommand(): WorkflowCommand =
     new SaveGameWorkflowCommand(game)
   
+
 }
 trait ICommandFactory {
   def createSingleAttackCommand(defenderPosition: Int): ICommand
@@ -50,9 +53,9 @@ trait ICommandFactory {
   def createBoostGoalkeeperCommand(): ICommand
   def createRegularSwapCommand(index: Int): ICommand
   def createCircularSwapCommand(index: Int): ICommand
-  def createStartGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand
+  def createResetGameCommand() : ICommand
+  def createCreateGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand
   def createQuitCommand(game: IGame): WorkflowCommand
   def createSaveGameCommand(): WorkflowCommand
   def createLoadGameCommand(fileName: String): WorkflowCommand
-
 }

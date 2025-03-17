@@ -18,55 +18,64 @@ import scalafx.application.Platform
 import controller.IController
 import util.{ObservableEvent, Observer}
 import scalafx.geometry.Pos
+import scalafx.scene.Scene
 
-class CreatePlayerScene(controller: IController) extends VBox with Observer {
+class CreatePlayerScene(controller: IController) extends Scene(new VBox) with Observer {
 
-  prefHeight = 600
-  prefWidth = 500
-  fillWidth = false
-  padding = Insets(20)
-  alignment = Pos.Center
-
-  this.getStylesheets.add(Styles.createPlayerCss)
-  styleClass.add("create-player-panel")
-
-  val createPlayersTitle = new Text {
-    text = "Create Players"
-    styleClass.add("title")
-  }
-
-  val nameTitle = new Text {
-    text = "Enter Player Names"
-    styleClass.add("subtitle")
-  }
-
-  children.addAll(createPlayersTitle, nameTitle)
+  controller.add(this) // Register as an observer
 
   val maxAllowedPlayersCount = 2
-  val playerTextInputFields = for (_ <- 1 to maxAllowedPlayersCount) yield new TextField()
 
-  val playerTextInputFieldVBox = new VBox(10) {
-    children = playerTextInputFields
-    padding = Insets(10)
+  // ✅ Declare playerTextInputFields at the class level
+  val playerTextInputFields: Seq[TextField] = for (_ <- 1 to maxAllowedPlayersCount) yield new TextField()
+
+  val rootVBox: VBox = new VBox {
+    prefHeight = 600
+    prefWidth = 500
+    fillWidth = false
+    padding = Insets(20)
+    alignment = Pos.Center
+    this.getStylesheets.add(Styles.createPlayerCss)
+    styleClass.add("create-player-panel")
+
+    val createPlayersTitle = new Text {
+      text = "Create Players"
+      styleClass.add("title")
+    }
+
+    val nameTitle = new Text {
+      text = "Enter Player Names"
+      styleClass.add("subtitle")
+    }
+
+    children.addAll(createPlayersTitle, nameTitle)
+
+    val playerTextInputFieldVBox = new VBox(10) {
+      children = playerTextInputFields
+      padding = Insets(10)
+    }
+
+    children.add(playerTextInputFieldVBox)
+
+    val startButton = GameButtonFactory.createGameButton(
+      text = "Start",
+      width = 250,
+      height = 60
+    )(() => startGame())
+
+    startButton.styleClass.add("start-button")
+
+    val startButtonBox = new VBox(10) {
+      alignment = Pos.TOP_CENTER
+      children = Seq(startButton)
+    }
+
+    children.add(startButtonBox)
   }
 
-  children.add(playerTextInputFieldVBox)
+  root = rootVBox // ✅ Set the VBox as the scene root
 
-  val startButton = GameButtonFactory.createGameButton(
-    text = "Start",
-    width = 250,
-    height = 60
-  )(() => startGame())
-
-  startButton.styleClass.add("start-button")
-
-  val startButtonBox = new VBox(10) {
-    alignment = Pos.TOP_CENTER
-    children = Seq(startButton)
-  }
-
-  children.add(startButtonBox)
-
+  // ✅ Now `playerTextInputFields` is accessible
   def getPlayerNames(): Seq[String] = {
     playerTextInputFields.map(_.text.value.trim).filter(_.nonEmpty)
   }
@@ -78,21 +87,17 @@ class CreatePlayerScene(controller: IController) extends VBox with Observer {
       showAlert("Error", "Exactly 2 players are required to start the game.")
       return
     }
-    controller.startGame(playerNames.head, playerNames(1))
+    controller.createGame(playerNames.head, playerNames(1))
   }
-
-
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println("🔄 CreatePlayerCard Updating!")
-
-      playerTextInputFields.head.text = controller.getPlayer1.name
-      playerTextInputFields(1).text = controller.getPlayer2.name
+      println("🔄 CreatePlayerScene Updating!")
+      playerTextInputFields.head.text = controller.getCurrentGame.getPlayer1.name
+      playerTextInputFields(1).text = controller.getCurrentGame.getPlayer2.name
       SceneManager.update(e)
     })
   }
-
 
   private def showAlert(titleText: String, content: String): Unit = {
     val alert = new Alert(AlertType.Warning)

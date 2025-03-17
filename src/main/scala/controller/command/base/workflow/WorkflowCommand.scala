@@ -3,57 +3,48 @@ package controller.command.base.workflow
 import controller.command.ICommand
 import model.gameComponent.IGame
 import controller.{Events, IController}
+import scala.util.{Try, Success, Failure}
 
 abstract class WorkflowCommand extends ICommand {
   override def undoStep(): Unit = {}
   override def redoStep(): Unit = doStep()
 }
 
-class StartGameWorkflowCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
-
+class CreateGameWorkflowCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
   override def doStep(): Boolean = {
-    if (game.getPlayingField != null) {
-      game.getPlayingField.reset()
+    Try {
+      if (game.getPlayingField != null) {
+        game.getPlayingField.reset()
+      }
+      game.createGame(player1, player2)
+    } match {
+      case Success(_) => true
+      case Failure(exception) =>
+        false
     }
-    game.startGame(player1, player2)
-    true
   }
 }
 
-
 class QuitWorkflowCommand(val game: IGame) extends WorkflowCommand {
-  override def doStep(): Boolean = {
-    game.exit()
-    true
-  }
+  override def doStep(): Boolean = true
 }
 
 class SaveGameWorkflowCommand(val game: IGame) extends WorkflowCommand {
   override def doStep(): Boolean = {
-    try {
-      game.saveGame()
-      true
-    } catch {
-      case e: Exception =>
-        throw new RuntimeException("Error while saving the game", e)
+    Try(game.saveGame()) match {
+      case Success(_) => true
+      case Failure(exception) =>
         false
     }
   }
 }
 
 class LoadGameWorkflowCommand(val game: IGame, val fileName: String) extends WorkflowCommand {
-
   override def doStep(): Boolean = {
-    try {
-      game.loadGame(fileName)
-      true
-    } catch {
-      case e: Exception =>
-        throw new RuntimeException("Error while loading the game", e)
+    Try(game.loadGame(fileName)) match {
+      case Success(_) => true
+      case Failure(exception) =>
         false
     }
   }
 }
-
-
-

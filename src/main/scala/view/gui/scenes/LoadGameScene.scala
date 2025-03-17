@@ -41,7 +41,7 @@ import scalafx.application.Platform
 import java.io.File
 
 class LoadGameScene(controller: IController) extends Scene with Observer {
-
+  controller.add(this)
   // Directory where saved games are stored
   private val gamesFolder = new File("games")
 

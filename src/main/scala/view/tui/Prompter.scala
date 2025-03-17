@@ -35,7 +35,7 @@ class Prompter(controller: IController) {
   }
 
   def promptShowAttackersField(): Unit = {
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val attacker = playingField.getAttacker
 
     println("\n===================================")
@@ -45,7 +45,7 @@ class Prompter(controller: IController) {
   }
   
   def promptShowAttackersHand(): Unit = {
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val attacker = playingField.getAttacker
 
     println("\n===================================")
@@ -55,7 +55,7 @@ class Prompter(controller: IController) {
   }
   
   def promptShowDefendersField() : Unit = {
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val defender = playingField.getDefender
 
     println("\n===================================")
@@ -65,7 +65,7 @@ class Prompter(controller: IController) {
   }
 
   def promptShowDefendersHand(): Unit = {
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val defender = playingField.getDefender
 
     println("\n===================================")
@@ -76,7 +76,7 @@ class Prompter(controller: IController) {
   
   
   def printGameState(): Unit = {
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val attacker = playingField.getAttacker
     val defender = playingField.getDefender
 

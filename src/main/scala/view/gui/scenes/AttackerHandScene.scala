@@ -21,7 +21,7 @@ case class AttackerHandScene(
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
-
+  controller.add(this)
   this.getStylesheets.add(Styles.attackerHandSceneCss)
   var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar

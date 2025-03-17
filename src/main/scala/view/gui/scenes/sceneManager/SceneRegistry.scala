@@ -12,51 +12,50 @@ import view.gui.scenes.CreatePlayerScene
 
 class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
 
-  private var _mainMenuScene: Option[Scene] = None
-  private var _createPlayerScene: Option[Scene] = None
+  private var _mainMenuScene: Option[MainMenuScene] = None
+  private var _createPlayerScene: Option[CreatePlayerScene] = None
   private var _playingFieldScene: Option[PlayingFieldScene] = None
-  private var _attackerHandScene: Option[Scene] = None
-  private var _attackerDefendersScene: Option[Scene] = None
-  private var _menuScene: Option[Scene] = None
-  private var _loadGameScene: Option[Scene] = None
+  private var _attackerHandScene: Option[AttackerHandScene] = None
+  private var _attackerDefendersScene: Option[AttackerDefendersScene] = None
+  private var _menuScene: Option[MenuScene] = None
+  private var _loadGameScene: Option[LoadGameScene] = None
 
   private def clearScenes(): Unit = {
-    println("Clearing all scenes...")
+    if (_createPlayerScene.isEmpty && _playingFieldScene.isEmpty) {
+      return
+    }
+
 
     _createPlayerScene = None
-    println("✅ Cleared _createPlayerScene")
-
     _playingFieldScene = None
-    println("✅ Cleared _playingFieldScene")
-
     _attackerHandScene = None
-    println("✅ Cleared _attackerHandScene")
-
     _attackerDefendersScene = None
-    println("✅ Cleared _attackerDefendersScene")
-
     _menuScene = None
-    println("✅ Cleared _menuScene")
-
     _loadGameScene = None
-    println("✅ Cleared _loadGameScene")
+
   }
 
-  def getMainMenuScene: Scene = {
+
+  def getMainMenuScene: MainMenuScene = {
     clearScenes()
     if (_mainMenuScene.isEmpty) {
-      _mainMenuScene = Some(new MainMenuScene(controller).mainMenuScene())
+      _mainMenuScene = Some(new MainMenuScene(controller))
     }
     _mainMenuScene.get
   }
 
-  def getLoadGameScene: Scene = {
-    // ✅ Always create a new instance to ensure the scene refreshes correctly
-    _loadGameScene = Some(new LoadGameScene(controller))
+
+  def getLoadGameScene: LoadGameScene = {
+    if (_loadGameScene.isEmpty) {
+      _loadGameScene = Some(new LoadGameScene(controller))
+    }
     _loadGameScene.get
   }
-  def getCreatePlayerScene: Scene = {
-    _createPlayerScene = Some(new Scene { root = new CreatePlayerScene(controller) })
+
+  def getCreatePlayerScene: CreatePlayerScene = {
+    if (_createPlayerScene.isEmpty) {
+      _createPlayerScene = Some(new CreatePlayerScene(controller))
+    }
     _createPlayerScene.get
   }
 
@@ -67,17 +66,32 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     _playingFieldScene.get
   }
 
-  def getAttackerDefendersScene: Scene = {
-    _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(controller, getPlayingFieldScene, Option(controller.getPlayingField), 800, 600))
+  def getAttackerDefendersScene: AttackerDefendersScene = {
+    if (_attackerDefendersScene.isEmpty) {
+      _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(
+        controller,
+        getPlayingFieldScene,
+        Option(controller.getCurrentGame.getPlayingField),
+        800, 600
+      ))
+    }
     _attackerDefendersScene.get
   }
 
-  def getAttackerHandScene: Scene = {
-    _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(controller,getPlayingFieldScene, Option(controller.getPlayingField), 800, 600))
+  def getAttackerHandScene: AttackerHandScene = {
+    if (_attackerHandScene.isEmpty) {
+      _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(
+        controller,
+        getPlayingFieldScene,
+        Option(controller.getCurrentGame.getPlayingField),
+        800, 600
+      ))
+    }
     _attackerHandScene.get
   }
 
-  def getMenuScene: Scene = {
+
+  def getMenuScene: MenuScene = {
     if (_menuScene.isEmpty) {
       _menuScene = Some(MenuScene(controller, getPlayingFieldScene, sceneManager))
     }

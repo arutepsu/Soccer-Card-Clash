@@ -34,7 +34,8 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 50
   ) { () =>
     controller.redo()
-    playingFieldScene.updateDisplay()
+    playingFieldScene.update(Events.Redo)
+//    playingFieldScene.updateDisplay()
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
 
@@ -52,6 +53,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 50
   ) { () =>
     controller.notifyObservers(Events.MainMenu)
-    controller.reset()
+    controller.resetGame()
   }
 }

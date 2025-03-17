@@ -17,14 +17,9 @@ import scala.xml.*
 class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deserializer[ICard]{
 
   override def fromXml(xml: Elem): ICard = {
-    // ✅ Extract raw suit text and print it
     val rawSuitText = (xml \ "suit").text
 
     val suitText = rawSuitText.trim
-
-    if (suitText.isEmpty) {
-      throw new IllegalArgumentException("ERROR: Missing 'suit' value in XML.")
-    }
 
     val cleanSuitText = suitText.replaceAll("\\s+", "")
 
@@ -35,20 +30,12 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
         throw new IllegalArgumentException(s"ERROR: Invalid suit value: '$cleanSuitText'")
     }
 
-    // ✅ Extract and validate `<value>`
     val valueText = (xml \ "value").text.trim
-    if (valueText.isEmpty) {
-      throw new IllegalArgumentException("ERROR: Missing 'value' for card in XML.")
-    }
 
     val value = Value.fromString(valueText)
       .getOrElse(throw new IllegalArgumentException(s"Invalid card value: '$valueText'"))
 
-    // ✅ Extract and validate `<type>`
     val cardType = (xml \ "type").text.trim
-    if (cardType.isEmpty) {
-      throw new IllegalArgumentException("ERROR: Missing 'type' for card in XML.")
-    }
 
     val card = cardType match {
       case "Regular" => cardFactory.createCard(value, suit)
@@ -78,7 +65,6 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
         new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
       case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
     }
-
     card
   }
 }

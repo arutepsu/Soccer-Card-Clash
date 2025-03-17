@@ -5,10 +5,10 @@ import view.tui.tuiCommand.base.ITuiCommand
 
 class AttackTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getPlayingField.getAttacker
-    val defender = controller.getPlayingField.getDefender
-    val attackingCard = controller.getPlayingField.getDataManager.getAttackingCard
-    val defendersField = controller.getPlayingField.getDataManager.getPlayerField(defender)
+    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val defender = controller.getCurrentGame.getPlayingField.getDefender
+    val attackingCard = controller.getCurrentGame.getPlayingField.getDataManager.getAttackingCard
+    val defendersField = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerField(defender)
 
     if (attackingCard == null) {
       println("⚠️ No attacking cards available!")

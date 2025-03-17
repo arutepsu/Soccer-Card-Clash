@@ -7,8 +7,8 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false
   
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getPlayingField.getAttacker
-    val handCards = controller.getPlayingField.getDataManager.getPlayerHand(attacker)
+    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
 
     if (handCards.isEmpty) {
       println("❌ No cards available to swap!")
@@ -28,8 +28,8 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   def handleSwapInput(input: String): Unit = {
     if (!waitingForIndex) return
 
-    val attacker = controller.getPlayingField.getAttacker
-    val handCards = controller.getPlayingField.getDataManager.getPlayerHand(attacker)
+    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
 
     try {
       val position = input.toInt

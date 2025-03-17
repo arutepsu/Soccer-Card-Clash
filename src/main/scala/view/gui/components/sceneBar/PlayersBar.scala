@@ -21,7 +21,7 @@ class PlayersBar(
   updateBar()
   
   def updateAttackerHighlight(): Unit = {
-    val currentDefender = controller.getPlayingField.getDefender
+    val currentDefender = controller.getCurrentGame.getPlayingField.getDefender
 
     children.foreach {
       case node: javafx.scene.layout.VBox =>
@@ -40,7 +40,7 @@ class PlayersBar(
   def updateBar(): Unit = {
     children.clear()
 
-    val playingField = controller.getPlayingField
+    val playingField = controller.getCurrentGame.getPlayingField
     val player1 = playingField.getAttacker
     val player2 = playingField.getDefender
 

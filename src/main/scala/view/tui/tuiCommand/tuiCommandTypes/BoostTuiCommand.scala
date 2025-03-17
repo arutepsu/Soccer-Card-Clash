@@ -5,8 +5,8 @@ import view.tui.tuiCommand.base.ITuiCommand
 
 class BoostTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getPlayingField.getAttacker
-    val defenders = controller.getPlayingField.getDataManager.getPlayerDefenders(attacker)
+    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val defenders = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerDefenders(attacker)
 
     if (defenders.isEmpty) {
       println("❌ No defenders available to boost!")

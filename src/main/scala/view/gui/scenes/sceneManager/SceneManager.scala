@@ -16,9 +16,9 @@ object SceneManager extends Observable with Observer {
   private var stage: Stage = _
   private var lastSceneWidth: Double = 800
   private var lastSceneHeight: Double = 600
-  private var currentScene: Option[Scene] = None
+  var currentScene: Option[Scene] = None
   private var controller: IController = _
-  private var sceneRegistry: SceneRegistry = _
+  var sceneRegistry: SceneRegistry = _
 
   def init(primaryStage: Stage, ctrl: IController): Unit = {
     stage = primaryStage
@@ -30,35 +30,32 @@ object SceneManager extends Observable with Observer {
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
+      if (
+        (currentScene.exists(_.getClass == classOf[MainMenuScene]) && e == Events.MainMenu) ||
+          (currentScene.exists(_.getClass == classOf[CreatePlayerScene]) && e == Events.CreatePlayers) ||
+          (currentScene.exists(_.getClass == classOf[PlayingFieldScene]) && e == Events.PlayingField) ||
+          (currentScene.exists(_.getClass == classOf[AttackerHandScene]) && e == Events.AttackerHandCards) ||
+          (currentScene.exists(_.getClass == classOf[AttackerDefendersScene]) && e == Events.AttackerDefenderCards) ||
+          (currentScene.exists(_.getClass == classOf[MenuScene]) && e == Events.PauseGame) ||
+          (currentScene.exists(_.getClass == classOf[LoadGameScene]) && e == Events.LoadGame)
+      ) {
+        return
+      }
+      
       e match {
-        case Events.MainMenu =>
-          switchScene(sceneRegistry.getMainMenuScene)
-
-        case Events.CreatePlayers =>
-          switchScene(sceneRegistry.getCreatePlayerScene)
-
-        case Events.PlayingField =>
-          switchScene(sceneRegistry.getPlayingFieldScene)
-
-        case Events.AttackerHandCards =>
-          switchScene(sceneRegistry.getAttackerHandScene)
-
-        case Events.AttackerDefenderCards =>
-          switchScene(sceneRegistry.getAttackerDefendersScene)
-
-        case Events.PauseGame =>
-          switchScene(sceneRegistry.getMenuScene)
-
-        case Events.LoadGame =>
-          switchScene(sceneRegistry.getLoadGameScene)
-
-        case Events.Quit =>
-          controller.quit()
-
+        case Events.MainMenu => switchScene(sceneRegistry.getMainMenuScene)
+        case Events.CreatePlayers => switchScene(sceneRegistry.getCreatePlayerScene)
+        case Events.PlayingField => switchScene(sceneRegistry.getPlayingFieldScene)
+        case Events.AttackerHandCards => switchScene(sceneRegistry.getAttackerHandScene)
+        case Events.AttackerDefenderCards => switchScene(sceneRegistry.getAttackerDefendersScene)
+        case Events.PauseGame => switchScene(sceneRegistry.getMenuScene)
+        case Events.LoadGame => switchScene(sceneRegistry.getLoadGameScene)
+        case Events.Quit => controller.quit()
         case _ =>
       }
     })
   }
+
 
   private def applySceneSize(): Unit = {
     stage.width = lastSceneWidth
@@ -73,37 +70,60 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
+    if (currentScene.contains(newScene)) {
+      return
+    }
+
     Platform.runLater(() => {
-      println(s"🔄 Switching to scene: ${newScene.getClass}") // ✅ Debuggin
-      val oldSceneOpt = Option(stage.scene)
+      val oldSceneOpt = currentScene
+      
+      oldSceneOpt match {
+        case Some(oldScene: Observer) if controller.subscribers.contains(oldScene) =>
+          controller.remove(oldScene)
+        case _ =>
+      }
+
       lastSceneWidth = stage.width()
       lastSceneHeight = stage.height()
 
-      oldSceneOpt match {
+      val fadeOut = oldSceneOpt match {
         case Some(oldScene) if oldScene.root.value != null =>
-          val fadeOut = new FadeTransition(Duration(200), oldScene.root.value)
-          fadeOut.toValue = 0.2
-          fadeOut.play()
-
-          fadeOut.setOnFinished(_ => Platform.runLater(() => {
-            stage.scene = newScene
-            currentScene = Some(newScene)
-            applySceneSize()
-
-            val fadeIn = new FadeTransition(Duration(500), newScene.root.value)
-            fadeIn.fromValue = 0.2
-            fadeIn.toValue = 1.0
-            fadeIn.play()
-
-            notifyObservers()
-          }))
-
-        case _ =>
-          stage.scene = newScene
-          currentScene = Some(newScene)
-          applySceneSize()
-          notifyObservers()
+          val fadeOutTransition = new FadeTransition(Duration(200), oldScene.root.value)
+          fadeOutTransition.toValue = 0.2
+          fadeOutTransition
+        case _ => null
       }
+
+      if (fadeOut != null) {
+        fadeOut.play()
+        fadeOut.setOnFinished(_ => applySceneTransition(newScene))
+      } else {
+        applySceneTransition(newScene)
+      }
+    })
+  }
+
+  private def applySceneTransition(newScene: Scene): Unit = {
+    Platform.runLater(() => {
+      stage.scene = newScene
+      currentScene = Some(newScene)
+      applySceneSize()
+      
+      newScene match {
+        case newObserverScene: Observer if !controller.subscribers.contains(newObserverScene) =>
+          println(s"✅ Adding observer: ${newObserverScene.getClass.getSimpleName}")
+          controller.add(newObserverScene)
+        case _ =>
+      }
+      
+      if (newScene.root.value != null) {
+        val fadeIn = new FadeTransition(Duration(500), newScene.root.value)
+        fadeIn.fromValue = 0.2
+        fadeIn.toValue = 1.0
+        fadeIn.play()
+      }
+      
+      notifyObservers()
     })
   }
 }

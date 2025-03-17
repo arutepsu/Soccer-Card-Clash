@@ -12,7 +12,7 @@ import scala.xml.*
 import scala.util.Try
 
 trait IGame extends Serializable {
-  def startGame(player1: String, player2: String): Unit
+  def createGame(player1: String, player2: String): Unit
 
   def getPlayingField: IPlayingField
 
@@ -26,6 +26,6 @@ trait IGame extends Serializable {
   def saveGame(): Unit
   def loadGame(fileName: String): Unit
   def exit(): Unit
-  def reset(): Unit
+  def reset(): Boolean
   def updateGameState(): Unit
 }
