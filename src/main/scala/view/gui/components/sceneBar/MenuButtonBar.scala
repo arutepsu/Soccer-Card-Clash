@@ -16,6 +16,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 50
   ) { () =>
     controller.notifyObservers(Events.PlayingField)
+    playingFieldScene.updateDisplay()
   }
 
   val undoButton: Button = GameButtonFactory.createGameButton(
@@ -35,7 +36,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.redo()
     playingFieldScene.update(Events.Redo)
-//    playingFieldScene.updateDisplay()
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
 

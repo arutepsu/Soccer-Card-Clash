@@ -43,10 +43,10 @@ case class AttackerHandScene(
   ) {
     () =>
       controller.notifyObservers(Events.PlayingField)
+      playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
-
-  // ✅ Swap Card Button
+  
   val regularSwapButton: Button = ActionButtonFactory.createRegularSwapButton(
     RegularSwapButton(),
     "Regular Swap",

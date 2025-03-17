@@ -24,6 +24,7 @@ case class AttackerDefendersScene(
                                  ) extends Scene(windowWidth, windowHeight) with Observer {
 
 //  this.getStylesheets.add(Styles.attackerDefendersSceneCss)
+  println("RECREATIGN AttackerDefendersScene")
   controller.add(this)
   var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
@@ -45,6 +46,7 @@ case class AttackerDefendersScene(
     height = 50
   ) {
     () => controller.notifyObservers(Events.PlayingField)
+      playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
 

@@ -13,9 +13,6 @@ abstract class WorkflowCommand extends ICommand {
 class CreateGameWorkflowCommand(val game: IGame, player1: String, player2: String) extends WorkflowCommand {
   override def doStep(): Boolean = {
     Try {
-      if (game.getPlayingField != null) {
-        game.getPlayingField.reset()
-      }
       game.createGame(player1, player2)
     } match {
       case Success(_) => true

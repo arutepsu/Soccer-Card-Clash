@@ -12,6 +12,10 @@ object AttackerSceneFactory {
   def createAttackerHandScene(controller: IController, playingFieldScene: PlayingFieldScene, playingField: Option[IPlayingField], windowWidth: Double, windowHeight: Double): AttackerHandScene = {
     AttackerHandScene(controller,playingFieldScene, playingField, windowWidth, windowHeight)
   }
+
+  def createPlayingFieldScene(controller: IController): PlayingFieldScene = {
+    PlayingFieldScene(controller, 800, 600)
+  }
 }
 
 

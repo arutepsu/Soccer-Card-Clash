@@ -58,36 +58,32 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     }
     _createPlayerScene.get
   }
-
+  
   def getPlayingFieldScene: PlayingFieldScene = {
     if (_playingFieldScene.isEmpty) {
-      _playingFieldScene = Some(new PlayingFieldScene(controller, 800, 600))
+      _playingFieldScene = Some(AttackerSceneFactory.createPlayingFieldScene(controller))
     }
     _playingFieldScene.get
   }
 
+
   def getAttackerDefendersScene: AttackerDefendersScene = {
-    if (_attackerDefendersScene.isEmpty) {
-      _attackerDefendersScene = Some(AttackerSceneFactory.createAttackerDefendersScene(
-        controller,
-        getPlayingFieldScene,
-        Option(controller.getCurrentGame.getPlayingField),
-        800, 600
-      ))
-    }
+    _attackerDefendersScene = Some(
+      AttackerSceneFactory.createAttackerDefendersScene(
+        controller, getPlayingFieldScene, Option(controller.getCurrentGame.getPlayingField), 800, 600
+      )
+    )
     _attackerDefendersScene.get
   }
 
   def getAttackerHandScene: AttackerHandScene = {
-    if (_attackerHandScene.isEmpty) {
       _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(
         controller,
         getPlayingFieldScene,
         Option(controller.getCurrentGame.getPlayingField),
         800, 600
       ))
-    }
-    _attackerHandScene.get
+      _attackerHandScene.get
   }
 
 

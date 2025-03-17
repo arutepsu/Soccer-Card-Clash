@@ -41,7 +41,7 @@ object SceneManager extends Observable with Observer {
       ) {
         return
       }
-      
+
       e match {
         case Events.MainMenu => switchScene(sceneRegistry.getMainMenuScene)
         case Events.CreatePlayers => switchScene(sceneRegistry.getCreatePlayerScene)
@@ -70,13 +70,17 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
+    val actualScene = newScene match {
+      case _: PlayingFieldScene => sceneRegistry.getPlayingFieldScene // ✅ Always get fresh instance
+      case _ => newScene
+    }
     if (currentScene.contains(newScene)) {
       return
     }
 
     Platform.runLater(() => {
       val oldSceneOpt = currentScene
-      
+
       oldSceneOpt match {
         case Some(oldScene: Observer) if controller.subscribers.contains(oldScene) =>
           controller.remove(oldScene)
@@ -108,21 +112,21 @@ object SceneManager extends Observable with Observer {
       stage.scene = newScene
       currentScene = Some(newScene)
       applySceneSize()
-      
+
       newScene match {
         case newObserverScene: Observer if !controller.subscribers.contains(newObserverScene) =>
           println(s"✅ Adding observer: ${newObserverScene.getClass.getSimpleName}")
           controller.add(newObserverScene)
         case _ =>
       }
-      
+
       if (newScene.root.value != null) {
         val fadeIn = new FadeTransition(Duration(500), newScene.root.value)
         fadeIn.fromValue = 0.2
         fadeIn.toValue = 1.0
         fadeIn.play()
       }
-      
+
       notifyObservers()
     })
   }
