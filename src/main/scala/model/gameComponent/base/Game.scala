@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import controller.command.actionCommandTypes.swapActionCommands.HandSwapActionCommand
+import model.cardComponent.ICard
 import model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import model.fileIOComponent.IFileIO
 import model.gameComponent.IGame
@@ -12,18 +13,17 @@ import model.playerComponent.IPlayer
 import model.playerComponent.factory.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
-import model.playingFiledComponent.dataStructure.HandCardsQueue
+import model.playingFiledComponent.dataStructure.{HandCardsQueue, IHandCardsQueueFactory}
 import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.manager.{ActionManager, IActionManager}
 import util.UndoManager
 import play.api.libs.json.*
-import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
+
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.xml.*
-import model.cardComponent.ICard
 @Singleton
 class Game @Inject()(
                       playerFactory: IPlayerFactory,
@@ -75,7 +75,7 @@ class Game @Inject()(
     dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
 
     playingField.setPlayingField()
-    
+
     updateGameState()
   }
 
@@ -116,17 +116,18 @@ class Game @Inject()(
 
   override def saveGame(): Unit = {
     if (gameState != null) {
-      try {
+      Try {
         fileIO.saveGame(gameState)
-      } catch {
-        case e: Exception => throw new RuntimeException("Failed to save the game", e)
+      } match {
+        case Success(_) =>
+        case Failure(exception) =>
+          throw new RuntimeException("Failed to save the game", exception)
       }
-    } else {
     }
   }
 
   override def loadGame(fileName: String): Unit = {
-    try {
+    Try {
       val loadedState = fileIO.loadGame(fileName)
       if (loadedState == null) {
         throw new RuntimeException(s"Failed to load game: No valid game state found in '$fileName'")
@@ -160,9 +161,10 @@ class Game @Inject()(
       playingField.setPlayingField()
       updateGameState()
 
-    } catch {
-      case e: Exception =>
-        throw new RuntimeException(s"Failed to load game '$fileName'", e)
+    } match {
+      case Success(_) =>
+      case Failure(exception) =>
+        throw new RuntimeException(s"Failed to load game '$fileName'", exception)
     }
   }
 
@@ -178,5 +180,4 @@ class Game @Inject()(
       false
     }
   }
-
 }

@@ -24,9 +24,7 @@ class PlayingFieldScene(
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
-  println("RECREATING PlayingFieldScene")
   this.getStylesheets.add(Styles.playingFieldCss)
-//  controller.add(this)
 
   if (controller.getCurrentGame.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
@@ -42,7 +40,6 @@ class PlayingFieldScene(
   val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
   val player2HandBar = new PlayersHandBar(player2, playingField, isLeftSide = false)
   var player1FieldBar = new PlayersFieldBar(player1, playingField)
-
   var player2FieldBar = new PlayersFieldBar(player2, playingField)
 
 
@@ -107,7 +104,6 @@ class PlayingFieldScene(
   }
 
   override def update(e: ObservableEvent): Unit = {
-    println(s"🔄 Received event: $e")
 
     e match {
       case Events.MainMenu =>
@@ -118,11 +114,9 @@ class PlayingFieldScene(
         SceneManager.update(e)
 
       case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.CircularSwap =>
-          println(s"!!!!!!!!!!!!!!!!!!!!!!!!! UPDATING DISPLAY FOR EVENT $e")
           updateDisplay()
 
       case _ =>
-        println(s"⚠️ Unhandled event: $e")
     }
   }
 

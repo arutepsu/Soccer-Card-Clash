@@ -2,19 +2,15 @@ package model.fileIOComponent.jSONComponent
 
 import controller.IController
 import controller.command.memento.base.Memento
-
-import java.io.{File, PrintWriter}
-import scala.io.Source
-import play.api.libs.json.*
-import model.gameComponent.factory.GameDeserializer
 import model.gameComponent.factory.*
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playingFiledComponent.factory.PlayingFieldDeserializer
+import play.api.libs.json.*
 
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}
 import scala.io.Source
-import play.api.libs.json.*
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
@@ -33,21 +29,15 @@ class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
     ensureFolderExists()
     val filePath = s"games/$fileName"
 
-    try {
-
+    Try {
       val source = Source.fromFile(filePath).getLines.mkString
-
       val json = Json.parse(source).as[JsObject]
-
-      val gameState = gameDeserializer.fromJson(json)
-
-      Some(gameState)
-    } catch {
-      case _: java.io.FileNotFoundException =>
-        None
-      case e: Exception =>
-        println(s"❌ JsonComponent: ERROR loading JSON file '$fileName': ${e.getMessage}")
-        e.printStackTrace()
+      gameDeserializer.fromJson(json)
+    } match {
+      case Success(gameState) => Some(gameState)
+      case Failure(_: java.io.FileNotFoundException) => None
+      case Failure(exception) =>
+        exception.printStackTrace()
         None
     }
   }
@@ -55,15 +45,14 @@ class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
   def save(gameState: IGameState): Unit = {
     ensureFolderExists()
 
-    try {
+    Try {
       val json = gameState.toJson
       val pw = new PrintWriter(new File(filePath))
       pw.write(Json.prettyPrint(json))
       pw.close()
-
-    } catch {
-      case e: Exception => println(s"❌ Error saving JSON: ${e.getMessage}")
+    } match {
+      case Success(_) =>
+      case Failure(exception) =>
     }
   }
-
 }

@@ -58,8 +58,8 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
   /** Creates Defender Row */
 
   def createDefenderRow(): HBox = {
-    val defenderCards = getDefenderCards // ✅ Get the latest defenders
-    println(f"TO BE RECREATED ! : ${defenderCards}")
+
+    val defenderCards = getDefenderCards
 
     val defenderCardNodes = defenderCards.zipWithIndex.map { case (card, index) =>
       val defenderCard = new FieldCard(flipped = false, card = card)
@@ -144,10 +144,7 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
   /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
   def updateBar(): Unit = {
     val newDefender = playingField.getDefender
-    println(f"NEW DEFENDER : ${newDefender}")
     val newAttacker = playingField.getAttacker
-    println(f"NEW ATTACKER: ${newDefender}")
-    println("field bar called")
     // Check if the player is now the new defender
     val isNowDefender = player == newDefender
 

@@ -1,11 +1,12 @@
 package model.playingFiledComponent.dataStructure
 
 import model.cardComponent.ICard
-import play.api.libs.json._
-import scala.xml._
+import play.api.libs.json.*
+import scala.util.{Try, Success, Failure}
 import scala.collection.mutable
+import scala.xml.*
 
-class HandCardsQueue(initialCards: List[ICard]) extends IHandCardsQueue{
+class HandCardsQueue(initialCards: List[ICard]) extends IHandCardsQueue {
 
   this.enqueueAll(initialCards)
 
@@ -14,19 +15,29 @@ class HandCardsQueue(initialCards: List[ICard]) extends IHandCardsQueue{
   override def addCard(card: ICard): Unit = this.prepend(card)
 
   override def removeLastCard(): ICard = {
-    if (this.nonEmpty) {
-      this.remove(this.size - 1)
-    } else {
-      throw new NoSuchElementException("Hand is empty!")
+    Try {
+      if (this.nonEmpty) {
+        this.remove(this.size - 1)
+      } else {
+        throw new NoSuchElementException("Hand is empty!")
+      }
+    } match {
+      case Success(card) => card
+      case Failure(exception) =>
+        throw new RuntimeException(s"❌ Error removing last card: ${exception.getMessage}", exception)
     }
   }
 
   override def getHandSize: Int = this.size
 }
-trait IHandCardsQueue extends mutable.Queue[ICard]  {
+
+trait IHandCardsQueue extends mutable.Queue[ICard] {
   def getCards: mutable.Queue[ICard]
+
   def addCard(card: ICard): Unit
+
   def removeLastCard(): ICard
+
   def getHandSize: Int
 
   def toXml: Elem = {
@@ -34,7 +45,7 @@ trait IHandCardsQueue extends mutable.Queue[ICard]  {
       {getCards.map(_.toXml)}
     </HandCardsQueue>
   }
-  
+
   def toJson: JsObject = Json.obj(
     "cards" -> getCards.map(_.toJson)
   )

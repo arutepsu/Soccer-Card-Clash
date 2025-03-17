@@ -1,16 +1,17 @@
 package controller.command.factory
+
+import com.google.inject.Inject
+import controller.{Events, IController}
 import controller.command.ICommand
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
-import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapActionCommand, HandSwapActionCommand}
-import com.google.inject.Inject
-import controller.Events
-import model.gameComponent.IGame
-import controller.command.base.workflow.{LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, CreateGameWorkflowCommand, WorkflowCommand}
-import model.cardComponent.ICard
-import controller.IController
 import controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
-class CommandFactory @Inject() (game: IGame, controller: IController) extends ICommandFactory {
+import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapActionCommand, HandSwapActionCommand}
+import controller.command.base.workflow.*
+import model.cardComponent.ICard
+import model.gameComponent.IGame
+
+class CommandFactory @Inject()(game: IGame, controller: IController) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
     new SingleAttackActionCommand(defenderPosition, game)
 
@@ -28,9 +29,10 @@ class CommandFactory @Inject() (game: IGame, controller: IController) extends IC
 
   override def createCircularSwapCommand(index: Int): ICommand =
     new CircularSwapActionCommand(index, game)
+
   override def createResetGameCommand(): ICommand =
     new ResetGameCommand(game)
-    
+
   override def createCreateGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand =
     new CreateGameWorkflowCommand(game, player1, player2)
 
@@ -40,22 +42,33 @@ class CommandFactory @Inject() (game: IGame, controller: IController) extends IC
 
   override def createLoadGameCommand(fileName: String): WorkflowCommand =
     new LoadGameWorkflowCommand(game, fileName)
-  
+
   override def createSaveGameCommand(): WorkflowCommand =
     new SaveGameWorkflowCommand(game)
-  
+
 
 }
+
 trait ICommandFactory {
   def createSingleAttackCommand(defenderPosition: Int): ICommand
+
   def createDoubleAttackCommand(defenderPosition: Int): ICommand
+
   def createBoostDefenderCommand(defenderPosition: Int): ICommand
+
   def createBoostGoalkeeperCommand(): ICommand
+
   def createRegularSwapCommand(index: Int): ICommand
+
   def createCircularSwapCommand(index: Int): ICommand
-  def createResetGameCommand() : ICommand
+
+  def createResetGameCommand(): ICommand
+
   def createCreateGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand
+
   def createQuitCommand(game: IGame): WorkflowCommand
+
   def createSaveGameCommand(): WorkflowCommand
+
   def createLoadGameCommand(fileName: String): WorkflowCommand
 }

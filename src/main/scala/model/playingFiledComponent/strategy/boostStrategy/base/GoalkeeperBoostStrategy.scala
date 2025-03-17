@@ -18,11 +18,10 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
     attackersGoalkeeperOpt match {
       case Some(goalkeeper) =>
         val boostedGoalkeeper = goalkeeper.boost()
-        data.setGoalkeeperForAttacker(boostedGoalkeeper) // Store the boosted version
+        data.setGoalkeeperForAttacker(boostedGoalkeeper)
 
         val attackerBeforeAction = roles.attacker
-
-        // Ensure the attacker has Boost actions left
+        
         attackerBeforeAction.actionStates.get(PlayerActionPolicies.Boost) match {
           case Some(OutOfActions) =>
             println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
@@ -30,13 +29,11 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
           case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
             println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
             return false
-          case _ => // Continue boosting
+          case _ =>
         }
-
-        // Perform the action and update the attacker's state
+        
         val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.Boost)
-
-        // Debug print for remaining uses of the Boost action
+        
         attackerAfterAction.actionStates.get(PlayerActionPolicies.Boost) match {
           case Some(CanPerformAction(remainingUses)) =>
             println(s"[DEBUG] Remaining Boost uses for ${attackerAfterAction.name}: $remainingUses")
@@ -46,7 +43,7 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
             println(s"[DEBUG] Unexpected state for Boost action.")
         }
 
-        roles.setRoles(attackerAfterAction, roles.defender) // Update only the attacker
+        roles.setRoles(attackerAfterAction, roles.defender)
 
         playingField.notifyObservers()
         println(s"[DEBUG] Observers notified of goalkeeper boost.")

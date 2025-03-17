@@ -25,7 +25,6 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
   var swapStrategy = new SwapManager(playingField)
   def getBoostManager: IBoostManager = boostStrategy
   override def singleAttack(defenderIndex: Int): Boolean = {
-    println("!!!!!!DEBUG : Attack executed")
     attackHandler.executeAttack(new SingleAttackStrategy(defenderIndex))
   }
 

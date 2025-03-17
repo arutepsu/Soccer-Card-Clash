@@ -12,6 +12,23 @@ abstract class ActionCommand(val game: IGame) extends ICommand {
 
   protected var memento: Option[Memento] = None
 
+  override def undoStep(): Unit = {
+    memento match {
+      case Some(savedMemento) =>
+        mementoManager.restoreGameState(savedMemento)
+        game.updateGameState()
+      case None =>
+    }
+  }
+
+  override def redoStep(): Unit = {
+    memento match {
+      case Some(_) =>
+        val success = doStep()
+      case None =>
+    }
+  }
+
   override def doStep(): Boolean = {
     val preActionState = mementoManager.createMemento()
 
@@ -23,23 +40,6 @@ abstract class ActionCommand(val game: IGame) extends ICommand {
       false
     }
   }
-  
-  override def undoStep(): Unit = {
-    memento match {
-      case Some(savedMemento) =>
-        mementoManager.restoreGameState(savedMemento)
-        game.updateGameState()
-      case None =>
-    }
-  }
-  
-  override def redoStep(): Unit = {
-    memento match {
-      case Some(_) =>
-        val success = doStep()
-      case None =>
-    }
-  }
-  
+
   protected def executeAction(): Boolean
 }

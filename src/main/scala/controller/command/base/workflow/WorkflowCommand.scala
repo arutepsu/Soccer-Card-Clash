@@ -1,12 +1,14 @@
 package controller.command.base.workflow
 
 import controller.command.ICommand
-import model.gameComponent.IGame
 import controller.{Events, IController}
-import scala.util.{Try, Success, Failure}
+import model.gameComponent.IGame
+
+import scala.util.{Failure, Success, Try}
 
 abstract class WorkflowCommand extends ICommand {
   override def undoStep(): Unit = {}
+
   override def redoStep(): Unit = doStep()
 }
 

@@ -244,5 +244,4 @@ class GameDeserializer @Inject() (
 
     gameState
   }
- 
 }

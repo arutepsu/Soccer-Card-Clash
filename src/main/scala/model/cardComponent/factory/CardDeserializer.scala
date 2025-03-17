@@ -10,7 +10,7 @@ import util.Deserializer
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.xml.*
 
 @Singleton
@@ -23,12 +23,8 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
 
     val cleanSuitText = suitText.replaceAll("\\s+", "")
 
-    val suit = try {
-      Suit.withName(cleanSuitText)
-    } catch {
-      case _: NoSuchElementException =>
-        throw new IllegalArgumentException(s"ERROR: Invalid suit value: '$cleanSuitText'")
-    }
+    val suit = Try(Suit.withName(cleanSuitText))
+      .getOrElse(throw new IllegalArgumentException(s"ERROR: Invalid suit value: '$cleanSuitText'"))
 
     val valueText = (xml \ "value").text.trim
 
@@ -37,34 +33,40 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
 
     val cardType = (xml \ "type").text.trim
 
-    val card = cardType match {
-      case "Regular" => cardFactory.createCard(value, suit)
-      case "Boosted" =>
-        val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
-        val baseCard = cardFactory.createCard(value, suit)
-        new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
-      case _ =>
-        throw new IllegalArgumentException(s"Unknown card type: $cardType")
+    Try {
+      cardType match {
+        case "Regular" => cardFactory.createCard(value, suit)
+        case "Boosted" =>
+          val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
+          val baseCard = cardFactory.createCard(value, suit)
+          new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+        case _ =>
+          throw new IllegalArgumentException(s"Unknown card type: $cardType")
+      }
+    } match {
+      case Success(card) => card
+      case Failure(exception) => throw new IllegalArgumentException(s"Failed to parse card: ${exception.getMessage}")
     }
-
-    card
   }
 
   override def fromJson(json: JsObject): ICard = {
+    Try {
+      val suit = Suit.withName((json \ "suit").as[String])
+      val value = Value.fromString((json \ "value").as[String])
+        .getOrElse(throw new IllegalArgumentException(s"Invalid card value: ${(json \ "value").as[String]}"))
+      val cardType = (json \ "type").as[String]
 
-    val suit = Suit.withName((json \ "suit").as[String])
-    val value = Value.fromString((json \ "value").as[String])
-      .getOrElse(throw new IllegalArgumentException(s"Invalid card value: ${(json \ "value").as[String]}"))
-    val cardType = (json \ "type").as[String]
-
-    val card = cardType match {
-      case "Regular" => cardFactory.createCard(value, suit)
-      case "Boosted" =>
-        val additionalValue = (json \ "additionalValue").asOpt[Int].getOrElse(0)
-        val baseCard = cardFactory.createCard(value, suit)
-        new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
-      case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
+      cardType match {
+        case "Regular" => cardFactory.createCard(value, suit)
+        case "Boosted" =>
+          val additionalValue = (json \ "additionalValue").asOpt[Int].getOrElse(0)
+          val baseCard = cardFactory.createCard(value, suit)
+          new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+        case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
+      }
+    } match {
+      case Success(card) => card
+      case Failure(exception) => throw new IllegalArgumentException(s"Failed to parse card JSON: ${exception.getMessage}")
     }
-    card
   }
 }

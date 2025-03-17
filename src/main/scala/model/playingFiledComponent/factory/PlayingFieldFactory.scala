@@ -1,16 +1,11 @@
 package model.playingFiledComponent.factory
-import model.playingFiledComponent.factory.IPlayingFieldFactory
-import play.api.libs.json.*
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Provider, Singleton}
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.base.PlayingField
-import com.google.inject.{Inject, Singleton}
-import com.google.inject.{Inject, Singleton}
-import com.google.inject.{Inject, Provider, Singleton}
-import model.playingFiledComponent.factory.IPlayingFieldManagerFactory
+import model.playingFiledComponent.factory.{IPlayingFieldFactory, IPlayingFieldManagerFactory}
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import play.api.libs.json.JsObject
+import play.api.libs.json.*
 
 
 class PlayingFieldFactory @Inject() (manager: IPlayingFieldManagerFactory) extends IPlayingFieldFactory {

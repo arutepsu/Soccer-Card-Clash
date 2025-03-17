@@ -20,7 +20,10 @@ class HandCardsQueueFactory @Inject()() extends IHandCardsQueueFactory {
 }
 
 @Singleton
-class HandCardsQueueDeserializer @Inject()(cardDeserializer: CardDeserializer, handCardsQueueFactory: IHandCardsQueueFactory) extends Deserializer[IHandCardsQueue] {
+class HandCardsQueueDeserializer @Inject()(
+                                            cardDeserializer: CardDeserializer,
+                                            handCardsQueueFactory: IHandCardsQueueFactory
+                                          ) extends Deserializer[IHandCardsQueue] {
 
   override def fromXml(xml: Elem): IHandCardsQueue = {
     val cards = (xml \ "cards" \ "Card").map(node => cardDeserializer.fromXml(node.asInstanceOf[Elem])).toList

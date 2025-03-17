@@ -1,9 +1,11 @@
 package controller.command.actionCommandTypes.attackActionCommands
+
 import controller.command.ICommand
 import controller.command.base.action.ActionCommand
-import model.playingFiledComponent.manager.IActionManager
 import model.gameComponent.IGame
-import scala.util.{Try, Success, Failure}
+import model.playingFiledComponent.manager.IActionManager
+
+import scala.util.{Failure, Success, Try}
 
 class SingleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager

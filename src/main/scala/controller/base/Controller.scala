@@ -1,30 +1,19 @@
 package controller.base
+
+import com.google.inject.Inject
 import controller.command.ICommand
+import controller.command.factory.ICommandFactory
 import controller.{Events, IController}
-import model.cardComponent.factory.DeckFactory
 import model.gameComponent.IGame
-import model.gameComponent.base.Game
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import util.{Observer, UndoManager}
 
-import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
-import scala.collection.mutable
-import scala.util.Try
-import com.google.inject.Inject
-import controller.command.factory.ICommandFactory
-import model.playingFiledComponent.manager.ActionManager
-
-class Controller @Inject() (private val game: IGame, private val commandFactory: ICommandFactory) extends IController{
+class Controller @Inject()(private val game: IGame, private val commandFactory: ICommandFactory) extends IController {
   private val undoManager = new UndoManager
-  
+
   override def getCurrentGame: IGame = game
-  
-  override def executeCommand(command: ICommand, event: Events): Unit = {
-    undoManager.doStep(command)
-    notifyObservers(event)
-  }
-  
+
   override def undo(): Unit = {
     undoManager.undoStep()
     notifyObservers(Events.Undo)
@@ -34,7 +23,7 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
     undoManager.redoStep()
     notifyObservers(Events.Redo)
   }
-  
+
   override def executeSingleAttackCommand(defenderPosition: Int): Unit = {
     executeCommand(commandFactory.createSingleAttackCommand(defenderPosition), Events.RegularAttack)
   }
@@ -71,7 +60,13 @@ class Controller @Inject() (private val game: IGame, private val commandFactory:
   override def loadGame(fileName: String): Unit = {
     executeCommand(commandFactory.createLoadGameCommand(fileName), Events.PlayingField)
   }
+
   override def resetGame(): Unit = {
     executeCommand(commandFactory.createResetGameCommand(), Events.ResetGame)
+  }
+
+  override def executeCommand(command: ICommand, event: Events): Unit = {
+    undoManager.doStep(command)
+    notifyObservers(event)
   }
 }

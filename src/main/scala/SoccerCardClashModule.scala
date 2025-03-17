@@ -20,7 +20,7 @@ import model.playerComponent.factory.*
 import model.playerComponent.playerRole.*
 import model.playingFiledComponent.*
 import model.playingFiledComponent.base.PlayingField
-import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, IHandCardsQueueFactory, HandCardsQueueFactory}
+import model.playingFiledComponent.dataStructure.{HandCardsQueueDeserializer, HandCardsQueueFactory, IHandCardsQueueFactory}
 import model.playingFiledComponent.factory.*
 import model.playingFiledComponent.manager.*
 import model.playingFiledComponent.strategy.attackStrategy.*
@@ -37,7 +37,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[Observable]).to(classOf[Controller]).in(classOf[Singleton])
 
     bind(classOf[IGame]).to(classOf[Game])
-    
+
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
     bind(classOf[IPlayingFieldManagerFactory]).to(classOf[PlayingFieldManagerFactory])
     bind(classOf[IPlayingFieldFactory]).to(classOf[PlayingFieldFactory])
@@ -53,17 +53,17 @@ class SoccerCardClashModule extends AbstractModule {
       .in(classOf[Singleton])
 
     bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()
-    
+
     bind(classOf[IPlayingField]).to(classOf[PlayingField])
 
     bind(classOf[IPlayerFieldManager]).to(classOf[PlayerFieldManager])
-    
+
     bind(classOf[IDataManager]).to(classOf[DataManager])
     bind(classOf[IActionManager]).to(classOf[ActionManager])
     bind(classOf[IRolesManager]).to(classOf[RolesManager])
     bind(classOf[IPlayerScores]).to(classOf[PlayerScores])
     bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
-    
+
     bind(classOf[CardDeserializer])
       .toConstructor(classOf[CardDeserializer].getConstructor(classOf[ICardFactory]))
 
@@ -88,7 +88,7 @@ class SoccerCardClashModule extends AbstractModule {
         classOf[IHandCardsQueueFactory],
         classOf[CardDeserializer],
       ))
-    
+
     bind(classOf[JsonComponent])
       .toConstructor(classOf[JsonComponent].getConstructor(classOf[GameDeserializer]))
       .in(classOf[Singleton])

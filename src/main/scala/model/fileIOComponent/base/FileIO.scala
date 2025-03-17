@@ -6,6 +6,7 @@ import model.fileIOComponent.xmlComponent.XmlComponent
 import model.gameComponent.factory.IGameState
 
 import javax.inject.{Inject, Singleton}
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileIO @Inject() (
@@ -14,17 +15,17 @@ class FileIO @Inject() (
                        ) extends IFileIO {
 
   override def saveGame(gameState: IGameState): Unit = {
-    try {
+    Try {
       xmlComponent.save(gameState)
       jsonComponent.save(gameState)
-    } catch {
-      case e: Exception =>
+    } match {
+      case Success(_) =>
+      case Failure(_) => throw new RuntimeException(s"❌ FileIO: Error while saving")
     }
   }
-
+  
   override def loadGame(fileName: String): IGameState = {
-
-    try {
+    Try {
       val gameStateOpt = if (fileName.endsWith(".json")) {
         jsonComponent.load(fileName)
       } else if (fileName.endsWith(".xml")) {
@@ -33,15 +34,13 @@ class FileIO @Inject() (
         throw new RuntimeException(s"❌ FileIO: Unsupported file format: $fileName")
       }
 
-      if (gameStateOpt.isEmpty) {
+      gameStateOpt.getOrElse(
         throw new RuntimeException(s"❌ FileIO: Failed to load game: No valid save data found in '$fileName'!")
-      }
-
-      gameStateOpt.get
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-        throw new RuntimeException(s"❌ FileIO: Error loading game '$fileName': ${e.getMessage}")
+      )
+    } match {
+      case Success(gameState) => gameState
+      case Failure(exception) =>
+        throw new RuntimeException(s"❌ FileIO: Error loading game '$fileName': ${exception.getMessage}", exception)
     }
   }
 }

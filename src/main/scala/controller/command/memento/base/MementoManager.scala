@@ -4,10 +4,10 @@ import controller.Events
 import controller.command.memento.IMementoManager
 import controller.command.memento.base.Memento
 import model.cardComponent.base.types.{BoostedCard, RegularCard}
+import model.gameComponent.IGame
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.IActionManager
-import model.gameComponent.IGame
 
 class MementoManager(private val game: IGame) extends IMementoManager {
 
@@ -142,8 +142,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
         action -> (if (validUses > 0) CanPerformAction(validUses) else OutOfActions)
       }
     )
-
-
+    
     pf.getRoles.setRoles(restoredPlayer1, restoredPlayer2)
 
     pf.notifyObservers()

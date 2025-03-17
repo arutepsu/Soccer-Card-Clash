@@ -1,11 +1,13 @@
 package controller.command.actionCommandTypes.gameStateCommands
 
-import controller.command.base.action.ActionCommand
-import model.playingFiledComponent.IPlayingField
 import controller.command.ICommand
-import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+import controller.command.base.action.ActionCommand
 import model.gameComponent.IGame
-import scala.util.{Try, Success, Failure}
+import model.playingFiledComponent.IPlayingField
+import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+
+import scala.util.{Failure, Success, Try}
+
 class ResetGameCommand(game: IGame) extends ActionCommand(game) {
   private var resetSuccessful: Option[Boolean] = None
 

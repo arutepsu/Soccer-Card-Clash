@@ -26,8 +26,6 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val defender = roles.defender
     val attackerHand = fieldState.getPlayerHand(attacker)
     val defenderHand = fieldState.getPlayerHand(defender)
-    println(s"🎭 DEBUG: Attacker - ${attacker.name}, Defender - ${defender.name}")
-    println(s"🃏 DEBUG: Attacker hand before attack: ${attackerHand.getCards.mkString(", ")}")
     Try {
       val attackingCard = attackerHand.removeLastCard()
 
@@ -55,7 +53,6 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       }
 
       playingField.notifyObservers()
-      println(s"🃏 DEBUG: Attacker hand after attack: ${attackerHand.getCards.mkString(", ")}")
       result
     } match {
       case Success(result) => result
@@ -169,14 +166,9 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
   }
 
   private def attackerWins(hand: IHandCardsQueue, cards: ICard*): Unit = {
-    println(s"✅ DEBUG: Attacker wins! Adding cards: ${cards.mkString(", ")} to hand.")
-
     cards.foreach { card =>
       hand.addCard(card)
-      println(s"🃏 DEBUG: Added card to Attacker's hand: $card")
     }
-
-    println(s"🃏 DEBUG: Attacker's hand after winning: ${hand.getCards.mkString(", ")}")
   }
 
 

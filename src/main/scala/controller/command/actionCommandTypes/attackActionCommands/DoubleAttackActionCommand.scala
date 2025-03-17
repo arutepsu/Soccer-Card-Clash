@@ -1,11 +1,12 @@
 package controller.command.actionCommandTypes.attackActionCommands
 
 import controller.command.base.action.ActionCommand
+import model.gameComponent.IGame
 import model.playingFiledComponent.manager.IActionManager
 import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
-import model.gameComponent.IGame
+
 import scala.collection.mutable
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 class DoubleAttackActionCommand(defenderIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager

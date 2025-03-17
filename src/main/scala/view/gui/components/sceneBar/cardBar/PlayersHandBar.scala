@@ -35,8 +35,6 @@ class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: B
 
   /** Creates ImageViews for all Hand Cards with visual effects */
   def createHandCardRow(): HBox = {
-    println(f"!!!!PlayersHandBar name to be get:${player} ")
-//    val hand = playingField.getDataManager.getPlayerHand(player)
     val hand = playingField.getDataManager.getPlayerHand(player)
 
     val handCards = hand.zipWithIndex.map { case (card, index) =>

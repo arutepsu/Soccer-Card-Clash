@@ -46,7 +46,7 @@ case class AttackerHandScene(
       playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
-  
+
   val regularSwapButton: Button = ActionButtonFactory.createRegularSwapButton(
     RegularSwapButton(),
     "Regular Swap",

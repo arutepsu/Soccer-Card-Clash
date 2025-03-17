@@ -26,32 +26,23 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
     val attackerBeforeAction = roles.attacker
     val defender = roles.defender
-
-    // Check if the attacker has any DoubleAttack actions left
+    
     attackerBeforeAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
       case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no DoubleAttack actions left. Execution is prevented.")
         return false
       case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no DoubleAttack actions left. Execution is prevented.")
         return false
-      case _ => // Continue execution
+      case _ =>
     }
-
-    // Perform the action and get an updated attacker instance
+    
     val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.DoubleAttack)
-
-    // Debug print for action state before updating
+    
     attackerAfterAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
       case Some(CanPerformAction(remainingUses)) =>
-        println(s"[DEBUG] Remaining DoubleAttack uses for ${attackerAfterAction.name}: $remainingUses")
       case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerAfterAction.name} has no DoubleAttack actions left.")
       case _ =>
-        println(s"[DEBUG] Unexpected state for DoubleAttack action.")
     }
-
-    // Update the attacker's action state in the roles
+    
     roles.setRoles(attackerAfterAction, defender)
 
     val attackerHand = fieldState.getPlayerHand(attackerAfterAction)
@@ -98,7 +89,6 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     } match {
       case Success(result) => result
       case Failure(exception) =>
-        println(s"Error during double attack execution: ${exception.getMessage}")
         false
     }
   }

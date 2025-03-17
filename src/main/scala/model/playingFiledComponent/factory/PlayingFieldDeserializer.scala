@@ -7,6 +7,7 @@ import model.playingFiledComponent.factory.IPlayingFieldFactory
 import util.Deserializer
 import play.api.libs.json.*
 
+import scala.util.{Failure, Success, Try}
 import scala.xml.*
 
 @Singleton
@@ -16,60 +17,67 @@ class PlayingFieldDeserializer @Inject()() (
                                          ) extends Deserializer[IPlayingField] {
 
   override def fromXml(xml: Elem): IPlayingField = {
+    Try {
+      val playingFieldXml = (xml \\ "playingField").headOption
+        .map(_.asInstanceOf[Elem])
+        .getOrElse {
+          throw new IllegalArgumentException("ERROR: Missing 'playingField' in XML.")
+        }
 
-    val playingFieldXml = (xml \\ "playingField").headOption
+
+      val attackerXml = (playingFieldXml \ "Attacker").headOption
+        .map(_.asInstanceOf[Elem])
+        .getOrElse {
+          throw new IllegalArgumentException("ERROR: Missing 'Attacker' in XML.")
+        }
+
+      val defenderXml = (playingFieldXml \ "Defender").headOption
+        .map(_.asInstanceOf[Elem])
+        .getOrElse {
+          throw new IllegalArgumentException("ERROR: Missing 'Defender' in XML.")
+        }
+
+      val player1Xml = (playingFieldXml \ "Attacker" \ "Player").headOption
       .map(_.asInstanceOf[Elem])
       .getOrElse {
-        throw new IllegalArgumentException("ERROR: Missing 'playingField' in XML.")
+        throw new IllegalArgumentException("ERROR: Missing 'Player' inside <Attacker> in XML.")
+      }
+
+      val player2Xml = (playingFieldXml \ "Defender" \ "Player").headOption
+      .map(_.asInstanceOf[Elem])
+      .getOrElse {
+        throw new IllegalArgumentException("ERROR: Missing 'Player' inside <Defender> in XML.")
       }
 
 
-    val attackerXml = (playingFieldXml \ "Attacker").headOption
-      .map(_.asInstanceOf[Elem])
-      .getOrElse {
-        throw new IllegalArgumentException("ERROR: Missing 'Attacker' in XML.")
-      }
+      val player1 = playerDeserializer.fromXml(player1Xml)
+      val player2 = playerDeserializer.fromXml(player2Xml)
 
-    val defenderXml = (playingFieldXml \ "Defender").headOption
-      .map(_.asInstanceOf[Elem])
-      .getOrElse {
-        throw new IllegalArgumentException("ERROR: Missing 'Defender' in XML.")
-      }
 
-    val player1Xml = (playingFieldXml \ "Attacker" \ "Player").headOption
-    .map(_.asInstanceOf[Elem])
-    .getOrElse {
-      throw new IllegalArgumentException("ERROR: Missing 'Player' inside <Attacker> in XML.")
+        playingFieldFactory.createPlayingField(player1, player2)
+    } match {
+      case Success(playingField) => playingField
+      case Failure(exception) =>
+        throw new RuntimeException(s"❌ Error parsing PlayingField XML: ${exception.getMessage}", exception)
     }
-
-    val player2Xml = (playingFieldXml \ "Defender" \ "Player").headOption
-    .map(_.asInstanceOf[Elem])
-    .getOrElse {
-      throw new IllegalArgumentException("ERROR: Missing 'Player' inside <Defender> in XML.")
-    }
-
-
-    val player1 = playerDeserializer.fromXml(player1Xml)
-    val player2 = playerDeserializer.fromXml(player2Xml)
-
-
-    val playingField = playingFieldFactory.createPlayingField(player1, player2)
-
-    playingField
   }
 
 
   override def fromJson(json: JsObject): IPlayingField = {
+    Try {
+        val player1Json = (json \ "attacker").as[JsObject]
+        val player2Json = (json \ "defender").as[JsObject]
 
-    val player1Json = (json \ "attacker").as[JsObject]
-    val player2Json = (json \ "defender").as[JsObject]
+        val player1 = playerDeserializer.fromJson(player1Json)
 
-    val player1 = playerDeserializer.fromJson(player1Json)
+        val player2 = playerDeserializer.fromJson(player2Json)
 
-    val player2 = playerDeserializer.fromJson(player2Json)
+        playingFieldFactory.createPlayingField(player1, player2)
 
-    val playingField = playingFieldFactory.createPlayingField(player1, player2)
-
-    playingField
+    } match {
+      case Success(playingField) => playingField
+      case Failure(exception) =>
+        throw new RuntimeException(s"❌ Error parsing PlayingField JSON: ${exception.getMessage}", exception)
+    }
   }
 }

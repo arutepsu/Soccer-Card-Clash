@@ -1,9 +1,10 @@
 package controller.command.actionCommandTypes.swapActionCommands
 
 import controller.command.base.action.ActionCommand
-import model.playingFiledComponent.manager.IActionManager
 import model.gameComponent.IGame
-import scala.util.{Try, Success, Failure}
+import model.playingFiledComponent.manager.IActionManager
+
+import scala.util.{Failure, Success, Try}
 
 class HandSwapActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager

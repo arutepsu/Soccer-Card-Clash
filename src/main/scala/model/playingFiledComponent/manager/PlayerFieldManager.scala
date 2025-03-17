@@ -4,7 +4,7 @@ import model.cardComponent.ICard
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.dataStructure._
+import model.playingFiledComponent.dataStructure.*
 import model.playingFiledComponent.manager.IDataManager
 import model.playingFiledComponent.strategy.refillStrategy.*
 import model.playingFiledComponent.strategy.refillStrategy.base.StandardRefillStrategy
@@ -29,12 +29,6 @@ class PlayerFieldManager extends IPlayerFieldManager {
     goalkeepers = goalkeepers.updated(player, goalkeeper)
   }
 
-  override def getPlayerDefenders(player: IPlayer): List[ICard] = {
-    val playerDefenders = defenders(player)
-    playerDefenders
-  }
-
-
   override def setGoalkeeperForAttacker(playingField: IPlayingField, card: ICard): Unit = {
     val attacker = playingField.getAttacker
     goalkeepers = goalkeepers.updated(attacker, Some(card))
@@ -52,6 +46,11 @@ class PlayerFieldManager extends IPlayerFieldManager {
   override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
     getPlayerDefenders(currentDefender).isEmpty
 
+  override def getPlayerDefenders(player: IPlayer): List[ICard] = {
+    val playerDefenders = defenders(player)
+    playerDefenders
+  }
+
   override def getDefenderCard(player: IPlayer, index: Int): ICard = {
     val playerDefenders = defenders(player)
     if (index < 0 || index >= playerDefenders.size)
@@ -63,12 +62,10 @@ class PlayerFieldManager extends IPlayerFieldManager {
     playerFields = Map().withDefaultValue(List())
     goalkeepers = Map().withDefaultValue(None)
     defenders = Map().withDefaultValue(List())
-    println("🚨 DEBUG: Current Player Fields: " + playerFields.keys.mkString(", "))
-    println("🚨 DEBUG: Current Goalkeepers: " + goalkeepers.keys.mkString(", "))
-    println("🚨 DEBUG: Current Defenders: " + defenders.keys.mkString(", "))
   }
 
 }
+
 trait IPlayerFieldManager {
   def getPlayerField(player: IPlayer): List[ICard]
 
@@ -89,5 +86,6 @@ trait IPlayerFieldManager {
   def allDefendersBeaten(currentDefender: IPlayer): Boolean
 
   def getDefenderCard(player: IPlayer, index: Int): ICard
+
   def clearAll(): Unit
 }
