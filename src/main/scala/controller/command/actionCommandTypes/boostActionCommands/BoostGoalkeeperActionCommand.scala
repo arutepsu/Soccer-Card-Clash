@@ -11,6 +11,17 @@ class BoostGoalkeeperActionCommand(game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
   private var boostSuccessful: Option[Boolean] = None
 
+  override protected def executeAction(): Boolean = {
+    val result = Try(actionManager.boostGoalkeeper())
+    result match {
+      case Success(value) =>
+        boostSuccessful = Some(value)
+        value
+      case Failure(exception) =>
+        boostSuccessful = Some(false)
+        false
+    }
+  }
   override def undoStep(): Unit = {
     memento.foreach(m => {
       mementoManager.restoreGoalkeeperBoost(m)
@@ -25,16 +36,5 @@ class BoostGoalkeeperActionCommand(game: IGame) extends ActionCommand(game) {
       case _ =>
     }
   }
-
-  override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostGoalkeeper())
-    result match {
-      case Success(value) =>
-        boostSuccessful = Some(value)
-        value
-      case Failure(exception) =>
-        boostSuccessful = Some(false)
-        false
-    }
-  }
+  
 }

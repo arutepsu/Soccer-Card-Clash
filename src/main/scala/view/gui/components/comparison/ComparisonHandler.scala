@@ -22,7 +22,7 @@ import view.gui.utils.{ImageUtils, Styles}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay: () => Unit) {
+class ComparisonHandler(controller: IController, overlay: Overlay) {
 
   private var lastAttackingCard: Option[ICard] = None
   private var lastAttackingCard1: Option[ICard] = None
@@ -82,7 +82,6 @@ class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay
             println("⚠️ Missing attack data, skipping alert.")
         }
         resetLastCards()
-        updateDisplayAfterOverlay()
 
       case Events.DoubleAttack =>
         println("⚔️ Double Attack Event Triggered!")
@@ -102,7 +101,6 @@ class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay
             println("⚠️ Missing double attack data, skipping alert.")
         }
         resetLastCards()
-        updateDisplayAfterOverlay()
 
       case Events.TieComparison =>
         println("⚔️ Tie Resolution Event Triggered!")
@@ -122,7 +120,6 @@ class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay
             println("⚠️ Missing tie-breaker data, skipping alert.")
         }
         resetLastCards()
-        updateDisplayAfterOverlay()
 
       case Events.DoubleTieComparison =>
         println("⚔️ Double Attack Tie Resolution Event Triggered!")
@@ -142,7 +139,6 @@ class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay
             println("⚠️ Missing double tie-breaker data, skipping alert.")
         }
         resetLastCards()
-        updateDisplayAfterOverlay()
       case _ => 
     }
   }
@@ -157,10 +153,4 @@ class ComparisonHandler(controller: IController, overlay: Overlay, updateDisplay
     lastAttackSuccess = None
   }
 
-  private def updateDisplayAfterOverlay(): Unit = {
-    Future {
-      Thread.sleep(3000)
-      Platform.runLater(() => updateDisplay())
-    }
-  }
 }

@@ -1,6 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy.base
 
-import controller.{AttackResultEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events}
+import controller.{AttackResultEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, NoDoubleAttacksEvent}
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
@@ -30,7 +30,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val defender = roles.defender
     
     attackerBeforeAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
-      case Some(OutOfActions) =>
+      case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
         return false
       case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
         return false
@@ -41,7 +41,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     
     attackerAfterAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
       case Some(CanPerformAction(remainingUses)) =>
-      case Some(OutOfActions) =>
+      case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
       case _ =>
     }
     

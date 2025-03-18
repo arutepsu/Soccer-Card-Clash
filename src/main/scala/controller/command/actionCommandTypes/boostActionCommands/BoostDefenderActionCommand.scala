@@ -12,6 +12,17 @@ class BoostDefenderActionCommand(cardIndex: Int, game: IGame) extends ActionComm
   private val actionManager: IActionManager = game.getActionManager
   private var boostSuccessful: Option[Boolean] = None
 
+  override protected def executeAction(): Boolean = {
+    val result = Try(actionManager.boostDefender(cardIndex))
+    result match {
+      case Success(value) =>
+        boostSuccessful = Some(value)
+        value
+      case Failure(exception) =>
+        boostSuccessful = Some(false)
+        false
+    }
+  }
   override def undoStep(): Unit = {
     memento.foreach(m => mementoManager.restoreBoosts(m, cardIndex))
   }
@@ -24,16 +35,5 @@ class BoostDefenderActionCommand(cardIndex: Int, game: IGame) extends ActionComm
       case _ =>
     }
   }
-
-  override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostDefender(cardIndex))
-    result match {
-      case Success(value) =>
-        boostSuccessful = Some(value)
-        value
-      case Failure(exception) =>
-        boostSuccessful = Some(false)
-        false
-    }
-  }
+  
 }

@@ -37,4 +37,12 @@
     -fx-border-color: #FFD700;
     -fx-border-width: 3px;
     -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.8), 15, 0, 5, 5);
+}
+.player-actions {
+    -fx-font-size: 14px;
+    -fx-text-fill: #87CEEB; /* Light Blue for better readability */
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-padding: 5px 0;
 }

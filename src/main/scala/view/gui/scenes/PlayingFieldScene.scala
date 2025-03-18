@@ -1,6 +1,6 @@
 package view.gui.scenes
 
-import controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, IController, TieComparisonEvent}
+import controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, IController, NoDoubleAttacksEvent, TieComparisonEvent}
 import sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -24,7 +24,7 @@ import scalafx.animation.FadeTransition
 import scalafx.util.Duration
 import view.gui.components.comparison.ComparisonHandler
 import view.gui.overlay.Overlay
-
+import scalafx.scene.text.Text
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -35,7 +35,6 @@ class PlayingFieldScene(
                        ) extends Scene(windowWidth, windowHeight) with Observer {
   this.getStylesheets.add(Styles.playingFieldCss)
 
-  println(s"✅ PlayingFieldScene registered as observer.")
   if (controller.getCurrentGame.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
   }
@@ -64,7 +63,7 @@ class PlayingFieldScene(
   val gameStatusBar = new GameStatusBar
 
   val overlay = new Overlay(this)
-  private val comparisonHandler = new ComparisonHandler(controller, overlay, updateDisplay)
+  private val comparisonHandler = new ComparisonHandler(controller, overlay)
 
   val playerFields = new HBox {
     alignment = Pos.CENTER
@@ -91,30 +90,6 @@ class PlayingFieldScene(
 
 
   val playersBar = new PlayersBar(controller)
-
-//  root = new StackPane {
-//        children = Seq(
-//          new HBox {
-//            alignment = Pos.CENTER_LEFT
-//            spacing = 20
-//            children = Seq(
-//              buttonBar,
-//              new VBox {
-//                padding = Insets(10)
-//                alignment = Pos.CENTER
-//                children = Seq(
-//                  playersBar,
-//                  gameStatusBar,
-//                  playerFields,
-//                  playerHands,
-//                  player1ScoreLabel,
-//                  player2ScoreLabel,
-//                )
-//              }
-//            )
-//          }
-//        )
-//      }
 
   val mainLayout = new StackPane {
     children = Seq(
@@ -153,6 +128,11 @@ class PlayingFieldScene(
     println(s"✅ PlayingFieldScene received event: $e")
     comparisonHandler.handleComparisonEvent(e)
     e match {
+
+      case NoDoubleAttacksEvent(player) =>
+        println(s"⚠️ ${player.name} has no Double Attacks left! Showing Alert in PlayingFieldScene...")
+        overlay.show(createDoubleAttackAlert(player))
+
       case Events.MainMenu =>
         if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
           return
@@ -167,13 +147,25 @@ class PlayingFieldScene(
 
     }
   }
-  private def updateDisplayAfterOverlay(): Unit = {
-    Future {
-      Thread.sleep(3000)
-      Platform.runLater(() => updateDisplay())
+
+  // ✅ Method to create an Alert for No Double Attacks Left
+  private def createDoubleAttackAlert(player: IPlayer): scalafx.scene.Node = {
+    new VBox {
+      alignment = Pos.CENTER
+      spacing = 15
+      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
+
+      // ✅ Ensure all children are recognized as scalafx.scene.Node
+      children = Seq[scalafx.scene.Node](
+        new Text(s"⚠️ ${player.name} has no Double Attacks Left!") {
+          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
+        },
+        new Button("OK") {
+          onAction = _ => overlay.hide()
+        }
+      )
     }
   }
-
 
   def updateDisplay(): Unit = {
 
@@ -206,6 +198,7 @@ class PlayingFieldScene(
     newDefenderFieldBar.updateBar()
 
     playersBar.refreshOnRoleSwitch()
+    playersBar.refreshActionStates()
 
     val score1 = currentPlayingField.getScores.getScorePlayer1
     val score2 = currentPlayingField.getScores.getScorePlayer2

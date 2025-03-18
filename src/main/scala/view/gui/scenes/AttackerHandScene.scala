@@ -1,6 +1,6 @@
 package view.gui.scenes
 
-import controller.{Events, IController}
+import controller.{Events, IController, NoSwapsEvent}
 import model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -10,8 +10,12 @@ import util.{ObservableEvent, Observer}
 import view.gui.components.sceneView.GameStatusBar
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.scenes.sceneManager.SceneManager
+import view.gui.overlay.Overlay
 import view.gui.utils.Styles
+import scalafx.scene.Node
+import scalafx.scene.text.Text
 import scalafx.application.Platform
+import model.playerComponent.IPlayer
 import view.gui.components.sceneView.cardBar.SelectablePlayersHandBar
 import view.gui.actionButtons.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
 case class AttackerHandScene(
@@ -21,8 +25,10 @@ case class AttackerHandScene(
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
+  playingField.foreach(_.add(this))
   controller.add(this)
   this.getStylesheets.add(Styles.attackerHandSceneCss)
+  val overlay = new Overlay(this)
   var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
   val backgroundView = new Region {
@@ -81,15 +87,39 @@ case class AttackerHandScene(
 
   root = new StackPane {
     styleClass.add("attacker-hand-scene")
-    children = Seq(backgroundView, layout)
+    children = Seq(backgroundView, layout, overlay.getPane) // ✅ Add Overlay to Scene
   }
-
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println(s"🔄 GUI Received Event: $e")
+      println(s"🔄 AttackerHandScene Received Event: $e")
 
-      SceneManager.update(e)
+      e match {
+        case NoSwapsEvent(player) =>
+          println(s"⚠️ ${player.name} has no Swaps left! Showing Alert in AttackerHandScene...")
+          overlay.show(createSwapAlert(player)) // ✅ Show alert in this scene only
+
+        case _ =>
+          SceneManager.update(e) // ✅ Handle other events normally
+      }
     })
+  }
+
+  // ✅ Method to create an Alert for No Swaps Left
+  private def createSwapAlert(player: IPlayer): Node = {
+    new VBox {
+      alignment = Pos.CENTER
+      spacing = 15
+      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
+
+      children = Seq(
+        new Text(s"⚠️ ${player.name} has no Swaps Left!") {
+          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
+        },
+        new Button("OK") {
+          onAction = _ => overlay.hide()
+        }
+      )
+    }
   }
 }

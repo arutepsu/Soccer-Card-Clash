@@ -19,6 +19,7 @@ enum Events extends ObservableEvent {
   
   case Undo, Redo, SaveGame
   case TieComparison, DoubleTieComparison
+
 }
 case class ComparedCardsEvent(attackingCard: ICard,
                               defendingCard: ICard
@@ -42,3 +43,6 @@ case class DoubleTieComparisonEvent(attackingCard1: ICard,
                                      extraAttackerCard: ICard,
                                      extraDefenderCard: ICard
                                    ) extends ObservableEvent
+case class NoBoostsEvent(player: IPlayer) extends ObservableEvent
+case class NoSwapsEvent(player: IPlayer) extends ObservableEvent
+case class NoDoubleAttacksEvent(player: IPlayer) extends ObservableEvent

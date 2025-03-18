@@ -1,5 +1,6 @@
 package model.playingFiledComponent.strategy.boostStrategy.base
 
+import controller.{Events, NoBoostsEvent}
 import model.cardComponent.ICard
 import model.cardComponent.base.types.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.*
@@ -14,11 +15,9 @@ class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
     lazy val data: IDataManager = playingField.getDataManager
     lazy val roles: IRolesManager = playingField.getRoles
     var attackersDefenderField = data.getPlayerDefenders(roles.attacker)
-
-    println(s"[DEBUG] Initial defender field for attacker: $attackersDefenderField")
+    
 
     if (index < 0 || index >= attackersDefenderField.size) {
-      println(s"[DEBUG] Index $index out of bounds, exiting boost method.")
       return false
     }
 
@@ -26,22 +25,19 @@ class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
     
     attackerBeforeAction.actionStates.get(PlayerActionPolicies.Boost) match {
       case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
+        playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
         return false
       case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
+        playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
         return false
       case _ =>
     }
 
     val originalCard = attackersDefenderField(index)
-    println(s"[DEBUG] Original card before boost: $originalCard")
 
     val boostedCard = originalCard.boost()
-    println(s"[DEBUG] Boosted card: $boostedCard")
 
     attackersDefenderField = attackersDefenderField.updated(index, boostedCard)
-    println(s"[DEBUG] Updated defender field for attacker: $attackersDefenderField")
 
     data.setPlayerDefenders(roles.attacker, attackersDefenderField)
     
@@ -49,17 +45,13 @@ class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
     
     attackerAfterAction.actionStates.get(PlayerActionPolicies.Boost) match {
       case Some(CanPerformAction(remainingUses)) =>
-        println(s"[DEBUG] Remaining Boost uses for ${attackerAfterAction.name}: $remainingUses")
-      case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerAfterAction.name} has no Boost actions left.")
+      case Some(OutOfActions) => playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
       case _ =>
-        println(s"[DEBUG] Unexpected state for Boost action.")
     }
 
     roles.setRoles(attackerAfterAction, roles.defender)
 
     playingField.notifyObservers()
-    println(s"[DEBUG] Observers notified of the change.")
     true
   }
 }

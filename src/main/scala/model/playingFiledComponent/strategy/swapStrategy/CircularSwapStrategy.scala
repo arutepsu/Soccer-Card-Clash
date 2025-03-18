@@ -1,6 +1,8 @@
 package model.playingFiledComponent.strategy.swapStrategy
 
+import controller.NoSwapsEvent
 import model.playingFiledComponent.dataStructure.HandCardsQueue
+
 import scala.collection.mutable
 import model.playingFiledComponent.manager.IDataManager
 import model.playerComponent.playerRole.IRolesManager
@@ -13,11 +15,9 @@ class CircularSwapStrategy(index: Int) extends ISwapStrategy {
     val attackerBeforeAction = roles.attacker
     
     attackerBeforeAction.actionStates.get(PlayerActionPolicies.Swap) match {
-      case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no Swap actions left. Execution is prevented.")
+      case Some(OutOfActions) => playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
         return false
       case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-        println(s"[DEBUG] ${attackerBeforeAction.name} has no Swap actions left. Execution is prevented.")
         return false
       case _ =>
     }
@@ -35,11 +35,8 @@ class CircularSwapStrategy(index: Int) extends ISwapStrategy {
     
     attackerAfterAction.actionStates.get(PlayerActionPolicies.Swap) match {
       case Some(CanPerformAction(remainingUses)) =>
-        println(s"[DEBUG] Remaining Swap uses for ${attackerAfterAction.name}: $remainingUses")
-      case Some(OutOfActions) =>
-        println(s"[DEBUG] ${attackerAfterAction.name} has no Swap actions left.")
+      case Some(OutOfActions) => playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
       case _ =>
-        println(s"[DEBUG] Unexpected state for Swap action.")
     }
     
     roles.setRoles(attackerAfterAction, roles.defender)

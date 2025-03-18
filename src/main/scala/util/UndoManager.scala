@@ -8,7 +8,6 @@ class UndoManager {
 
   def doStep(command: ICommand): Unit = {
     if (command.doStep()) {
-      println(f"!!!!!!!!!!!!!!!!!!!!DOOOO STEEEEPPP  OF ${command.getClass.toString}")
       undoStack = command :: undoStack
       redoStack = Nil
     }

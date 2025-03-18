@@ -1,7 +1,7 @@
 package view.gui.scenes
 
 import scalafx.scene.control.Button
-import controller.{Events, IController}
+import controller.{Events, IController, NoBoostsEvent}
 import model.cardComponent.ICard
 import model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
@@ -14,17 +14,21 @@ import view.gui.scenes.sceneManager.SceneManager
 import scalafx.application.Platform
 import view.gui.components.sceneView.cardBar.SelectablePlayersFieldBar
 import view.gui.actionButtons.{ActionButtonFactory, BoostButton}
+import view.gui.overlay.Overlay
 import view.gui.utils.Styles
+import scalafx.scene.Node
+import scalafx.scene.text.Text
+import model.playerComponent.IPlayer
 case class AttackerDefendersScene(
-                                   controller: IController,
-                                   playingFieldScene: PlayingFieldScene,
-                                   playingField: Option[IPlayingField],
-                                   windowWidth: Double,
-                                   windowHeight: Double,
-                                 ) extends Scene(windowWidth, windowHeight) with Observer {
+                                    controller: IController,
+                                    playingFieldScene: PlayingFieldScene,
+                                    playingField: Option[IPlayingField],
+                                    windowWidth: Double,
+                                    windowHeight: Double
+                                  ) extends Scene(windowWidth, windowHeight) with Observer {
 
-//  this.getStylesheets.add(Styles.attackerDefendersSceneCss)
-  println("RECREATIGN AttackerDefendersScene")
+  println("RECREATING AttackerDefendersScene")
+  playingField.foreach(_.add(this)) // ✅ Add observer to receive eventsv
   controller.add(this)
   var getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
@@ -39,13 +43,17 @@ case class AttackerDefendersScene(
     fieldBar
   }
 
+  // ✅ Overlay for Alerts
+  val overlay = new Overlay(this)
+
   // ✅ Back to Game button
   val backButton: Button = GameButtonFactory.createGameButton(
     text = "Back to Game",
     width = 180,
     height = 50
   ) {
-    () => controller.notifyObservers(Events.PlayingField)
+    () =>
+      controller.notifyObservers(Events.PlayingField)
       playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
@@ -78,13 +86,38 @@ case class AttackerDefendersScene(
 
   root = new StackPane {
     styleClass.add("attacker-defenders-scene")
-    children = Seq(backgroundView, layout)
+    children = Seq(backgroundView, layout, overlay.getPane) // ✅ Add Overlay
   }
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println(s"🔄 GUI Received Event: $e")
-      SceneManager.update(e)
+      println(s"🔄 AttackerDefendersScene Received Event: $e")
+
+      e match {
+        case NoBoostsEvent(player) =>
+          println(s"⚠️ ${player.name} has no Boosts left! Showing Alert in AttackerDefendersScene...")
+          overlay.show(createBoostAlert(player)) // ✅ Show alert in this scene only
+
+        case _ =>
+          SceneManager.update(e) // ✅ Handle other events normally
+      }
     })
+  }
+
+  private def createBoostAlert(player: IPlayer): Node = {
+    new VBox {
+      alignment = Pos.CENTER
+      spacing = 15
+      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
+
+      children = Seq(
+        new Text(s"⚠️ ${player.name} has no Boosts Left!") {
+          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
+        },
+        new Button("OK") {
+          onAction = _ => overlay.hide()
+        }
+      )
+    }
   }
 }

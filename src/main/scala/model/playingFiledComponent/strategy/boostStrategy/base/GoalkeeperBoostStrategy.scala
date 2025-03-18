@@ -1,5 +1,6 @@
 package model.playingFiledComponent.strategy.boostStrategy.base
 
+import controller.{Events, NoBoostsEvent}
 import model.cardComponent.ICard
 import model.cardComponent.base.types.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.*
@@ -23,11 +24,11 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
         val attackerBeforeAction = roles.attacker
         
         attackerBeforeAction.actionStates.get(PlayerActionPolicies.Boost) match {
-          case Some(OutOfActions) =>
-            println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
+          case Some(OutOfActions) => playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
             return false
+
           case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-            println(s"[DEBUG] ${attackerBeforeAction.name} has no Boost actions left. Boosting is prevented.")
+            playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
             return false
           case _ =>
         }
@@ -36,17 +37,13 @@ class GoalkeeperBoostStrategy extends IBoostStrategy {
         
         attackerAfterAction.actionStates.get(PlayerActionPolicies.Boost) match {
           case Some(CanPerformAction(remainingUses)) =>
-            println(s"[DEBUG] Remaining Boost uses for ${attackerAfterAction.name}: $remainingUses")
-          case Some(OutOfActions) =>
-            println(s"[DEBUG] ${attackerAfterAction.name} has no Boost actions left.")
+          case Some(OutOfActions) => playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
           case _ =>
-            println(s"[DEBUG] Unexpected state for Boost action.")
         }
 
         roles.setRoles(attackerAfterAction, roles.defender)
 
         playingField.notifyObservers()
-        println(s"[DEBUG] Observers notified of goalkeeper boost.")
         true
       case None => false
     }
