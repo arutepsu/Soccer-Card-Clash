@@ -7,13 +7,13 @@ import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import util.{ObservableEvent, Observer}
-import view.gui.components.sceneBar.GameStatusBar
+import view.gui.components.sceneView.GameStatusBar
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.scenes.sceneManager.SceneManager
 import view.gui.utils.Styles
 import scalafx.application.Platform
-import view.gui.components.sceneBar.cardBar.SelectablePlayersHandBar
-import view.gui.action.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
+import view.gui.components.sceneView.cardBar.SelectablePlayersHandBar
+import view.gui.actionButtons.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
 case class AttackerHandScene(
                               controller: IController,
                               playingFieldScene: PlayingFieldScene,

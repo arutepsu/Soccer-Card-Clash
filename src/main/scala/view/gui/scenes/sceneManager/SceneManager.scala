@@ -70,10 +70,11 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
-    val actualScene = newScene match {
-      case _: PlayingFieldScene => sceneRegistry.getPlayingFieldScene // ✅ Always get fresh instance
-      case _ => newScene
-    }
+//    val actualScene = newScene match {
+//      case _: PlayingFieldScene => sceneRegistry.getPlayingFieldScene // ✅ Always get fresh instance
+//      case _ => newScene
+//    }
+
     if (currentScene.contains(newScene)) {
       return
     }

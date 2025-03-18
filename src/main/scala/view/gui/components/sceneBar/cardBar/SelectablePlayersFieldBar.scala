@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar.cardBar
+package view.gui.components.sceneView.cardBar
 
 import model.cardComponent.ICard
 import model.cardComponent.base.types.BoostedCard
@@ -13,7 +13,7 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.paint.Color
 import view.gui.components.cardView.FieldCard
 import view.gui.components.uiFactory.{BoostLoader, CardAnimationFactory}
-import view.gui.components.sceneBar.cardBar.PlayersFieldBar
+import view.gui.components.sceneView.cardBar.PlayersFieldBar
 
 class SelectablePlayersFieldBar(player: IPlayer, playingField: IPlayingField) extends PlayersFieldBar(player, playingField) {
 

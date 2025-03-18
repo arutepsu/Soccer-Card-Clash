@@ -1,5 +1,6 @@
 package model.playingFiledComponent.strategy.attackStrategy.base
 
+import controller.{AttackResultEvent, ComparedCardsEvent, Events, TieComparisonEvent}
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
 import model.playingFiledComponent.strategy.boostStrategy.BoostManager
@@ -11,8 +12,12 @@ import model.cardComponent.ICard
 import model.playingFiledComponent.strategy.boostStrategy.IRevertStrategy
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import model.playerComponent.playerRole.IRolesManager
+import util.ObservableEvent
+import view.gui.scenes.PlayingFieldScene
+
 import scala.util.{Failure, Success, Try}
 
+//TODO : Implement Goalkeeper tie case
 class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
   override def execute(playingField: IPlayingField): Boolean = {
@@ -29,6 +34,17 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     Try {
       val attackingCard = attackerHand.removeLastCard()
 
+      val defenderCard = if (fieldState.allDefendersBeaten(defender)) {
+        fieldState.getPlayerGoalkeeper(defender).getOrElse(
+          throw new NoSuchElementException("Goalkeeper not found")
+        )
+      } else {
+        fieldState.getDefenderCard(defender, defenderIndex)
+      }
+
+      playingField.notifyObservers(ComparedCardsEvent(attackingCard, defenderCard))
+
+
       val result = if (fieldState.allDefendersBeaten(defender)) {
         processGoalkeeperAttack(
           attacker,
@@ -39,7 +55,8 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           fieldState,
           revertStrategy,
           scores,
-          roles)
+          roles,
+          playingField)
       } else {
         processDefenderAttack(
           attacker,
@@ -49,7 +66,8 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           attackingCard,
           fieldState,
           revertStrategy,
-          roles)
+          roles,
+          playingField)
       }
 
       playingField.notifyObservers()
@@ -69,16 +87,19 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                                        fieldState: IDataManager,
                                        revertStrategy: IRevertStrategy,
                                        scores: IPlayerScores,
-                                       roles: IRolesManager
+                                       roles: IRolesManager,
+                                       playingField: IPlayingField
                                      ): Boolean = {
+
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender).getOrElse(
       throw new NoSuchElementException("Goalkeeper not found")
     )
     val revertedGoalkeeper = revertStrategy.revertCard(goalkeeper)
     val comparisonResult = attackingCard.compare(goalkeeper)
 
-    if (comparisonResult > 0) {
-      attackerWins(attackerHand, attackingCard, revertStrategy.revertCard(goalkeeper))
+    // ✅ Store attack success result
+    val attackResult: Boolean = if (comparisonResult > 0) {
+      attackerWins(attackerHand, playingField, attackingCard, revertStrategy.revertCard(goalkeeper))
       fieldState.removeDefenderGoalkeeper(defender)
       fieldState.setPlayerGoalkeeper(defender, None)
       fieldState.setPlayerDefenders(defender, List.empty)
@@ -87,12 +108,15 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       roles.switchRoles()
       true
     } else {
-      defenderWins(defenderHand, attackingCard, revertStrategy.revertCard(goalkeeper))
+      defenderWins(defenderHand, playingField, attackingCard, revertStrategy.revertCard(goalkeeper))
       fieldState.removeDefenderGoalkeeper(defender)
       fieldState.refillDefenderField(defender)
       roles.switchRoles()
       false
     }
+
+
+    true
   }
 
   private def processDefenderAttack(
@@ -103,27 +127,35 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                                      attackingCard: ICard,
                                      fieldState: IDataManager,
                                      revertStrategy: IRevertStrategy,
-                                     roles: IRolesManager
+                                     roles: IRolesManager,
+                                     playingField: IPlayingField
                                    ): Boolean = {
+
     val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
     val revertedCard = revertStrategy.revertCard(defenderCard)
     val comparisonResult = attackingCard.compare(defenderCard)
 
-    comparisonResult match {
-      case 0 => handleTie(attackerHand, defenderHand, attackingCard, defenderCard, fieldState, revertStrategy, roles)
+    val attackResult: Boolean = comparisonResult match {
+      case 0 =>
+        handleTie(attackerHand, defenderHand, attackingCard, defenderCard, fieldState, revertStrategy, roles, playingField)
+        false
+
       case r if r > 0 =>
-        attackerWins(attackerHand, attackingCard, revertStrategy.revertCard(defenderCard))
+        attackerWins(attackerHand, playingField, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
         fieldState.removeDefenderCard(defender, revertedCard)
         true
+
       case _ =>
-        defenderWins(defenderHand, attackingCard, revertStrategy.revertCard(defenderCard))
+        defenderWins(defenderHand, playingField, attackingCard, revertStrategy.revertCard(defenderCard))
         fieldState.removeDefenderCard(defender, defenderCard)
         fieldState.removeDefenderCard(defender, revertedCard)
         fieldState.refillDefenderField(defender)
         roles.switchRoles()
         false
     }
+
+    true
   }
 
   private def handleTie(
@@ -133,17 +165,21 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                          defenderCard: ICard,
                          fieldState: IDataManager,
                          revertStrategy: IRevertStrategy,
-                         roles: IRolesManager
+                         roles: IRolesManager,
+                         playingField: IPlayingField
                        ): Boolean = {
+    playingField.notifyObservers(Events.TieComparison)
     val revertedCard = revertStrategy.revertCard(defenderCard)
     if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
       val extraAttackerCard = attackerHand.removeLastCard()
       val extraDefenderCard = defenderHand.removeLastCard()
+      playingField.notifyObservers(TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard))
       val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
       if (tiebreakerResult > 0) {
         attackerWins(
           attackerHand,
+          playingField,
           attackingCard,
           revertStrategy.revertCard(defenderCard),
           extraAttackerCard,
@@ -151,6 +187,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       } else {
         defenderWins(
           defenderHand,
+          playingField,
           attackingCard,
           revertStrategy.revertCard(defenderCard),
           extraAttackerCard,
@@ -158,21 +195,37 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
       }
       fieldState.removeDefenderCard(roles.defender, defenderCard)
       fieldState.removeDefenderCard(roles.defender, revertedCard)
+      fieldState.refillDefenderField(roles.defender)
       roles.switchRoles()
     } else {
       roles.switchRoles()
     }
-    false
+    true
   }
 
-  private def attackerWins(hand: IHandCardsQueue, cards: ICard*): Unit = {
+  private def attackerWins(
+                            hand: IHandCardsQueue,
+                            playingField: IPlayingField,
+                            cards: ICard*
+                          ): Unit = {
     cards.foreach { card =>
       hand.addCard(card)
     }
+
+    playingField.notifyObservers(AttackResultEvent(playingField.getAttacker, playingField.getDefender, attackSuccess = true))
+
   }
 
 
-  private def defenderWins(hand: IHandCardsQueue, cards: ICard*): Unit = {
+  private def defenderWins(
+                            hand: IHandCardsQueue,
+                            playingField: IPlayingField,
+                            cards: ICard*
+                          ): Unit = {
     cards.foreach(hand.addCard)
+
+    playingField.notifyObservers(AttackResultEvent(playingField.getAttacker, playingField.getDefender, attackSuccess = false))
+
   }
+
 }

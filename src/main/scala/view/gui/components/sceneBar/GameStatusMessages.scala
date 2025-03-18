@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar
+package view.gui.components.sceneView
 
 object GameStatusMessages {
   val GAME_STARTED = "Game Started! Player 1 attacks Player 2!"

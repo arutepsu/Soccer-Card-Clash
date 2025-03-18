@@ -1,6 +1,6 @@
 package view.gui.scenes
 
-import view.gui.components.sceneBar.MenuButtonBar
+import view.gui.components.sceneView.MenuButtonBar
 import controller.IController
 import scalafx.application.Platform
 import scalafx.geometry.Pos

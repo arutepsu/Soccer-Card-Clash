@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar.cardBar
+package view.gui.components.sceneView.cardBar
 
 import javafx.application.Platform
 import model.playerComponent.IPlayer

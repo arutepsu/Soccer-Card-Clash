@@ -40,8 +40,12 @@ import scalafx.collections.ObservableBuffer
 import scalafx.application.Platform
 import java.io.File
 
+import scalafx.scene.effect.GaussianBlur
+import scalafx.scene.layout.VBox
+
 class LoadGameScene(controller: IController) extends Scene with Observer {
   controller.add(this)
+
   // Directory where saved games are stored
   private val gamesFolder = new File("games")
 
@@ -76,7 +80,7 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
   }
 
   // Root Layout
-  this.root = new VBox {
+  private val rootVBox = new VBox {
     spacing = 10
     alignment = Pos.Center
     children = Seq(
@@ -86,19 +90,21 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     )
   }
 
+  this.root = rootVBox
+
   // Populate ListView when Scene is Loaded
   loadSavedGames()
 
-  // Show a confirmation dialog when loading a game
+  // Show a confirmation dialog when loading a game with a blur effect
   private def showLoadConfirmation(gameFile: String): Unit = {
-    val alert = new Alert(AlertType.Confirmation) {
-      title = "Load Game"
-      headerText = s"Load game: $gameFile?"
-      contentText = "Do you want to proceed?"
-    }
+    val blurEffect = new GaussianBlur(3) // Adjust blur radius as needed
+    rootVBox.effect = blurEffect // Apply blur effect to the root VBox
 
-    val result = alert.showAndWait()
-    if (result.contains(ButtonType.OK)) {
+    val confirmed = GameAlert.show("Load Game", s"Load game: $gameFile?\nDo you want to proceed?")
+
+    rootVBox.effect = null // Remove blur effect after closing the alert
+
+    if (confirmed) {
       controller.loadGame(gameFile)
     }
   }

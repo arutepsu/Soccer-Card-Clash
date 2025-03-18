@@ -1,6 +1,6 @@
 package view.gui.scenes
 
-import controller.IController
+import controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, IController, TieComparisonEvent}
 import sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -8,30 +8,40 @@ import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import util.{ObservableEvent, Observer}
-import view.gui.components.sceneBar.*
+import view.gui.components.sceneView.*
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.utils.ImageUtils
 import scalafx.stage.Stage
 import view.gui.utils.Styles
-import controller.Events
 import scalafx.application.Platform
-import view.gui.components.sceneBar.ButtonBar
-import view.gui.components.sceneBar.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
+import view.gui.components.sceneView.ButtonBar
+import view.gui.components.sceneView.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
+import model.cardComponent.ICard
+import scalafx.scene.Node
+import scalafx.animation.FadeTransition
+import scalafx.util.Duration
+import view.gui.components.comparison.ComparisonHandler
+import view.gui.overlay.Overlay
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class PlayingFieldScene(
-                              controller: IController,
-                              windowWidth: Double,
-                              windowHeight: Double,
-                            ) extends Scene(windowWidth, windowHeight) with Observer {
+                         controller: IController,
+                         windowWidth: Double,
+                         windowHeight: Double,
+                       ) extends Scene(windowWidth, windowHeight) with Observer {
   this.getStylesheets.add(Styles.playingFieldCss)
 
+  println(s"✅ PlayingFieldScene registered as observer.")
   if (controller.getCurrentGame.getPlayingField == null) {
     throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
   }
 
   def playingField: IPlayingField = controller.getCurrentGame.getPlayingField
-
+  playingField.add(this)
   def player1: IPlayer = controller.getCurrentGame.getPlayer1
 
   def player2: IPlayer = controller.getCurrentGame.getPlayer2
@@ -52,6 +62,9 @@ class PlayingFieldScene(
   val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
 
   val gameStatusBar = new GameStatusBar
+
+  val overlay = new Overlay(this)
+  private val comparisonHandler = new ComparisonHandler(controller, overlay, updateDisplay)
 
   val playerFields = new HBox {
     alignment = Pos.CENTER
@@ -79,15 +92,37 @@ class PlayingFieldScene(
 
   val playersBar = new PlayersBar(controller)
 
-  root = new StackPane {
+//  root = new StackPane {
+//        children = Seq(
+//          new HBox {
+//            alignment = Pos.CENTER_LEFT
+//            spacing = 20
+//            children = Seq(
+//              buttonBar,
+//              new VBox {
+//                padding = Insets(10)
+//                alignment = Pos.CENTER
+//                children = Seq(
+//                  playersBar,
+//                  gameStatusBar,
+//                  playerFields,
+//                  playerHands,
+//                  player1ScoreLabel,
+//                  player2ScoreLabel,
+//                )
+//              }
+//            )
+//          }
+//        )
+//      }
+
+  val mainLayout = new StackPane {
     children = Seq(
       new HBox {
         alignment = Pos.CENTER_LEFT
-        spacing = 20
         children = Seq(
           buttonBar,
           new VBox {
-            padding = Insets(10)
             alignment = Pos.CENTER
             children = Seq(
               playersBar,
@@ -99,12 +134,24 @@ class PlayingFieldScene(
             )
           }
         )
-      }
+      },
+      overlay.getPane
     )
   }
 
-  override def update(e: ObservableEvent): Unit = {
+  root = mainLayout
 
+  private var lastAttackingCard: Option[ICard] = None
+  private var lastAttackingCard1: Option[ICard] = None
+  private var lastAttackingCard2: Option[ICard] = None
+  private var lastDefendingCard: Option[ICard] = None
+  private var lastExtraAttackerCard: Option[ICard] = None
+  private var lastExtraDefenderCard: Option[ICard] = None
+  private var lastAttackSuccess: Option[Boolean] = None
+
+  override def update(e: ObservableEvent): Unit = {
+    println(s"✅ PlayingFieldScene received event: $e")
+    comparisonHandler.handleComparisonEvent(e)
     e match {
       case Events.MainMenu =>
         if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
@@ -114,9 +161,16 @@ class PlayingFieldScene(
         SceneManager.update(e)
 
       case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.CircularSwap =>
-          updateDisplay()
+        updateDisplay()
 
       case _ =>
+
+    }
+  }
+  private def updateDisplayAfterOverlay(): Unit = {
+    Future {
+      Thread.sleep(3000)
+      Platform.runLater(() => updateDisplay())
     }
   }
 
@@ -160,4 +214,15 @@ class PlayingFieldScene(
     player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
 
   }
+
+  private def resetLastCards(): Unit = {
+    lastAttackingCard = None
+    lastAttackingCard1 = None
+    lastAttackingCard2 = None
+    lastDefendingCard = None
+    lastExtraAttackerCard = None
+    lastExtraDefenderCard = None
+    lastAttackSuccess = None
+  }
 }
+

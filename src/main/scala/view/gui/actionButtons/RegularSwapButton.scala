@@ -1,9 +1,9 @@
-package view.gui.action
+package view.gui.actionButtons
 
 import controller.IController
 import view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
-import view.gui.components.sceneBar.GameStatusBar
-import view.gui.components.sceneBar.GameStatusMessages
+import view.gui.components.sceneView.GameStatusBar
+import view.gui.components.sceneView.GameStatusMessages
 case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
   override def execute(
                         controller: IController,

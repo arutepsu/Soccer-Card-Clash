@@ -1,8 +1,8 @@
-package view.gui.action
+package view.gui.actionButtons
 
 import controller.IController
-import view.gui.components.sceneBar.GameStatusBar
-import view.gui.components.sceneBar.GameStatusMessages
+import view.gui.components.sceneView.GameStatusBar
+import view.gui.components.sceneView.GameStatusMessages
 import view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
 class CircularSwapButton extends ActionButton[AttackerHandScene] {
   override def execute(

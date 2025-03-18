@@ -1,10 +1,10 @@
-package view.gui.action
+package view.gui.actionButtons
 
 import controller.IController
 import view.gui.scenes.PlayingFieldScene
-import view.gui.components.sceneBar.GameStatusBar
-import view.gui.components.sceneBar.GameStatusMessages
-case class DoubleButton() extends ActionButton[PlayingFieldScene] {
+import view.gui.components.sceneView.GameStatusBar
+import view.gui.components.sceneView.GameStatusMessages
+case class SingleButton() extends ActionButton[PlayingFieldScene] {
   override def execute(
                         controller: IController,
                         playingFieldScene: PlayingFieldScene,
@@ -15,24 +15,24 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
         playingFieldScene.player1FieldBar
       else
         playingFieldScene.player2FieldBar
+
+
+
     val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getDefender)
 
     if (defenderCards.nonEmpty) {
+
       defenderFieldBar.selectedDefenderIndex match {
         case Some(defenderIndex) =>
-          println(s"🔥 Attacking defender at index: $defenderIndex")
-          controller.executeDoubleAttackCommand(defenderIndex)
+          controller.executeSingleAttackCommand(defenderIndex)
           playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
-          playingFieldScene.updateDisplay()
           defenderFieldBar.resetSelectedDefender()
 
         case None =>
-          println("⚠️ No defender selected for attack!")
           playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
       }
     } else {
-      println("⚽ All defenders are gone! Attacking the goalkeeper!")
-      controller.executeDoubleAttackCommand(0)
+      controller.executeSingleAttackCommand(0)
       playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
     }
   }

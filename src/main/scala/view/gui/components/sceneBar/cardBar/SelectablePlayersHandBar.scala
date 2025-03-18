@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar.cardBar
+package view.gui.components.sceneView.cardBar
 
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
@@ -10,7 +10,7 @@ import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color
 import view.gui.components.cardView.HandCard
 import view.gui.components.uiFactory.CardAnimationFactory
-import view.gui.components.sceneBar.cardBar.PlayersHandBar
+import view.gui.components.sceneView.cardBar.PlayersHandBar
 
 class SelectablePlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: Boolean) extends PlayersHandBar(player, playingField, isLeftSide) {
 

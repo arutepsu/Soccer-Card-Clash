@@ -1,14 +1,14 @@
-package view.gui.components.sceneBar
+package view.gui.components.sceneView
 
 import controller.IController
 import view.gui.scenes.PlayingFieldScene
-import view.gui.components.sceneBar.GameStatusBar
+import view.gui.components.sceneView.GameStatusBar
 import scalafx.scene.layout.VBox
 import scalafx.geometry.Pos
 import scalafx.geometry.Insets
 import scalafx.scene.control.Button
 import view.gui.components.uiFactory.GameButtonFactory
-import view.gui.action._
+import view.gui.actionButtons._
 import controller.Events
 import model.playingFiledComponent.IPlayingField
 

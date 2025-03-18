@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar
+package view.gui.components.sceneView
 
 import controller.{Events, IController}
 import model.playingFiledComponent.IPlayingField

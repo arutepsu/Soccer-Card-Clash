@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar.cardBar
+package view.gui.components.sceneView.cardBar
 
 import model.cardComponent.ICard
 import model.cardComponent.base.types.BoostedCard

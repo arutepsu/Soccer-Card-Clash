@@ -1,4 +1,4 @@
-package view.gui.action
+package view.gui.actionButtons
 
 import controller.IController
 import view.gui.scenes.{AttackerDefendersScene, AttackerHandScene, PlayingFieldScene}

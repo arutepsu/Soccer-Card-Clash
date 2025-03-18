@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar
+package view.gui.components.sceneView
 
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.{Insets, Pos}

@@ -17,8 +17,14 @@ class PlayingFieldManagerFactory @Inject()(
   override def createDataManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IDataManager =
     new DataManager(playingField, handManager, fieldManager)
 
-  override def createActionManager(playingField: IPlayingField): IActionManager =
-    new ActionManager(playingField)
+//  override def createActionManager(playingField: IPlayingField): IActionManager =
+//    new ActionManager(playingField)
+  override def createActionManager(playingField: IPlayingField): IActionManager = {
+    val newManager = new ActionManager(playingField)
+    println(s"🚀 DEBUG: New ActionManager created: $newManager for playingField: $playingField")
+    newManager
+}
+
 
   override def createRolesManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IRolesManager =
     new RolesManager(playingField, player1, player2)

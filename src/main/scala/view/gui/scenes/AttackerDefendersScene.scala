@@ -8,12 +8,12 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import util.{ObservableEvent, Observer}
-import view.gui.components.sceneBar.{BoostBar, GameStatusBar}
+import view.gui.components.sceneView.{BoostBar, GameStatusBar}
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.scenes.sceneManager.SceneManager
 import scalafx.application.Platform
-import view.gui.components.sceneBar.cardBar.SelectablePlayersFieldBar
-import view.gui.action.{ActionButtonFactory, BoostButton}
+import view.gui.components.sceneView.cardBar.SelectablePlayersFieldBar
+import view.gui.actionButtons.{ActionButtonFactory, BoostButton}
 import view.gui.utils.Styles
 case class AttackerDefendersScene(
                                    controller: IController,

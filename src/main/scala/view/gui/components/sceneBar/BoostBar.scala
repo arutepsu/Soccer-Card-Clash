@@ -1,4 +1,4 @@
-package view.gui.components.sceneBar
+package view.gui.components.sceneView
 
 import scalafx.scene.layout.HBox
 import scalafx.geometry.Pos
