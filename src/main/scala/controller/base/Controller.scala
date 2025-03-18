@@ -44,8 +44,8 @@ class Controller @Inject()(private val game: IGame, private val commandFactory: 
     executeCommand(commandFactory.createRegularSwapCommand(index), Events.RegularSwap)
   }
 
-  override def circularSwap(index: Int): Unit = {
-    executeCommand(commandFactory.createCircularSwapCommand(index), Events.CircularSwap)
+  override def reverseSwap(): Unit = {
+    executeCommand(commandFactory.createReverseSwapCommand(), Events.ReverseSwap)
   }
 
   override def createGame(player1: String, player2: String): Unit =

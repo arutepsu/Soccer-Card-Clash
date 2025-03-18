@@ -17,7 +17,7 @@ trait IController extends Observable{
   def boostDefender(defenderPosition: Int): Unit
   def boostGoalkeeper(): Unit
   def regularSwap(index: Int): Unit
-  def circularSwap(index: Int): Unit
+  def reverseSwap(): Unit
   def createGame(player1: String, player2: String): Unit
   def quit(): Unit
   def saveGame(): Unit

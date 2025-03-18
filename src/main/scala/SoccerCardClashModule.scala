@@ -29,6 +29,7 @@ import model.playingFiledComponent.strategy.refillStrategy.*
 import model.playingFiledComponent.strategy.scoringStrategy.*
 import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, StandardScoring}
 import model.playingFiledComponent.strategy.swapStrategy.*
+import model.playingFiledComponent.strategy.swapStrategy.base.ReverseSwapStrategy
 import util.{Deserializer, Observable}
 
 class SoccerCardClashModule extends AbstractModule {
@@ -45,6 +46,10 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
+
+//    bind(classOf[ISwapStrategy])
+//    .toConstructor(classOf[ReverseSwapStrategy].getConstructor(classOf[IHandCardsQueueFactory]))
+//    .in(classOf[Singleton])
 
     bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
 

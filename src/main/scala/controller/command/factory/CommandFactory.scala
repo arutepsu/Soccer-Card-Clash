@@ -6,7 +6,7 @@ import controller.command.ICommand
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
-import controller.command.actionCommandTypes.swapActionCommands.{CircularSwapActionCommand, HandSwapActionCommand}
+import controller.command.actionCommandTypes.swapActionCommands.{ReverseSwapActionCommand, RegularActionCommand}
 import controller.command.base.workflow.*
 import model.cardComponent.ICard
 import model.gameComponent.IGame
@@ -25,10 +25,10 @@ class CommandFactory @Inject()(game: IGame, controller: IController) extends ICo
     new BoostGoalkeeperActionCommand(game)
 
   override def createRegularSwapCommand(index: Int): ICommand =
-    new HandSwapActionCommand(index, game)
+    new RegularActionCommand(index, game)
 
-  override def createCircularSwapCommand(index: Int): ICommand =
-    new CircularSwapActionCommand(index, game)
+  override def createReverseSwapCommand(): ICommand =
+    new ReverseSwapActionCommand(game)
 
   override def createResetGameCommand(): ICommand =
     new ResetGameCommand(game)
@@ -60,7 +60,7 @@ trait ICommandFactory {
 
   def createRegularSwapCommand(index: Int): ICommand
 
-  def createCircularSwapCommand(index: Int): ICommand
+  def createReverseSwapCommand(): ICommand
 
   def createResetGameCommand(): ICommand
 

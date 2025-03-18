@@ -6,12 +6,12 @@ import model.playingFiledComponent.manager.IActionManager
 
 import scala.util.{Failure, Success, Try}
 
-class HandSwapActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
+class RegularActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
   private var swapSuccessful: Option[Boolean] = None
 
   override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.handSwap(cardIndex))
+    val result = Try(actionManager.regularSwap(cardIndex))
     result match {
       case Success(value) =>
         swapSuccessful = Some(value)

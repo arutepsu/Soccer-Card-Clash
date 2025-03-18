@@ -1,13 +1,14 @@
-package model.playingFiledComponent.strategy.swapStrategy
+package model.playingFiledComponent.strategy.swapStrategy.base
 
 import controller.{Events, NoSwapsEvent}
-import model.playingFiledComponent.dataStructure.HandCardsQueue
-
-import scala.collection.mutable
-import model.playingFiledComponent.manager.IDataManager
+import model.playerComponent.playerAction.*
 import model.playerComponent.playerRole.IRolesManager
 import model.playingFiledComponent.IPlayingField
-import model.playerComponent.playerAction.*
+import model.playingFiledComponent.dataStructure.HandCardsQueue
+import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
+
+import scala.collection.mutable
 class HandSwapStrategy(index: Int) extends ISwapStrategy {
   override def swap(playingField: IPlayingField): Boolean = {
     lazy val data: IDataManager = playingField.getDataManager

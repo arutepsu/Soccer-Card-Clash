@@ -11,6 +11,7 @@ import model.playingFiledComponent.strategy.boostStrategy.*
 import model.playingFiledComponent.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
 import model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
 import model.playingFiledComponent.strategy.swapStrategy.*
+import model.playingFiledComponent.strategy.swapStrategy.base.{ReverseSwapStrategy, HandSwapStrategy}
 import play.api.libs.json.*
 import play.api.libs.json.util.*
 
@@ -33,11 +34,11 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
     
   }
 
-  override def circularSwap(cardIndex: Int): Boolean = {
-    swapStrategy.swapAttacker(new CircularSwapStrategy(cardIndex))
+  override def reverseSwap(): Boolean = {
+    swapStrategy.swapAttacker(new ReverseSwapStrategy)
   }
 
-  override def handSwap(cardIndex: Int): Boolean = {
+  override def regularSwap(cardIndex: Int): Boolean = {
     swapStrategy.swapAttacker(new HandSwapStrategy(cardIndex))
   }
 
@@ -62,8 +63,8 @@ trait IActionManager{
   def getPlayingField: IPlayingField
   def singleAttack(defenderIndex: Int): Boolean
   def doubleAttack(defenderIndex: Int): Boolean
-  def circularSwap(cardIndex: Int): Boolean
-  def handSwap(cardIndex: Int): Boolean
+  def reverseSwap(): Boolean
+  def regularSwap(cardIndex: Int): Boolean
   def boostDefender(cardIndex: Int): Boolean
   def boostGoalkeeper(): Boolean
   def getBoostManager: IBoostManager

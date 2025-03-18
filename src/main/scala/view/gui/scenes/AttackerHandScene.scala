@@ -17,7 +17,7 @@ import scalafx.scene.text.Text
 import scalafx.application.Platform
 import model.playerComponent.IPlayer
 import view.gui.components.sceneView.cardBar.SelectablePlayersHandBar
-import view.gui.actionButtons.{ActionButtonFactory, CircularSwapButton, RegularSwapButton}
+import view.gui.actionButtons.{ActionButtonFactory, ReverseSwapButton, RegularSwapButton}
 case class AttackerHandScene(
                               controller: IController,
                               playingFieldScene: PlayingFieldScene,
@@ -61,9 +61,9 @@ case class AttackerHandScene(
     this,
     controller
   )
-  val circularSwapButton: Button = ActionButtonFactory.createCircularSwapButton(
-    CircularSwapButton(),
-    "Circular Swap",
+  val circularSwapButton: Button = ActionButtonFactory.createReverseSwapButton(
+    ReverseSwapButton(),
+    "Reverse Swap",
     180,
     50,
     this,

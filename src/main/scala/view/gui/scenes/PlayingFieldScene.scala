@@ -140,7 +140,7 @@ class PlayingFieldScene(
         controller.remove(this)
         SceneManager.update(e)
 
-      case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.CircularSwap =>
+      case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.ReverseSwap =>
         updateDisplay()
 
       case _ =>

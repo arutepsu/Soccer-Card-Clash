@@ -59,7 +59,7 @@ object ActionButtonFactory {
     }
   }
 
-  def createCircularSwapButton(
+  def createReverseSwapButton(
                                action: ActionButton[AttackerHandScene],
                                buttonText: String,
                                buttonWidth: Double,
