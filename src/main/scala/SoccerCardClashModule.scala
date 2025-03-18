@@ -47,10 +47,6 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
 
-//    bind(classOf[ISwapStrategy])
-//    .toConstructor(classOf[ReverseSwapStrategy].getConstructor(classOf[IHandCardsQueueFactory]))
-//    .in(classOf[Singleton])
-
     bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
 
     bind(classOf[IMementoFactory])

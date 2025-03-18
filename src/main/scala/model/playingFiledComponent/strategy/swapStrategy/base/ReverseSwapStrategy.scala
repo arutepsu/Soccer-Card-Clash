@@ -38,9 +38,9 @@ class ReverseSwapStrategy extends ISwapStrategy {
 
     reversedCards.foreach(attackerHand.addCard)
 
-    val newHand = new HandCardsQueue(reversedCards.toList)
-
-    data.setPlayerHand(roles.attacker, newHand)
+    for (i <- reversedCards.indices) {
+      attackerHand.update(i, reversedCards(i))
+    }
 
     val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.Swap)
 
