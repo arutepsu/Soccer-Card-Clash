@@ -1,0 +1,452 @@
+{
+  "playingField" : {
+    "attacker" : {
+      "name" : "allalaala",
+      "cards" : [ {
+        "suit" : "Spades",
+        "value" : "Jack",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "King",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "8",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "2",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "King",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "4",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "7",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "2",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "Ace",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "Queen",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "9",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "Ace",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "3",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "10",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "9",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "Jack",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "6",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "9",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "8",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "10",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "7",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "8",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "7",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "5",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "4",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "6",
+        "type" : "Regular"
+      } ],
+      "actionStates" : {
+        "Boost" : "OutOfActions",
+        "DoubleAttack" : "CanPerformAction(1)",
+        "Swap" : "CanPerformAction(1)"
+      }
+    },
+    "defender" : {
+      "name" : "sfsdfffffff",
+      "cards" : [ {
+        "suit" : "Clubs",
+        "value" : "10",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "Queen",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "9",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "6",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "3",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "3",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "4",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "Jack",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "Ace",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "2",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "8",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "3",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "10",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "4",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "Jack",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "2",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "5",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "Queen",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "Queen",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "5",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "Ace",
+        "type" : "Regular"
+      }, {
+        "suit" : "Spades",
+        "value" : "5",
+        "type" : "Regular"
+      }, {
+        "suit" : "Hearts",
+        "value" : "7",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "6",
+        "type" : "Regular"
+      }, {
+        "suit" : "Clubs",
+        "value" : "King",
+        "type" : "Regular"
+      }, {
+        "suit" : "Diamonds",
+        "value" : "King",
+        "type" : "Regular"
+      } ],
+      "actionStates" : {
+        "Boost" : "CanPerformAction(2)",
+        "DoubleAttack" : "CanPerformAction(1)",
+        "Swap" : "CanPerformAction(1)"
+      }
+    },
+    "scores" : {
+      "scorePlayer1" : 0,
+      "scorePlayer2" : 0
+    }
+  },
+  "player1Hand" : [ {
+    "suit" : "Clubs",
+    "value" : "6",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "8",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "Jack",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "King",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "8",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "2",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "King",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "4",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "7",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "2",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "Ace",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "Queen",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "9",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "Ace",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "3",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "10",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "9",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "Jack",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "6",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "9",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "8",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "10",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "7",
+    "type" : "Regular"
+  } ],
+  "player2Hand" : [ {
+    "suit" : "Clubs",
+    "value" : "10",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "Queen",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "9",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "6",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "3",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "3",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "4",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "Jack",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "Ace",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "2",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "8",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "3",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "10",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "4",
+    "type" : "Regular"
+  }, {
+    "suit" : "Clubs",
+    "value" : "Jack",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "2",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "5",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "Queen",
+    "type" : "Regular"
+  }, {
+    "suit" : "Hearts",
+    "value" : "Queen",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "5",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "Ace",
+    "type" : "Regular"
+  }, {
+    "suit" : "Spades",
+    "value" : "5",
+    "type" : "Regular"
+  } ],
+  "player1Field" : [ {
+    "suit" : "Clubs",
+    "value" : "9",
+    "type" : "Boosted",
+    "additionalValue" : 4
+  }, {
+    "suit" : "Spades",
+    "value" : "9",
+    "type" : "Boosted",
+    "additionalValue" : 5
+  }, {
+    "suit" : "Spades",
+    "value" : "6",
+    "type" : "Regular"
+  } ],
+  "player2Field" : [ {
+    "suit" : "Hearts",
+    "value" : "7",
+    "type" : "Regular"
+  }, {
+    "suit" : "Diamonds",
+    "value" : "King",
+    "type" : "Regular"
+  } ],
+  "player1Goalkeeper" : {
+    "suit" : "Spades",
+    "value" : "7",
+    "type" : "Regular"
+  },
+  "player2Goalkeeper" : {
+    "suit" : "Clubs",
+    "value" : "King",
+    "type" : "Regular"
+  },
+  "player1Score" : 0,
+  "player2Score" : 0
+}
