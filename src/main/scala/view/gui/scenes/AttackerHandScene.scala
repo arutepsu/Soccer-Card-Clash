@@ -49,7 +49,6 @@ case class AttackerHandScene(
   ) {
     () =>
       controller.notifyObservers(Events.PlayingField)
-      playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
 

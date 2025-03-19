@@ -227,7 +227,6 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           revertStrategy.revertCard(extraDefenderCard))
         fieldState.removeDefenderCard(defender, fieldState.getDefenderCard(defender, defenderIndex))
         fieldState.removeDefenderCard(defender, revertedDefenderCard)
-        fieldState.refillDefenderField(defender)
         true
       } else {
         defenderWins(

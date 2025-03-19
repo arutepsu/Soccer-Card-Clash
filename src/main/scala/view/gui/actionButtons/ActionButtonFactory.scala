@@ -20,7 +20,6 @@ object ActionButtonFactory {
       height = buttonHeight
     ) { () =>
       action.execute(controller, playingFieldScene)
-      playingFieldScene.updateDisplay()
     }
   }
 
@@ -38,7 +37,6 @@ object ActionButtonFactory {
       height = buttonHeight
     ) { () =>
       action.execute(controller, playingFieldScene)
-      playingFieldScene.updateDisplay()
     }
   }
 

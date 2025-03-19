@@ -11,13 +11,12 @@ class ReverseSwapButton extends ActionButton[AttackerHandScene] {
                       ): Unit = {
     attackerHandScene.attackerHandBar match {
       case Some(handBar) =>
-        println(s"🔄 Performing Reverse Swap on entire hand!") // ✅ No index required
-        controller.reverseSwap() // ✅ Swap all cards immediately
+        controller.reverseSwap()
         attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REVERSE_SWAP_PERFORMED)
         attackerHandScene.playingField.foreach(_.notifyObservers())
-        handBar.updateBar() // ✅ Ensure hand UI updates
+        attackerHandScene.playingFieldScene.updateDisplay() //TODO: Fix later
+        handBar.updateBar()
       case None =>
-        println("❌ No valid attacker hand available!")
     }
   }
 }

@@ -13,15 +13,14 @@ case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
       case Some(handBar) =>
         handBar.selectedCardIndex match {
           case Some(index) =>
-            println(s"🔄 Swapping card at index: $index")
             controller.regularSwap(index)
             attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REGULAR_SWAP_PERFORMED)
             attackerHandScene.playingField.foreach(_.notifyObservers())
+            attackerHandScene.playingFieldScene.updateDisplay() // TODO: Fix later
             handBar.updateBar()
           case None =>
-            println("❌ No card selected to swap!")
         }
-      case None => println("❌ No valid attacker hand available!")
+      case None =>
     }
   }
 }

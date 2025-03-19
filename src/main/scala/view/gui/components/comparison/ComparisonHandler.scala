@@ -35,29 +35,24 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
   def handleComparisonEvent(e: ObservableEvent): Unit = {
     e match {
       case ComparedCardsEvent(attackingCard, defendingCard) =>
-        println(s"🔄 Compared Cards: Attacker -> ${attackingCard}, Defender -> ${defendingCard}")
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
 
       case DoubleComparedCardsEvent(attackingCard1, attackingCard2, defendingCard) =>
-        println(s"🔄 Double Attack! Cards: ${attackingCard1} & ${attackingCard2} vs Defender: ${defendingCard}")
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)
 
       case AttackResultEvent(attacker, defender, attackSuccess) =>
-        println(s"✅ Attack Result: ${attacker.name} vs ${defender.name}, Success: $attackSuccess")
         lastAttackSuccess = Some(attackSuccess)
 
       case TieComparisonEvent(attackingCard, defendingCard, extraAttackerCard, extraDefenderCard) =>
-        println(s"⚖️ Tie Occurred! Resolving with extra cards: ${extraAttackerCard} vs ${extraDefenderCard}")
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
         lastExtraAttackerCard = Some(extraAttackerCard)
         lastExtraDefenderCard = Some(extraDefenderCard)
 
       case DoubleTieComparisonEvent(attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard) =>
-        println(s"⚖️ Double Attack Tie! Resolving with extra cards: ${extraAttackerCard} vs ${extraDefenderCard}")
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)
@@ -65,11 +60,9 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
         lastExtraDefenderCard = Some(extraDefenderCard)
 
       case Events.RegularAttack =>
-        println("⚔️ Regular Attack Event Triggered!")
 
         (lastAttackingCard, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard), Some(defendingCard), Some(attackSuccess)) =>
-            println(s"📢 Showing Overlay: $attackingCard vs $defendingCard")
             overlay.show(
               ComparisonInfo.showSingleComparison(
                 controller.getCurrentGame.getPlayer1.name,
@@ -79,16 +72,13 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
             )
 
           case _ =>
-            println("⚠️ Missing attack data, skipping alert.")
         }
         resetLastCards()
 
       case Events.DoubleAttack =>
-        println("⚔️ Double Attack Event Triggered!")
 
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(attackSuccess)) =>
-            println(s"📢 Showing Double Attack Overlay: $attackingCard1 & $attackingCard2 vs $defendingCard")
             overlay.show(
               ComparisonInfo.showDoubleComparison(
                 controller.getCurrentGame.getPlayer1.name,
@@ -98,16 +88,13 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
             )
 
           case _ =>
-            println("⚠️ Missing double attack data, skipping alert.")
         }
         resetLastCards()
 
       case Events.TieComparison =>
-        println("⚔️ Tie Resolution Event Triggered!")
 
         (lastAttackingCard, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
-            println(s"📢 Showing Tie Overlay: $attackingCard vs $defendingCard | Tie-breaker: $extraAttackerCard vs $extraDefenderCard")
             overlay.show(
               ComparisonInfo.showTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
@@ -117,16 +104,13 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
             )
 
           case _ =>
-            println("⚠️ Missing tie-breaker data, skipping alert.")
         }
         resetLastCards()
 
       case Events.DoubleTieComparison =>
-        println("⚔️ Double Attack Tie Resolution Event Triggered!")
 
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
-            println(s"📢 Showing Double Tie Overlay: $attackingCard1 & $attackingCard2 vs $defendingCard | Tie-breaker: $extraAttackerCard vs $extraDefenderCard")
             overlay.show(
               ComparisonInfo.showDoubleTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
@@ -136,7 +120,6 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
             )
 
           case _ =>
-            println("⚠️ Missing double tie-breaker data, skipping alert.")
         }
         resetLastCards()
       case _ => 

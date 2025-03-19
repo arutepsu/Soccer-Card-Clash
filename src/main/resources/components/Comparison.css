@@ -1,0 +1,65 @@
+.comparison-container {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-border-radius: 10px;
+    -fx-alignment: center;
+}
+
+.player-avatar {
+    -fx-width: 80px;
+    -fx-height: 80px;
+    -fx-border-radius: 50%;
+    -fx-object-fit: cover;
+    -fx-border: 3px solid gray;
+}
+
+.winner-text {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.attacker-win {
+    -fx-text-fill: green;
+}
+
+.defender-win {
+    -fx-text-fill: red;
+}
+
+.card-frame {
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+}
+
+.attacker-win-card {
+    -fx-border-color: limegreen;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 255, 0, 0.7), 10, 0, 0, 0);
+}
+
+.defender-win-card {
+    -fx-border-color: red;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 0, 0, 0.7), 10, 0, 0, 0);
+}
+
+.card-image {
+    -fx-fit-width: 120px;
+    -fx-preserve-ratio: true;
+}
+
+.card-box {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
+.tiebreaker-box {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+.player-info-box {
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+}

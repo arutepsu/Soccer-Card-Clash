@@ -23,7 +23,6 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
           println(s"🔥 Attacking defender at index: $defenderIndex")
           controller.executeDoubleAttackCommand(defenderIndex)
           playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
-          playingFieldScene.updateDisplay()
           defenderFieldBar.resetSelectedDefender()
 
         case None =>

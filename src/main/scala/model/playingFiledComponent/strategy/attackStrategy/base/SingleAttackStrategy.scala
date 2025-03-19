@@ -168,12 +168,13 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                          roles: IRolesManager,
                          playingField: IPlayingField
                        ): Boolean = {
-    playingField.notifyObservers(Events.TieComparison)
+
     val revertedCard = revertStrategy.revertCard(defenderCard)
     if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
       val extraAttackerCard = attackerHand.removeLastCard()
       val extraDefenderCard = defenderHand.removeLastCard()
       playingField.notifyObservers(TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard))
+      playingField.notifyObservers(Events.TieComparison)
       val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
       if (tiebreakerResult > 0) {
@@ -184,6 +185,8 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           revertStrategy.revertCard(defenderCard),
           extraAttackerCard,
           extraDefenderCard)
+        fieldState.removeDefenderCard(roles.defender, defenderCard)
+        fieldState.removeDefenderCard(roles.defender, revertedCard)
       } else {
         defenderWins(
           defenderHand,
@@ -192,11 +195,11 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
           revertStrategy.revertCard(defenderCard),
           extraAttackerCard,
           extraDefenderCard)
+        fieldState.removeDefenderCard(roles.defender, defenderCard)
+        fieldState.removeDefenderCard(roles.defender, revertedCard)
+        fieldState.refillDefenderField(roles.defender)
+        roles.switchRoles()
       }
-      fieldState.removeDefenderCard(roles.defender, defenderCard)
-      fieldState.removeDefenderCard(roles.defender, revertedCard)
-      fieldState.refillDefenderField(roles.defender)
-      roles.switchRoles()
     } else {
       roles.switchRoles()
     }

@@ -123,15 +123,38 @@ class PlayingFieldScene(
   private var lastExtraAttackerCard: Option[ICard] = None
   private var lastExtraDefenderCard: Option[ICard] = None
   private var lastAttackSuccess: Option[Boolean] = None
+  import scala.concurrent.Future
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scalafx.application.Platform
 
   override def update(e: ObservableEvent): Unit = {
-    println(s"✅ PlayingFieldScene received event: $e")
-    comparisonHandler.handleComparisonEvent(e)
-    e match {
 
+    comparisonHandler.handleComparisonEvent(e)
+
+    e match {
       case NoDoubleAttacksEvent(player) =>
-        println(s"⚠️ ${player.name} has no Double Attacks left! Showing Alert in PlayingFieldScene...")
         overlay.show(createDoubleAttackAlert(player))
+
+      case Events.RegularAttack =>
+
+        Future {
+          Thread.sleep(3000)
+          Platform.runLater(() => {
+            updateDisplay()
+          })
+        }
+      case Events.DoubleAttack =>
+
+        Future {
+          Thread.sleep(3000)
+          Platform.runLater(() => {
+            updateDisplay()
+          })
+        }
+
+      case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper
+           | Events.RegularSwap | Events.ReverseSwap | Events.PlayingField =>
+        updateDisplay()
 
       case Events.MainMenu =>
         if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
@@ -140,15 +163,10 @@ class PlayingFieldScene(
         controller.remove(this)
         SceneManager.update(e)
 
-      case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper | Events.RegularSwap | Events.ReverseSwap =>
-        updateDisplay()
-
       case _ =>
-
     }
   }
 
-  // ✅ Method to create an Alert for No Double Attacks Left
   private def createDoubleAttackAlert(player: IPlayer): scalafx.scene.Node = {
     new VBox {
       alignment = Pos.CENTER
@@ -167,8 +185,7 @@ class PlayingFieldScene(
     }
   }
 
-  def updateDisplay(): Unit = {
-
+  private def updateFieldBar() : Unit = {
     val currentPlayingField = controller.getCurrentGame.getPlayingField
 
     if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(
@@ -186,26 +203,50 @@ class PlayingFieldScene(
     player2FieldBar = new PlayersFieldBar(currentPlayer2, currentPlayingField)
     player1FieldBar.updateBar()
     player2FieldBar.updateBar()
-    val newAttackerHandBar = if (attacker == currentPlayer1) player1HandBar else player2HandBar
     val newDefenderFieldBar = if (defender == currentPlayer1) player1FieldBar else player2FieldBar
-
     playerFields.children.clear()
     playerFields.children.add(newDefenderFieldBar)
+    newDefenderFieldBar.updateBar()
 
+  }
+
+  private def updateHands() : Unit = {
+    val currentPlayingField = controller.getCurrentGame.getPlayingField
+
+    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(
+      controller.getCurrentGame.getPlayer1).isEmpty) {
+      return
+    }
+
+    val currentPlayer1 = controller.getCurrentGame.getPlayer1
+    val currentPlayer2 = controller.getCurrentGame.getPlayer2
+
+    val attacker = currentPlayingField.getRoles.attacker
+    val defender = currentPlayingField.getRoles.defender
+
+    val newAttackerHandBar = if (attacker == currentPlayer1) player1HandBar else player2HandBar
     playerHands.children.clear()
     playerHands.children.add(newAttackerHandBar)
     newAttackerHandBar.updateBar()
-    newDefenderFieldBar.updateBar()
-
+  }
+  private def updateAvatars(): Unit = {
     playersBar.refreshOnRoleSwitch()
     playersBar.refreshActionStates()
-
+  }
+  private def updateScores() : Unit = {
+    val currentPlayingField = controller.getCurrentGame.getPlayingField
+    val currentPlayer1 = controller.getCurrentGame.getPlayer1
+    val currentPlayer2 = controller.getCurrentGame.getPlayer2
     val score1 = currentPlayingField.getScores.getScorePlayer1
     val score2 = currentPlayingField.getScores.getScorePlayer2
-
     player1ScoreLabel.text = s"${currentPlayer1.name} Score: $score1"
     player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
-
+  }
+  def updateDisplay(): Unit = {
+    updateFieldBar()
+    updateHands()
+    updateAvatars()
+    updateScores()
   }
 
   private def resetLastCards(): Unit = {
