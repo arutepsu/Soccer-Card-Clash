@@ -15,16 +15,17 @@ import scalafx.stage.Stage
 import view.gui.utils.Styles
 import scalafx.application.Platform
 import view.gui.components.sceneView.ButtonBar
-import view.gui.components.sceneView.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 import model.playingFiledComponent.IPlayingField
 import model.playerComponent.IPlayer
 import model.cardComponent.ICard
 import scalafx.scene.Node
 import scalafx.animation.FadeTransition
 import scalafx.util.Duration
-import view.gui.components.comparison.{ComparisonDialogHandler, DialogFactory, GameAlertFactory, WinnerDialog}
+import view.gui.components.dialog.{ComparisonDialogHandler, DialogFactory, WinnerDialog}
 import view.gui.overlay.Overlay
 import scalafx.scene.text.Text
+import view.gui.components.alert.GameAlertFactory
+import view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

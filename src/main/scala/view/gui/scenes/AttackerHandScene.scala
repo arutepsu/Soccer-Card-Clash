@@ -16,9 +16,10 @@ import scalafx.scene.Node
 import scalafx.scene.text.Text
 import scalafx.application.Platform
 import model.playerComponent.IPlayer
-import view.gui.components.sceneView.cardBar.SelectablePlayersHandBar
-import view.gui.actionButtons.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
-import view.gui.components.comparison.GameAlertFactory
+import view.gui.components.actionButton.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
+import view.gui.components.alert.GameAlertFactory
+import view.gui.components.sceneComponents.SelectablePlayersHandBar
+
 case class AttackerHandScene(
                               controller: IController,
                               playingFieldScene: PlayingFieldScene,

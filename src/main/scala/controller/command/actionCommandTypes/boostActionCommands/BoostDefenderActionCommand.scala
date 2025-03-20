@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 class BoostDefenderActionCommand(cardIndex: Int, game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
-  private var boostSuccessful: Option[Boolean] = None
+  protected var boostSuccessful: Option[Boolean] = None
 
   override protected def executeAction(): Boolean = {
     val result = Try(actionManager.boostDefender(cardIndex))

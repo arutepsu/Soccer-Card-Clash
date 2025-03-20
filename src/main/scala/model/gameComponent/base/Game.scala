@@ -3,7 +3,7 @@ package model.gameComponent.base
 import com.google.inject.{Inject, Singleton}
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
-import controller.command.actionCommandTypes.swapActionCommands.RegularActionCommand
+import controller.command.actionCommandTypes.swapActionCommands.RegularSwapActionCommand
 import model.cardComponent.ICard
 import model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import model.fileIOComponent.IFileIO

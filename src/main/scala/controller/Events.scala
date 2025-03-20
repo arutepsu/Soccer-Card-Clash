@@ -12,7 +12,7 @@ enum Events extends ObservableEvent {
   case BoostDefender, BoostGoalkeeper, Reverted
 
   case AttackerHandCards, AttackerDefenderCards, PlayingField
-
+  case Init
   case Quit
   
   case PauseGame, ResetGame

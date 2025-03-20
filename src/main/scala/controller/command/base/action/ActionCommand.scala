@@ -8,7 +8,7 @@ import model.playingFiledComponent.manager.IActionManager
 
 abstract class ActionCommand(val game: IGame) extends ICommand {
   protected val actionManager: IActionManager = game.getActionManager
-  protected val mementoManager: IMementoManager = new MementoManager(game)
+  protected var mementoManager: IMementoManager = new MementoManager(game)
 
   protected var memento: Option[Memento] = None
 

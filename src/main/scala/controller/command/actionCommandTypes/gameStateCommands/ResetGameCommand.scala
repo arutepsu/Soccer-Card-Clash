@@ -4,7 +4,6 @@ import controller.command.ICommand
 import controller.command.base.action.ActionCommand
 import model.gameComponent.IGame
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
 
 import scala.util.{Failure, Success, Try}
 

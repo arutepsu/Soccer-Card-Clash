@@ -8,7 +8,7 @@ import scala.util.{Failure, Success, Try}
 
 class ReverseSwapActionCommand(game: IGame) extends ActionCommand(game) {
   private val actionManager: IActionManager = game.getActionManager
-  private var swapSuccessful: Option[Boolean] = None
+  protected var swapSuccessful: Option[Boolean] = None
 
   override protected def executeAction(): Boolean = {
     val result = Try(actionManager.reverseSwap())

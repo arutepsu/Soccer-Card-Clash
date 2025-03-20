@@ -27,11 +27,11 @@ class Observable {
       return
     }
 
-    println(s"🔄 DEBUG: Notifying ${subscribers.size} observers.")
+    println(s"🔄 DEBUG: Notifying ${subscribers.distinct.size} unique observers.") // ✅ Only unique observers
 
-    val uniqueSubscribers = subscribers.distinct // ✅ Ensure no duplicates
-    uniqueSubscribers.foreach(_.update(e))
+    subscribers.distinct.foreach(_.update(e)) // ✅ Ensures no duplicate events
   }
+
 
   def removeAllObservers(): Unit = {
     println(s"🗑️ DEBUG: Removing ALL observers (${subscribers.size})")

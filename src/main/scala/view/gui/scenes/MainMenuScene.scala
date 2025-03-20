@@ -6,7 +6,6 @@ import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.control.ListView
 import scalafx.scene.layout.VBox
-import view.gui.components.GameLabel
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.scenes.sceneManager.SceneManager
 import controller.base.Controller
@@ -14,6 +13,7 @@ import controller.{Events, IController}
 import view.gui.utils.Styles
 import scalafx.application.Platform
 import util.{ObservableEvent, Observer}
+import view.gui.components.sceneComponents.GameLabel
 
 class MainMenuScene(controller: IController) extends Scene with Observer {
   controller.add(this)

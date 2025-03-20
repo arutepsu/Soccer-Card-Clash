@@ -9,7 +9,7 @@ import scalafx.scene.Scene
 import scalafx.stage.Stage
 import scalafx.util.Duration
 import util.{Observable, ObservableEvent, Observer}
-import view.gui.components.comparison.PauseMenu
+import view.gui.components.dialog.PauseDialog
 import view.gui.scenes.*
 
 object SceneManager extends Observable with Observer {
@@ -28,29 +28,32 @@ object SceneManager extends Observable with Observer {
     sceneRegistry = new SceneRegistry(controller, this)
   }
 
+  import scala.util.boundary, boundary.break
+
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      if (
-        (currentScene.exists(_.getClass == classOf[MainMenuScene]) && e == Events.MainMenu) ||
-          (currentScene.exists(_.getClass == classOf[CreatePlayerScene]) && e == Events.CreatePlayers) ||
-          (currentScene.exists(_.getClass == classOf[PlayingFieldScene]) && e == Events.PlayingField) ||
-          (currentScene.exists(_.getClass == classOf[AttackerHandScene]) && e == Events.AttackerHandCards) ||
-          (currentScene.exists(_.getClass == classOf[AttackerDefendersScene]) && e == Events.AttackerDefenderCards) ||
-          (currentScene.exists(_.getClass == classOf[PauseMenu]) && e == Events.PauseGame) ||
-          (currentScene.exists(_.getClass == classOf[LoadGameScene]) && e == Events.LoadGame)
-      ) {
-        return
+      val sceneMatchesEvent = currentScene.exists {
+        case _: MainMenuScene if e == Events.MainMenu => true
+        case _: CreatePlayerScene if e == Events.CreatePlayers => true
+        case _: PlayingFieldScene if e == Events.PlayingField => true
+        case _: AttackerHandScene if e == Events.AttackerHandCards => true
+        case _: AttackerDefendersScene if e == Events.AttackerDefenderCards => true
+//        case _: PauseDialog if e == Events.PauseGame => true
+        case _: LoadGameScene if e == Events.LoadGame => true
+        case _ => false
       }
 
-      e match {
-        case Events.MainMenu => switchScene(sceneRegistry.getMainMenuScene)
-        case Events.CreatePlayers => switchScene(sceneRegistry.getCreatePlayerScene)
-        case Events.PlayingField => switchScene(sceneRegistry.getPlayingFieldScene)
-        case Events.AttackerHandCards => switchScene(sceneRegistry.getAttackerHandScene)
-        case Events.AttackerDefenderCards => switchScene(sceneRegistry.getAttackerDefendersScene)
-        case Events.LoadGame => switchScene(sceneRegistry.getLoadGameScene)
-        case Events.Quit => controller.quit()
-        case _ =>
+      if (!sceneMatchesEvent) { // ✅ Skip scene switch only if event matches current scene
+        e match {
+          case Events.MainMenu => switchScene(sceneRegistry.getMainMenuScene)
+          case Events.CreatePlayers => switchScene(sceneRegistry.getCreatePlayerScene)
+          case Events.PlayingField => switchScene(sceneRegistry.getPlayingFieldScene)
+          case Events.AttackerHandCards => switchScene(sceneRegistry.getAttackerHandScene)
+          case Events.AttackerDefenderCards => switchScene(sceneRegistry.getAttackerDefendersScene)
+          case Events.LoadGame => switchScene(sceneRegistry.getLoadGameScene)
+          case Events.Quit => controller.quit()
+          case _ =>
+        }
       }
     })
   }
@@ -69,17 +72,30 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
-    
     if (currentScene.contains(newScene)) {
       return
     }
 
     Platform.runLater(() => {
       val oldSceneOpt = currentScene
+      // 🗑️ If switching to Hand or Defender scenes, delete old instances
+      newScene match {
+        case _: AttackerHandScene | _: AttackerDefendersScene =>
+          println("🗑️ DEBUG: Clearing old Hand & Defender scene instances")
+          sceneRegistry.clearHandAndDefenderScenes()
+        case _ =>
+      }
 
-      oldSceneOpt match {
-        case Some(oldScene: Observer) if controller.subscribers.contains(oldScene) =>
-          controller.remove(oldScene)
+      // 🗑️ If switching back to PlayingFieldScene, also delete Hand & Defender scenes
+      if (newScene.isInstanceOf[PlayingFieldScene]) {
+        println("🗑️ DEBUG: Clearing AttackerHandScene and AttackerDefendersScene instances")
+        sceneRegistry.clearHandAndDefenderScenes()
+      }
+      // 🔥 Remove previous observer before switching
+      oldSceneOpt.foreach {
+        case oldObserver: Observer if controller.subscribers.contains(oldObserver) =>
+          println(s"❌ Removing observer: ${oldObserver.getClass.getSimpleName}")
+          controller.remove(oldObserver)
         case _ =>
       }
 
@@ -103,12 +119,20 @@ object SceneManager extends Observable with Observer {
     })
   }
 
+
   private def applySceneTransition(newScene: Scene): Unit = {
     Platform.runLater(() => {
       stage.scene = newScene
       currentScene = Some(newScene)
       applySceneSize()
 
+      // 🔥 Ensure old instances of the same scene are removed before adding the new one
+      controller.subscribers.filter(_.getClass == newScene.getClass).foreach { duplicateObserver =>
+        println(s"❌ Removing duplicate observer: ${duplicateObserver.getClass.getSimpleName}") // Debugging
+        controller.remove(duplicateObserver)
+      }
+
+      // ✅ Add the new scene as an observer only if it's not already present
       newScene match {
         case newObserverScene: Observer if !controller.subscribers.contains(newObserverScene) =>
           println(s"✅ Adding observer: ${newObserverScene.getClass.getSimpleName}")
@@ -126,4 +150,6 @@ object SceneManager extends Observable with Observer {
       notifyObservers()
     })
   }
+
+
 }

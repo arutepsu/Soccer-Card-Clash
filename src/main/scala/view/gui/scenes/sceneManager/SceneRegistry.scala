@@ -23,8 +23,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     if (_createPlayerScene.isEmpty && _playingFieldScene.isEmpty) {
       return
     }
-
-
     _createPlayerScene = None
     _playingFieldScene = None
     _attackerHandScene = None
@@ -59,29 +57,70 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   
   def getPlayingFieldScene: PlayingFieldScene = {
     if (_playingFieldScene.isEmpty) {
-      _playingFieldScene = Some(AttackerSceneFactory.createPlayingFieldScene(controller))
+      _playingFieldScene = Some(new PlayingFieldScene(controller, 800, 600))
     }
     _playingFieldScene.get
   }
 
 
   def getAttackerDefendersScene: AttackerDefendersScene = {
-    _attackerDefendersScene = Some(
-      AttackerSceneFactory.createAttackerDefendersScene(
-        controller, getPlayingFieldScene, Option(controller.getCurrentGame.getPlayingField), 800, 600
-      )
-    )
+    // 🗑️ Delete old instance before creating a new one
+    clearHandAndDefenderScenes()
+
+    _attackerDefendersScene = Some(new AttackerDefendersScene(
+      controller,
+      getPlayingFieldScene,
+      Some(controller.getCurrentGame.getPlayingField),
+      800,
+      600
+    ))
+    controller.add(_attackerDefendersScene.get)
     _attackerDefendersScene.get
   }
 
   def getAttackerHandScene: AttackerHandScene = {
-      _attackerHandScene = Some(AttackerSceneFactory.createAttackerHandScene(
-        controller,
-        getPlayingFieldScene,
-        Option(controller.getCurrentGame.getPlayingField),
-        800, 600
-      ))
-      _attackerHandScene.get
+    // 🗑️ Delete old instance before creating a new one
+    clearHandAndDefenderScenes()
+
+    _attackerHandScene = Some(new AttackerHandScene(
+      controller,
+      getPlayingFieldScene,
+      Some(controller.getCurrentGame.getPlayingField),
+      800,
+      600
+    ))
+    controller.add(_attackerHandScene.get)
+    _attackerHandScene.get
   }
-  
+
+  def clearHandAndDefenderScenes(): Unit = {
+    if (_attackerHandScene.nonEmpty || _attackerDefendersScene.nonEmpty) {
+      println("🗑️ DEBUG: Removing AttackerHandScene and AttackerDefendersScene from memory and observers")
+
+      // 🔥 Remove from observers list BEFORE setting to None
+      _attackerHandScene.foreach { scene =>
+        if (controller.subscribers.contains(scene)) {
+          println(s"❌ Removing observer: ${scene.getClass.getSimpleName}")
+          controller.remove(scene)
+        }
+      }
+
+      _attackerDefendersScene.foreach { scene =>
+        if (controller.subscribers.contains(scene)) {
+          println(s"❌ Removing observer: ${scene.getClass.getSimpleName}")
+          controller.remove(scene)
+        }
+      }
+
+      // 🔥 Set instances to None (delete from memory)
+      _attackerHandScene = None
+      _attackerDefendersScene = None
+
+      println("✅ DEBUG: AttackerHandScene and AttackerDefendersScene cleared!")
+    }
+  }
+
+
+
+
 }

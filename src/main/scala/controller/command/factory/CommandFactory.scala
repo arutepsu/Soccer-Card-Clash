@@ -6,7 +6,7 @@ import controller.command.ICommand
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
-import controller.command.actionCommandTypes.swapActionCommands.{ReverseSwapActionCommand, RegularActionCommand}
+import controller.command.actionCommandTypes.swapActionCommands.{ReverseSwapActionCommand, RegularSwapActionCommand}
 import controller.command.base.workflow.*
 import model.cardComponent.ICard
 import model.gameComponent.IGame
@@ -25,7 +25,7 @@ class CommandFactory @Inject()(game: IGame, controller: IController) extends ICo
     new BoostGoalkeeperActionCommand(game)
 
   override def createRegularSwapCommand(index: Int): ICommand =
-    new RegularActionCommand(index, game)
+    new RegularSwapActionCommand(index, game)
 
   override def createReverseSwapCommand(): ICommand =
     new ReverseSwapActionCommand(game)

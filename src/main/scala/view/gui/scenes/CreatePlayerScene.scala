@@ -11,8 +11,8 @@ import controller.{Events, IController}
 import util.{ObservableEvent, Observer}
 import sceneManager.SceneManager
 import view.gui.overlay.Overlay
-import view.gui.components.comparison.GameAlertFactory
 import scalafx.application.Platform
+import view.gui.components.alert.GameAlertFactory
 import view.gui.utils.Styles
 
 class CreatePlayerScene(controller: IController) extends Scene(new StackPane) with Observer {
@@ -102,6 +102,7 @@ class CreatePlayerScene(controller: IController) extends Scene(new StackPane) wi
       return
     }
     controller.createGame(playerNames.head, playerNames(1))
+    
   }
 
   override def update(e: ObservableEvent): Unit = {

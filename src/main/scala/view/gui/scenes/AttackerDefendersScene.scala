@@ -12,14 +12,15 @@ import view.gui.components.sceneView.{BoostBar, GameStatusBar}
 import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.scenes.sceneManager.SceneManager
 import scalafx.application.Platform
-import view.gui.components.sceneView.cardBar.SelectablePlayersFieldBar
-import view.gui.actionButtons.{ActionButtonFactory, BoostButton}
 import view.gui.overlay.Overlay
 import view.gui.utils.Styles
 import scalafx.scene.Node
 import scalafx.scene.text.Text
 import model.playerComponent.IPlayer
-import view.gui.components.comparison.GameAlertFactory
+import view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
+import view.gui.components.alert.GameAlertFactory
+import view.gui.components.sceneComponents.SelectablePlayersFieldBar
+
 case class AttackerDefendersScene(
                                     controller: IController,
                                     playingFieldScene: PlayingFieldScene,

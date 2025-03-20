@@ -11,7 +11,6 @@ import scalafx.scene.Node
 
 import java.io.File
 import view.gui.overlay.Overlay
-import view.gui.components.GameLabel
 import view.gui.components.uiFactory.GameButtonFactory
 import controller.{Events, IController}
 import util.{ObservableEvent, Observer}
@@ -27,12 +26,12 @@ import scalafx.scene.Node
 
 import java.io.File
 import view.gui.overlay.Overlay
-import view.gui.components.GameLabel
 import view.gui.components.uiFactory.GameButtonFactory
 import controller.{Events, IController}
 import util.{ObservableEvent, Observer}
 import sceneManager.SceneManager
-import view.gui.components.comparison.{ConfirmationDialog, DialogFactory}
+import view.gui.components.dialog.{ConfirmationDialog, DialogFactory}
+import view.gui.components.sceneComponents.GameLabel
 
 class LoadGameScene(controller: IController) extends Scene with Observer {
   controller.add(this)
