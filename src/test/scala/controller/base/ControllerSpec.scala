@@ -1,4 +1,4 @@
-package controller
+package controller.base
 
 import controller.base.Controller
 import controller.command.ICommand
@@ -8,13 +8,13 @@ import controller.{Events, IController}
 import model.gameComponent.IGame
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
-import util.{Observer, UndoManager}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.BeforeAndAfterEach
-import org.mockito.ArgumentMatchers.any
+import util.{Observer, UndoManager}
 
 
 class ControllerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {

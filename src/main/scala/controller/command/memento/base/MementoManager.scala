@@ -142,7 +142,7 @@ class MementoManager(private val game: IGame) extends IMementoManager {
         action -> (if (validUses > 0) CanPerformAction(validUses) else OutOfActions)
       }
     )
-    
+
     pf.getRoles.setRoles(restoredPlayer1, restoredPlayer2)
 
     pf.notifyObservers()

@@ -125,6 +125,7 @@ class SoccerCardClashModule extends AbstractModule {
         classOf[IGameStateManager],
         classOf[IGamePersistence],
       ))
+
   }
 
   @Provides

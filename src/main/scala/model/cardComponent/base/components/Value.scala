@@ -18,7 +18,8 @@ object Value {
   def fromString(s: String): Option[Value] = allValues.find(_.toString.equalsIgnoreCase(s))
 
   sealed trait Value extends Ordered[Value] {
-    override def compare(that: Value): Int = Value.allValues.indexOf(this) - Value.allValues.indexOf(that)
+    override def compare(that: Value): Int =
+      Value.valueToInt(this) - Value.valueToInt(that)
 
     override def toString: String = Value.valueNames.getOrElse(this, "Unknown")
   }
