@@ -96,7 +96,7 @@ case class AttackerHandScene(
       e match {
         case NoSwapsEvent(player) =>
           println(s"⚠️ ${player.name} has no Swaps left! Showing Alert in AttackerHandScene...")
-          overlay.show(createSwapAlert(player)) // ✅ Show alert in this scene only
+          overlay.show(createSwapAlert(player), true) // ✅ Show alert in this scene only
 
         case _ =>
           SceneManager.update(e) // ✅ Handle other events normally

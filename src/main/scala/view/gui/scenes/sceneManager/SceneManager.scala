@@ -48,7 +48,7 @@ object SceneManager extends Observable with Observer {
         case Events.PlayingField => switchScene(sceneRegistry.getPlayingFieldScene)
         case Events.AttackerHandCards => switchScene(sceneRegistry.getAttackerHandScene)
         case Events.AttackerDefenderCards => switchScene(sceneRegistry.getAttackerDefendersScene)
-        case Events.PauseGame => switchScene(sceneRegistry.getMenuScene)
+//        case Events.PauseGame => switchScene(sceneRegistry.getMenuScene)
         case Events.LoadGame => switchScene(sceneRegistry.getLoadGameScene)
         case Events.Quit => controller.quit()
         case _ =>
@@ -70,11 +70,7 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
-//    val actualScene = newScene match {
-//      case _: PlayingFieldScene => sceneRegistry.getPlayingFieldScene // ✅ Always get fresh instance
-//      case _ => newScene
-//    }
-
+    
     if (currentScene.contains(newScene)) {
       return
     }

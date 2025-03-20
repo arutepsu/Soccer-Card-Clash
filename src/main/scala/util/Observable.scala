@@ -32,4 +32,11 @@ class Observable {
     val uniqueSubscribers = subscribers.distinct // ✅ Ensure no duplicates
     uniqueSubscribers.foreach(_.update(e))
   }
+
+  def removeAllObservers(): Unit = {
+    println(s"🗑️ DEBUG: Removing ALL observers (${subscribers.size})")
+    subscribers = Vector() // ✅ Completely clears all observers
+    println(s"📋 Observers List AFTER clearing: ${subscribers.map(_.getClass.getSimpleName).mkString(", ")}")
+  }
+
 }

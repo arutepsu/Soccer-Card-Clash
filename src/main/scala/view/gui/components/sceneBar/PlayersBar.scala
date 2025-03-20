@@ -13,9 +13,10 @@ import scalafx.scene.control.Label
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.geometry.Insets
 import scalafx.geometry.Pos
+import scalafx.scene.Scene
 
 
-class PlayersBar(controller: IController) extends HBox {
+class PlayersBar(controller: IController, scene: Scene) extends HBox {
 
   spacing = 10
   alignment = Pos.TOP_RIGHT
@@ -59,12 +60,12 @@ class PlayersBar(controller: IController) extends HBox {
       } else {
         "/images/data/players/player2.jpeg"
       }
-
+      val dynamicScale = (scene.width.value / 1000).toFloat
       val playerAvatar = PlayerAvatar(
         player = p,
         playerIndex = if (p eq player1) 0 else 1,
-        scaleAvatar = 0.2,
-        scaleFont = 0.1,
+        scaleAvatar = dynamicScale * 2,
+        scaleFont = (dynamicScale / 2).toFloat,
         profilePicturePath = profilePicturePath,
       )
 

@@ -32,7 +32,9 @@ class MainMenuScene(controller: IController) extends Scene with Observer {
         () => controller.notifyObservers(Events.LoadGame)
       },
       GameButtonFactory.createGameButton("Quit", 200, 80) {
-        () => controller.notifyObservers(Events.Quit)
+        () =>
+          controller.removeAllObservers() // ✅ Remove all observers before quitting
+          controller.notifyObservers(Events.Quit)
       }
     )
   }

@@ -67,8 +67,8 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
               ComparisonInfo.showSingleComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, attackSuccess
-              )
+                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, attackSuccess, overlay.getPane.getWidth
+              ), true
             )
 
           case _ =>
@@ -83,8 +83,8 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
               ComparisonInfo.showDoubleComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, attackSuccess
-              )
+                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, attackSuccess, overlay.getPane.getWidth
+              ), true
             )
 
           case _ =>
@@ -99,8 +99,8 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
               ComparisonInfo.showTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard
-              )
+                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
+              ), true
             )
 
           case _ =>
@@ -115,8 +115,8 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
               ComparisonInfo.showDoubleTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard
-              )
+                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
+              ), true
             )
 
           case _ =>

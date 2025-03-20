@@ -89,7 +89,7 @@ class PlayingFieldScene(
   val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
 
 
-  val playersBar = new PlayersBar(controller)
+  val playersBar = new PlayersBar(controller, this)
 
   val mainLayout = new StackPane {
     children = Seq(
@@ -133,7 +133,7 @@ class PlayingFieldScene(
 
     e match {
       case NoDoubleAttacksEvent(player) =>
-        overlay.show(createDoubleAttackAlert(player))
+        overlay.show(createDoubleAttackAlert(player), true)
 
       case Events.RegularAttack =>
 
@@ -248,15 +248,6 @@ class PlayingFieldScene(
     updateAvatars()
     updateScores()
   }
-
-  private def resetLastCards(): Unit = {
-    lastAttackingCard = None
-    lastAttackingCard1 = None
-    lastAttackingCard2 = None
-    lastDefendingCard = None
-    lastExtraAttackerCard = None
-    lastExtraDefenderCard = None
-    lastAttackSuccess = None
-  }
+  
 }
 

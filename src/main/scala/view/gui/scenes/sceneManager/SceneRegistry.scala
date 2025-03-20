@@ -87,10 +87,10 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   }
 
 
-  def getMenuScene: MenuScene = {
-    if (_menuScene.isEmpty) {
-      _menuScene = Some(MenuScene(controller, getPlayingFieldScene, sceneManager))
-    }
-    _menuScene.get
-  }
+//  def getMenuScene: MenuScene = {
+//    if (_menuScene.isEmpty) {
+//      _menuScene = Some(MenuScene(controller, getPlayingFieldScene, sceneManager))
+//    }
+//    _menuScene.get
+//  }
 }

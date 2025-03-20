@@ -5,24 +5,28 @@ import model.playingFiledComponent.IPlayingField
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
 import view.gui.components.uiFactory.GameButtonFactory
+import view.gui.overlay.Overlay
 import view.gui.scenes.PlayingFieldScene
 import view.gui.scenes.sceneManager.SceneManager
 
-class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScene, sceneManager: SceneManager.type ) extends VBox {
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scalafx.application.Platform
+
+class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScene, overlay: Overlay) extends VBox {
 
   val continueButton: Button = GameButtonFactory.createGameButton(
     text = "Continue",
     width = 180,
-    height = 50
+    height = 60
   ) { () =>
-    controller.notifyObservers(Events.PlayingField)
-    playingFieldScene.updateDisplay()
+    overlay.hide() // ✅ Hide the overlay before continuing
   }
 
   val undoButton: Button = GameButtonFactory.createGameButton(
     text = "Undo",
-    width = 150,
-    height = 50
+    width = 180,
+    height = 60
   ) { () =>
     controller.undo()
     playingFieldScene.update(Events.Undo)
@@ -31,8 +35,8 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
 
   val redoButton: Button = GameButtonFactory.createGameButton(
     text = "Redo",
-    width = 150,
-    height = 50
+    width = 180,
+    height = 60
   ) { () =>
     controller.redo()
     playingFieldScene.update(Events.Redo)
@@ -42,7 +46,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   val saveGameButton: Button = GameButtonFactory.createGameButton(
     text = "Save Game",
     width = 180,
-    height = 50
+    height = 60
   ) { () =>
     controller.saveGame()
   }
@@ -50,9 +54,15 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   val mainMenuButton: Button = GameButtonFactory.createGameButton(
     text = "Main Menu",
     width = 180,
-    height = 50
+    height = 60
   ) { () =>
-    controller.notifyObservers(Events.MainMenu)
-    controller.resetGame()
+    overlay.hide() // ✅ Hide the overlay first
+    Future {
+      Thread.sleep(300) // ✅ Small delay before switching scenes for smooth transition
+      Platform.runLater {
+        controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
+        controller.resetGame()
+      }
+    }
   }
 }

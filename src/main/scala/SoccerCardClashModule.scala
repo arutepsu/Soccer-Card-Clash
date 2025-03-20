@@ -12,8 +12,10 @@ import model.fileIOComponent.base.FileIO
 import model.fileIOComponent.jSONComponent.JsonComponent
 import model.fileIOComponent.xmlComponent.XmlComponent
 import model.gameComponent.IGame
-import model.gameComponent.base.Game
+import model.gameComponent.base.*
 import model.gameComponent.factory.*
+import model.gameComponent.io.{GamePersistence, IGamePersistence}
+import model.gameComponent.state.{GameStateManager, IGameStateManager}
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.playerComponent.factory.*
@@ -37,7 +39,7 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
     bind(classOf[Observable]).to(classOf[Controller]).in(classOf[Singleton])
 
-    bind(classOf[IGame]).to(classOf[Game])
+//    bind(classOf[IGame]).to(classOf[Game])
 
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
     bind(classOf[IPlayingFieldManagerFactory]).to(classOf[PlayingFieldManagerFactory])
@@ -101,6 +103,28 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[FileIO])
       .toConstructor(classOf[FileIO].getConstructor(classOf[JsonComponent], classOf[XmlComponent]))
       .in(classOf[Singleton])
+
+    bind(classOf[IGameInitializer])
+      .toConstructor(classOf[GameInitializer]
+        .getConstructor(classOf[IPlayerFactory], classOf[IPlayingFieldFactory], classOf[IDeckFactory]))
+    
+    // Bind GameStateManager
+    bind(classOf[IGameStateManager])
+      .toConstructor(classOf[GameStateManager]
+        .getConstructor(classOf[IGameStateFactory], classOf[IHandCardsQueueFactory]))
+
+    // Bind GamePersistence
+    bind(classOf[IGamePersistence])
+      .toConstructor(classOf[GamePersistence]
+        .getConstructor(classOf[IFileIO]))
+
+    // Bind IGame -> Game with dynamic constructor injection
+    bind(classOf[IGame])
+      .toConstructor(classOf[Game].getConstructor(
+        classOf[IGameInitializer],
+        classOf[IGameStateManager],
+        classOf[IGamePersistence],
+      ))
   }
 
   @Provides

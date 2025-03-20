@@ -14,38 +14,48 @@ import scalafx.util.Duration
 import scalafx.scene.Node
 import scalafx.scene.layout.StackPane
 import scalafx.application.Platform
+import scalafx.scene.effect.GaussianBlur
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class Overlay(gameScene: Scene) {
-  private val overlayPane: StackPane = new StackPane {
-    style = "-fx-background-color: rgba(0, 0, 0, 0.6); -fx-padding: 20px;"
+  protected val overlayPane: StackPane = new StackPane {
+    style = "-fx-background-color: rgba(0, 0, 0, 0.0); -fx-padding: 20px;"
     visible = false
     alignment = Pos.CENTER
-    maxWidth = gameScene.width.value / 2
-    maxHeight = gameScene.height.value / 2
+    maxWidth = gameScene.width.value * 1.2 // ✅ Increase size (was / 2.0)
+    maxHeight = gameScene.height.value * 1.2 // ✅ Increase size (was / 2.0)
   }
 
   gameScene.width.onChange { (_, _, newWidth) =>
-    overlayPane.maxWidth = newWidth.doubleValue() / 2
+    overlayPane.maxWidth = newWidth.doubleValue() * 1.2 // ✅ Update dynamically
   }
 
   gameScene.height.onChange { (_, _, newHeight) =>
-    overlayPane.maxHeight = newHeight.doubleValue() / 2
+    overlayPane.maxHeight = newHeight.doubleValue() * 1.2 // ✅ Update dynamically
   }
 
   private var onHiddenCallback: () => Unit = () => {}
-  
+
   def setOnHidden(callback: () => Unit): Unit = {
     onHiddenCallback = callback
   }
-  
-  def show(content: Node): Unit = {
+
+  def show(content: Node, autoHide: Boolean): Unit = {
+    val sizeMultiplier = if (autoHide) 1.2 else 8.0 // ✅ Dynamically adjust size
+    println("!!!!!!!!!!!!!!!!!!!!!!size small")
+    overlayPane.maxWidth = gameScene.width.value * sizeMultiplier
+    overlayPane.maxHeight = gameScene.height.value * sizeMultiplier
+
+    gameScene.width.onChange { (_, _, newWidth) =>
+      overlayPane.maxWidth = newWidth.doubleValue() * sizeMultiplier
+    }
+
+    gameScene.height.onChange { (_, _, newHeight) =>
+      overlayPane.maxHeight = newHeight.doubleValue() * sizeMultiplier
+    }
     overlayPane.children.setAll(content)
     overlayPane.visible = true
-    overlayPane.opacity = 0.0
-    overlayPane.scaleX = 0.8
-    overlayPane.scaleY = 0.8
 
     val fadeIn = new FadeTransition(Duration(500), overlayPane)
     fadeIn.fromValue = 0.0
@@ -54,23 +64,25 @@ class Overlay(gameScene: Scene) {
     val scaleUp = new ScaleTransition(Duration(500), overlayPane)
     scaleUp.toX = 1.0
     scaleUp.toY = 1.0
-    
+
     val parallelTransition = new ParallelTransition()
     parallelTransition.children = Seq(fadeIn, scaleUp)
     parallelTransition.play()
 
-    Future {
-      Thread.sleep(3000)
-      Platform.runLater(() => hide())
+    if (autoHide) { // ✅ Only auto-hide if autoHide is true
+      Future {
+        Thread.sleep(3000)
+        Platform.runLater(() => hide())
+      }
     }
   }
-  
+
   def hide(): Unit = {
-    val fadeOut = new FadeTransition(Duration(300), overlayPane)
+    val fadeOut = new FadeTransition(Duration(500), overlayPane)
     fadeOut.fromValue = 1.0
     fadeOut.toValue = 0.0
 
-    val scaleDown = new ScaleTransition(Duration(300), overlayPane)
+    val scaleDown = new ScaleTransition(Duration(500), overlayPane)
     scaleDown.toX = 0.8
     scaleDown.toY = 0.8
 

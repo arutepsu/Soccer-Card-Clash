@@ -54,6 +54,7 @@ case class AttackerDefendersScene(
   ) {
     () =>
       controller.notifyObservers(Events.PlayingField)
+      playingFieldScene.updateDisplay()
   }
   backButton.styleClass.add("button")
 
@@ -95,7 +96,7 @@ case class AttackerDefendersScene(
       e match {
         case NoBoostsEvent(player) =>
           println(s"⚠️ ${player.name} has no Boosts left! Showing Alert in AttackerDefendersScene...")
-          overlay.show(createBoostAlert(player)) // ✅ Show alert in this scene only
+          overlay.show(createBoostAlert(player), true) // ✅ Show alert in this scene only
 
         case _ =>
           SceneManager.update(e) // ✅ Handle other events normally

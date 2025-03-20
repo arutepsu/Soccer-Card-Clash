@@ -13,27 +13,27 @@ import scalafx.scene.Scene
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.geometry.Pos
+import view.gui.overlay.Overlay
 
-class MenuScene(
-                 controller: IController,
-                 playingFieldScene: PlayingFieldScene,
-                 sceneManager: SceneManager.type
-               ) extends Scene(new StackPane) with Observer { // ✅ Now also an Observer
+class MenuScene(controller: IController,
+                playingFieldScene: PlayingFieldScene,
+                overlay: Overlay // ✅ Use OverlayPause
+               ) {
 
-  controller.add(this) // ✅ Register as an observer
-
-  // Background Image
-  val backgroundImage = new ImageView(new Image("/images/data/images/menu.png")) {
-    fitWidth = 800  // ✅ Adjust dynamically if needed
+  // ✅ Background Image
+  private val backgroundImage = new ImageView(new Image("/images/data/frames/pause (1).png")) {
+    fitWidth = 800
     fitHeight = 600
-    preserveRatio = false
+    smooth = true
+    cache = true
   }
 
-  // Menu Layout
-  val menuLayout = new VBox {
+  // ✅ Menu Layout
+  private val menuButtonBar = new MenuButtonBar(controller, playingFieldScene, overlay)
+
+  private val menuLayout = new VBox {
     spacing = 20
     alignment = Pos.Center
-    val menuButtonBar = new MenuButtonBar(controller, playingFieldScene, sceneManager)
     children = Seq(
       menuButtonBar.continueButton,
       menuButtonBar.undoButton,
@@ -43,19 +43,23 @@ class MenuScene(
     )
   }
 
-  // Set root node
-  root = new StackPane {
-    children = Seq(
-      backgroundImage,
-      menuLayout
-    )
+  // ✅ Create the Menu Pane
+  private val menuPane = new StackPane {
+
+    alignment = Pos.Center
+    children = Seq(backgroundImage, menuLayout)
   }
 
-  // ✅ Observer update method
-  override def update(e: ObservableEvent): Unit = {
-    Platform.runLater(() => {
-      println("🔄 MenuScene Updating!")
-      SceneManager.update(e)
-    })
+  // ✅ Show the Menu Overlay inside `OverlayPause`
+  def show(): Unit = {
+    overlay.show(menuPane, false)
   }
+
+  // ✅ Hide the Menu Overlay
+  def hide(): Unit = {
+    overlay.hide()
+  }
+
+  // ✅ Ensure Menu Closes When "Continue" is Pressed
+  menuButtonBar.continueButton.onAction = _ => hide()
 }

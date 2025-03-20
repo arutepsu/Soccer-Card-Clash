@@ -28,9 +28,10 @@ object ComparisonInfo {
                             defender: IPlayer,
                             attackingCard: ICard,
                             defendingCard: ICard,
-                            attackSuccess: Boolean
+                            attackSuccess: Boolean,
+                            sceneWidth: Double
                           ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess, None, None)
+    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess, None, None, sceneWidth)
   }
 
   def showDoubleComparison(
@@ -41,9 +42,10 @@ object ComparisonInfo {
                             attackingCard1: ICard,
                             attackingCard2: ICard,
                             defendingCard: ICard,
-                            attackSuccess: Boolean
+                            attackSuccess: Boolean,
+                            sceneWidth: Double
                           ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess, None, None)
+    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess, None, None, sceneWidth)
   }
 
   def showTieComparison(
@@ -54,9 +56,10 @@ object ComparisonInfo {
                          attackingCard: ICard,
                          defendingCard: ICard,
                          extraAttackerCard: ICard,
-                         extraDefenderCard: ICard
+                         extraDefenderCard: ICard,
+                         sceneWidth: Double
                        ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard))
+    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
 
   def showDoubleTieComparison(
@@ -68,9 +71,10 @@ object ComparisonInfo {
                                attackingCard2: ICard,
                                defendingCard: ICard,
                                extraAttackerCard: ICard,
-                               extraDefenderCard: ICard
+                               extraDefenderCard: ICard,
+                               sceneWidth: Double
                              ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard))
+    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
 
   import scalafx.scene.paint.Color
@@ -89,13 +93,16 @@ object ComparisonInfo {
                                 defendingCard: ICard,
                                 attackSuccess: Boolean,
                                 extraAttackerCard: Option[ICard],
-                                extraDefenderCard: Option[ICard]
+                                extraDefenderCard: Option[ICard],
+                                sceneWidth: Double
                               ): Node = {
+    val baseWidth = 1200.0  // Reference width for scaling
+    val scaleFactor = Math.max(0.7, Math.min(1.5, sceneWidth / baseWidth))
 
     val resultMessage = if (attackSuccess) "✅ Attack Successful!" else "❌ Attack Failed!"
 
     val resultText = new Text(resultMessage) {
-      style = "-fx-font-size: 14px; -fx-font-weight: bold; -fx-fill: black;"
+      style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: white;"
       opacity = 0.0 // Initially hidden
     }
     def showResultText(): Unit = {
@@ -107,19 +114,30 @@ object ComparisonInfo {
     val attackerAvatarPath = "/images/data/players/player1.jpeg"
     val defenderAvatarPath = "/images/data/players/player2.jpeg"
 
-    val attackerAvatar = new PlayerAvatar(attacker, 1, scaleAvatar = 0.1f, scaleFont = 0.2f, profilePicturePath = attackerAvatarPath)
-    val defenderAvatar = new PlayerAvatar(defender, 2, scaleAvatar = 0.1, scaleFont = 0.2f, profilePicturePath = defenderAvatarPath)
+    val attackerAvatar = new PlayerAvatar(
+      attacker, 1,
+      scaleAvatar = (0.1 * scaleFactor).toFloat,
+      scaleFont = (0.3 * scaleFactor).toFloat,
+      profilePicturePath = attackerAvatarPath
+    )
 
-    val attackingCardImage1 = attackingCard1.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f))
-    val attackingCardImage2 = attackingCard2.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f))
-    val defendingCardImage = CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.7f)
+    val defenderAvatar = new PlayerAvatar(
+      defender, 2,
+      scaleAvatar = (0.1 * scaleFactor).toFloat,
+      scaleFont = (0.3 * scaleFactor).toFloat,
+      profilePicturePath = defenderAvatarPath
+    )
+
+    val attackingCardImage1 = attackingCard1.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat))
+    val attackingCardImage2 = attackingCard2.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat))
+    val defendingCardImage = CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.6f)
 
     val extraAttackerCardImage = extraAttackerCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f)
+      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat)
     }
 
     val extraDefenderCardImage = extraDefenderCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f)
+      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat)
     }
 
 
@@ -178,7 +196,7 @@ object ComparisonInfo {
 
     val winnerText = new Text(s"🏆 Winner: " + (if (attackerWins) player1 else player2)) {
       style = if (attackerWins) "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: green;"
-      else "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
+      else s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: red;"
       opacity = 0.0 // Initially hidden
     }
     // ✅ Function to show winner text with a fade-in effect
@@ -230,19 +248,28 @@ object ComparisonInfo {
       alignment = scalafx.geometry.Pos.Center
     }
 
+    val backgroundImagePath = "/images/data/frames/pause (1).png"
+    val imageUrl = Option(getClass.getResource(backgroundImagePath))
+    .map(_.toExternalForm)
+    .getOrElse {
+      println(s"Error: Image not found at $backgroundImagePath")
+      ""
+    }
+
     val root = new VBox(10, playerInfoBox, winnerText, resultText) {
       alignment = scalafx.geometry.Pos.Center
-      style = "-fx-background-color: white; -fx-padding: 15px; -fx-border-radius: 10px;"
+      style =
+        s"""
+           | -fx-background-image: url('$imageUrl'); /* ✅ Ensures correct image loading */
+           | -fx-background-size: 100% 100%; /* ✅ Makes the image twice as big */
+           | -fx-background-repeat: no-repeat;
+           | -fx-background-position: center;
+           | -fx-background-color: transparent; /* ✅ Removes default white background */
+           | -fx-padding: 15px;
+           | -fx-border-radius: 10px;
+""".stripMargin
     }
-    //style =
-    //        """
-    //          | -fx-background-image: url("/images/backgrounds/comparison_bg.jpg");
-    //          | -fx-background-size: cover;
-    //          | -fx-background-position: center;
-    //          | -fx-padding: 15px;
-    //          | -fx-border-radius: 10px;
-    //    """.stripMargin
-    // Apply fade-in effect
+
     fadeInNode(root, 700)
     root
   }
