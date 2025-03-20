@@ -1,6 +1,7 @@
 package model.fileIOComponent.xmlComponent
 
 import model.gameComponent.factory.*
+import model.gameComponent.state.IGameState
 
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}

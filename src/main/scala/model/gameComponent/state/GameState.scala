@@ -1,9 +1,10 @@
-package model.gameComponent.factory
+package model.gameComponent.state
 
 import controller.command.memento.base.Memento
 import model.cardComponent.ICard
 import model.cardComponent.factory.CardDeserializer
 import model.gameComponent.IGame
+import model.gameComponent.state.{GameState, IGameState, IGameStateFactory, IMementoFactory}
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.PlayerDeserializer
 import model.playerComponent.playerAction.*

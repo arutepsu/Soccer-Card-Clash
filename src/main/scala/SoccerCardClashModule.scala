@@ -15,7 +15,7 @@ import model.gameComponent.IGame
 import model.gameComponent.base.*
 import model.gameComponent.factory.*
 import model.gameComponent.io.{GamePersistence, IGamePersistence}
-import model.gameComponent.state.{GameStateManager, IGameStateManager}
+import model.gameComponent.state.{GameStateFactory, GameStateManager, IGameStateFactory, IGameStateManager, IMementoFactory, MementoFactory}
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.playerComponent.factory.*

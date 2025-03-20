@@ -12,6 +12,7 @@ import scala.xml.*
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
 import model.cardComponent.ICard
 import model.cardComponent.factory.CardDeserializer
+import model.gameComponent.state.{IGameState, IGameStateFactory}
 import model.playerComponent.playerAction.*
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.PlayingFieldDeserializer

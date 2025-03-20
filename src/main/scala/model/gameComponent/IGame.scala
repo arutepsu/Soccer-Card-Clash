@@ -2,7 +2,7 @@ package model.gameComponent
 
 import controller.IController
 import controller.command.memento.base.Memento
-import model.gameComponent.factory.IGameState
+import model.gameComponent.state.IGameState
 import model.playerComponent.IPlayer
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.{ActionManager, IActionManager}

@@ -3,7 +3,7 @@ package model.fileIOComponent.base
 import model.fileIOComponent.IFileIO
 import model.fileIOComponent.jSONComponent.JsonComponent
 import model.fileIOComponent.xmlComponent.XmlComponent
-import model.gameComponent.factory.IGameState
+import model.gameComponent.state.IGameState
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}

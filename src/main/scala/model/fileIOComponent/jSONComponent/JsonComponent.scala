@@ -3,6 +3,7 @@ package model.fileIOComponent.jSONComponent
 import controller.IController
 import controller.command.memento.base.Memento
 import model.gameComponent.factory.*
+import model.gameComponent.state.IGameState
 import model.playerComponent.playerAction.PlayerActionPolicies
 import model.playingFiledComponent.factory.PlayingFieldDeserializer
 import play.api.libs.json.*

@@ -3,13 +3,12 @@ package model.gameComponent.factory
 import com.google.inject.{Inject, Singleton}
 import controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
-import controller.command.actionCommandTypes.swapActionCommands.RegularActionCommand
 import model.cardComponent.ICard
 import model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import model.fileIOComponent.IFileIO
 import model.gameComponent.IGame
 import model.gameComponent.factory.IGameInitializer
-import model.gameComponent.factory.{GameState, GameStateFactory, IGameState, IGameStateFactory}
+import model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.*
 import model.playingFiledComponent.IPlayingField
@@ -101,5 +100,5 @@ class GameInitializer @Inject()(
   override def selectDefenderPosition(): Int = {
     if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
   }
-  
+
 }

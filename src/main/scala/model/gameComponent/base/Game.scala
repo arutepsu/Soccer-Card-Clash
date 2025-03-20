@@ -8,9 +8,9 @@ import model.cardComponent.ICard
 import model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import model.fileIOComponent.IFileIO
 import model.gameComponent.IGame
-import model.gameComponent.factory.{GameState, GameStateFactory, IGameInitializer, IGameState, IGameStateFactory}
+import model.gameComponent.factory.IGameInitializer
 import model.gameComponent.io.IGamePersistence
-import model.gameComponent.state.IGameStateManager
+import model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory, IGameStateManager}
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.*
 import model.playingFiledComponent.IPlayingField
