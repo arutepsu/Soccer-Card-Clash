@@ -28,5 +28,6 @@ trait IPlayerScores {
     "scorePlayer1" -> getScorePlayer1,
     "scorePlayer2" -> getScorePlayer2
   )
+  def checkForWinner(): Unit
   def reset(): Unit
 }

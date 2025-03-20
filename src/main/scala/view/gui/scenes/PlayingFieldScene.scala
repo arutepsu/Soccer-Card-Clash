@@ -1,6 +1,6 @@
 package view.gui.scenes
 
-import controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, IController, NoDoubleAttacksEvent, TieComparisonEvent}
+import controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, IController, NoDoubleAttacksEvent, TieComparisonEvent}
 import sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -22,9 +22,10 @@ import model.cardComponent.ICard
 import scalafx.scene.Node
 import scalafx.animation.FadeTransition
 import scalafx.util.Duration
-import view.gui.components.comparison.ComparisonHandler
+import view.gui.components.comparison.{ComparisonDialogHandler, DialogFactory, GameAlertFactory, WinnerDialog}
 import view.gui.overlay.Overlay
 import scalafx.scene.text.Text
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -63,7 +64,7 @@ class PlayingFieldScene(
   val gameStatusBar = new GameStatusBar
 
   val overlay = new Overlay(this)
-  private val comparisonHandler = new ComparisonHandler(controller, overlay)
+  private val comparisonHandler = new ComparisonDialogHandler(controller, overlay)
 
   val playerFields = new HBox {
     alignment = Pos.CENTER
@@ -163,26 +164,25 @@ class PlayingFieldScene(
         controller.remove(this)
         SceneManager.update(e)
 
+
+      case GameOver(winner) =>
+        Future {
+          Thread.sleep(4000)
+          Platform.runLater(() => {
+            println(f"🎉 WINNER! : ${winner.name}")
+            showGameOverPopup(winner, autoHide = false)
+          })
+        }
       case _ =>
     }
   }
 
-  private def createDoubleAttackAlert(player: IPlayer): scalafx.scene.Node = {
-    new VBox {
-      alignment = Pos.CENTER
-      spacing = 15
-      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
+  private def showGameOverPopup(winner: IPlayer, autoHide: Boolean): Unit = {
+    DialogFactory.showGameOverPopup(winner, overlay, controller, autoHide)
+  }
 
-      // ✅ Ensure all children are recognized as scalafx.scene.Node
-      children = Seq[scalafx.scene.Node](
-        new Text(s"⚠️ ${player.name} has no Double Attacks Left!") {
-          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
-        },
-        new Button("OK") {
-          onAction = _ => overlay.hide()
-        }
-      )
-    }
+  private def createDoubleAttackAlert(player: IPlayer): Node = {
+    GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
   }
 
   private def updateFieldBar() : Unit = {

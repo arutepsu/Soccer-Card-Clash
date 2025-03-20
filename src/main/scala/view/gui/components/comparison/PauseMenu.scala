@@ -1,21 +1,19 @@
-package view.gui.scenes
+package view.gui.components.comparison
 
-import view.gui.components.sceneView.MenuButtonBar
 import controller.IController
 import scalafx.application.Platform
 import scalafx.geometry.Pos
-import view.gui.scenes.sceneManager.SceneManager
-import scalafx.scene.Scene
-import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import util.{ObservableEvent, Observer}
-import view.gui.utils.Styles
 import scalafx.scene.Scene
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{StackPane, VBox}
-import scalafx.geometry.Pos
+import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
+import util.{ObservableEvent, Observer}
+import view.gui.components.sceneView.MenuButtonBar
 import view.gui.overlay.Overlay
+import view.gui.scenes.PlayingFieldScene
+import view.gui.scenes.sceneManager.SceneManager
+import view.gui.utils.Styles
 
-class MenuScene(controller: IController,
+class PauseMenu(controller: IController,
                 playingFieldScene: PlayingFieldScene,
                 overlay: Overlay // ✅ Use OverlayPause
                ) {

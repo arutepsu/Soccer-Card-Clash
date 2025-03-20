@@ -17,7 +17,8 @@ import scalafx.scene.text.Text
 import scalafx.application.Platform
 import model.playerComponent.IPlayer
 import view.gui.components.sceneView.cardBar.SelectablePlayersHandBar
-import view.gui.actionButtons.{ActionButtonFactory, ReverseSwapButton, RegularSwapButton}
+import view.gui.actionButtons.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
+import view.gui.components.comparison.GameAlertFactory
 case class AttackerHandScene(
                               controller: IController,
                               playingFieldScene: PlayingFieldScene,
@@ -106,19 +107,6 @@ case class AttackerHandScene(
 
   // ✅ Method to create an Alert for No Swaps Left
   private def createSwapAlert(player: IPlayer): Node = {
-    new VBox {
-      alignment = Pos.CENTER
-      spacing = 15
-      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
-
-      children = Seq(
-        new Text(s"⚠️ ${player.name} has no Swaps Left!") {
-          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
-        },
-        new Button("OK") {
-          onAction = _ => overlay.hide()
-        }
-      )
-    }
+    GameAlertFactory.createAlert(s"${player.name} has no Swaps Left!", overlay, autoHide = false)
   }
 }

@@ -1,6 +1,7 @@
 package model.playingFiledComponent.strategy.scoringStrategy.base
 
 import com.google.inject.{Inject, Singleton}
+import controller.GameOver
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.IPlayingField
@@ -31,18 +32,30 @@ class PlayerScores @Inject() (
     } else {
       player2Score = scoringStrategy.calculatePoints(player2Score)
     }
+    checkForWinner()
     playingField.notifyObservers()
   }
 
   override def setScorePlayer1(score: Int): Unit = {
     player1Score = score
+    checkForWinner()
     playingField.notifyObservers()
   }
 
   override def setScorePlayer2(score: Int): Unit = {
     player2Score = score
+    checkForWinner()
     playingField.notifyObservers()
   }
+
+  override def checkForWinner(): Unit = {
+    if (player1Score >= 1) {
+      playingField.notifyObservers(GameOver(player1))
+    } else if (player2Score >= 1) {
+      playingField.notifyObservers(GameOver(player2))
+    }
+  }
+
 
   override def reset(): Unit = {
 

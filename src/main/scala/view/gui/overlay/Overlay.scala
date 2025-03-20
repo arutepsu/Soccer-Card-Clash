@@ -23,16 +23,16 @@ class Overlay(gameScene: Scene) {
     style = "-fx-background-color: rgba(0, 0, 0, 0.0); -fx-padding: 20px;"
     visible = false
     alignment = Pos.CENTER
-    maxWidth = gameScene.width.value * 1.2 // ✅ Increase size (was / 2.0)
-    maxHeight = gameScene.height.value * 1.2 // ✅ Increase size (was / 2.0)
+    maxWidth = gameScene.width.value * 1.2
+    maxHeight = gameScene.height.value * 1.2
   }
 
   gameScene.width.onChange { (_, _, newWidth) =>
-    overlayPane.maxWidth = newWidth.doubleValue() * 1.2 // ✅ Update dynamically
+    overlayPane.maxWidth = newWidth.doubleValue() * 1.2
   }
 
   gameScene.height.onChange { (_, _, newHeight) =>
-    overlayPane.maxHeight = newHeight.doubleValue() * 1.2 // ✅ Update dynamically
+    overlayPane.maxHeight = newHeight.doubleValue() * 1.2
   }
 
   private var onHiddenCallback: () => Unit = () => {}
@@ -42,8 +42,8 @@ class Overlay(gameScene: Scene) {
   }
 
   def show(content: Node, autoHide: Boolean): Unit = {
-    val sizeMultiplier = if (autoHide) 1.2 else 8.0 // ✅ Dynamically adjust size
-    println("!!!!!!!!!!!!!!!!!!!!!!size small")
+    val sizeMultiplier = if (autoHide) 1.2 else 8.0
+
     overlayPane.maxWidth = gameScene.width.value * sizeMultiplier
     overlayPane.maxHeight = gameScene.height.value * sizeMultiplier
 
@@ -69,7 +69,7 @@ class Overlay(gameScene: Scene) {
     parallelTransition.children = Seq(fadeIn, scaleUp)
     parallelTransition.play()
 
-    if (autoHide) { // ✅ Only auto-hide if autoHide is true
+    if (autoHide) {
       Future {
         Thread.sleep(3000)
         Platform.runLater(() => hide())

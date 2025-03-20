@@ -19,6 +19,7 @@ import view.gui.utils.Styles
 import scalafx.scene.Node
 import scalafx.scene.text.Text
 import model.playerComponent.IPlayer
+import view.gui.components.comparison.GameAlertFactory
 case class AttackerDefendersScene(
                                     controller: IController,
                                     playingFieldScene: PlayingFieldScene,
@@ -27,7 +28,6 @@ case class AttackerDefendersScene(
                                     windowHeight: Double
                                   ) extends Scene(windowWidth, windowHeight) with Observer {
 
-  println("RECREATING AttackerDefendersScene")
   playingField.foreach(_.add(this)) // ✅ Add observer to receive eventsv
   controller.add(this)
   var getPlayingField: IPlayingField = playingField.get
@@ -105,19 +105,6 @@ case class AttackerDefendersScene(
   }
 
   private def createBoostAlert(player: IPlayer): Node = {
-    new VBox {
-      alignment = Pos.CENTER
-      spacing = 15
-      style = "-fx-background-color: white; -fx-padding: 20px; -fx-border-radius: 10px;"
-
-      children = Seq(
-        new Text(s"⚠️ ${player.name} has no Boosts Left!") {
-          style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: red;"
-        },
-        new Button("OK") {
-          onAction = _ => overlay.hide()
-        }
-      )
-    }
+    GameAlertFactory.createAlert(s"${player.name} has no Boosts Left!", overlay, autoHide = true)
   }
 }

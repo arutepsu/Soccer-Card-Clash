@@ -2,7 +2,6 @@ package view.gui.scenes.sceneManager
 
 import scalafx.Includes.*
 import scalafx.scene.layout.StackPane
-import view.gui.scenes.MenuScene
 import controller.{Events, IController}
 import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.application.Platform
@@ -10,6 +9,7 @@ import scalafx.scene.Scene
 import scalafx.stage.Stage
 import scalafx.util.Duration
 import util.{Observable, ObservableEvent, Observer}
+import view.gui.components.comparison.PauseMenu
 import view.gui.scenes.*
 
 object SceneManager extends Observable with Observer {
@@ -36,7 +36,7 @@ object SceneManager extends Observable with Observer {
           (currentScene.exists(_.getClass == classOf[PlayingFieldScene]) && e == Events.PlayingField) ||
           (currentScene.exists(_.getClass == classOf[AttackerHandScene]) && e == Events.AttackerHandCards) ||
           (currentScene.exists(_.getClass == classOf[AttackerDefendersScene]) && e == Events.AttackerDefenderCards) ||
-          (currentScene.exists(_.getClass == classOf[MenuScene]) && e == Events.PauseGame) ||
+          (currentScene.exists(_.getClass == classOf[PauseMenu]) && e == Events.PauseGame) ||
           (currentScene.exists(_.getClass == classOf[LoadGameScene]) && e == Events.LoadGame)
       ) {
         return
@@ -48,7 +48,6 @@ object SceneManager extends Observable with Observer {
         case Events.PlayingField => switchScene(sceneRegistry.getPlayingFieldScene)
         case Events.AttackerHandCards => switchScene(sceneRegistry.getAttackerHandScene)
         case Events.AttackerDefenderCards => switchScene(sceneRegistry.getAttackerDefendersScene)
-//        case Events.PauseGame => switchScene(sceneRegistry.getMenuScene)
         case Events.LoadGame => switchScene(sceneRegistry.getLoadGameScene)
         case Events.Quit => controller.quit()
         case _ =>

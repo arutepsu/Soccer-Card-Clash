@@ -17,7 +17,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   private var _playingFieldScene: Option[PlayingFieldScene] = None
   private var _attackerHandScene: Option[AttackerHandScene] = None
   private var _attackerDefendersScene: Option[AttackerDefendersScene] = None
-  private var _menuScene: Option[MenuScene] = None
   private var _loadGameScene: Option[LoadGameScene] = None
 
   private def clearScenes(): Unit = {
@@ -30,7 +29,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
     _playingFieldScene = None
     _attackerHandScene = None
     _attackerDefendersScene = None
-    _menuScene = None
     _loadGameScene = None
 
   }
@@ -85,12 +83,5 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
       ))
       _attackerHandScene.get
   }
-
-
-//  def getMenuScene: MenuScene = {
-//    if (_menuScene.isEmpty) {
-//      _menuScene = Some(MenuScene(controller, getPlayingFieldScene, sceneManager))
-//    }
-//    _menuScene.get
-//  }
+  
 }

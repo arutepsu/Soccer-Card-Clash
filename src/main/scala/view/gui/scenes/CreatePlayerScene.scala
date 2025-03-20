@@ -1,28 +1,25 @@
 package view.gui.scenes
 
-import controller.{Events, IController}
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.Alert
-import scalafx.scene.layout.VBox
-import scalafx.scene.text.Text
-import view.gui.scenes.sceneManager.SceneManager
-import view.gui.components.playerView.PlayerTextInputField
-import view.gui.components.uiFactory.GameButtonFactory
-import view.gui.utils.Styles
-import scalafx.scene.layout.VBox
-import scalafx.scene.control.Alert
+import scalafx.scene.Scene
+import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.geometry.Insets
 import scalafx.scene.text.Text
 import scalafx.scene.control.TextField
-import scalafx.application.Platform
-import controller.IController
-import util.{ObservableEvent, Observer}
 import scalafx.geometry.Pos
-import scalafx.scene.Scene
+import view.gui.components.uiFactory.GameButtonFactory
+import controller.{Events, IController}
+import util.{ObservableEvent, Observer}
+import sceneManager.SceneManager
+import view.gui.overlay.Overlay
+import view.gui.components.comparison.GameAlertFactory
+import scalafx.application.Platform
+import view.gui.utils.Styles
 
-class CreatePlayerScene(controller: IController) extends Scene(new VBox) with Observer {
+class CreatePlayerScene(controller: IController) extends Scene(new StackPane) with Observer {
 
   controller.add(this) // Register as an observer
+
+  private val overlay = new Overlay(this) // ✅ Added Overlay for Alerts
 
   val maxAllowedPlayersCount = 2
 
@@ -63,17 +60,34 @@ class CreatePlayerScene(controller: IController) extends Scene(new VBox) with Ob
       height = 60
     )(() => startGame())
 
+    val mainMenuButton = GameButtonFactory.createGameButton(
+      text = "Main Menu",
+      width = 250,
+      height = 60
+    ) { () =>
+      controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
+      controller.resetGame() // ✅ Reset game after switching scenes
+    }
+
     startButton.styleClass.add("start-button")
 
     val startButtonBox = new VBox(10) {
       alignment = Pos.TOP_CENTER
-      children = Seq(startButton)
+      children = Seq(startButton, mainMenuButton)
     }
 
     children.add(startButtonBox)
   }
 
-  root = rootVBox // ✅ Set the VBox as the scene root
+  // ✅ Set root to a StackPane with rootVBox and overlay
+  root = new StackPane {
+    children = Seq(rootVBox, overlay.getPane)
+  }
+
+  // ✅ Ensure overlay covers the full scene
+  overlay.getPane.prefWidth = 800
+  overlay.getPane.prefHeight = 600
+  overlay.getPane.visible = false // Initially hidden
 
   // ✅ Now `playerTextInputFields` is accessible
   def getPlayerNames(): Seq[String] = {
@@ -84,7 +98,7 @@ class CreatePlayerScene(controller: IController) extends Scene(new VBox) with Ob
     val playerNames = getPlayerNames()
 
     if (playerNames.size != 2) {
-      showAlert("Error", "Exactly 2 players are required to start the game.")
+      showAlert("Exactly 2 players are required to start the game.") // ✅ Uses GameAlertFactory
       return
     }
     controller.createGame(playerNames.head, playerNames(1))
@@ -98,12 +112,11 @@ class CreatePlayerScene(controller: IController) extends Scene(new VBox) with Ob
       SceneManager.update(e)
     })
   }
-
-  private def showAlert(titleText: String, content: String): Unit = {
-    val alert = new Alert(AlertType.Warning)
-    alert.title = titleText
-    alert.headerText = None
-    alert.contentText = content
-    alert.showAndWait()
+  // ✅ Replaces JavaFX Alert with GameAlertFactory
+  private def showAlert(content: String): Unit = {
+    Platform.runLater(() => {
+      val alert = GameAlertFactory.createAlert(content, overlay, autoHide = false) // ✅ Use factory method
+      overlay.show(alert, autoHide = false) // ✅ Display the alert using overlay
+    })
   }
 }

@@ -1,7 +1,7 @@
 package view.gui.components.sceneView
 
 import controller.IController
-import view.gui.scenes.{MenuScene, PlayingFieldScene}
+import view.gui.scenes.PlayingFieldScene
 import view.gui.components.sceneView.GameStatusBar
 import scalafx.scene.layout.VBox
 import scalafx.geometry.Pos
@@ -11,6 +11,7 @@ import view.gui.components.uiFactory.GameButtonFactory
 import view.gui.actionButtons.*
 import controller.Events
 import model.playingFiledComponent.IPlayingField
+import view.gui.components.comparison.PauseMenu
 
 case class ButtonBar(controller: IController, playingField: IPlayingField, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
 
@@ -48,7 +49,7 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
     width = 180,
     height = 50
   ) { () =>
-    val menuOverlay = new MenuScene(controller, playingFieldScene, playingFieldScene.overlay) // ✅ Create menu overlay
+    val menuOverlay = new PauseMenu(controller, playingFieldScene, playingFieldScene.overlay) // ✅ Create menu overlay
     menuOverlay.show() // ✅ Show menu overlay inside OverlayPause
   }
 

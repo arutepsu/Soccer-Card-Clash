@@ -25,7 +25,13 @@ class CreateGameWorkflowCommand(val game: IGame, player1: String, player2: Strin
 }
 
 class QuitWorkflowCommand(val game: IGame) extends WorkflowCommand {
-  override def doStep(): Boolean = true
+  override def doStep(): Boolean = {
+    Try(game.exit()) match {
+      case Success(_) => true
+      case Failure(exception) =>
+        false
+    }
+  }
 }
 
 class SaveGameWorkflowCommand(val game: IGame) extends WorkflowCommand {

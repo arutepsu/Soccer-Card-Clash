@@ -20,7 +20,7 @@ import scalafx.animation._
 import scalafx.util.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-object ComparisonInfo {
+object ComparisonDialogGenerator {
   def showSingleComparison(
                             player1: String,
                             player2: String,

@@ -1,58 +1,49 @@
 package view.gui.scenes
 
 import scalafx.scene.Scene
-import scalafx.scene.layout.VBox
+import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.text.Text
+import scalafx.scene.control.{Button, ListView}
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
+import scalafx.application.Platform
+import scalafx.scene.Node
+
 import java.io.File
-import scala.io.Source
-import sceneManager.SceneManager
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
-import scalafx.scene.Scene
-import scalafx.scene.control.ListView
-import scalafx.scene.layout.VBox
+import view.gui.overlay.Overlay
 import view.gui.components.GameLabel
 import view.gui.components.uiFactory.GameButtonFactory
-import view.gui.scenes.sceneManager.SceneManager
-import controller.base.Controller
 import controller.{Events, IController}
-import view.gui.utils.Styles
-import scalafx.application.Platform
 import util.{ObservableEvent, Observer}
+import sceneManager.SceneManager
 import scalafx.scene.Scene
-import scalafx.scene.control.{ListView, Alert}
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.layout.VBox
-import scalafx.geometry.Pos
+import scalafx.scene.layout.{HBox, StackPane, VBox}
+import scalafx.scene.text.Text
+import scalafx.scene.control.{Button, ListView}
 import scalafx.collections.ObservableBuffer
-import scalafx.application.Platform
-import java.io.File
-import scalafx.scene.Scene
-
-import scalafx.scene.Scene
-import scalafx.scene.control.{ListView, Alert, ButtonType}
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.layout.VBox
 import scalafx.geometry.Pos
-import scalafx.collections.ObservableBuffer
 import scalafx.application.Platform
-import java.io.File
+import scalafx.scene.Node
 
-import scalafx.scene.effect.GaussianBlur
-import scalafx.scene.layout.VBox
+import java.io.File
+import view.gui.overlay.Overlay
+import view.gui.components.GameLabel
+import view.gui.components.uiFactory.GameButtonFactory
+import controller.{Events, IController}
+import util.{ObservableEvent, Observer}
+import sceneManager.SceneManager
+import view.gui.components.comparison.{ConfirmationDialog, DialogFactory}
 
 class LoadGameScene(controller: IController) extends Scene with Observer {
   controller.add(this)
 
-  // Directory where saved games are stored
+  // 📂 Directory where saved games are stored
   private val gamesFolder = new File("games")
 
-  // Observable list for saved games
+  // 📌 Observable list for saved games
   private val savedGames = ObservableBuffer[String]()
 
-  // Load saved games from the folder
+  // 🔄 Load saved games from the folder
   private def loadSavedGames(): Unit = {
     savedGames.clear()
     if (gamesFolder.exists() && gamesFolder.isDirectory) {
@@ -65,13 +56,18 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     }
   }
 
-  // UI Elements
+  // 📌 Overlay for dialogs
+  private val overlay = new Overlay(this)
+
+  // 📜 ListView for saved games
   private val listView = new ListView(savedGames)
+
+  // 🔙 Back button to main menu
   private val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
     () => controller.notifyObservers(Events.MainMenu)
   }
 
-  // ListView Click Event: Open Confirmation on Selection
+  // 🖱️ ListView Click Event: Open Confirmation on Selection
   listView.onMouseClicked = _ => {
     val selectedGame = listView.selectionModel().getSelectedItem
     if (selectedGame != null) {
@@ -79,7 +75,7 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     }
   }
 
-  // Root Layout
+  // 🏗️ Root Layout
   private val rootVBox = new VBox {
     spacing = 10
     alignment = Pos.Center
@@ -90,26 +86,26 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     )
   }
 
-  this.root = rootVBox
-
-  // Populate ListView when Scene is Loaded
-  loadSavedGames()
-
-  // Show a confirmation dialog when loading a game with a blur effect
-  private def showLoadConfirmation(gameFile: String): Unit = {
-    val blurEffect = new GaussianBlur(3) // Adjust blur radius as needed
-    rootVBox.effect = blurEffect // Apply blur effect to the root VBox
-
-    val confirmed = GameAlert.show("Load Game", s"Load game: $gameFile?\nDo you want to proceed?")
-
-    rootVBox.effect = null // Remove blur effect after closing the alert
-
-    if (confirmed) {
-      controller.loadGame(gameFile)
-    }
+  // ✅ Add Overlay to Scene
+  this.root = new StackPane {
+    children = Seq(rootVBox, overlay.getPane)
   }
 
-  // Observer Pattern: Handle Scene Transitions
+  // 🔄 Populate ListView when Scene is Loaded
+  loadSavedGames()
+
+  private def showLoadConfirmation(gameFile: String): Unit = {
+    Platform.runLater(() => {
+      println(s"📢 Showing Load Confirmation for: $gameFile") // Debugging
+
+      // ✅ Use DialogFactory instead of creating ConfirmationDialog manually
+      DialogFactory.showLoadGameConfirmation(gameFile, overlay, controller)
+    })
+  }
+
+
+
+  // 🔄 Observer Pattern: Handle Scene Transitions
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 GUI Received Event: $e")

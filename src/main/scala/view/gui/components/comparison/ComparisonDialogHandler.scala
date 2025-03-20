@@ -12,7 +12,7 @@ import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.stage.Stage
 import util.{ObservableEvent, Observer}
-import view.gui.components.comparison.ComparisonInfo
+import view.gui.components.comparison.ComparisonDialogGenerator
 import view.gui.components.sceneView.*
 import view.gui.components.sceneView.cardBar.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 import view.gui.components.uiFactory.GameButtonFactory
@@ -22,7 +22,7 @@ import view.gui.utils.{ImageUtils, Styles}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ComparisonHandler(controller: IController, overlay: Overlay) {
+class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
 
   private var lastAttackingCard: Option[ICard] = None
   private var lastAttackingCard1: Option[ICard] = None
@@ -64,7 +64,7 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
         (lastAttackingCard, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard), Some(defendingCard), Some(attackSuccess)) =>
             overlay.show(
-              ComparisonInfo.showSingleComparison(
+              ComparisonDialogGenerator.showSingleComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
                 controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, attackSuccess, overlay.getPane.getWidth
@@ -80,7 +80,7 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(attackSuccess)) =>
             overlay.show(
-              ComparisonInfo.showDoubleComparison(
+              ComparisonDialogGenerator.showDoubleComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
                 controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, attackSuccess, overlay.getPane.getWidth
@@ -96,7 +96,7 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
         (lastAttackingCard, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
             overlay.show(
-              ComparisonInfo.showTieComparison(
+              ComparisonDialogGenerator.showTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
                 controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
@@ -112,7 +112,7 @@ class ComparisonHandler(controller: IController, overlay: Overlay) {
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
             overlay.show(
-              ComparisonInfo.showDoubleTieComparison(
+              ComparisonDialogGenerator.showDoubleTieComparison(
                 controller.getCurrentGame.getPlayer1.name,
                 controller.getCurrentGame.getPlayer2.name,
                 controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
