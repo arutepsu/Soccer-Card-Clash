@@ -2,12 +2,13 @@ package controller.command.actionCommandTypes.boostActionCommands
 
 import controller.command.ICommand
 import controller.command.base.action.ActionCommand
+import controller.command.memento.factory.IMementoManagerFactory
 import model.gameComponent.IGame
 import model.playingFiledComponent.manager.IActionManager
 
 import scala.util.{Failure, Success, Try}
 
-class BoostGoalkeeperActionCommand(game: IGame) extends ActionCommand(game) {
+class BoostGoalkeeperActionCommand(game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   protected var boostSuccessful: Option[Boolean] = None
 

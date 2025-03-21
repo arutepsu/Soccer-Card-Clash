@@ -8,30 +8,35 @@ import controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderA
 import controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
 import controller.command.actionCommandTypes.swapActionCommands.{ReverseSwapActionCommand, RegularSwapActionCommand}
 import controller.command.base.workflow.*
+import controller.command.memento.factory.IMementoManagerFactory
 import model.cardComponent.ICard
 import model.gameComponent.IGame
+class CommandFactory @Inject()(
+                                game: IGame,
+                                controller: IController,
+                                mementoManagerFactory: IMementoManagerFactory
+                              ) extends ICommandFactory {
 
-class CommandFactory @Inject()(game: IGame, controller: IController) extends ICommandFactory {
   override def createSingleAttackCommand(defenderPosition: Int): ICommand =
-    new SingleAttackActionCommand(defenderPosition, game)
+    new SingleAttackActionCommand(defenderPosition, game, mementoManagerFactory)
 
   override def createDoubleAttackCommand(defenderPosition: Int): ICommand =
-    new DoubleAttackActionCommand(defenderPosition, game)
+    new DoubleAttackActionCommand(defenderPosition, game, mementoManagerFactory)
 
   override def createBoostDefenderCommand(defenderPosition: Int): ICommand =
-    new BoostDefenderActionCommand(defenderPosition, game)
+    new BoostDefenderActionCommand(defenderPosition, game, mementoManagerFactory)
 
   override def createBoostGoalkeeperCommand(): ICommand =
-    new BoostGoalkeeperActionCommand(game)
+    new BoostGoalkeeperActionCommand(game, mementoManagerFactory)
 
   override def createRegularSwapCommand(index: Int): ICommand =
-    new RegularSwapActionCommand(index, game)
+    new RegularSwapActionCommand(index, game, mementoManagerFactory)
 
   override def createReverseSwapCommand(): ICommand =
-    new ReverseSwapActionCommand(game)
+    new ReverseSwapActionCommand(game, mementoManagerFactory)
 
   override def createResetGameCommand(): ICommand =
-    new ResetGameCommand(game)
+    new ResetGameCommand(game, mementoManagerFactory)
 
   override def createCreateGameCommand(game: IGame, player1: String, player2: String): WorkflowCommand =
     new CreateGameWorkflowCommand(game, player1, player2)

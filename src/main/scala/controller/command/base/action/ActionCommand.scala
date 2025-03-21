@@ -5,11 +5,16 @@ import controller.command.memento.*
 import controller.command.memento.base.{Memento, MementoManager}
 import model.gameComponent.IGame
 import model.playingFiledComponent.manager.IActionManager
+import controller.command.memento.IMementoManager
+import controller.command.memento.factory.IMementoManagerFactory
 
-abstract class ActionCommand(val game: IGame) extends ICommand {
+abstract class ActionCommand(
+                              val game: IGame,
+                              mementoManagerFactory: IMementoManagerFactory
+                            ) extends ICommand {
+
   protected val actionManager: IActionManager = game.getActionManager
-  protected var mementoManager: IMementoManager = new MementoManager(game)
-
+  protected val mementoManager: IMementoManager = mementoManagerFactory.create(game)
   protected var memento: Option[Memento] = None
 
   override def doStep(): Boolean = {

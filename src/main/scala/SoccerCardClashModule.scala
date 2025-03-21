@@ -15,7 +15,7 @@ import model.gameComponent.IGame
 import model.gameComponent.base.*
 import model.gameComponent.factory.*
 import model.gameComponent.io.{GamePersistence, IGamePersistence}
-import model.gameComponent.state.{GameStateFactory, GameStateManager, IGameStateFactory, IGameStateManager, IMementoFactory, MementoFactory}
+import model.gameComponent.state.{GameStateFactory, GameStateManager, IGameStateFactory, IGameStateManager}
 import model.playerComponent.IPlayer
 import model.playerComponent.base.Player
 import model.playerComponent.factory.*
@@ -33,14 +33,15 @@ import model.playingFiledComponent.strategy.scoringStrategy.base.{PlayerScores, 
 import model.playingFiledComponent.strategy.swapStrategy.*
 import model.playingFiledComponent.strategy.swapStrategy.base.ReverseSwapStrategy
 import util.{Deserializer, Observable}
+import controller.command.memento.*
+import controller.command.memento.base.*
+import controller.command.memento.componenets.{IMementoCreator, IMementoCreatorFactory, IMementoRestorer, IMementoRestorerFactory, MementoCreator, MementoRestorer}
+import controller.command.memento.factory.{IMementoManagerFactory, MementoManagerFactory}
 
 class SoccerCardClashModule extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
     bind(classOf[Observable]).to(classOf[Controller]).in(classOf[Singleton])
-
-//    bind(classOf[IGame]).to(classOf[Game])
-
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
     bind(classOf[IPlayingFieldManagerFactory]).to(classOf[PlayingFieldManagerFactory])
     bind(classOf[IPlayingFieldFactory]).to(classOf[PlayingFieldFactory])
@@ -48,13 +49,11 @@ class SoccerCardClashModule extends AbstractModule {
     bind(classOf[IDeckFactory]).to(classOf[DeckFactory])
     bind(classOf[ICardFactory]).to(classOf[CardFactory])
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
-
-    bind(classOf[IGameStateFactory]).to(classOf[GameStateFactory]).asEagerSingleton()
-
-    bind(classOf[IMementoFactory])
-      .toConstructor(classOf[MementoFactory].getConstructor(classOf[IHandCardsQueueFactory]))
-      .in(classOf[Singleton])
-
+    
+    bind(classOf[IGameStateFactory])
+    .toConstructor(classOf[GameStateFactory].getConstructor(classOf[IHandCardsQueueFactory]))
+    .asEagerSingleton()
+    
     bind(classOf[IFileIO]).to(classOf[FileIO]).asEagerSingleton()
 
     bind(classOf[IPlayingField]).to(classOf[PlayingField])
@@ -108,17 +107,14 @@ class SoccerCardClashModule extends AbstractModule {
       .toConstructor(classOf[GameInitializer]
         .getConstructor(classOf[IPlayerFactory], classOf[IPlayingFieldFactory], classOf[IDeckFactory]))
     
-    // Bind GameStateManager
     bind(classOf[IGameStateManager])
       .toConstructor(classOf[GameStateManager]
         .getConstructor(classOf[IGameStateFactory], classOf[IHandCardsQueueFactory]))
-
-    // Bind GamePersistence
+    
     bind(classOf[IGamePersistence])
       .toConstructor(classOf[GamePersistence]
         .getConstructor(classOf[IFileIO]))
-
-    // Bind IGame -> Game with dynamic constructor injection
+    
     bind(classOf[IGame])
       .toConstructor(classOf[Game].getConstructor(
         classOf[IGameInitializer],
@@ -126,6 +122,21 @@ class SoccerCardClashModule extends AbstractModule {
         classOf[IGamePersistence],
       ))
 
+    install(new FactoryModuleBuilder()
+    .implement(classOf[IMementoCreator], classOf[MementoCreator])
+    .build(classOf[IMementoCreatorFactory]))
+
+    install(new FactoryModuleBuilder()
+    .implement(classOf[IMementoRestorer], classOf[MementoRestorer])
+    .build(classOf[IMementoRestorerFactory]))
+    
+
+    bind(classOf[IMementoManagerFactory])
+      .toConstructor(classOf[MementoManagerFactory].getConstructor(
+        classOf[IMementoCreatorFactory],
+        classOf[IMementoRestorerFactory]
+      ))
+      .asEagerSingleton()
   }
 
   @Provides

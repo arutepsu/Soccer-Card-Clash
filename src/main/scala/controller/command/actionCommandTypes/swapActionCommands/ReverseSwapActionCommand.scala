@@ -1,12 +1,13 @@
 package controller.command.actionCommandTypes.swapActionCommands
 
 import controller.command.base.action.ActionCommand
+import controller.command.memento.factory.IMementoManagerFactory
 import model.gameComponent.IGame
 import model.playingFiledComponent.manager.IActionManager
 
 import scala.util.{Failure, Success, Try}
 
-class ReverseSwapActionCommand(game: IGame) extends ActionCommand(game) {
+class ReverseSwapActionCommand(game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   protected var swapSuccessful: Option[Boolean] = None
 
