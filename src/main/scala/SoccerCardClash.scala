@@ -6,15 +6,8 @@ import view.tui.Tui
 
 import scala.io.StdIn.readLine
 import com.google.inject.{Guice, Injector}
-import controller.base.Controller
-import controller.{Events, IController}
-import scalafx.application.JFXApp3
-import view.gui.Gui
-import view.tui.Tui
-
-import scala.io.StdIn.readLine
-import com.google.inject.{Guice, Injector}
 import model.cardComponent.base.types.RegularCard
+import module.SoccerCardClashModule
 
 object SoccerCardClash {
   private val injector: Injector = Guice.createInjector(new SoccerCardClashModule())

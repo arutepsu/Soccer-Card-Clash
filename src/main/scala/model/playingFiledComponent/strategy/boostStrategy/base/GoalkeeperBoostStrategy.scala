@@ -4,9 +4,8 @@ import controller.{Events, NoBoostsEvent}
 import model.cardComponent.ICard
 import model.cardComponent.base.types.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.*
-import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.{DataManager, IDataManager}
+import model.playingFiledComponent.manager.{DataManager, IDataManager, IRolesManager, RolesManager}
 import model.playingFiledComponent.strategy.boostStrategy.IBoostStrategy
 
 class GoalkeeperBoostStrategy extends IBoostStrategy {

@@ -7,11 +7,10 @@ import model.playingFiledComponent.strategy.boostStrategy.BoostManager
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
 import model.playingFiledComponent.dataStructure.IHandCardsQueue
-import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.manager.{IDataManager, IRolesManager}
 import model.cardComponent.ICard
 import model.playingFiledComponent.strategy.boostStrategy.IRevertStrategy
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import model.playerComponent.playerRole.IRolesManager
 import util.ObservableEvent
 import view.gui.scenes.PlayingFieldScene
 

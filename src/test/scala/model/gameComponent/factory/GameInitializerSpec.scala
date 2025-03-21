@@ -8,7 +8,7 @@
 //import model.playingFiledComponent.dataStructure.IHandCardsQueue
 //import model.playingFiledComponent.factory.IPlayingFieldFactory
 //import model.playingFiledComponent.manager.{IDataManager, IActionManager}
-//import model.playerComponent.playerRole.IRolesManager
+//import model.playingFiledComponent.manager.IRolesManager
 //import model.gameComponent.state.IGameState
 //import org.mockito.Mockito._
 //import org.scalatest.matchers.should.Matchers

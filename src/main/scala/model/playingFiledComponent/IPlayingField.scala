@@ -1,11 +1,8 @@
 package model.playingFiledComponent
-import model.playingFiledComponent.manager.{ActionManager, DataManager, IDataManager}
+import model.playingFiledComponent.manager.{ActionManager, DataManager, IDataManager, IRolesManager, RolesManager}
 import model.playingFiledComponent.manager.IActionManager
-import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import model.playerComponent.playerRole.IRolesManager
 import model.playerComponent.IPlayer
-import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
 import util.Observable
 import play.api.libs.json._

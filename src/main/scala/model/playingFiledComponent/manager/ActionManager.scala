@@ -2,7 +2,6 @@ package model.playingFiledComponent.manager
 
 import com.google.inject.Inject
 import model.cardComponent.factory.DeckFactory
-import model.playerComponent.playerRole.RolesManager
 import model.playingFiledComponent.*
 import model.playingFiledComponent.manager.IActionManager
 import model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}

@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Provider, Singleton}
 import model.cardComponent.factory.DeckFactory
 import model.playerComponent.IPlayer
 import model.playerComponent.factory.IPlayerFactory
-import model.playerComponent.playerRole.*
+import model.playingFiledComponent.manager.IRolesManager
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.factory.IPlayingFieldManagerFactory
 import model.playingFiledComponent.manager.*

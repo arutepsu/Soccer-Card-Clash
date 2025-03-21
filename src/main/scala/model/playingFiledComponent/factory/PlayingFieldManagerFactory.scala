@@ -2,7 +2,6 @@ package model.playingFiledComponent.factory
 
 import com.google.inject.{Inject, Singleton}
 import model.playerComponent.IPlayer
-import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.manager.*
 import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores

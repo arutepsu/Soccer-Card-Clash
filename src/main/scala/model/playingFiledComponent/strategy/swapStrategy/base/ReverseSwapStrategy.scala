@@ -2,10 +2,9 @@ package model.playingFiledComponent.strategy.swapStrategy.base
 
 import controller.NoSwapsEvent
 import model.playerComponent.playerAction.*
-import model.playerComponent.playerRole.IRolesManager
 import model.playingFiledComponent.IPlayingField
 import model.playingFiledComponent.dataStructure.HandCardsQueue
-import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.manager.{IDataManager, IRolesManager}
 import model.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
 import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
 import scala.collection.mutable

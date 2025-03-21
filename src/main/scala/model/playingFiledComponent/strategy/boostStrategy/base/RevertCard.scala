@@ -3,9 +3,8 @@ package model.playingFiledComponent.strategy.boostStrategy.base
 import model.cardComponent.ICard
 import model.cardComponent.base.types.{BoostedCard, RegularCard}
 import model.playerComponent.playerAction.PlayerActionPolicies
-import model.playerComponent.playerRole.{IRolesManager, RolesManager}
 import model.playingFiledComponent.IPlayingField
-import model.playingFiledComponent.manager.IDataManager
+import model.playingFiledComponent.manager.{IDataManager, IRolesManager, RolesManager}
 
 class RevertCard {
   def revertCard(playingField: IPlayingField, card: ICard): ICard = {
