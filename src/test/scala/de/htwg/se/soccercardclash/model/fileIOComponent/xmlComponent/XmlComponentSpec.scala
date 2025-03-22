@@ -66,5 +66,46 @@ class XmlComponentSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val result = xmlComponent.load("broken.xml")
       result shouldBe None
     }
+    "not throw if saving fails due to file write error" in {
+      val gameState = mock[IGameState]
+      when(gameState.toXml).thenReturn(<game>
+        <player>Alice</player>
+      </game>)
+
+      // Break the `games` folder by making it a file
+      val gamesPath = new File("games")
+      gamesPath.delete()
+      Using(new PrintWriter(gamesPath))(_.write("not_a_directory"))
+
+      noException should be thrownBy {
+        xmlComponent.save(gameState)
+      }
+
+      gamesPath.delete()
+    }
+    "create games folder if it does not exist" in {
+      val folder = new File("games")
+      if (folder.exists()) folder.delete()
+
+      val dummyXml = <game><player>Alice</player></game>
+      when(mockGameState.toXml).thenReturn(dummyXml)
+
+      xmlComponent.save(mockGameState)
+
+      folder.exists() shouldBe true
+      folder.isDirectory shouldBe true
+    }
+    "return None if XML file is not valid XML" in {
+      val testFile = "games/invalid.xml"
+      val invalidContent = "<<<not xml>>>"
+
+      Using(new PrintWriter(new File(testFile))) { pw =>
+        pw.write(invalidContent)
+      }
+
+      val result = xmlComponent.load("invalid.xml")
+      result shouldBe None
+    }
+
   }
 }

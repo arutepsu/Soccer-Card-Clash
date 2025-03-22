@@ -94,5 +94,15 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       player.toString should include ("Player: Jack")
       player.toString should include ("Ace_of_Spades")
     }
+    "not be equal to a non-Player object" in {
+      val player = Player("Leo", Nil)
+      val notAPlayer = "Leo"
+
+      player.equals(notAPlayer) shouldBe false
+    }
+    "not be equal to null" in {
+      val player = Player("Mia", Nil)
+      player.equals(null) shouldBe false
+    }
   }
 }

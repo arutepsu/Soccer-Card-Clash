@@ -10,7 +10,7 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStra
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.{ReverseSwapStrategy, HandSwapStrategy}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.{ReverseSwapStrategy, RegularSwapStrategy}
 import play.api.libs.json.*
 import play.api.libs.json.util.*
 
@@ -38,7 +38,7 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
   }
 
   override def regularSwap(cardIndex: Int): Boolean = {
-    swapStrategy.swapAttacker(new HandSwapStrategy(cardIndex))
+    swapStrategy.swapAttacker(new RegularSwapStrategy(cardIndex))
   }
 
 

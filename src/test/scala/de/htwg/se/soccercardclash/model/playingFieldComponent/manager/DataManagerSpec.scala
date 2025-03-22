@@ -75,5 +75,206 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       verify(mockRefillStrategy).refillField(dataManager, mockPlayer1, cards1)
       verify(mockRefillStrategy).refillField(dataManager, mockPlayer2, cards2)
     }
+    "initialize player hands through handManager" in {
+      val mockField = mock[IPlayingField]
+      val mockHandManager = mock[IPlayerHandManager]
+      val mockFieldManager = mock[IPlayerFieldManager]
+      val p1 = mock[IPlayer]
+      val p2 = mock[IPlayer]
+      val cards1 = List(mock[ICard])
+      val cards2 = List(mock[ICard])
+
+      when(mockField.getAttacker).thenReturn(p1)
+      when(mockField.getDefender).thenReturn(p2)
+
+      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+
+      dataManager.initializePlayerHands(cards1, cards2)
+
+      verify(mockHandManager).initializePlayerHands(p1, cards1, p2, cards2)
+    }
+    "return attacking card from handManager" in {
+      val mockField = mock[IPlayingField]
+      val mockHandManager = mock[IPlayerHandManager]
+      val mockFieldManager = mock[IPlayerFieldManager]
+      val attacker = mock[IPlayer]
+      val card = mock[ICard]
+
+      when(mockField.getAttacker).thenReturn(attacker)
+      when(mockHandManager.getAttackingCard(attacker)).thenReturn(card)
+
+      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      dataManager.getAttackingCard shouldBe card
+    }
+    "return defender card from handManager" in {
+      val mockField = mock[IPlayingField]
+      val mockHandManager = mock[IPlayerHandManager]
+      val mockFieldManager = mock[IPlayerFieldManager]
+      val defender = mock[IPlayer]
+      val card = mock[ICard]
+
+      when(mockField.getDefender).thenReturn(defender)
+      when(mockHandManager.getDefenderCard(defender)).thenReturn(card)
+
+      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      dataManager.getDefenderCard shouldBe card
+    }
+    "set player hand via handManager" in {
+      val player = mock[IPlayer]
+      val hand = mock[IHandCardsQueue]
+      val handManager = mock[IPlayerHandManager]
+      val dataManager = new DataManager(mock[IPlayingField], handManager, mock[IPlayerFieldManager])
+
+      dataManager.setPlayerHand(player, hand)
+      verify(handManager).setPlayerHand(player, hand) // ✅ this is correct
+    }
+
+    "remove defender card via fieldManager" in {
+      val player = mock[IPlayer]
+      val card = mock[ICard]
+
+      val fieldManager = mock[IPlayerFieldManager] // ✅ Track the mock
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+
+      dataManager.removeDefenderCard(player, card)
+
+      verify(fieldManager).removeDefenderCard(player, card) // ✅ Verify the mock directly
+    }
+
+    "check if all defenders are beaten via fieldManager" in {
+      val player = mock[IPlayer]
+      val fieldManager = mock[IPlayerFieldManager]
+      when(fieldManager.allDefendersBeaten(player)).thenReturn(true)
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.allDefendersBeaten(player) shouldBe true
+    }
+    "refill defender field using refillStrategy" in {
+      val player = mock[IPlayer]
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], mock[IPlayerFieldManager])
+      val refillStrategy = mock[IRefillStrategy]
+
+      dataManager.setRefillStrategy(refillStrategy)
+      dataManager.refillDefenderField(player)
+
+      verify(refillStrategy).refillDefenderField(dataManager, player)
+    }
+    "set goalkeeper for attacker" in {
+      val field = mock[IPlayingField]
+      val fieldManager = mock[IPlayerFieldManager]
+      val card = mock[ICard]
+
+      val dataManager = new DataManager(field, mock[IPlayerHandManager], fieldManager)
+      dataManager.setGoalkeeperForAttacker(card)
+
+      verify(fieldManager).setGoalkeeperForAttacker(field, card)
+    }
+    "clear all via both managers" in {
+      val handManager = mock[IPlayerHandManager]
+      val fieldManager = mock[IPlayerFieldManager]
+
+      val dataManager = new DataManager(mock[IPlayingField], handManager, fieldManager)
+      dataManager.clearAll()
+
+      verify(handManager).clearAll()
+      verify(fieldManager).clearAll()
+    }
+    "return defender card at index via fieldManager" in {
+      val mockField = mock[IPlayingField]
+      val mockHandManager = mock[IPlayerHandManager]
+      val mockFieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val card = mock[ICard]
+
+      when(mockFieldManager.getDefenderCard(player, 1)).thenReturn(card)
+
+      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+
+      dataManager.getDefenderCard(player, 1) shouldBe card
+    }
+    "return player field via fieldManager" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val field = List(mock[ICard], mock[ICard])
+
+      when(fieldManager.getPlayerField(player)).thenReturn(field)
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.getPlayerField(player) shouldBe field
+    }
+    "set player field via fieldManager" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val newField = List(mock[ICard])
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.setPlayerField(player, newField)
+
+      verify(fieldManager).setPlayerField(player, newField)
+    }
+    "return player goalkeeper via fieldManager" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val goalkeeper = Some(mock[ICard])
+
+      when(fieldManager.getPlayerGoalkeeper(player)).thenReturn(goalkeeper)
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.getPlayerGoalkeeper(player) shouldBe goalkeeper
+    }
+    "set player goalkeeper via fieldManager" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val goalkeeper = Some(mock[ICard])
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.setPlayerGoalkeeper(player, goalkeeper)
+
+      verify(fieldManager).setPlayerGoalkeeper(player, goalkeeper)
+    }
+    "set player defenders via fieldManager (sets field)" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+      val defenders = List(mock[ICard], mock[ICard])
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.setPlayerDefenders(player, defenders)
+
+      verify(fieldManager).setPlayerField(player, defenders)
+    }
+    "remove defender goalkeeper via fieldManager" in {
+      val fieldManager = mock[IPlayerFieldManager]
+      val player = mock[IPlayer]
+
+      val dataManager = new DataManager(mock[IPlayingField], mock[IPlayerHandManager], fieldManager)
+      dataManager.removeDefenderGoalkeeper(player)
+
+      verify(fieldManager).removeDefenderGoalkeeper(player)
+    }
+    "return player1 (attacker) via playingField" in {
+      val field = mock[IPlayingField]
+      val attacker = mock[IPlayer]
+
+      when(field.getAttacker).thenReturn(attacker)
+
+      val dataManager = new DataManager(field, mock[IPlayerHandManager], mock[IPlayerFieldManager])
+      dataManager.getPlayer1 shouldBe attacker
+    }
+
+    "return player2 (defender) via playingField" in {
+      val field = mock[IPlayingField]
+      val defender = mock[IPlayer]
+
+      when(field.getDefender).thenReturn(defender)
+
+      val dataManager = new DataManager(field, mock[IPlayerHandManager], mock[IPlayerFieldManager])
+      dataManager.getPlayer2 shouldBe defender
+    }
+    "return the playing field" in {
+      val field = mock[IPlayingField]
+      val dataManager = new DataManager(field, mock[IPlayerHandManager], mock[IPlayerFieldManager])
+      dataManager.getPlayingField shouldBe field
+    }
+
   }
 }

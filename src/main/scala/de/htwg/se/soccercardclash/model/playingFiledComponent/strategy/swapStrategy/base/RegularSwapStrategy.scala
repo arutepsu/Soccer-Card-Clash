@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataMana
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
 
 import scala.collection.mutable
-class HandSwapStrategy(index: Int) extends ISwapStrategy {
+class RegularSwapStrategy(index: Int) extends ISwapStrategy {
   override def swap(playingField: IPlayingField): Boolean = {
     lazy val data: IDataManager = playingField.getDataManager
     lazy val roles: IRolesManager = playingField.getRoles

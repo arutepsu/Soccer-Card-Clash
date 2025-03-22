@@ -152,5 +152,60 @@ class CardDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       exception.getMessage should include("Invalid card value: InvalidValue")
 
     }
+    "throw an exception when deserializing from XML without type tag" in {
+      val xml: Elem =
+        <card>
+          <suit>Hearts</suit>
+          <value>Queen</value>
+        </card>
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromXml(xml)
+      }
+
+      exception.getMessage should include("Unknown card type")
+    }
+
+    "throw an exception when deserializing from XML with unknown type" in {
+      val xml: Elem =
+        <card>
+          <type>UnknownType</type>
+          <suit>Hearts</suit>
+          <value>Queen</value>
+        </card>
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromXml(xml)
+      }
+
+      exception.getMessage should include("Unknown card type: UnknownType")
+    }
+
+    "throw an exception when deserializing from JSON without type field" in {
+      val json: JsObject = Json.obj(
+        "suit" -> "Clubs",
+        "value" -> "9"
+      )
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromJson(json)
+      }
+
+      exception.getMessage should include("'type' is undefined")
+    }
+
+    "throw an exception when deserializing from JSON with unknown card type" in {
+      val json: JsObject = Json.obj(
+        "type" -> "UltraCard",
+        "suit" -> "Clubs",
+        "value" -> "9"
+      )
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromJson(json)
+      }
+
+      exception.getMessage should include("Unknown card type: UltraCard")
+    }
   }
 }

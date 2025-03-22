@@ -67,5 +67,43 @@ class JsonComponentSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val result = jsonComponent.load("broken.json")
       result shouldBe None
     }
+    "not throw if saving fails due to file write error" in {
+      val gameState = mock[IGameState]
+      when(gameState.toJson).thenReturn(Json.obj("game" -> "test"))
+
+      // Temporarily make `games/` a file instead of folder
+      val gamesPath = new File("games")
+      gamesPath.delete()
+      Using(new PrintWriter(gamesPath))(_.write("not_a_directory"))
+
+      noException should be thrownBy {
+        jsonComponent.save(gameState)
+      }
+
+      // Clean up
+      gamesPath.delete()
+    }
+    "create games folder if it does not exist" in {
+      val folder = new File("games")
+      if (folder.exists()) folder.delete()
+
+      val dummyJson: JsObject = Json.obj("game" -> "test")
+      when(mockGameState.toJson).thenReturn(dummyJson)
+
+      jsonComponent.save(mockGameState)
+
+      folder.exists() shouldBe true
+      folder.isDirectory shouldBe true
+    }
+    "return None if file content is not valid JSON" in {
+      val badJsonFile = new File("games/invalid.json")
+      Using(new PrintWriter(badJsonFile)) { pw =>
+        pw.write("not-a-json-string")
+      }
+
+      val result = jsonComponent.load("invalid.json")
+      result shouldBe None
+    }
+
   }
 }

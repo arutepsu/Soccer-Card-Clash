@@ -117,5 +117,96 @@ class PlayingFieldDeserializerSpec extends AnyWordSpec with Matchers with Mockit
 
       exception.getMessage should include("❌ Error parsing PlayingField JSON")
     }
+    "throw RuntimeException if XML is missing <playingField>" in {
+      val invalidXml: Elem =
+        <root>
+          <someOtherTag></someOtherTag>
+        </root>
+
+      val mockPlayerDeserializer = mock[PlayerDeserializer]
+      val mockFieldFactory = mock[IPlayingFieldFactory]
+      val deserializer = new TestableDeserializer(mockFieldFactory, mockPlayerDeserializer)
+
+      val exception = intercept[RuntimeException] {
+        deserializer.fromXml(invalidXml)
+      }
+
+      exception.getMessage should include("Missing 'playingField' in XML.")
+    }
+    "throw RuntimeException if XML is missing <Player> in <Attacker>" in {
+      val invalidXml: Elem =
+        <root>
+          <playingField>
+            <Attacker></Attacker>
+            <Defender>
+              <Player name="Bob">
+                <Cards></Cards>
+                <ActionStates></ActionStates>
+              </Player>
+            </Defender>
+          </playingField>
+        </root>
+
+      val mockPlayerDeserializer = mock[PlayerDeserializer]
+      val mockFieldFactory = mock[IPlayingFieldFactory]
+      val deserializer = new TestableDeserializer(mockFieldFactory, mockPlayerDeserializer)
+
+      val exception = intercept[RuntimeException] {
+        deserializer.fromXml(invalidXml)
+      }
+
+      exception.getMessage should include("Missing 'Player' inside <Attacker> in XML.")
+    }
+    "throw RuntimeException if XML is missing <Player> in <Defender>" in {
+      val invalidXml: Elem =
+        <root>
+          <playingField>
+            <Attacker>
+              <Player name="Alice">
+                <Cards></Cards>
+                <ActionStates></ActionStates>
+              </Player>
+            </Attacker>
+            <Defender></Defender>
+          </playingField>
+        </root>
+
+      val mockPlayerDeserializer = mock[PlayerDeserializer]
+      val mockFieldFactory = mock[IPlayingFieldFactory]
+      val deserializer = new TestableDeserializer(mockFieldFactory, mockPlayerDeserializer)
+
+      val exception = intercept[RuntimeException] {
+        deserializer.fromXml(invalidXml)
+      }
+
+      exception.getMessage should include("Missing 'Player' inside <Defender> in XML.")
+    }
+    "wrap exception if PlayerDeserializer fails during XML parsing" in {
+      val xml: Elem =
+        <root>
+          <playingField>
+            <Attacker>
+              <Player name="Alice"></Player>
+            </Attacker>
+            <Defender>
+              <Player name="Bob"></Player>
+            </Defender>
+          </playingField>
+        </root>
+
+      val mockPlayerDeserializer = mock[PlayerDeserializer]
+      val mockFieldFactory = mock[IPlayingFieldFactory]
+      val deserializer = new TestableDeserializer(mockFieldFactory, mockPlayerDeserializer)
+
+      when(mockPlayerDeserializer.fromXml(any[Elem])).thenThrow(new RuntimeException("Boom"))
+
+      val exception = intercept[RuntimeException] {
+        deserializer.fromXml(xml)
+      }
+
+      exception.getMessage should include("❌ Error parsing PlayingField XML")
+      exception.getCause.getMessage should include("Boom")
+    }
+
   }
 }

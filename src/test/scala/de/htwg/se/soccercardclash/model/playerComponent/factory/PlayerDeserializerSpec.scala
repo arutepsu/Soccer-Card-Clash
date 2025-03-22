@@ -99,4 +99,105 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
       ex.getMessage should include ("Error parsing Player JSON")
     }
   }
+  "throw exception when XML contains unknown policy" in {
+    val xml: Elem =
+      <Player name="John">
+        <Cards>
+          <Card>
+            <value>5</value> <suit>Hearts</suit> <type>Regular</type>
+          </Card>
+        </Cards>
+        <ActionStates>
+          <ActionState policy="Fly">OutOfActions</ActionState>
+        </ActionStates>
+      </Player>
+
+    val mockFactory = mock[IPlayerFactory]
+    val mockCardDeserializer = mock[CardDeserializer]
+    when(mockCardDeserializer.fromXml(any[Elem])).thenReturn(mock[ICard])
+
+    val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
+
+    val ex = intercept[RuntimeException] {
+      deserializer.fromXml(xml)
+    }
+
+    ex.getMessage should include("Unknown policy: Fly")
+  }
+  "throw exception when XML has invalid action state string" in {
+    val xml: Elem =
+      <Player name="John">
+        <Cards>
+          <Card><value>5</value><suit>Hearts</suit><type>Regular</type></Card>
+        </Cards>
+        <ActionStates>
+          <ActionState policy="Boost">NotAValidState</ActionState>
+        </ActionStates>
+      </Player>
+
+    val mockFactory = mock[IPlayerFactory]
+    val mockCardDeserializer = mock[CardDeserializer]
+    when(mockCardDeserializer.fromXml(any[Elem])).thenReturn(mock[ICard])
+
+    val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
+
+    val ex = intercept[RuntimeException] {
+      deserializer.fromXml(xml)
+    }
+
+    ex.getMessage should include ("NotAValidState")
+  }
+  "throw exception when JSON contains unknown policy" in {
+    val json: JsObject = Json.obj(
+      "name" -> "Alice",
+      "cards" -> Json.arr(),
+      "actionStates" -> Json.obj("Teleport" -> "OutOfActions")
+    )
+
+    val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer])
+
+    val ex = intercept[RuntimeException] {
+      deserializer.fromJson(json)
+    }
+
+    ex.getMessage should include ("Unknown policy: Teleport")
+  }
+  "throw exception when JSON contains invalid action state string" in {
+    val json: JsObject = Json.obj(
+      "name" -> "Bob",
+      "cards" -> Json.arr(),
+      "actionStates" -> Json.obj("Boost" -> "InvalidState")
+    )
+
+    val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer])
+
+    val ex = intercept[RuntimeException] {
+      deserializer.fromJson(json)
+    }
+
+    ex.getMessage should include ("InvalidState")
+  }
+  "throw exception when card deserialization fails in XML" in {
+    val xml: Elem =
+      <Player name="Jake">
+        <Cards>
+          <Card><value>999</value><suit>Imaginary</suit><type>Regular</type></Card>
+        </Cards>
+        <ActionStates></ActionStates>
+      </Player>
+
+    val mockFactory = mock[IPlayerFactory]
+    val mockCardDeserializer = mock[CardDeserializer]
+    when(mockCardDeserializer.fromXml(any[Elem]))
+      .thenThrow(new IllegalArgumentException("Invalid card"))
+
+    val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
+
+    val ex = intercept[RuntimeException] {
+      deserializer.fromXml(xml)
+    }
+
+    ex.getMessage should include ("Invalid card")
+  }
+
 }

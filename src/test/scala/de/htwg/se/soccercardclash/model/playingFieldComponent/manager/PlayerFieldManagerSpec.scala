@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.PlayerFieldManager
 import org.mockito.Mockito.*

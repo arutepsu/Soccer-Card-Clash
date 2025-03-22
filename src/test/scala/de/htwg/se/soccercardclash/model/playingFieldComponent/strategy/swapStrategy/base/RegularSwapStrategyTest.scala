@@ -8,14 +8,14 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.HandSwapStrategy
+import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.RegularSwapStrategy
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
 
-class HandSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
+class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
     override def getRoles: IRolesManager = mock[IRolesManager]
@@ -54,7 +54,7 @@ class HandSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new HandSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0)
     val result = strategy.swap(field)
 
     result shouldBe true
@@ -83,7 +83,7 @@ class HandSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
       }
     }
 
-    val strategy = new HandSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0)
     val result = strategy.swap(field)
 
     result shouldBe false
@@ -107,7 +107,7 @@ class HandSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new HandSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0)
     val result = strategy.swap(field)
 
     result shouldBe false
@@ -131,7 +131,7 @@ class HandSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new HandSwapStrategy(2) // invalid index
+    val strategy = new RegularSwapStrategy(2) // invalid index
     val result = strategy.swap(field)
 
     result shouldBe false

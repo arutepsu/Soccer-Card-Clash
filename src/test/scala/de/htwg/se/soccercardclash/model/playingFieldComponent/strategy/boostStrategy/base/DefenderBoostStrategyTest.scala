@@ -21,13 +21,21 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
   // Custom observable mock that avoids ClassCastException
   class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
     override def getRoles: IRolesManager = mock[IRolesManager]
+
     override def getDataManager: IDataManager = mock[IDataManager]
+
     override def getScores: IPlayerScores = mock[IPlayerScores]
+
     override def getActionManager: IActionManager = mock[IActionManager]
+
     override def getAttacker: IPlayer = mock[IPlayer]
+
     override def getDefender: IPlayer = mock[IPlayer]
+
     override def reset(): Unit = {}
+
     override def setPlayingField(): Unit = {}
+
     override def notifyObservers(e: ObservableEvent): Unit = super.notifyObservers(e)
   }
 
@@ -52,6 +60,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
+
       override def getRoles: IRolesManager = mockRoles
     }
 
@@ -73,6 +82,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
+
       override def getRoles: IRolesManager = mockRoles
     }
 
@@ -108,4 +118,38 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     result shouldBe false
     notified shouldBe true
   }
+
+
+  it should "fail and notify if attacker has 0 remaining boost uses" in {
+    val mockData = mock[IDataManager]
+    val mockRoles = mock[IRolesManager]
+    val mockAttacker = mock[IPlayer]
+    val mockDefender = mock[IPlayer]
+    val card = mock[ICard]
+
+    when(mockRoles.attacker).thenReturn(mockAttacker)
+    when(mockRoles.defender).thenReturn(mockDefender)
+    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> CanPerformAction(0)))
+    when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List(card))
+
+    var notified = false
+    val field = new ObservableMockPlayingField {
+      override def getDataManager: IDataManager = mockData
+
+      override def getRoles: IRolesManager = mockRoles
+
+      override def notifyObservers(e: ObservableEvent): Unit = {
+        notified = true
+        e shouldBe NoBoostsEvent(mockAttacker)
+      }
+    }
+
+    val strategy = new DefenderBoostStrategy(0)
+    val result = strategy.boost(field)
+
+    result shouldBe false
+    notified shouldBe true
+  } // ✅ This closing brace was missing!
+
+
 }
