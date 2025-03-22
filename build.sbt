@@ -31,12 +31,15 @@ setJavaFXVersion := {
 
 lazy val root = project
   .in(file("."))
+  .enablePlugins(CoverallsPlugin) // Enable Coveralls plugin
   .settings(
     name := "Soccer Card Clash",
     version := "0.1.0-SNAPSHOT",
+    scalaVersion := scala3Version,
     scalacOptions ++= Seq("-encoding", "UTF-8"),
     javaOptions += "-Dfile.encoding=UTF-8",
-    scalaVersion := scala3Version,
+
+    // Dependencies
     libraryDependencies += "com.google.inject" % "guice" % "5.1.0",
     libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0",
@@ -44,14 +47,20 @@ lazy val root = project
     libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
     libraryDependencies += "org.scalatestplus" %% "mockito-3-12" % "3.2.10.0" % Test,
-    libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % "test",
-    libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0",
-      libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33" excludeAll (
-      ExclusionRule(organization = "org.openjfx")
-      ),
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.3",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
+    libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33" excludeAll (
+      ExclusionRule(organization = "org.openjfx")
+      ),
+    libraryDependencies ++= setJavaFXVersion.value,
 
-    libraryDependencies ++= (Seq() ++ setJavaFXVersion.value),
+    // ✅ Scoverage settings
+    coverageEnabled := true,
+    coverageHighlighting := true,
+    coverageFailOnMinimum := false,
+    coverageMinimumStmtTotal := 70,
+
+    // Optional: CI command alias
+    addCommandAlias("fullTest", ";clean;coverage;test;coverageReport;coverageAggregate;coveralls")
   )
