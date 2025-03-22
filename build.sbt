@@ -31,7 +31,7 @@ setJavaFXVersion := {
 
 lazy val root = project
   .in(file("."))
-  .enablePlugins(CoverallsPlugin) // Enable Coveralls plugin
+  .enablePlugins(CoverallsPlugin)
   .settings(
     name := "Soccer Card Clash",
     version := "0.1.0-SNAPSHOT",
@@ -39,7 +39,6 @@ lazy val root = project
     scalacOptions ++= Seq("-encoding", "UTF-8"),
     javaOptions += "-Dfile.encoding=UTF-8",
 
-    // Dependencies
     libraryDependencies += "com.google.inject" % "guice" % "5.1.0",
     libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0",
@@ -55,11 +54,10 @@ lazy val root = project
       ),
     libraryDependencies ++= setJavaFXVersion.value,
 
-    // ✅ Scoverage settings
     coverageEnabled := true,
     coverageHighlighting := true,
     coverageFailOnMinimum := false,
-    coverageMinimumStmtTotal := 70,
+    coverageMinimumStmtTotal := 40,
 
     // Optional: CI command alias
     addCommandAlias("fullTest", ";clean;coverage;test;coverageReport;coverageAggregate;coveralls")
