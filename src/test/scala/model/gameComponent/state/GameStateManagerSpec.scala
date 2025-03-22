@@ -1,70 +1,104 @@
 //package model.gameComponent.state
-//
-//import model.gameComponent.factory.IGameInitializer
-//import model.cardComponent.ICard
+//import model.gameComponent.*
+//import model.playingFiledComponent.*
+//import model.playingFiledComponent.manager.*
 //import model.playerComponent.IPlayer
-//import model.playingFiledComponent.IPlayingField
-//import model.playingFiledComponent.dataStructure.{IHandCardsQueue, IHandCardsQueueFactory}
-//import model.playingFiledComponent.manager.IDataManager
-//import model.playingFiledComponent.manager.IActionManager
+//import model.cardComponent.ICard
 //import org.scalatest.matchers.should.Matchers
 //import org.scalatest.wordspec.AnyWordSpec
 //import org.scalatestplus.mockito.MockitoSugar
 //import org.mockito.Mockito._
 //import org.mockito.ArgumentMatchers._
+//import scala.collection.mutable
+//import scala.collection.mutable.Queue
+//import model.playingFiledComponent.dataStructure.IHandCardsQueueFactory
+//import model.gameComponent.factory.IGameInitializer
 //import model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-//
+//import model.playingFiledComponent.dataStructure.IHandCardsQueue
 //class GameStateManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 //
 //  "GameStateManager" should {
 //
-//    val mockFactory = mock[IGameStateFactory]
-//    val mockHandQueueFactory = mock[IHandCardsQueueFactory]
-//    val mockPlayingField = mock[IPlayingField]
-//    val mockDataManager = mock[IDataManager]
-//    val mockPlayer1 = mock[IPlayer]
-//    val mockPlayer2 = mock[IPlayer]
-//    val mockHand1 = mock[IHandCardsQueue]
-//    val mockHand2 = mock[IHandCardsQueue]
-//    val mockCard = mock[ICard]
-//    val mockScoreManager = mock[IPlayerScores]
-//    val mockGameInitializer = mock[IGameInitializer]
-//    val mockGameState = mock[IGameState]
+//    "update and retrieve game state correctly" in {
+//      val mockFactory = mock[IGameStateFactory]
+//      val mockQueueFactory = mock[IHandCardsQueueFactory]
 //
-//    val stateManager = new GameStateManager(mockFactory, mockHandQueueFactory)
+//      val mockGameState = mock[IGameState]
+//      val mockInitializer = mock[IGameInitializer]
+//      val mockPlayingField = mock[IPlayingField]
+//      val mockDataManager = mock[IDataManager]
+//      val mockScores = mock[IPlayerScores]
+//      val p1 = mock[IPlayer]
+//      val p2 = mock[IPlayer]
+//      val hand1 = mock[IHandCardsQueue]
+//      val hand2 = mock[IHandCardsQueue]
 //
-//    "update game state correctly" in {
-//      when(mockGameInitializer.getPlayingField).thenReturn(mockPlayingField)
-//      when(mockGameInitializer.getPlayer1).thenReturn(mockPlayer1)
-//      when(mockGameInitializer.getPlayer2).thenReturn(mockPlayer2)
+//      val card = mock[ICard]
+//
+//      // Setup return values
+//      when(mockInitializer.getPlayingField).thenReturn(mockPlayingField)
+//      when(mockInitializer.getPlayer1).thenReturn(p1)
+//      when(mockInitializer.getPlayer2).thenReturn(p2)
+//
 //      when(mockPlayingField.getDataManager).thenReturn(mockDataManager)
-//      when(mockDataManager.getPlayerHand(mockPlayer1)).thenReturn(Seq(mockCard))
-//      when(mockDataManager.getPlayerHand(mockPlayer2)).thenReturn(Seq(mockCard))
-//      when(mockHandQueueFactory.create(any())).thenReturn(mockHand1, mockHand2)
-//      when(mockDataManager.getPlayerDefenders(mockPlayer1)).thenReturn(List(mockCard))
-//      when(mockDataManager.getPlayerDefenders(mockPlayer2)).thenReturn(List(mockCard))
-//      when(mockDataManager.getPlayerGoalkeeper(mockPlayer1)).thenReturn(Some(mockCard))
-//      when(mockDataManager.getPlayerGoalkeeper(mockPlayer2)).thenReturn(Some(mockCard))
-//      when(mockPlayingField.getScores).thenReturn(mockScoreManager)
-//      when(mockScoreManager.getScorePlayer1).thenReturn(3)
-//      when(mockScoreManager.getScorePlayer2).thenReturn(4)
-//      when(mockFactory.create(any(), any(), any(), any(), any(), any(), any(), any(), any(), anyInt(), anyInt()))
-//        .thenReturn(mockGameState)
+//      when(mockPlayingField.getScores).thenReturn(mockScores)
 //
-//      stateManager.updateGameState(mockGameInitializer)
-//      stateManager.getGameState shouldBe mockGameState
+//      when(mockDataManager.getPlayerHand(p1)).thenReturn(Queue(card))
+//      when(mockDataManager.getPlayerHand(p2)).thenReturn(Queue(card))
+//
+//      when(mockDataManager.getPlayerDefenders(p1)).thenReturn(List(card))
+//      when(mockDataManager.getPlayerDefenders(p2)).thenReturn(List(card))
+//      when(mockDataManager.getPlayerGoalkeeper(p1)).thenReturn(Some(card))
+//      when(mockDataManager.getPlayerGoalkeeper(p2)).thenReturn(None)
+//
+//      when(mockScores.getScorePlayer1).thenReturn(5)
+//      when(mockScores.getScorePlayer2).thenReturn(2)
+//
+//      when(mockQueueFactory.create(any[List[ICard]])).thenReturn(hand1, hand2)
+//
+//      when(mockFactory.create(
+//        mockPlayingField,
+//        p1,
+//        p2,
+//        hand1,
+//        hand2,
+//        List(card),
+//        List(card),
+//        Some(card),
+//        None,
+//        5,
+//        2
+//      )).thenReturn(mockGameState)
+//
+//      val manager = new GameStateManager(mockFactory, mockQueueFactory)
+//
+//      manager.updateGameState(mockInitializer)
+//
+//      manager.getGameState shouldBe mockGameState
 //    }
 //
-//    "reset playing field if not null" in {
-//      when(mockPlayingField.reset()).thenReturn(())
+//    "reset playing field successfully when not null" in {
+//      val mockFactory = mock[IGameStateFactory]
+//      val mockQueueFactory = mock[IHandCardsQueueFactory]
+//      val mockPlayingField = mock[IPlayingField]
 //
-//      val result = stateManager.reset(mockPlayingField)
+//      val manager = new GameStateManager(mockFactory, mockQueueFactory)
+//
+//      val result = manager.reset(mockPlayingField)
+//
 //      result shouldBe true
 //      verify(mockPlayingField).reset()
 //    }
 //
-//    "return false when playing field is null during reset" in {
-//      stateManager.reset(null) shouldBe false
+//    "not reset if playing field is null" in {
+//      val mockFactory = mock[IGameStateFactory]
+//      val mockQueueFactory = mock[IHandCardsQueueFactory]
+//
+//      val manager = new GameStateManager(mockFactory, mockQueueFactory)
+//
+//      val result = manager.reset(null)
+//
+//      result shouldBe false
 //    }
 //  }
 //}

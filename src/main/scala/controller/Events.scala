@@ -19,7 +19,6 @@ enum Events extends ObservableEvent {
   
   case Undo, Redo, SaveGame
   case TieComparison, DoubleTieComparison
-  case GameOver(winner: IPlayer)
 
 }
 case class GameOver(winner: IPlayer) extends ObservableEvent

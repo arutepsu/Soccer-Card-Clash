@@ -7,7 +7,7 @@ import model.playingFiledComponent.manager.{IDataManager, IRolesManager, RolesMa
 import model.playingFiledComponent.strategy.boostStrategy.base.RevertCard
 import model.gameComponent.IGame
 class RevertBoostStrategy(playingField: IPlayingField) extends IRevertStrategy {
-  private val cardReverter = new RevertCard
+  protected val cardReverter = new RevertCard
   
   override def revertCard(card: ICard): ICard = {
     cardReverter.revertCard(playingField, card)

@@ -11,13 +11,15 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import controller.IController
+import controller.command.memento.factory.IMementoManagerFactory
 
 class CommandFactorySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "CommandFactory" should {
     val mockGame = mock[IGame]
     val mockController = mock[IController]
-    val commandFactory = new CommandFactory(mockGame, mockController)
+    val mockMementoManagerFactory = mock[IMementoManagerFactory]
+    val commandFactory = new CommandFactory(mockGame, mockController, mockMementoManagerFactory)
 
     "create a SingleAttackActionCommand with correct parameters" in {
       val command = commandFactory.createSingleAttackCommand(2)

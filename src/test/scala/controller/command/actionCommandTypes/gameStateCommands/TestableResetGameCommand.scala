@@ -13,9 +13,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
 import scala.util.{Failure, Success}
+import controller.command.memento.factory.IMementoManagerFactory
 
 // Subclass to expose private members
-private class TestableResetGameCommand(game: IGame) extends ResetGameCommand(game) {
+private class TestableResetGameCommand(game: IGame, factory: IMementoManagerFactory)
+  extends ResetGameCommand(game, factory) {
 
   def setResetSuccessful(success: Boolean): Unit = {
     val field = classOf[ResetGameCommand].getDeclaredField("resetSuccessful")
@@ -32,9 +34,11 @@ class ResetGameCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "execute successfully when game.reset() returns true" in {
       val mockGame = mock[IGame]
+      val mockFactory = mock[IMementoManagerFactory]
+
       when(mockGame.reset()).thenReturn(true)
 
-      val command = new TestableResetGameCommand(game = mockGame)
+      val command = new TestableResetGameCommand(mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe true
@@ -43,9 +47,11 @@ class ResetGameCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "execute unsuccessfully when game.reset() returns false" in {
       val mockGame = mock[IGame]
+      val mockFactory = mock[IMementoManagerFactory]
+
       when(mockGame.reset()).thenReturn(false)
 
-      val command = new TestableResetGameCommand(game = mockGame)
+      val command = new TestableResetGameCommand(mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false
@@ -54,9 +60,11 @@ class ResetGameCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "handle exceptions and return false" in {
       val mockGame = mock[IGame]
+      val mockFactory = mock[IMementoManagerFactory]
+
       when(mockGame.reset()).thenThrow(new RuntimeException("Test Exception"))
 
-      val command = new TestableResetGameCommand(game = mockGame)
+      val command = new TestableResetGameCommand(mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false

@@ -9,8 +9,8 @@ import scala.collection.mutable
 
 class StandardRefillStrategy extends IRefillStrategy {
 
-  private val defenderFieldRefill = new RefillDefenderField()
-  private val fieldRefill = new RefillField()
+  protected val defenderFieldRefill = new RefillDefenderField()
+  protected val fieldRefill = new RefillField()
 
   override def refillDefenderField(fieldState: IDataManager, defender: IPlayer): Unit = {
     defenderFieldRefill.refill(fieldState, defender)

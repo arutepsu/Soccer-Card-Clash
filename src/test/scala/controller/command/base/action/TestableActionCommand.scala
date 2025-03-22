@@ -9,9 +9,11 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
+import controller.command.memento.factory.IMementoManagerFactory
 
-// Concrete subclass for testing
-private class TestableActionCommand(game: IGame) extends ActionCommand(game) {
+private class TestableActionCommand(game: IGame, factory: IMementoManagerFactory)
+  extends ActionCommand(game, factory) {
+
   private var actionResult: Boolean = true
 
   def setActionResult(result: Boolean): Unit = {
@@ -20,130 +22,133 @@ private class TestableActionCommand(game: IGame) extends ActionCommand(game) {
 
   override protected def executeAction(): Boolean = actionResult
 
-  // Use reflection to set protected `mementoManager`
   def setMementoManager(mockMementoManager: IMementoManager): Unit = {
     val field = classOf[ActionCommand].getDeclaredField("mementoManager")
     field.setAccessible(true)
     field.set(this, mockMementoManager)
   }
 
-  // Use reflection to set protected `memento`
   def setMemento(mockMemento: Option[Memento]): Unit = {
     val field = classOf[ActionCommand].getDeclaredField("memento")
     field.setAccessible(true)
     field.set(this, mockMemento)
   }
 }
+  class ActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-class ActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
+    "ActionCommand" should {
 
-  "ActionCommand" should {
+      "execute successfully and store a memento when doStep() is called" in {
+        val mockGame = mock[IGame]
+        val mockActionManager = mock[IActionManager]
+        val mockMementoManager = mock[IMementoManager]
+        val mockMemento = mock[Memento]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "execute successfully and store a memento when doStep() is called" in {
-      val mockGame = mock[IGame]
-      val mockActionManager = mock[IActionManager]
-      val mockMementoManager = mock[IMementoManager]
-      val mockMemento = mock[Memento]
+        when(mockGame.getActionManager).thenReturn(mockActionManager)
+        when(mockMementoManager.createMemento()).thenReturn(mockMemento)
 
-      when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockMementoManager.createMemento()).thenReturn(mockMemento)
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager) // Using reflection to override mementoManager
+        val result = command.doStep()
 
-      val result = command.doStep()
+        result shouldBe true
+        verify(mockMementoManager).createMemento()
+        verify(mockGame).updateGameState()
+      }
 
-      result shouldBe true
-      verify(mockMementoManager).createMemento()
-      verify(mockGame).updateGameState()
-    }
+      "should not store a memento when doStep() fails" in {
+        val mockGame = mock[IGame]
+        val mockMementoManager = mock[IMementoManager]
+        val mockMemento = mock[Memento]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "should not store a memento when doStep() fails" in {
-      val mockGame = mock[IGame]
-      val mockMementoManager = mock[IMementoManager]
-      val mockMemento = mock[Memento]
+        when(mockGame.getActionManager).thenReturn(mock[IActionManager])
+        when(mockMementoManager.createMemento()).thenReturn(mockMemento)
 
-      when(mockGame.getActionManager).thenReturn(mock[IActionManager])
-      when(mockMementoManager.createMemento()).thenReturn(mockMemento)
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
+        command.setActionResult(false)
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager)
-      command.setActionResult(false) // Simulating failure
+        val result = command.doStep()
 
-      val result = command.doStep()
+        result shouldBe false
+        verify(mockMementoManager).createMemento()
+        verify(mockGame, never()).updateGameState()
+      }
 
-      result shouldBe false
-      verify(mockMementoManager, times(1)).createMemento() // Memento is still created
-      verify(mockGame, never()).updateGameState() // But game state is NOT updated
-    }
+      "restore game state when undoStep() is called" in {
+        val mockGame = mock[IGame]
+        val mockMementoManager = mock[IMementoManager]
+        val mockMemento = mock[Memento]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "restore game state when undoStep() is called" in {
-      val mockGame = mock[IGame]
-      val mockMementoManager = mock[IMementoManager]
-      val mockMemento = mock[Memento]
+        when(mockGame.getActionManager).thenReturn(mock[IActionManager])
 
-      when(mockGame.getActionManager).thenReturn(mock[IActionManager])
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
+        command.setMemento(Some(mockMemento))
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager)
-      command.setMemento(Some(mockMemento)) // Using reflection to override memento
+        command.undoStep()
 
-      command.undoStep()
+        verify(mockMementoManager).restoreGameState(mockMemento)
+        verify(mockGame).updateGameState()
+      }
 
-      verify(mockMementoManager).restoreGameState(mockMemento)
-      verify(mockGame).updateGameState()
-    }
+      "do nothing when undoStep() is called without a memento" in {
+        val mockGame = mock[IGame]
+        val mockMementoManager = mock[IMementoManager]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "do nothing when undoStep() is called without a memento" in {
-      val mockGame = mock[IGame]
-      val mockMementoManager = mock[IMementoManager]
+        when(mockGame.getActionManager).thenReturn(mock[IActionManager])
 
-      when(mockGame.getActionManager).thenReturn(mock[IActionManager])
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
+        command.setMemento(None)
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager)
-      command.setMemento(None) // Using reflection to override memento
+        command.undoStep()
 
-      command.undoStep()
+        verify(mockMementoManager, never()).restoreGameState(any[Memento])
+        verify(mockGame, never()).updateGameState()
+      }
 
-      verify(mockMementoManager, never()).restoreGameState(any[Memento])
-      verify(mockGame, never()).updateGameState()
-    }
+      "reapply command when redoStep() is called" in {
+        val mockGame = mock[IGame]
+        val mockMementoManager = mock[IMementoManager]
+        val mockMemento = mock[Memento]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "reapply command when redoStep() is called" in {
-      val mockGame = mock[IGame]
-      val mockMementoManager = mock[IMementoManager]
-      val mockMemento = mock[Memento]
+        when(mockGame.getActionManager).thenReturn(mock[IActionManager])
+        when(mockMementoManager.createMemento()).thenReturn(mockMemento)
 
-      when(mockGame.getActionManager).thenReturn(mock[IActionManager])
-      when(mockMementoManager.createMemento()).thenReturn(mockMemento)
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
+        command.setMemento(Some(mockMemento))
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager)
-      command.setMemento(Some(mockMemento)) // Using reflection to override memento
+        command.redoStep()
 
-      command.redoStep()
+        verify(mockMementoManager, never()).restoreGameState(any[Memento])
+        verify(mockMementoManager).createMemento()
+        verify(mockGame).updateGameState()
+      }
 
-      verify(mockMementoManager, never()).restoreGameState(any[Memento]) // Redo shouldn't restore
-      verify(mockMementoManager).createMemento() // Should reapply
-      verify(mockGame).updateGameState()
-    }
+      "do nothing when redoStep() is called without a memento" in {
+        val mockGame = mock[IGame]
+        val mockMementoManager = mock[IMementoManager]
+        val mockFactory = mock[IMementoManagerFactory]
 
-    "do nothing when redoStep() is called without a memento" in {
-      val mockGame = mock[IGame]
-      val mockMementoManager = mock[IMementoManager]
+        when(mockGame.getActionManager).thenReturn(mock[IActionManager])
 
-      when(mockGame.getActionManager).thenReturn(mock[IActionManager])
+        val command = new TestableActionCommand(mockGame, mockFactory)
+        command.setMementoManager(mockMementoManager)
+        command.setMemento(None)
 
-      val command = new TestableActionCommand(mockGame)
-      command.setMementoManager(mockMementoManager)
-      command.setMemento(None) // Using reflection to override memento
+        command.redoStep()
 
-      command.redoStep()
-
-      verify(mockMementoManager, never()).restoreGameState(any[Memento])
-      verify(mockMementoManager, never()).createMemento()
-      verify(mockGame, never()).updateGameState()
+        verify(mockMementoManager, never()).restoreGameState(any[Memento])
+        verify(mockMementoManager, never()).createMemento()
+        verify(mockGame, never()).updateGameState()
+      }
     }
   }
-}

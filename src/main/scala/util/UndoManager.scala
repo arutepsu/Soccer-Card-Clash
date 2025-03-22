@@ -33,4 +33,8 @@ class UndoManager {
       }
     }
   }
+
+  def getUndoStack: List[ICommand] = undoStack
+
+  def getRedoStack: List[ICommand] = redoStack
 }

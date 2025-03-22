@@ -27,7 +27,7 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
     val attackerBeforeAction = roles.attacker
     val defender = roles.defender
-    
+
     attackerBeforeAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
       case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
         return false
@@ -35,15 +35,15 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
         return false
       case _ =>
     }
-    
+
     val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.DoubleAttack)
-    
+
     attackerAfterAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
       case Some(CanPerformAction(remainingUses)) =>
       case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
       case _ =>
     }
-    
+
     roles.setRoles(attackerAfterAction, defender)
 
     val attackerHand = fieldState.getPlayerHand(attackerAfterAction)

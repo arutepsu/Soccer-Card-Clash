@@ -14,7 +14,7 @@ abstract class ActionCommand(
                             ) extends ICommand {
 
   protected val actionManager: IActionManager = game.getActionManager
-  protected val mementoManager: IMementoManager = mementoManagerFactory.create(game)
+  protected var mementoManager: IMementoManager = mementoManagerFactory.create(game)
   protected var memento: Option[Memento] = None
 
   override def doStep(): Boolean = {

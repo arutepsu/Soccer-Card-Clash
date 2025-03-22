@@ -12,5 +12,7 @@ class ControllerModule extends AbstractModule {
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
     bind(classOf[Observable]).to(classOf[Controller]).in(classOf[Singleton])
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
+//    install(new GameCoreModule())
+//    install(new MementoModule())
   }
 }
