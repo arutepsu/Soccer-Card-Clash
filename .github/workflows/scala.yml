@@ -19,8 +19,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Install sbt
+      - name: Install sbt (via Coursier)
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt  # you had "sbtn" before, this is better for scripting
 
       - name: Compile
         run: sbt compile
@@ -40,8 +42,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Install sbt
+      - name: Install sbt (via Coursier)
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
 
       - name: Run coverage and upload to Coveralls
         env:
