@@ -93,9 +93,9 @@ class GameSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
 
-    "select defender position" in {
-      when(mockInitializer.selectDefenderPosition()).thenReturn(1)
-      game.selectDefenderPosition() shouldBe 1
-    }
+//    "select defender position" in {
+//      when(mockInitializer.selectDefenderPosition()).thenReturn(1)
+//      game.selectDefenderPosition() shouldBe 1
+//    }
   }
 }

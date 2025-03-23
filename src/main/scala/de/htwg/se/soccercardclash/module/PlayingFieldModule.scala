@@ -21,6 +21,7 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
     bind(classOf[IRolesManager]).to(classOf[RolesManager])
     bind(classOf[IPlayerScores]).to(classOf[PlayerScores])
     bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
+    bind(classOf[IPlayerActionManager]).to(classOf[PlayerActionManager])
 
     bind(classOf[PlayingFieldDeserializer])
       .toConstructor(classOf[PlayingFieldDeserializer]

@@ -4,16 +4,16 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
 
 import scala.util.{Failure, Success, Try}
 
 class BoostGoalkeeperActionCommand(game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   protected var boostSuccessful: Option[Boolean] = None
-
+  private val playerActionService: IPlayerActionManager = game.getActionManager.getPlayerActionService
   override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostGoalkeeper())
+    val result = Try(actionManager.boostGoalkeeper(playerActionService))
     result match {
       case Success(value) =>
         boostSuccessful = Some(value)

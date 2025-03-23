@@ -11,14 +11,15 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringSt
 @Singleton
 class PlayingFieldManagerFactory @Inject()(
                                             handManager: IPlayerHandManager,
-                                            fieldManager: IPlayerFieldManager
+                                            fieldManager: IPlayerFieldManager,
+                                            playerActionService: IPlayerActionManager
                                           ) extends IPlayingFieldManagerFactory {
 
   override def createDataManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IDataManager =
     new DataManager(playingField, handManager, fieldManager)
 
   override def createActionManager(playingField: IPlayingField): IActionManager =
-    new ActionManager(playingField)
+    new ActionManager(playingField, playerActionService)
 
   override def createRolesManager(playingField: IPlayingField, player1: IPlayer, player2: IPlayer): IRolesManager =
     new RolesManager(playingField, player1, player2)

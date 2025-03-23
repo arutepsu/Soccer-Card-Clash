@@ -33,7 +33,6 @@ trait IGameInitializer {
 
   def createGame(playerName1: String, playerName2: String): Unit
   def initializeFromState(state: IGameState): Unit
-  def selectDefenderPosition(): Int
 }
 
 class GameInitializer @Inject()(
@@ -96,9 +95,4 @@ class GameInitializer @Inject()(
 
     playingField.setPlayingField()
   }
-
-  override def selectDefenderPosition(): Int = {
-    if (playingField.getDataManager.allDefendersBeaten(playingField.getDefender)) -1 else -2
-  }
-
 }

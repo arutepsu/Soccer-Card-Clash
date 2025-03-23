@@ -61,7 +61,5 @@ class Game @Inject()(
 
   override def reset(): Boolean = gameStateManager.reset(gameInitializer.getPlayingField)
 
-  override def selectDefenderPosition(): Int = gameInitializer.selectDefenderPosition()
-
   override def exit(): Unit = System.exit(0)
 }

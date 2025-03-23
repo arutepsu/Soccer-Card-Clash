@@ -17,37 +17,39 @@ import play.api.libs.json.util.*
 import scala.collection.mutable.ListBuffer
 import scala.xml.*
 
-class ActionManager @Inject()(val playingField: IPlayingField) extends IActionManager{
-  def getPlayingField: IPlayingField = playingField
-
+class ActionManager @Inject()(val playingField: IPlayingField, val playerActionService: IPlayerActionManager) extends IActionManager{
+  override def getPlayingField: IPlayingField = playingField
+  override def getPlayerActionService: IPlayerActionManager = playerActionService
+  override def getBoostManager: IBoostManager = boostStrategy
+  
   var boostStrategy = new BoostManager(playingField)
   var attackHandler = new AttackHandler(playingField)
   var swapStrategy = new SwapManager(playingField)
-  def getBoostManager: IBoostManager = boostStrategy
+
   override def singleAttack(defenderIndex: Int): Boolean = {
     attackHandler.executeAttack(new SingleAttackStrategy(defenderIndex))
   }
 
-  override def doubleAttack(defenderIndex: Int): Boolean = {
-    attackHandler.executeAttack(new DoubleAttackStrategy(defenderIndex))
+  override def doubleAttack(defenderIndex: Int, playerActionService: IPlayerActionManager): Boolean = {
+    attackHandler.executeAttack(new DoubleAttackStrategy(defenderIndex, playerActionService))
     
   }
 
-  override def reverseSwap(): Boolean = {
-    swapStrategy.swapAttacker(new ReverseSwapStrategy)
+  override def reverseSwap(playerActionService: IPlayerActionManager): Boolean = {
+    swapStrategy.swapAttacker(new ReverseSwapStrategy(playerActionService))
   }
 
-  override def regularSwap(cardIndex: Int): Boolean = {
-    swapStrategy.swapAttacker(new RegularSwapStrategy(cardIndex))
+  override def regularSwap(cardIndex: Int, playerActionService: IPlayerActionManager): Boolean = {
+    swapStrategy.swapAttacker(new RegularSwapStrategy(cardIndex, playerActionService))
   }
 
 
-  override def boostDefender(cardIndex: Int): Boolean = {
-    boostStrategy.applyBoost(new DefenderBoostStrategy(cardIndex))
+  override def boostDefender(cardIndex: Int, playerActionService: IPlayerActionManager): Boolean = {
+    boostStrategy.applyBoost(new DefenderBoostStrategy(cardIndex, playerActionService))
   }
 
-  override def boostGoalkeeper(): Boolean = {
-    boostStrategy.applyBoost(new GoalkeeperBoostStrategy())
+  override def boostGoalkeeper(playerActionService: IPlayerActionManager): Boolean = {
+    boostStrategy.applyBoost(new GoalkeeperBoostStrategy(playerActionService))
   }
 
   override def reset() : Unit = {
@@ -60,12 +62,13 @@ class ActionManager @Inject()(val playingField: IPlayingField) extends IActionMa
 }
 trait IActionManager{
   def getPlayingField: IPlayingField
-  def singleAttack(defenderIndex: Int): Boolean
-  def doubleAttack(defenderIndex: Int): Boolean
-  def reverseSwap(): Boolean
-  def regularSwap(cardIndex: Int): Boolean
-  def boostDefender(cardIndex: Int): Boolean
-  def boostGoalkeeper(): Boolean
+  def getPlayerActionService: IPlayerActionManager
   def getBoostManager: IBoostManager
+  def singleAttack(defenderIndex: Int): Boolean
+  def doubleAttack(defenderIndex: Int, playerActionService: IPlayerActionManager): Boolean
+  def reverseSwap(playerActionService: IPlayerActionManager): Boolean
+  def regularSwap(cardIndex: Int, playerActionService: IPlayerActionManager): Boolean
+  def boostDefender(cardIndex: Int, playerActionService: IPlayerActionManager): Boolean
+  def boostGoalkeeper(playerActionService: IPlayerActionManager): Boolean
   def reset(): Unit
 }

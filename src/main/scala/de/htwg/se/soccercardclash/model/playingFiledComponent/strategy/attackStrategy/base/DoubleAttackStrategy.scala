@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStra
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 
@@ -16,7 +16,10 @@ import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringSt
 import scala.util.{Failure, Success, Try}
 
 //TODO : Implement Goalkeeper tie case
-class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
+class DoubleAttackStrategy(
+                            defenderIndex: Int,
+                            playerActionService: IPlayerActionManager
+                          ) extends IAttackStrategy {
 
   override def execute(playingField: IPlayingField): Boolean = {
     val roles = playingField.getRoles
@@ -28,21 +31,12 @@ class DoubleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val attackerBeforeAction = roles.attacker
     val defender = roles.defender
 
-    attackerBeforeAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
-      case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
-        return false
-      case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-        return false
-      case _ =>
+    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.DoubleAttack)) {
+      playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
+      return false
     }
 
-    val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.DoubleAttack)
-
-    attackerAfterAction.actionStates.get(PlayerActionPolicies.DoubleAttack) match {
-      case Some(CanPerformAction(remainingUses)) =>
-      case Some(OutOfActions) => playingField.notifyObservers(NoDoubleAttacksEvent(attackerBeforeAction))
-      case _ =>
-    }
+    val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.DoubleAttack)
 
     roles.setRoles(attackerAfterAction, defender)
 

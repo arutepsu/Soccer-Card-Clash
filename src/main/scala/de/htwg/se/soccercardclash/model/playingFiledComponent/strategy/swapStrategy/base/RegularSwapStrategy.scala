@@ -4,22 +4,22 @@ import de.htwg.se.soccercardclash.controller.{Events, NoSwapsEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
 
 import scala.collection.mutable
-class RegularSwapStrategy(index: Int) extends ISwapStrategy {
+class RegularSwapStrategy(
+                           index: Int,
+                           playerActionService: IPlayerActionManager
+                         ) extends ISwapStrategy {
   override def swap(playingField: IPlayingField): Boolean = {
     lazy val data: IDataManager = playingField.getDataManager
     lazy val roles: IRolesManager = playingField.getRoles
     val attackerBeforeAction = roles.attacker
-    
-    attackerBeforeAction.actionStates.get(PlayerActionPolicies.Swap) match {
-      case Some(OutOfActions) => playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-        return false
-      case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 => playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-        return false
-      case _ =>
+
+    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Swap)) {
+      playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
+      return false
     }
 
     val attackerHand = data.getPlayerHand(attackerBeforeAction)
@@ -34,14 +34,8 @@ class RegularSwapStrategy(index: Int) extends ISwapStrategy {
     attackerHand.update(index, lastCard)
     attackerHand.update(lastIndex, chosenCard)
     
-    val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.Swap)
-    
-    attackerAfterAction.actionStates.get(PlayerActionPolicies.Swap) match {
-      case Some(CanPerformAction(remainingUses)) =>
-      case Some(OutOfActions) => playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-      case _ =>
-    }
-    
+    val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.Swap)
+
     roles.setRoles(attackerAfterAction, roles.defender)
 
     playingField.notifyObservers()

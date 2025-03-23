@@ -5,10 +5,10 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{DataManager, IDataManager, IRolesManager, RolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{DataManager, IDataManager, IPlayerActionManager, IRolesManager, RolesManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.IBoostStrategy
 
-class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
+class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManager) extends IBoostStrategy {
 
   override def boost(playingField: IPlayingField): Boolean = {
     lazy val data: IDataManager = playingField.getDataManager
@@ -22,14 +22,9 @@ class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
 
     val attackerBeforeAction = roles.attacker
     
-    attackerBeforeAction.actionStates.get(PlayerActionPolicies.Boost) match {
-      case Some(OutOfActions) =>
-        playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
-        return false
-      case Some(CanPerformAction(remainingUses)) if remainingUses <= 0 =>
-        playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
-        return false
-      case _ =>
+    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Boost)) {
+      playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
+      return false
     }
 
     val originalCard = attackersDefenderField(index)
@@ -40,13 +35,7 @@ class DefenderBoostStrategy(index: Int) extends IBoostStrategy {
 
     data.setPlayerDefenders(roles.attacker, attackersDefenderField)
     
-    val attackerAfterAction = attackerBeforeAction.performAction(PlayerActionPolicies.Boost)
-    
-    attackerAfterAction.actionStates.get(PlayerActionPolicies.Boost) match {
-      case Some(CanPerformAction(remainingUses)) =>
-      case Some(OutOfActions) => playingField.notifyObservers(NoBoostsEvent(attackerBeforeAction))
-      case _ =>
-    }
+    val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.Boost)
 
     roles.setRoles(attackerAfterAction, roles.defender)
 
