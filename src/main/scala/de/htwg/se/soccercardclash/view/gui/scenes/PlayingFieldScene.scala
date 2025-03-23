@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, IController, NoDoubleAttacksEvent, TieComparisonEvent}
+import de.htwg.se.soccercardclash.controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, GoalScoredEvent, IController, NoDoubleAttacksEvent, TieComparisonEvent}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -24,6 +24,7 @@ import de.htwg.se.soccercardclash.view.gui.components.dialog.{ComparisonDialogHa
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import scalafx.scene.text.Text
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
+import scalafx.application.Platform
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -123,9 +124,6 @@ class PlayingFieldScene(
   private var lastExtraAttackerCard: Option[ICard] = None
   private var lastExtraDefenderCard: Option[ICard] = None
   private var lastAttackSuccess: Option[Boolean] = None
-  import scala.concurrent.Future
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import scalafx.application.Platform
 
   override def update(e: ObservableEvent): Unit = {
 
@@ -163,6 +161,16 @@ class PlayingFieldScene(
         controller.remove(this)
         SceneManager.update(e)
 
+      case GoalScoredEvent(player) =>
+        Future {
+          Thread.sleep(4000)
+          Platform.runLater(() => {
+            println(s"⚽ Goal scored by ${player.name}")
+            showGoalScoredDialog(player, autoHide = true)
+            updateDisplay()
+          })
+        }
+
 
       case GameOver(winner) =>
         Future {
@@ -180,6 +188,9 @@ class PlayingFieldScene(
     DialogFactory.showGameOverPopup(winner, overlay, controller, autoHide)
   }
 
+  private def showGoalScoredDialog(winner: IPlayer, autoHide: Boolean): Unit = {
+  DialogFactory.showGoalScoredDialog(winner, overlay, controller, autoHide)
+  }
   private def createDoubleAttackAlert(player: IPlayer): Node = {
     GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
   }

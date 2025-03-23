@@ -1,5 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.alert
 
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import scalafx.application.Platform
 import scalafx.geometry.Pos
 import scalafx.scene.Node
@@ -8,6 +9,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -27,8 +29,12 @@ object GameAlertFactory {
       style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: red;" // ✅ Text is now RED
     }
 
-    val okButton = new Button("OK") {
-      onAction = _ => overlay.hide()
+    val okButton = GameButtonFactory.createGameButton(
+      text = "OK",
+      width = 150,
+      height = 50
+    ) { () =>
+      overlay.hide()
     }
 
     val alertBox = new VBox {

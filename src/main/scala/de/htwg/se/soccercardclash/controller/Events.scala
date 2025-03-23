@@ -50,3 +50,4 @@ case class DoubleTieComparisonEvent(attackingCard1: ICard,
 case class NoBoostsEvent(player: IPlayer) extends ObservableEvent
 case class NoSwapsEvent(player: IPlayer) extends ObservableEvent
 case class NoDoubleAttacksEvent(player: IPlayer) extends ObservableEvent
+case class GoalScoredEvent(player: IPlayer) extends ObservableEvent

@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.GameOver
+import de.htwg.se.soccercardclash.controller.{GameOver, GoalScoredEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
@@ -32,9 +32,13 @@ class PlayerScores @Inject() (
     } else {
       player2Score = scoringStrategy.calculatePoints(player2Score)
     }
+
+    playingField.notifyObservers(GoalScoredEvent(player))
+
     checkForWinner()
     playingField.notifyObservers()
   }
+
 
   override def setScorePlayer1(score: Int): Unit = {
     player1Score = score
@@ -49,9 +53,9 @@ class PlayerScores @Inject() (
   }
 
   override def checkForWinner(): Unit = {
-    if (player1Score >= 1) {
+    if (player1Score >= 3) {
       playingField.notifyObservers(GameOver(player1))
-    } else if (player2Score >= 1) {
+    } else if (player2Score >= 3) {
       playingField.notifyObservers(GameOver(player2))
     }
   }

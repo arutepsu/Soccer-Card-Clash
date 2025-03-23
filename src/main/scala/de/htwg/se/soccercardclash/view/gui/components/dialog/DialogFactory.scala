@@ -30,4 +30,8 @@ object DialogFactory {
       controller
     ).show()
   }
+
+  def showGoalScoredDialog(player: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean = true): Unit = {
+    new GoalScoredDialog(player, overlay, controller, autoHide)
+  }
 }
