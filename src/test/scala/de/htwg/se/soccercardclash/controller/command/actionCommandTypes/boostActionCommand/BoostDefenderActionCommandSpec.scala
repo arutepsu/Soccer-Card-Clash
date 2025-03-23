@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAc
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.BoostDefenderActionCommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.controller.command.memento.base.*
 import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
 import org.scalatest.matchers.should.Matchers
@@ -14,6 +14,7 @@ import org.mockito.ArgumentMatchers.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import org.mockito.ArgumentMatchers.{anyInt, eq as meq}
 
 import scala.util.{Failure, Success}
 
@@ -37,57 +38,92 @@ private class TestableBoostDefenderActionCommand(cardIndex: Int, game: IGame, fa
 
 class BoostDefenderActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
+  private class TestableBoostDefenderActionCommand(
+                                                    cardIndex: Int,
+                                                    game: IGame,
+                                                    factory: IMementoManagerFactory
+                                                  ) extends BoostDefenderActionCommand(cardIndex, game, factory) {
+
+    def setMementoManager(mockMementoManager: IMementoManager): Unit = {
+      this.mementoManager = mockMementoManager
+    }
+
+    def setMemento(mockMemento: Option[Memento]): Unit = {
+      this.memento = mockMemento
+    }
+
+    def setBoostSuccessful(success: Boolean): Unit = {
+      this.boostSuccessful = Some(success)
+    }
+
+    def testExecuteAction(): Boolean = executeAction()
+  }
+
   "BoostDefenderActionCommand" should {
 
     "execute successfully when actionManager.boostDefender returns true" in {
       val mockGame = mock[IGame]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
       val mockFactory = mock[IMementoManagerFactory]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.boostDefender(anyInt())).thenReturn(true)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.boostDefender(meq(1), meq(mockActionService))).thenReturn(true)
 
       val command = new TestableBoostDefenderActionCommand(1, mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe true
-      verify(mockActionManager).boostDefender(1)
+      verify(mockActionManager).boostDefender(meq(1), meq(mockActionService))
     }
 
     "execute unsuccessfully when actionManager.boostDefender returns false" in {
       val mockGame = mock[IGame]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
       val mockFactory = mock[IMementoManagerFactory]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.boostDefender(anyInt())).thenReturn(false)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.boostDefender(meq(1), meq(mockActionService))).thenReturn(false)
 
       val command = new TestableBoostDefenderActionCommand(1, mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false
-      verify(mockActionManager).boostDefender(1)
+      verify(mockActionManager).boostDefender(meq(1), meq(mockActionService))
     }
 
     "handle exceptions and return false" in {
       val mockGame = mock[IGame]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
       val mockFactory = mock[IMementoManagerFactory]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.boostDefender(anyInt())).thenThrow(new RuntimeException("Test Exception"))
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.boostDefender(meq(1), meq(mockActionService)))
+        .thenThrow(new RuntimeException("Test Exception"))
 
       val command = new TestableBoostDefenderActionCommand(1, mockGame, mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false
-      verify(mockActionManager).boostDefender(1)
+      verify(mockActionManager).boostDefender(meq(1), meq(mockActionService))
     }
 
     "undo boost when a memento exists" in {
       val mockGame = mock[IGame]
       val mockFactory = mock[IMementoManagerFactory]
       val mockMementoManager = mock[IMementoManager]
+
+      val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
+
+      // ✅ Mock getActionManager and getPlayerActionService
+      when(mockGame.getActionManager).thenReturn(mockActionManager)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
 
       val mockAttacker = mock[IPlayer]
       val mockDefender = mock[IPlayer]
@@ -115,11 +151,14 @@ class BoostDefenderActionCommandSpec extends AnyWordSpec with Matchers with Mock
       command.undoStep()
 
       verify(mockMementoManager).restoreBoosts(memento, 1)
+      verifyNoMoreInteractions(mockMementoManager)
     }
+
 
     "redo boost when a memento exists and boost was successful" in {
       val mockGame = mock[IGame]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
       val mockFactory = mock[IMementoManagerFactory]
       val mockMementoManager = mock[IMementoManager]
 
@@ -143,6 +182,8 @@ class BoostDefenderActionCommandSpec extends AnyWordSpec with Matchers with Mock
       )
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.boostDefender(meq(1), meq(mockActionService))).thenReturn(true)
 
       val command = new TestableBoostDefenderActionCommand(1, mockGame, mockFactory)
       command.setMementoManager(mockMementoManager)
@@ -152,19 +193,25 @@ class BoostDefenderActionCommandSpec extends AnyWordSpec with Matchers with Mock
       command.redoStep()
 
       verify(mockMementoManager).restoreGameState(memento)
-      verify(mockActionManager).boostDefender(1)
+      verify(mockActionManager).boostDefender(meq(1), meq(mockActionService))
     }
 
     "not redo boost if no memento exists" in {
       val mockGame = mock[IGame]
+      val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
       val mockFactory = mock[IMementoManagerFactory]
 
+      when(mockGame.getActionManager).thenReturn(mockActionManager)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+
       val command = new TestableBoostDefenderActionCommand(1, mockGame, mockFactory)
+      command.setBoostSuccessful(true)
 
-      command.redoStep() // No memento set
+      command.redoStep()
 
-      // Nothing to verify, test passes if no exception is thrown
-      succeed
+      // ✅ Verify boostDefender is *not* called
+      verify(mockActionManager, never()).boostDefender(anyInt(), any[IPlayerActionManager])
     }
   }
 }

@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
@@ -15,23 +15,20 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.mock
+import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
 
 class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-
   class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
-
     override def getRoles: IRolesManager = mock[IRolesManager]
     override def getDataManager: IDataManager = mock[IDataManager]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
-
     override def getAttacker: IPlayer = mock[IPlayer]
     override def getDefender: IPlayer = mock[IPlayer]
     override def reset(): Unit = {}
     override def setPlayingField(): Unit = {}
-
     override def notifyObservers(e: ObservableEvent): Unit = super.notifyObservers(e)
   }
 
@@ -51,14 +48,15 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       val card1 = mock[ICard]
       val card2 = mock[ICard]
       val defenderCard = mock[ICard]
+      val mockPlayerActionManager = mock[IPlayerActionManager]
 
-      // BoostManager with mocked revertStrategy
       val boostManager = new BoostManager(playingField) {
         override def getRevertStrategy: IRevertStrategy = revertStrategy
       }
 
       val actionManager = mock[IActionManager]
       when(actionManager.getBoostManager).thenReturn(boostManager)
+      when(actionManager.getPlayerActionService).thenReturn(mockPlayerActionManager)
       when(playingField.getActionManager).thenReturn(actionManager)
 
       when(playingField.getRoles).thenReturn(rolesManager)
@@ -68,8 +66,14 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       when(rolesManager.attacker).thenReturn(attacker)
       when(rolesManager.defender).thenReturn(defender)
 
+      // ✅ This one is critical — because strategy updates the roles!
+      doNothing().when(rolesManager).setRoles(updatedAttacker, defender)
+
       when(attacker.actionStates).thenReturn(Map(PlayerActionPolicies.DoubleAttack -> CanPerformAction(1)))
-      when(attacker.performAction(PlayerActionPolicies.DoubleAttack)).thenReturn(updatedAttacker)
+      when(mockPlayerActionManager.canPerform(attacker, PlayerActionPolicies.DoubleAttack))
+        .thenReturn(true)
+      when(mockPlayerActionManager.performAction(attacker, PlayerActionPolicies.DoubleAttack))
+        .thenReturn(updatedAttacker)
       when(updatedAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.DoubleAttack -> CanPerformAction(0)))
 
       when(dataManager.getPlayerHand(updatedAttacker)).thenReturn(attackerHand)
@@ -84,12 +88,14 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       when(defenderCard.valueToInt).thenReturn(10)
       when(revertStrategy.revertCard(defenderCard)).thenReturn(defenderCard)
 
-      // ✅ Void methods - use doNothing
       doNothing().when(dataManager).removeDefenderCard(defender, defenderCard)
       doNothing().when(attackerHand).addCard(card1)
       doNothing().when(attackerHand).addCard(card2)
 
-      val strategy = new DoubleAttackStrategy(0)
+      // ✅ Mock notifyObservers to avoid side effects
+      doNothing().when(playingField).notifyObservers(any[ObservableEvent])
+
+      val strategy = new DoubleAttackStrategy(0, mockPlayerActionManager)
       val result = strategy.execute(playingField)
 
       result shouldBe true
@@ -97,16 +103,20 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       verify(attackerHand).addCard(card1)
       verify(attackerHand).addCard(card2)
       verify(dataManager, times(2)).removeDefenderCard(defender, defenderCard)
+
     }
+
 
     "fail when not enough cards in attacker’s hand" in {
       val playingField = spy(new ObservableMockPlayingField)
       val dataManager = mock[IDataManager]
       val rolesManager = mock[IRolesManager]
       val attacker = mock[IPlayer]
+      val updatedAttacker = mock[IPlayer]
       val defender = mock[IPlayer]
       val attackerHand = mock[IHandCardsQueue]
       val revertStrategy = mock[IRevertStrategy]
+      val mockPlayerActionManager = mock[IPlayerActionManager]
 
       val boostManager = new BoostManager(playingField) {
         override def getRevertStrategy: IRevertStrategy = revertStrategy
@@ -114,20 +124,22 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
       val actionManager = mock[IActionManager]
       when(actionManager.getBoostManager).thenReturn(boostManager)
+      when(actionManager.getPlayerActionService).thenReturn(mockPlayerActionManager)
       when(playingField.getActionManager).thenReturn(actionManager)
 
       when(playingField.getRoles).thenReturn(rolesManager)
       when(playingField.getDataManager).thenReturn(dataManager)
+
       when(rolesManager.attacker).thenReturn(attacker)
       when(rolesManager.defender).thenReturn(defender)
 
       when(attacker.actionStates).thenReturn(Map(PlayerActionPolicies.DoubleAttack -> CanPerformAction(1)))
-      when(attacker.performAction(PlayerActionPolicies.DoubleAttack)).thenReturn(attacker)
-
-      when(dataManager.getPlayerHand(attacker)).thenReturn(attackerHand)
+      when(mockPlayerActionManager.performAction(attacker, PlayerActionPolicies.DoubleAttack)).thenReturn(updatedAttacker)
+      when(dataManager.getPlayerHand(updatedAttacker)).thenReturn(attackerHand)
       when(attackerHand.getHandSize).thenReturn(1)
 
-      val strategy = new DoubleAttackStrategy(0)
+      val strategy = new DoubleAttackStrategy(0, mockPlayerActionManager)
+
       val result = strategy.execute(playingField)
 
       result shouldBe false
@@ -139,6 +151,7 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       val attacker = mock[IPlayer]
       val defender = mock[IPlayer]
       val revertStrategy = mock[IRevertStrategy]
+      val mockPlayerActionManager = mock[IPlayerActionManager]
 
       val boostManager = new BoostManager(playingField) {
         override def getRevertStrategy: IRevertStrategy = revertStrategy
@@ -146,6 +159,7 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
       val actionManager = mock[IActionManager]
       when(actionManager.getBoostManager).thenReturn(boostManager)
+      when(actionManager.getPlayerActionService).thenReturn(mockPlayerActionManager)
       when(playingField.getActionManager).thenReturn(actionManager)
 
       when(playingField.getRoles).thenReturn(rolesManager)
@@ -156,7 +170,7 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
         Map(PlayerActionPolicies.DoubleAttack -> OutOfActions)
       )
 
-      val strategy = new DoubleAttackStrategy(0)
+      val strategy = new DoubleAttackStrategy(0, mockPlayerActionManager)
       val result = strategy.execute(playingField)
 
       result shouldBe false

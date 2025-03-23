@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.RegularSwapStrategy
 import org.scalatest.flatspec.AnyFlatSpec
@@ -34,6 +34,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     val card1 = mock[ICard]
     val card2 = mock[ICard]
@@ -42,11 +43,13 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
-    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(1)))
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
 
+    // Handle playerActionService methods
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(true)
+
     val updatedPlayer = mock[IPlayer]
-    when(mockAttacker.performAction(PlayerActionPolicies.Swap)).thenReturn(updatedPlayer)
+    when(mockPlayerActionManager.performAction(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(updatedPlayer)
     when(updatedPlayer.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(0)))
 
     val field = new ObservableMockPlayingField {
@@ -54,7 +57,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new RegularSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0, mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe true
@@ -63,10 +66,12 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     verify(mockRoles).setRoles(updatedPlayer, mockDefender)
   }
 
+
   it should "fail and notify if swap is out of actions" in {
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
     val hand = new HandCardsQueue(List(mock[ICard], mock[ICard]))
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
@@ -83,7 +88,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       }
     }
 
-    val strategy = new RegularSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0, mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe false
@@ -94,6 +99,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     val hand = new HandCardsQueue(Nil)
     hand.addCard(mock[ICard]) // only one card
@@ -107,7 +113,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new RegularSwapStrategy(0)
+    val strategy = new RegularSwapStrategy(0, mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe false
@@ -117,6 +123,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     val hand = new HandCardsQueue(Nil)
     hand.addCard(mock[ICard])
@@ -131,7 +138,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new RegularSwapStrategy(2) // invalid index
+    val strategy = new RegularSwapStrategy(2, mockPlayerActionManager) // invalid index
     val result = strategy.swap(field)
 
     result shouldBe false

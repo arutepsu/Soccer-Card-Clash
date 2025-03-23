@@ -11,9 +11,8 @@ import scala.util.{Failure, Success, Try}
 class BoostGoalkeeperActionCommand(game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   protected var boostSuccessful: Option[Boolean] = None
-  private val playerActionService: IPlayerActionManager = game.getActionManager.getPlayerActionService
   override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostGoalkeeper(playerActionService))
+    val result = Try(actionManager.boostGoalkeeper(actionManager.getPlayerActionService))
     result match {
       case Success(value) =>
         boostSuccessful = Some(value)

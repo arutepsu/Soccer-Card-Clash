@@ -12,9 +12,8 @@ import scala.util.{Failure, Success, Try}
 class BoostDefenderActionCommand(cardIndex: Int, game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   protected var boostSuccessful: Option[Boolean] = None
-  private val playerActionService: IPlayerActionManager = game.getActionManager.getPlayerActionService
   override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostDefender(cardIndex, playerActionService))
+    val result = Try(actionManager.boostDefender(cardIndex, actionManager.getPlayerActionService))
     result match {
       case Success(value) =>
         boostSuccessful = Some(value)

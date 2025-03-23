@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base.GoalkeeperBoostStrategy
 import org.scalatest.flatspec.AnyFlatSpec
@@ -18,7 +18,6 @@ import de.htwg.se.soccercardclash.util.Observable
 
 class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
-  // Reuse this structure from your working test
   class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
     override def getRoles: IRolesManager = mock[IRolesManager]
     override def getDataManager: IDataManager = mock[IDataManager]
@@ -36,26 +35,26 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     val goalkeeper = mock[ICard]
     val boostedGoalkeeper = mock[ICard]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
-    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> CanPerformAction(1)))
     when(mockData.getPlayerGoalkeeper(mockAttacker)).thenReturn(Some(goalkeeper))
     when(goalkeeper.boost()).thenReturn(boostedGoalkeeper)
 
     val updatedPlayer = mock[IPlayer]
-    when(mockAttacker.performAction(PlayerActionPolicies.Boost)).thenReturn(updatedPlayer)
-    when(updatedPlayer.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> CanPerformAction(0)))
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Boost)).thenReturn(true)
+    when(mockPlayerActionManager.performAction(mockAttacker, PlayerActionPolicies.Boost)).thenReturn(updatedPlayer)
 
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new GoalkeeperBoostStrategy
+    val strategy = new GoalkeeperBoostStrategy(mockPlayerActionManager)
     val result = strategy.boost(field)
 
     result shouldBe true
@@ -67,6 +66,7 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockData.getPlayerGoalkeeper(mockAttacker)).thenReturn(None)
@@ -76,7 +76,7 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new GoalkeeperBoostStrategy
+    val strategy = new GoalkeeperBoostStrategy(mockPlayerActionManager)
     val result = strategy.boost(field)
 
     result shouldBe false
@@ -87,10 +87,11 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val goalkeeper = mock[ICard]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockData.getPlayerGoalkeeper(mockAttacker)).thenReturn(Some(goalkeeper))
-    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> OutOfActions))
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Boost)).thenReturn(false)
 
     var notified = false
 
@@ -103,7 +104,7 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
       }
     }
 
-    val strategy = new GoalkeeperBoostStrategy
+    val strategy = new GoalkeeperBoostStrategy(mockPlayerActionManager)
     val result = strategy.boost(field)
 
     result shouldBe false

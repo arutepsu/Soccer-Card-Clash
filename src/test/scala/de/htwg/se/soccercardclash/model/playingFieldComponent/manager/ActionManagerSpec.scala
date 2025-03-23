@@ -1,7 +1,8 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 
+import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{ActionManager, IActionManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{ActionManager, IActionManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.AttackHandler
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.{BoostManager, IBoostManager}
@@ -19,14 +20,16 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "initialize and return the correct playing field" in {
       val mockField = mock[IPlayingField]
-      val manager = new ActionManager(mockField)
+      val mockService = mock[IPlayerActionManager]
+      val manager = new ActionManager(mockField, mockService)
 
       manager.getPlayingField shouldBe mockField
     }
 
     "reset all internal strategies correctly" in {
       val mockField = mock[IPlayingField]
-      val manager = new ActionManager(mockField)
+      val mockService = mock[IPlayerActionManager]
+      val manager = new ActionManager(mockField, mockService)
 
       val oldBoostManager = manager.getBoostManager
 
@@ -36,10 +39,12 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       oldBoostManager should not be theSameInstanceAs(newBoostManager)
     }
+
     "delegate singleAttack to AttackHandler with correct strategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockHandler = mock[AttackHandler]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.attackHandler = mockHandler
 
       when(mockHandler.executeAttack(any[SingleAttackStrategy])).thenReturn(true)
@@ -49,78 +54,89 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       verify(mockHandler).executeAttack(any[SingleAttackStrategy])
     }
+
     "delegate doubleAttack to AttackHandler with correct strategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockHandler = mock[AttackHandler]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.attackHandler = mockHandler
 
       when(mockHandler.executeAttack(any[DoubleAttackStrategy])).thenReturn(false)
 
-      val result = manager.doubleAttack(2)
+      val result = manager.doubleAttack(2, mockService)
       result shouldBe false
 
       verify(mockHandler).executeAttack(any[DoubleAttackStrategy])
     }
+
     "delegate reverseSwap to SwapManager with ReverseSwapStrategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockSwap = mock[SwapManager]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.swapStrategy = mockSwap
 
       when(mockSwap.swapAttacker(any[ReverseSwapStrategy])).thenReturn(true)
 
-      val result = manager.reverseSwap()
+      val result = manager.reverseSwap(mockService)
       result shouldBe true
 
       verify(mockSwap).swapAttacker(any[ReverseSwapStrategy])
     }
+
     "delegate regularSwap to SwapManager with HandSwapStrategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockSwap = mock[SwapManager]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.swapStrategy = mockSwap
 
       when(mockSwap.swapAttacker(any[RegularSwapStrategy])).thenReturn(false)
 
-      val result = manager.regularSwap(3)
+      val result = manager.regularSwap(3, mockService)
       result shouldBe false
 
       verify(mockSwap).swapAttacker(any[RegularSwapStrategy])
     }
+
     "delegate boostDefender to BoostManager with DefenderBoostStrategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockBoost = mock[BoostManager]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.boostStrategy = mockBoost
 
       when(mockBoost.applyBoost(any[DefenderBoostStrategy])).thenReturn(true)
 
-      val result = manager.boostDefender(0)
+      val result = manager.boostDefender(0, mockService)
       result shouldBe true
 
       verify(mockBoost).applyBoost(any[DefenderBoostStrategy])
     }
+
     "delegate boostGoalkeeper to BoostManager with GoalkeeperBoostStrategy" in {
       val mockField = mock[IPlayingField]
+      val mockService = mock[IPlayerActionManager]
       val mockBoost = mock[BoostManager]
-      val manager = new ActionManager(mockField)
+      val manager = new ActionManager(mockField, mockService)
       manager.boostStrategy = mockBoost
 
       when(mockBoost.applyBoost(any[GoalkeeperBoostStrategy])).thenReturn(false)
 
-      val result = manager.boostGoalkeeper()
+      val result = manager.boostGoalkeeper(mockService)
       result shouldBe false
 
       verify(mockBoost).applyBoost(any[GoalkeeperBoostStrategy])
     }
+
     "return the current boost strategy" in {
       val mockField = mock[IPlayingField]
-      val manager = new ActionManager(mockField)
+      val mockService = mock[IPlayerActionManager]
+      val manager = new ActionManager(mockField, mockService)
 
       val boost = manager.getBoostManager
-      boost shouldBe a [IBoostManager]
+      boost shouldBe a[IBoostManager]
     }
-
   }
 }

@@ -1,8 +1,9 @@
 package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands
 
+import org.mockito.ArgumentMatchers.{eq => meq}
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,45 +34,52 @@ class RegularSwapActionCommandSpec extends AnyWordSpec with Matchers with Mockit
       val mockGame = mock[IGame]
       val mockFactory = mock[IMementoManagerFactory]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.regularSwap(anyInt())).thenReturn(true)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.regularSwap(meq(1), meq(mockActionService))).thenReturn(true)
 
       val command = new TestableRegularSwapActionCommand(cardIndex = 1, game = mockGame, factory = mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe true
-      verify(mockActionManager).regularSwap(1)
+      verify(mockActionManager).regularSwap(meq(1), meq(mockActionService))
     }
 
     "execute unsuccessfully when actionManager.regularSwap returns false" in {
       val mockGame = mock[IGame]
       val mockFactory = mock[IMementoManagerFactory]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.regularSwap(anyInt())).thenReturn(false)
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.regularSwap(meq(1), meq(mockActionService))).thenReturn(false)
 
       val command = new TestableRegularSwapActionCommand(cardIndex = 1, game = mockGame, factory = mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false
-      verify(mockActionManager).regularSwap(1)
+      verify(mockActionManager).regularSwap(meq(1), meq(mockActionService))
     }
 
     "handle exceptions and return false" in {
       val mockGame = mock[IGame]
       val mockFactory = mock[IMementoManagerFactory]
       val mockActionManager = mock[IActionManager]
+      val mockActionService = mock[IPlayerActionManager]
 
       when(mockGame.getActionManager).thenReturn(mockActionManager)
-      when(mockActionManager.regularSwap(anyInt())).thenThrow(new RuntimeException("Test Exception"))
+      when(mockActionManager.getPlayerActionService).thenReturn(mockActionService)
+      when(mockActionManager.regularSwap(meq(1), meq(mockActionService)))
+        .thenThrow(new RuntimeException("Test Exception"))
 
       val command = new TestableRegularSwapActionCommand(cardIndex = 1, game = mockGame, factory = mockFactory)
       val result = command.testExecuteAction()
 
       result shouldBe false
-      verify(mockActionManager).regularSwap(1)
+      verify(mockActionManager).regularSwap(meq(1), meq(mockActionService))
     }
   }
 }

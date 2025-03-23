@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.factory
 
 import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.PlayingFieldManagerFactory
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager._
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
@@ -19,8 +19,8 @@ class PlayingFieldManagerFactorySpec extends AnyWordSpec with Matchers with Mock
       val playingField = mock[IPlayingField]
       val player1 = mock[IPlayer]
       val player2 = mock[IPlayer]
-
-      val factory = new PlayingFieldManagerFactory(handManager, fieldManager)
+      val playerActionManager = mock[IPlayerActionManager]
+      val factory = new PlayingFieldManagerFactory(handManager, fieldManager, playerActionManager)
 
       factory.createDataManager(playingField, player1, player2) shouldBe a[DataManager]
       factory.createActionManager(playingField) shouldBe a[ActionManager]

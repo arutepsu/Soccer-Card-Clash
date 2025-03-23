@@ -44,38 +44,38 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     val card = mock[ICard]
     val boostedCard = mock[ICard]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
-    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> CanPerformAction(1)))
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Boost)).thenReturn(true)
+    when(mockPlayerActionManager.performAction(mockAttacker, PlayerActionPolicies.Boost)).thenReturn(mockAttacker)
+
     when(card.boost()).thenReturn(boostedCard)
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List(card))
 
-    val updatedPlayer = mock[IPlayer]
-    when(mockAttacker.performAction(PlayerActionPolicies.Boost)).thenReturn(updatedPlayer)
-    when(updatedPlayer.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> CanPerformAction(0)))
-
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
-
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new DefenderBoostStrategy(0)
+    val strategy = new DefenderBoostStrategy(0, mockPlayerActionManager)
     val result = strategy.boost(field)
 
     result shouldBe true
     verify(mockData).setPlayerDefenders(mockAttacker, List(boostedCard))
-    verify(mockRoles).setRoles(updatedPlayer, mockDefender)
+    verify(mockRoles).setRoles(mockAttacker, mockDefender)
   }
+
 
   it should "fail if index is out of bounds" in {
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List.empty)
@@ -86,7 +86,8 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new DefenderBoostStrategy(1)
+    val strategy = new DefenderBoostStrategy(1, mockPlayerActionManager)
+
     val result = strategy.boost(field)
 
     result shouldBe false
@@ -97,6 +98,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val card = mock[ICard]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Boost -> OutOfActions))
@@ -112,7 +114,8 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
       }
     }
 
-    val strategy = new DefenderBoostStrategy(0)
+    val strategy = new DefenderBoostStrategy(0, mockPlayerActionManager)
+
     val result = strategy.boost(field)
 
     result shouldBe false
@@ -126,6 +129,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
     val card = mock[ICard]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
@@ -144,7 +148,8 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
       }
     }
 
-    val strategy = new DefenderBoostStrategy(0)
+    val strategy = new DefenderBoostStrategy(0, mockPlayerActionManager)
+
     val result = strategy.boost(field)
 
     result shouldBe false

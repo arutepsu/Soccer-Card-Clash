@@ -10,35 +10,30 @@ import scala.collection.mutable
 class ReverseSwapStrategy(
                            playerActionService: IPlayerActionManager
                          ) extends ISwapStrategy {
-  override def swap(playingField: IPlayingField): Boolean = {
-    lazy val data: IDataManager = playingField.getDataManager
-    lazy val roles: IRolesManager = playingField.getRoles
-    val attackerBeforeAction = roles.attacker
-    
-    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Swap)) {
-      playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-      return false
-    }
-    val attackerHand = data.getPlayerHand(attackerBeforeAction)
 
-    if (attackerHand.getHandSize < 2) {
+  override def swap(playingField: IPlayingField): Boolean = {
+    val data = playingField.getDataManager
+    val roles = playingField.getRoles
+    val attackerBeforeAction = roles.attacker
+
+    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Swap)) {
+      attackerBeforeAction.actionStates.get(PlayerActionPolicies.Swap) match {
+        case Some(OutOfActions) =>
+          playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
+        case _ => // no notify for CanPerform(0)
+      }
       return false
     }
+
+    val attackerHand = data.getPlayerHand(attackerBeforeAction)
+    if (attackerHand.getHandSize < 2) return false
 
     val reversedCards = attackerHand.getCards.reverse
-
-    while (attackerHand.getHandSize > 0) {
-      attackerHand.removeLastCard()
-    }
-
+    while (attackerHand.getHandSize > 0) attackerHand.removeLastCard()
     reversedCards.foreach(attackerHand.addCard)
+    reversedCards.indices.foreach(i => attackerHand.update(i, reversedCards(i)))
 
-    for (i <- reversedCards.indices) {
-      attackerHand.update(i, reversedCards(i))
-    }
-    
     val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.Swap)
-
     roles.setRoles(attackerAfterAction, roles.defender)
     playingField.notifyObservers()
     true

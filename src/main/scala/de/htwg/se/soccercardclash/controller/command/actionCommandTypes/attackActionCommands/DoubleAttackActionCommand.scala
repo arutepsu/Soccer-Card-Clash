@@ -14,9 +14,8 @@ class DoubleAttackActionCommand(
                                ) extends ActionCommand(game, mementoManagerFactory) {
   private val actionManager: IActionManager = game.getActionManager
   private var attackSuccessful: Option[Boolean] = None
-  private val playerActionService: IPlayerActionManager = game.getActionManager.getPlayerActionService
   override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.doubleAttack(defenderIndex, playerActionService))
+    val result = Try(actionManager.doubleAttack(defenderIndex,  actionManager.getPlayerActionService))
     result match {
       case Success(value) =>
         attackSuccessful = Some(value)

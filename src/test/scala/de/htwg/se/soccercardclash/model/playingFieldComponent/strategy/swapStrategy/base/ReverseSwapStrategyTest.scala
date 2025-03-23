@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
@@ -34,7 +34,7 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
-
+    val mockPlayerActionManager = mock[IPlayerActionManager]
     val card1 = mock[ICard]
     val card2 = mock[ICard]
     val card3 = mock[ICard]
@@ -43,11 +43,13 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
+
     when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(1)))
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
 
     val updatedPlayer = mock[IPlayer]
-    when(mockAttacker.performAction(PlayerActionPolicies.Swap)).thenReturn(updatedPlayer)
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(true)
+    when(mockPlayerActionManager.performAction(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(updatedPlayer)
     when(updatedPlayer.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(0)))
 
     val field = new ObservableMockPlayingField {
@@ -55,7 +57,7 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new ReverseSwapStrategy
+    val strategy = new ReverseSwapStrategy(mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe true
@@ -68,6 +70,7 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
     val hand = new HandCardsQueue(List(mock[ICard], mock[ICard]))
+    val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> OutOfActions))
@@ -81,7 +84,7 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def notifyObservers(e: ObservableEvent): Unit = notified = Some(e)
     }
 
-    val strategy = new ReverseSwapStrategy
+    val strategy = new ReverseSwapStrategy(mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe false
@@ -92,30 +95,40 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
     val hand = new HandCardsQueue(List(mock[ICard], mock[ICard]))
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
-    when(mockAttacker.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(0)))
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
+
+    // 👇 simulate remainingUses == 0 without being OutOfActions
+    when(mockAttacker.actionStates).thenReturn(
+      Map(PlayerActionPolicies.Swap -> CanPerformAction(0))
+    )
+    when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(false)
 
     var notified = false
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
+
       override def getRoles: IRolesManager = mockRoles
+
       override def notifyObservers(e: ObservableEvent): Unit = notified = true
     }
 
-    val strategy = new ReverseSwapStrategy
+    val strategy = new ReverseSwapStrategy(mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe false
     notified shouldBe false
   }
 
+
   it should "fail if hand has fewer than 2 cards" in {
     val mockData = mock[IDataManager]
     val mockRoles = mock[IRolesManager]
     val mockAttacker = mock[IPlayer]
+    val mockPlayerActionManager = mock[IPlayerActionManager]
     val hand = new HandCardsQueue(List(mock[ICard]))
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
@@ -127,7 +140,7 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
       override def getRoles: IRolesManager = mockRoles
     }
 
-    val strategy = new ReverseSwapStrategy
+    val strategy = new ReverseSwapStrategy(mockPlayerActionManager)
     val result = strategy.swap(field)
 
     result shouldBe false
