@@ -68,8 +68,8 @@ jobs:
 
       - name: Generate cloc.json
         run: |
-          mkdir -p .github/workflows
-          cloc --json --exclude-dir=.git,test,target . > .github/workflows/cloc.json
+          mkdir -p .github/stats
+          cloc --json --exclude-dir=.git,test,target . > .github/stats/cloc.json
 
       - name: Commit cloc.json to a branch
         run: |
@@ -81,5 +81,3 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:badges
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
