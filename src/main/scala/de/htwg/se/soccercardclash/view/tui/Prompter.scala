@@ -56,11 +56,17 @@ class Prompter(controller: IController) extends IPrompter {
     println(f"${playingField.getDataManager.getPlayerHand(attacker)}")
     println("===================================")
   }
-  
-  def promptShowDefendersField(player: IPlayer) : Unit = {
+
+  def promptShowDefendersField(player: IPlayer): Unit = {
     println("\n===================================")
-    println(f"${player.name} field cards after attack: ")
+    println(s"${player.name} field cards after attack:")
     println("===================================")
+
+    val field = controller.getCurrentGame.getPlayingField
+    val dataManager = field.getDataManager
+    val playerField = dataManager.getPlayerField(player)
+
+    playerField.foreach(card => println(card))
   }
 
   def promptShowDefendersHand(): Unit = {

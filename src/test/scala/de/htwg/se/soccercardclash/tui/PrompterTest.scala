@@ -16,6 +16,7 @@ import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IDataManager
 import de.htwg.se.soccercardclash.view.tui.Prompter
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
 
 import scala.collection.mutable
 class PrompterTest extends AnyFlatSpec with Matchers {
@@ -113,28 +114,27 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockGame = mock(classOf[IGame])
     val mockField = mock(classOf[PlayingField])
     val mockDefender = mock(classOf[Player])
+    val mockDataManager = mock(classOf[IDataManager])
+    val mockCard1 = mock(classOf[ICard])
+    val mockCard2 = mock(classOf[ICard])
 
-    // Mocking controller, game, and playing field
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
-
-    // Mock the defender and its name
     when(mockField.getDefender).thenReturn(mockDefender)
     when(mockDefender.name).thenReturn("Defender")
-
-    // Mock getDataManager and the getPlayerField method to return a List
-    val mockDataManager = mock(classOf[IDataManager])
     when(mockField.getDataManager).thenReturn(mockDataManager)
-    when(mockDataManager.getPlayerField(mockDefender)).thenReturn(List("🛡️", "⚔️")) // Return a List of cards
 
-    // Capture the output of promptShowDefendersField
-    val output = captureOutput(new Prompter(mockController).promptShowDefendersField())
+    when(mockCard1.toString).thenReturn("🛡️")
+    when(mockCard2.toString).thenReturn("⚔️")
+    when(mockDataManager.getPlayerField(mockDefender)).thenReturn(List(mockCard1, mockCard2))
 
-    // Check if the expected output is present
+    val output = captureOutput(new Prompter(mockController).promptShowDefendersField(mockDefender))
+
     output should include("Defender field cards after attack")
     output should include("🛡️")
     output should include("⚔️")
   }
+
 
 //  it should "print current game state" in {
 //    val mockController = mock(classOf[IController])
