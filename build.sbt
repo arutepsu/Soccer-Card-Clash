@@ -59,6 +59,5 @@ lazy val root = project
     coverageFailOnMinimum := false,
     coverageMinimumStmtTotal := 40,
 
-    // Optional: CI command alias
     addCommandAlias("fullTest", ";clean;coverage;test;coverageReport;coverageAggregate;coveralls")
   )

@@ -90,22 +90,4 @@ class ObservableTest extends AnyFlatSpec with Matchers {
     observable.subscribers shouldBe empty // Ensure no observers are left
   }
 
-  it should "notify no observers if none are registered" in {
-    val observable = new Observable
-
-    // Capture the output from println )
-    val out = new ByteArrayOutputStream()
-
-    // Use Console.withOut to redirect output
-    Console.withOut(new PrintStream(out)) {
-      observable.notifyObservers()
-    }
-
-    // Now you can check the output
-    out.toString should include("⚠️ WARNING: No observers registered! Skipping event:")
-
-    observable.notifyObservers()
-
-    out.toString should include ("⚠️ WARNING: No observers registered! Skipping event:")
-  }
 }

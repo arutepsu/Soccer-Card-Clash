@@ -22,7 +22,7 @@ jobs:
       - name: Install sbt (via Coursier)
         uses: coursier/setup-action@v1
         with:
-          apps: sbt  # you had "sbtn" before, this is better for scripting
+          apps: sbt
 
       - name: Compile
         run: sbt compile

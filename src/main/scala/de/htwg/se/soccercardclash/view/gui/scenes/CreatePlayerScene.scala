@@ -61,7 +61,7 @@ class CreatePlayerScene(controller: IController) extends Scene(new StackPane) wi
     )(() => startGame())
 
     val mainMenuButton = GameButtonFactory.createGameButton(
-      text = "Main Menu",
+      text = "Back",
       width = 250,
       height = 60
     ) { () =>
