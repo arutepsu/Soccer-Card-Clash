@@ -2,8 +2,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c8252a455c9a41f881a18a2e319642b1)](https://app.codacy.com/gh/arutepsu/Soccer-Card-Clash/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/arutepsu/Soccer-Card-Clash)
+![Last commit](https://img.shields.io/github/last-commit/arutepsu/Soccer-Card-Clash)
 [![Scala CI](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml/badge.svg)](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml)
-
-
+![Repo size](https://img.shields.io/github/repo-size/arutepsu/Soccer-Card-Clash)
+![Scala](https://img.shields.io/badge/Scala-3.4.1-lightgrey?logo=scala)
+![sbt](https://img.shields.io/badge/sbt-1.9.9-blue?logo=sbt)
+![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash)
 
 Software Engineering game project in Konstanz University of Applied Sciences
