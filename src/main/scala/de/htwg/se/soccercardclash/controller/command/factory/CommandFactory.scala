@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.controller.command.factory
 
 import com.google.inject.Inject
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackActionCommands.{DoubleAttackActionCommand, SingleAttackActionCommand}
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
@@ -11,6 +11,7 @@ import de.htwg.se.soccercardclash.controller.command.base.workflow.{CreateGameWo
 import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
+import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.WorkflowTuiCommand
 
 class CommandFactory @Inject()(

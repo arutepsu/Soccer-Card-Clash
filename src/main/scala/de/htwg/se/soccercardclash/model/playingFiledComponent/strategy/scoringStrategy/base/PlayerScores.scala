@@ -1,12 +1,12 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.{GameOver, GoalScoredEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.StandardScoring
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
+import de.htwg.se.soccercardclash.util.{GameOver, ScoreEvent}
 
 @Singleton
 class PlayerScores @Inject() (
@@ -33,7 +33,7 @@ class PlayerScores @Inject() (
       player2Score = scoringStrategy.calculatePoints(player2Score)
     }
 
-    playingField.notifyObservers(GoalScoredEvent(player))
+    playingField.notifyObservers(ScoreEvent(player))
 
     checkForWinner()
     playingField.notifyObservers()

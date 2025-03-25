@@ -11,7 +11,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.Events
 
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController) {
   

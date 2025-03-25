@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, GoalScoredEvent, IController, NoDoubleAttacksEvent, TieComparisonEvent}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
-import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import scalafx.scene.layout.{BorderPane, HBox, Region, StackPane, VBox}
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, ScoreEvent, NoDoubleAttacksEvent, ObservableEvent, Observer, TieComparisonEvent}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{ButtonBar, GameStatusBar, PlayersBar, PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
@@ -77,16 +77,48 @@ class PlayingFieldScene(
     spacing = 300
     children = Seq(attackerHandBar)
   }
-
-  val player1ScoreLabel = new Label {
-    text = s"${player1.name} Score: ${playingField.getScores.getScorePlayer1}"
-    styleClass.add("player-score-label")
+  val player1ScoreText = new Label(s"${playingField.getScores.getScorePlayer1}") {
+    styleClass += "player-score"
   }
 
-  val player2ScoreLabel = new Label {
-    text = s"${player2.name} Score: ${playingField.getScores.getScorePlayer2}"
-    styleClass.add("player-score-label")
+  val player2ScoreText = new Label(s"${playingField.getScores.getScorePlayer2}") {
+    styleClass += "player-score"
   }
+
+  val player1ScoreBox = new VBox {
+    styleClass += "score-box"
+    children = Seq(
+      new Label("⚽") {
+        styleClass += "score-icon"
+      },
+      new Label(player1.name) {
+        styleClass += "player-name"
+      },
+      player1ScoreText
+    )
+  }
+
+  val player2ScoreBox = new VBox {
+    styleClass += "score-box"
+    children = Seq(
+      new Label("⚽") {
+        styleClass += "score-icon"
+      },
+      new Label(player2.name) {
+        styleClass += "player-name"
+      },
+      player2ScoreText
+    )
+  }
+
+
+  val scoresBar = new HBox {
+    spacing = 50
+    alignment = Pos.Center
+    children = Seq(player1ScoreBox, player2ScoreBox)
+    styleClass += "scores-bar"
+  }
+
   val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
 
 
@@ -94,26 +126,31 @@ class PlayingFieldScene(
 
   val mainLayout = new StackPane {
     children = Seq(
-      new HBox {
-        alignment = Pos.CENTER_LEFT
-        children = Seq(
-          buttonBar,
-          new VBox {
-            alignment = Pos.CENTER
-            children = Seq(
-              playersBar,
-              gameStatusBar,
-              playerFields,
-              playerHands,
-              player1ScoreLabel,
-              player2ScoreLabel,
-            )
+      new BorderPane {
+        top = new BorderPane {
+          left = null
+//          center = scoresBar
+          center = playersBar
+          right = null
+        }
+
+        center = new BorderPane {
+          left = buttonBar
+          center = new VBox {
+            spacing = 10
+            alignment = Pos.Center
+            children = Seq(gameStatusBar, playerFields)
           }
-        )
+        }
+
+        bottom = new BorderPane {
+          center = playerHands
+        }
       },
       overlay.getPane
     )
   }
+
 
   root = mainLayout
 
@@ -152,7 +189,12 @@ class PlayingFieldScene(
 
       case Events.Undo | Events.Redo | Events.BoostDefender | Events.BoostGoalkeeper
            | Events.RegularSwap | Events.ReverseSwap | Events.PlayingField =>
-        updateDisplay()
+        Future {
+          Thread.sleep(100)
+          Platform.runLater(() => {
+            updateDisplay()
+          })
+        }
 
       case Events.MainMenu =>
         if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
@@ -161,7 +203,7 @@ class PlayingFieldScene(
         controller.remove(this)
         SceneManager.update(e)
 
-      case GoalScoredEvent(player) =>
+      case ScoreEvent(player) =>
         Future {
           Thread.sleep(4000)
           Platform.runLater(() => {
@@ -244,13 +286,10 @@ class PlayingFieldScene(
     playersBar.refreshActionStates()
   }
   private def updateScores() : Unit = {
-    val currentPlayingField = controller.getCurrentGame.getPlayingField
-    val currentPlayer1 = controller.getCurrentGame.getPlayer1
-    val currentPlayer2 = controller.getCurrentGame.getPlayer2
-    val score1 = currentPlayingField.getScores.getScorePlayer1
-    val score2 = currentPlayingField.getScores.getScorePlayer2
-    player1ScoreLabel.text = s"${currentPlayer1.name} Score: $score1"
-    player2ScoreLabel.text = s"${currentPlayer2.name} Score: $score2"
+    val score1 = controller.getCurrentGame.getPlayingField.getScores.getScorePlayer1
+    val score2 = controller.getCurrentGame.getPlayingField.getScores.getScorePlayer2
+    player1ScoreText.text = s"$score1"
+    player2ScoreText.text = s"$score2"
   }
   def updateDisplay(): Unit = {
     updateFieldBar()

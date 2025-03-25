@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, NoDoubleAttacksEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
@@ -11,8 +10,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-import de.htwg.se.soccercardclash.controller.ComparedCardsEvent
-import de.htwg.se.soccercardclash.controller.TieComparisonEvent
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, NoDoubleAttacksEvent, TieComparisonEvent}
 import scala.util.{Failure, Success, Try}
 
 //TODO : Implement Goalkeeper tie case

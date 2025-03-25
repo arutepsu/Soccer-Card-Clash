@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStrategy.base
 
-import de.htwg.se.soccercardclash.controller.NoBoostsEvent
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -13,7 +12,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.util.ObservableEvent
+import de.htwg.se.soccercardclash.util.{NoBoostsEvent, ObservableEvent}
 import de.htwg.se.soccercardclash.util.Observable
 
 class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {

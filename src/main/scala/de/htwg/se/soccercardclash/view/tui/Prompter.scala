@@ -2,7 +2,9 @@ package de.htwg.se.soccercardclash.view.tui
 
 import java.io.File
 import scala.io.StdIn
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 
@@ -55,13 +57,9 @@ class Prompter(controller: IController) extends IPrompter {
     println("===================================")
   }
   
-  def promptShowDefendersField() : Unit = {
-    val playingField = controller.getCurrentGame.getPlayingField
-    val defender = playingField.getDefender
-
+  def promptShowDefendersField(player: IPlayer) : Unit = {
     println("\n===================================")
-    println(f"${defender.name} field cards after attack: ")
-    println(f"${playingField.getDataManager.getPlayerField(defender)}")
+    println(f"${player.name} field cards after attack: ")
     println("===================================")
   }
 
@@ -221,7 +219,7 @@ trait IPrompter {
   def promptPlayingField(): Unit
   def promptShowAttackersField(): Unit
   def promptShowAttackersHand(): Unit
-  def promptShowDefendersField(): Unit
+  def promptShowDefendersField(player: IPlayer): Unit
   def promptShowDefendersHand(): Unit
   def printGameState(): Unit
   def promptExit(): Unit

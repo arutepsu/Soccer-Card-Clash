@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.controller.command.memento.base
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.Events
 import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
 import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
 import de.htwg.se.soccercardclash.controller.command.memento.componenets.{IMementoCreator, IMementoRestorer}
@@ -10,6 +9,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.util.Events
 
 class MementoManager(
                       game: IGame,

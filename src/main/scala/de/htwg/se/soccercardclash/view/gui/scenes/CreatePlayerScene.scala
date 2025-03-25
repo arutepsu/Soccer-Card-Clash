@@ -7,8 +7,8 @@ import scalafx.scene.text.Text
 import scalafx.scene.control.TextField
 import scalafx.geometry.Pos
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import scalafx.application.Platform

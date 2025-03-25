@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui
 
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image

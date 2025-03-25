@@ -8,10 +8,10 @@ import scalafx.scene.layout.VBox
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 
 class MainMenuScene(controller: IController) extends Scene with Observer {

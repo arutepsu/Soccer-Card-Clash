@@ -46,3 +46,37 @@
     -fx-font-family: "Arial";
     -fx-padding: 5px 0;
 }
+.scores-bar {
+    -fx-padding: 10;
+    -fx-background-color: #1a1a2e;
+    -fx-background-radius: 10;
+    -fx-border-color: #5a189a;
+    -fx-border-radius: 10;
+    -fx-border-width: 2;
+}
+
+.score-box {
+    -fx-alignment: center;
+    -fx-spacing: 5;
+    -fx-padding: 10;
+    -fx-background-color: linear-gradient(to bottom, #5f0f40, #9a031e);
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, #000000, 5, 0, 0, 2);
+}
+
+.score-icon {
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+}
+
+.player-name {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffd60a;
+    -fx-font-weight: bold;
+}
+
+.player-score {
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}

@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.attackStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, ComparedCardsEvent, Events, TieComparisonEvent}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
@@ -13,7 +12,7 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, Events, Observable, ObservableEvent, TieComparisonEvent}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base.SingleAttackStrategy
 import org.mockito.ArgumentMatchers.any
 

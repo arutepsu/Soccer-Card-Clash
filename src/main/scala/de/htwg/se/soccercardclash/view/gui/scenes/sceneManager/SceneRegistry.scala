@@ -1,13 +1,12 @@
 package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.controller.Events
 import scalafx.application.Platform
 import scalafx.scene.Scene
 import scalafx.stage.Stage
 import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.util.Duration
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.scenes._
 import de.htwg.se.soccercardclash.view.gui.scenes.CreatePlayerScene
 

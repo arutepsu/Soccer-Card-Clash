@@ -3,11 +3,11 @@ package de.htwg.se.soccercardclash.controller.base
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.factory.ICommandFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.util.{Observer, UndoManager}
+import de.htwg.se.soccercardclash.util.{Events, Observer, UndoManager}
 
 
 class Controller @Inject()(private val game: IGame, private val commandFactory: ICommandFactory) extends IController {

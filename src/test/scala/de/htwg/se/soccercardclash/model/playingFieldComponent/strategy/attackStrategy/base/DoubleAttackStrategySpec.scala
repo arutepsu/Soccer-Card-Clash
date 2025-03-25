@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.attackStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, DoubleComparedCardsEvent, Events, NoDoubleAttacksEvent}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
@@ -16,7 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.mock
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, DoubleComparedCardsEvent, Events, NoDoubleAttacksEvent, Observable, ObservableEvent}
 
 class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 

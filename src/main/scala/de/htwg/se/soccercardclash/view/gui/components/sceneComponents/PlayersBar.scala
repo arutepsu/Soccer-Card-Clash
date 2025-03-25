@@ -23,8 +23,8 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   this.getStylesheets.add(Styles.playersBarCss)
   styleClass.add("players-bar")
 
-  // ✅ Store action labels for each player
   private var actionsLabels: Map[IPlayer, Label] = Map()
+  private var playerScoreLabels: Map[IPlayer, Label] = Map()
 
   updateBar()
 
@@ -47,6 +47,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   def updateBar(): Unit = {
     children.clear()
     actionsLabels = Map()
+    playerScoreLabels = Map()
 
     val playingField = controller.getCurrentGame.getPlayingField
     val player1 = playingField.getAttacker
@@ -60,6 +61,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
       } else {
         "/images/data/players/player2.jpeg"
       }
+
       val dynamicScale = (scene.width.value / 1000).toFloat
       val playerAvatar = PlayerAvatar(
         player = p,
@@ -70,24 +72,34 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
       )
 
       val playerName = new GameLabel(p.name, scalingFactor = 0.5)
-      
+
       val actionsLabel = new Label("") {
         styleClass.add("player-actions")
       }
       actionsLabels += (p -> actionsLabel)
 
+      val scoreValue = if (p eq player1)
+        playingField.getScores.getScorePlayer1
+      else
+        playingField.getScores.getScorePlayer2
+
+      val scoreLabel = new Label(s"Score: $scoreValue") {
+        styleClass.add("player-score")
+      }
+      playerScoreLabels += (p -> scoreLabel)
+
       val playerAvatarBox = new VBox {
         styleClass.add("player-avatar-box")
         spacing = 5
         padding = Insets(3)
-        children = Seq(playerAvatar, playerName, actionsLabel)
+        children = Seq(playerAvatar, playerName, scoreLabel, actionsLabel)
       }
 
       children.add(playerAvatarBox)
     }
 
     updateAttackerHighlight()
-    refreshActionStates() 
+    refreshActionStates()
   }
 
   def refreshActionStates(): Unit = {
@@ -100,13 +112,22 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
           case (action, CanPerformAction(remainingUses)) => s"${action.toString}: $remainingUses"
           case (action, OutOfActions) => s"${action.toString}: 0"
         }
-        actionsLabel.text = remainingActions.mkString("\n") // ✅ Now updates dynamically!
+        actionsLabel.text = remainingActions.mkString("\n")
       }
     }
+  }
+
+  def refreshScores(): Unit = {
+    val scores = controller.getCurrentGame.getPlayingField.getScores
+    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getAttacker)
+      .foreach(_.text = s"Score: ${scores.getScorePlayer1}")
+    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getDefender)
+      .foreach(_.text = s"Score: ${scores.getScorePlayer2}")
   }
 
   def refreshOnRoleSwitch(): Unit = {
     updateAttackerHighlight()
     refreshActionStates()
+    refreshScores()
   }
 }

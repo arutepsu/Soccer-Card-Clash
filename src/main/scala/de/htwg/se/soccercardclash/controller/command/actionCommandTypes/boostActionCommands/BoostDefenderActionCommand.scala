@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands
 
-import de.htwg.se.soccercardclash.controller.Events
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.util.Events
 
 import scala.util.{Failure, Success, Try}
 

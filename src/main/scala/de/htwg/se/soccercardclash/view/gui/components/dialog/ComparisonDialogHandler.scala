@@ -11,7 +11,7 @@ import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, ObservableEvent, Observer, TieComparisonEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGenerator
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory

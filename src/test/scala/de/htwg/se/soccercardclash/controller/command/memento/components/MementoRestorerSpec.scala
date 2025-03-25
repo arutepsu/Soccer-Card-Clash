@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.controller.command.memento.components
 
-import de.htwg.se.soccercardclash.controller.Events
 import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
 import de.htwg.se.soccercardclash.controller.command.memento.componenets.{IMementoCreator, IMementoRestorer, MementoRestorer}
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
@@ -16,7 +15,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.HandCardsQueue
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 class ObservableMockPlayingField extends Observable with IPlayingField {

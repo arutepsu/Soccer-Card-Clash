@@ -32,14 +32,6 @@
     -fx-font-family: "Arial";
 }
 
-/* 🔹 Player Score Labels */
-.player-score-label {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #FFD700; /* Gold color for emphasis */
-    -fx-font-family: "Arial";
-}
-
 /* 🔹 HBox and VBox Styling */
 .hbox, .vbox {
     -fx-spacing: 10px;

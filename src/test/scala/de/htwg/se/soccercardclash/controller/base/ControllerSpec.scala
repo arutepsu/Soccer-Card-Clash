@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.controller.base.Controller
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.workflow.WorkflowCommand
 import de.htwg.se.soccercardclash.controller.command.factory.ICommandFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
@@ -14,7 +14,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.util.{Observer, UndoManager}
+import de.htwg.se.soccercardclash.util.{Events, Observer, UndoManager}
 
 
 class ControllerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {

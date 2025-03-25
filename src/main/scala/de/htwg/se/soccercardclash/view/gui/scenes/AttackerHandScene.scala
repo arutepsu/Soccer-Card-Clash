@@ -1,12 +1,12 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.{Events, IController, NoSwapsEvent}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{Events, NoSwapsEvent, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -20,10 +20,10 @@ import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButton
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.SelectablePlayersHandBar
 
-case class AttackerHandScene(
+class AttackerHandScene(
                               controller: IController,
-                              playingFieldScene: PlayingFieldScene,
-                              playingField: Option[IPlayingField],
+                              val playingFieldScene: PlayingFieldScene,
+                              val playingField: Option[IPlayingField],
                               windowWidth: Double,
                               windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
@@ -31,7 +31,7 @@ case class AttackerHandScene(
   controller.add(this)
   this.getStylesheets.add(Styles.attackerHandSceneCss)
   val overlay = new Overlay(this)
-  var getPlayingField: IPlayingField = playingField.get
+  val getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
   val backgroundView = new Region {
     style = "-fx-background-color: black;"

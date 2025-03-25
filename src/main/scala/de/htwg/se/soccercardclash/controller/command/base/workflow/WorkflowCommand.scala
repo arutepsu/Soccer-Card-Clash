@@ -1,8 +1,9 @@
 package de.htwg.se.soccercardclash.controller.command.base.workflow
 
 import de.htwg.se.soccercardclash.controller.command.ICommand
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
+import de.htwg.se.soccercardclash.util.Events
 
 import scala.util.{Failure, Success, Try}
 

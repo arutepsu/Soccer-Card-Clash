@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.scoringStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{GameOver, GoalScoredEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
@@ -10,7 +9,7 @@ import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{GameOver, ScoreEvent, Observable, ObservableEvent}
 
 class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
@@ -57,12 +56,12 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
 
-    var captured: Option[GoalScoredEvent] = None
+    var captured: Option[ScoreEvent] = None
 
     val testField = new ObservableMockPlayingField {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
-          case g: GoalScoredEvent => captured = Some(g)
+          case g: ScoreEvent => captured = Some(g)
           case _ => // ignore
         }
       }
@@ -72,7 +71,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     scores.scoreGoal(player1)
 
     captured match {
-      case Some(GoalScoredEvent(p)) => p shouldBe player1
+      case Some(ScoreEvent(p)) => p shouldBe player1
       case _ => fail("Expected GoalScoredEvent for player1")
     }
   }
@@ -146,7 +145,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val field = new ObservableMockPlayingField {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
-          case GoalScoredEvent(p) if p == player1 => goalEventTriggered = true
+          case ScoreEvent(p) if p == player1 => goalEventTriggered = true
           case GameOver(p) if p == player1        => gameOverTriggered = true
           case _ => // ignore
         }

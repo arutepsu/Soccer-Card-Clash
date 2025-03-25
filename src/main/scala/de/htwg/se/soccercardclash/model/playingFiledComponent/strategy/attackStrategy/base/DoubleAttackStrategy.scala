@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{AttackResultEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, NoDoubleAttacksEvent}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.IAttackStrategy
@@ -11,6 +10,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.util.{AttackResultEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, NoDoubleAttacksEvent}
 
 
 import scala.util.{Failure, Success, Try}

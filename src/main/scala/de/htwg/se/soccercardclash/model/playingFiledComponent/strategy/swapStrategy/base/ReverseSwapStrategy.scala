@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base
 
-import de.htwg.se.soccercardclash.controller.NoSwapsEvent
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
+import de.htwg.se.soccercardclash.util.NoSwapsEvent
 import scala.collection.mutable
 class ReverseSwapStrategy(
                            playerActionService: IPlayerActionManager

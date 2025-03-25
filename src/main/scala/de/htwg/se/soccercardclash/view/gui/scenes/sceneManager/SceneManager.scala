@@ -2,13 +2,13 @@ package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
 import scalafx.Includes.*
 import scalafx.scene.layout.StackPane
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.application.Platform
 import scalafx.scene.Scene
 import scalafx.stage.Stage
 import scalafx.util.Duration
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 import de.htwg.se.soccercardclash.view.gui.scenes.*
 

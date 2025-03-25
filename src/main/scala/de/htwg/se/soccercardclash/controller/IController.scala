@@ -5,8 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent, Observer, UndoManager}
-
+import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer, UndoManager}
 
 import scala.collection.mutable
 trait IController extends Observable{

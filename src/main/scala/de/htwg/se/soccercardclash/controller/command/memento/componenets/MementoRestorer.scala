@@ -2,11 +2,11 @@ package de.htwg.se.soccercardclash.controller.command.memento.componenets
 
 import com.google.inject.assistedinject.Assisted
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.Events
 import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
+import de.htwg.se.soccercardclash.util.Events
 
 
 trait IMementoRestorer {

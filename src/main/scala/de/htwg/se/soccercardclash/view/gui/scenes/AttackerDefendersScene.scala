@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
 import scalafx.scene.control.Button
-import de.htwg.se.soccercardclash.controller.{Events, IController, NoBoostsEvent}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{Events, NoBoostsEvent, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{BoostBar, GameStatusBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -20,23 +20,40 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.SelectablePlayersFieldBar
+import scalafx.scene.image.Image
+import scalafx.scene.layout._
+import scalafx.Includes._
+import javafx.scene.layout.{BackgroundRepeat, BackgroundPosition, BackgroundSize}
 
-case class AttackerDefendersScene(
+class AttackerDefendersScene(
                                     controller: IController,
-                                    playingFieldScene: PlayingFieldScene,
-                                    playingField: Option[IPlayingField],
+                                    val playingFieldScene: PlayingFieldScene,
+                                    val playingField: Option[IPlayingField],
                                     windowWidth: Double,
                                     windowHeight: Double
                                   ) extends Scene(windowWidth, windowHeight) with Observer {
 
-  playingField.foreach(_.add(this)) // ✅ Add observer to receive eventsv
+  playingField.foreach(_.add(this))
   controller.add(this)
-  var getPlayingField: IPlayingField = playingField.get
+  val getPlayingField: IPlayingField = playingField.get
   val gameStatusBar = new GameStatusBar
 
+//  val backgroundView = new Region {
+//    style = "-fx-background-color: black;"
+//  }
   val backgroundView = new Region {
-    style = "-fx-background-color: black;"
+    val image = new Image(getClass.getResource("/images/data/images/field.jpg").toExternalForm)
+    background = new Background(Array(
+      new BackgroundImage(
+        image,
+        BackgroundRepeat.NO_REPEAT,
+        BackgroundRepeat.NO_REPEAT,
+        BackgroundPosition.CENTER,
+        new BackgroundSize(1.0, 1.0, true, true, true, false)
+      )
+    ))
   }
+
 
   val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
     val fieldBar = new SelectablePlayersFieldBar(pf.getRoles.attacker, pf)
@@ -44,10 +61,8 @@ case class AttackerDefendersScene(
     fieldBar
   }
 
-  // ✅ Overlay for Alerts
   val overlay = new Overlay(this)
 
-  // ✅ Back to Game button
   val backButton: Button = GameButtonFactory.createGameButton(
     text = "Back to Game",
     width = 180,
@@ -59,7 +74,6 @@ case class AttackerDefendersScene(
   }
   backButton.styleClass.add("button")
 
-  // ✅ Boost Button
   val boostButton: Button = ActionButtonFactory.createBoostButton(
     BoostButton(),
     "Boost Card",
@@ -70,7 +84,6 @@ case class AttackerDefendersScene(
   )
   boostButton.styleClass.add("button")
 
-  // ✅ Button Layout
   val buttonLayout = new HBox {
     styleClass.add("button-layout")
     alignment = Pos.CENTER

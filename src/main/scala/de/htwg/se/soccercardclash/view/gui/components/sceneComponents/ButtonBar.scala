@@ -9,8 +9,8 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.*
-import de.htwg.se.soccercardclash.controller.Events
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, DoubleButton, SingleButton}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 
@@ -44,6 +44,7 @@ case class ButtonBar(controller: IController, playingField: IPlayingField, playi
     height = 50
   ) { () =>
     controller.notifyObservers(Events.AttackerDefenderCards)
+
   }
   val pause: Button = GameButtonFactory.createGameButton(
     text = "Pause",

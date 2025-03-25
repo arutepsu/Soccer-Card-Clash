@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.IPrompter
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory

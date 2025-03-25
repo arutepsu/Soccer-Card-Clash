@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.*
 
 trait ITuiCommandFactory {
-  def createAttackTuiCommand(): ITuiCommand
+  def createSingleAttackTuiCommand(): ITuiCommand
   def createDoubleAttackTuiCommand(): ITuiCommand
   def createBoostDefenderTuiCommand(): ITuiCommand
   def createRegularSwapTuiCommand(): ITuiCommand
@@ -26,7 +26,7 @@ trait ITuiCommandFactory {
 
 class TuiCommandFactory(controller: IController, prompter: IPrompter) extends ITuiCommandFactory {
 
-  override def createAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
+  override def createSingleAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
   override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
   override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostTuiCommand(controller)
   override def createRegularSwapTuiCommand(): ITuiCommand = new RegularSwapTuiCommand(controller)

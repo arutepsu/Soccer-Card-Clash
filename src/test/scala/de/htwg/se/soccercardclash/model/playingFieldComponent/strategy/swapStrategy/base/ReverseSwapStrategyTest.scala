@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.swapStrategy.base
 
-import de.htwg.se.soccercardclash.controller.NoSwapsEvent
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -13,7 +12,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
-import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{NoSwapsEvent, Observable, ObservableEvent}
 
 class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 

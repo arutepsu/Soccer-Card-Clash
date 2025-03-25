@@ -12,8 +12,8 @@ import scalafx.scene.Node
 import java.io.File
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, StackPane, VBox}
@@ -27,7 +27,7 @@ import scalafx.scene.Node
 import java.io.File
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.{Events, IController}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ConfirmationDialog, DialogFactory}

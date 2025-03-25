@@ -1,12 +1,12 @@
 package de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base
 
-import de.htwg.se.soccercardclash.controller.{Events, NoBoostsEvent}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{DataManager, IDataManager, IPlayerActionManager, IRolesManager, RolesManager}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.IBoostStrategy
+import de.htwg.se.soccercardclash.util.{Events, NoBoostsEvent}
 
 class GoalkeeperBoostStrategy(
                                playerActionService: IPlayerActionManager
