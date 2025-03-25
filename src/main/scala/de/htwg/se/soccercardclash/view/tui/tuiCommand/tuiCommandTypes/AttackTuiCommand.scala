@@ -5,10 +5,16 @@ import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 
 class AttackTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
-    val defender = controller.getCurrentGame.getPlayingField.getDefender
-    val attackingCard = controller.getCurrentGame.getPlayingField.getDataManager.getAttackingCard
-    val defendersField = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerField(defender)
+    val game = controller.getCurrentGame
+    if (game == null) {
+      println("⚠️ No game loaded! Please load a game first using ':load'.")
+      return
+    }
+
+    val attacker = game.getPlayingField.getAttacker
+    val defender = game.getPlayingField.getDefender
+    val attackingCard = game.getPlayingField.getDataManager.getAttackingCard
+    val defendersField = game.getPlayingField.getDataManager.getPlayerField(defender)
 
     if (attackingCard == null) {
       println("⚠️ No attacking cards available!")
@@ -19,12 +25,12 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
       println("⚠️ No defenders to attack!")
       return
     }
-    
+
     println("\n🛡 Defender's Field Cards:")
     defendersField.zipWithIndex.foreach { case (card, index) =>
       println(s"[$index] $card")
     }
-    
+
     print("\n💥 Choose a position to attack: ")
     val inputStr = scala.io.StdIn.readLine().trim
 
@@ -41,7 +47,7 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
 
         println(s"⚔️ Executing attack on position: $position")
         controller.executeSingleAttackCommand(position)
-        
+
         val result = attackingCard.valueToInt - defendersField(position).valueToInt
         println(s"\n📊 Result: ${attackingCard} vs ${defendersField(position)}")
         println(s"🏆 Winner: ${if (result > 0) "Attacker" else if (result < 0) "Defender" else "Draw"}")
@@ -52,3 +58,4 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
     }
   }
 }
+

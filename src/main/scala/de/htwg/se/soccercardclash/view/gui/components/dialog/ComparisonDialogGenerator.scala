@@ -20,10 +20,16 @@ import scalafx.animation._
 import scalafx.util.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scalafx.scene.paint.Color
+import scalafx.scene.shape.Rectangle
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.{HBox, StackPane, VBox}
+import scalafx.scene.text.Text
+
 object ComparisonDialogGenerator {
   def showSingleComparison(
-                            player1: String,
-                            player2: String,
+                            player1: IPlayer,
+                            player2: IPlayer,
                             attacker: IPlayer,
                             defender: IPlayer,
                             attackingCard: ICard,
@@ -35,8 +41,8 @@ object ComparisonDialogGenerator {
   }
 
   def showDoubleComparison(
-                            player1: String,
-                            player2: String,
+                            player1: IPlayer,
+                            player2: IPlayer,
                             attacker: IPlayer,
                             defender: IPlayer,
                             attackingCard1: ICard,
@@ -49,8 +55,8 @@ object ComparisonDialogGenerator {
   }
 
   def showTieComparison(
-                         player1: String,
-                         player2: String,
+                         player1: IPlayer,
+                         player2: IPlayer,
                          attacker: IPlayer,
                          defender: IPlayer,
                          attackingCard: ICard,
@@ -63,8 +69,8 @@ object ComparisonDialogGenerator {
   }
 
   def showDoubleTieComparison(
-                               player1: String,
-                               player2: String,
+                               player1: IPlayer,
+                               player2: IPlayer,
                                attacker: IPlayer,
                                defender: IPlayer,
                                attackingCard1: ICard,
@@ -76,16 +82,9 @@ object ComparisonDialogGenerator {
                              ): Node = {
     showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
-
-  import scalafx.scene.paint.Color
-  import scalafx.scene.shape.Rectangle
-  import scalafx.scene.image.ImageView
-  import scalafx.scene.layout.{HBox, StackPane, VBox}
-  import scalafx.scene.text.Text
-
   private def showComparisonUI(
-                                player1: String,
-                                player2: String,
+                                player1: IPlayer,
+                                player2: IPlayer,
                                 attacker: IPlayer,
                                 defender: IPlayer,
                                 attackingCard1: Option[ICard],
@@ -96,7 +95,7 @@ object ComparisonDialogGenerator {
                                 extraDefenderCard: Option[ICard],
                                 sceneWidth: Double
                               ): Node = {
-    val baseWidth = 1200.0  // Reference width for scaling
+    val baseWidth = 1200.0 // Reference width for scaling
     val scaleFactor = Math.max(0.7, Math.min(1.5, sceneWidth / baseWidth))
 
     val resultMessage = if (attackSuccess) "✅ Attack Successful!" else "❌ Attack Failed!"
@@ -105,50 +104,59 @@ object ComparisonDialogGenerator {
       style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: white;"
       opacity = 0.0 // Initially hidden
     }
+
     def showResultText(): Unit = {
       val fadeIn = new FadeTransition(Duration(500), resultText)
       fadeIn.fromValue = 0.0
       fadeIn.toValue = 1.0
       fadeIn.play()
     }
-    val attackerAvatarPath = "/images/data/players/player1.jpeg"
-    val defenderAvatarPath = "/images/data/players/player2.jpeg"
 
-    val attackerAvatar = new PlayerAvatar(
-      attacker, 1,
+    val leftPlayer = player1
+    val rightPlayer = player2
+
+    val player1AvatarPath = "/images/data/players/player1.jpeg"
+    val player2AvatarPath = "/images/data/players/player2.jpeg"
+
+    val leftAvatarImagePath = player1AvatarPath  // player1 is always on the left
+    val rightAvatarImagePath = player2AvatarPath // player2 is always on the right
+
+
+
+    val leftAvatar = new PlayerAvatar(
+      leftPlayer, 1,
       scaleAvatar = (0.1 * scaleFactor).toFloat,
       scaleFont = (0.3 * scaleFactor).toFloat,
-      profilePicturePath = attackerAvatarPath
+      profilePicturePath = leftAvatarImagePath
     )
 
-    val defenderAvatar = new PlayerAvatar(
-      defender, 2,
+    val rightAvatar = new PlayerAvatar(
+      rightPlayer, 2,
       scaleAvatar = (0.1 * scaleFactor).toFloat,
       scaleFont = (0.3 * scaleFactor).toFloat,
-      profilePicturePath = defenderAvatarPath
+      profilePicturePath = rightAvatarImagePath
     )
 
-    val attackingCardImage1 = attackingCard1.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat))
-    val attackingCardImage2 = attackingCard2.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat))
+
+
+    val attackingCardImage1 = attackingCard1.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat))
+    val attackingCardImage2 = attackingCard2.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat))
     val defendingCardImage = CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.6f)
 
     val extraAttackerCardImage = extraAttackerCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat)
+      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat)
     }
 
     val extraDefenderCardImage = extraDefenderCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false,  scaleFactor = (0.7 * scaleFactor).toFloat)
+      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat)
     }
 
-
-    val attackerWins = attackSuccess
-    val defenderWins = !attackSuccess
 
     def createCardFrame(image: ImageView, card: Option[ICard], highlightGreen: Boolean, highlightRed: Boolean): StackPane = {
       val borderEffect = new Rectangle {
         width = image.fitWidth.value + 10
         height = image.fitHeight.value + 10
-        stroke = Color.Transparent  // Initially no color
+        stroke = Color.Transparent // Initially no color
         strokeWidth = 3
         fill = Color.Transparent
       }
@@ -162,7 +170,7 @@ object ComparisonDialogGenerator {
 
       // ✅ Step 2: After 1 second, highlight the winning/losing card
       Future {
-        Thread.sleep(1000)  // Wait 1 second before highlighting
+        Thread.sleep(1000) // Wait 1 second before highlighting
         Platform.runLater {
           borderEffect.stroke = if (highlightGreen) Color.LimeGreen else if (highlightRed) Color.Red else Color.Transparent
         }
@@ -172,33 +180,63 @@ object ComparisonDialogGenerator {
     }
 
     val attackingCardFrame1 = attackingCard1.map { card =>
-      createCardFrame(CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
-        Some(card), highlightGreen = attackerWins, highlightRed = false)
+      createCardFrame(
+        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        Some(card),
+        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightRed = false
+      )
     }
 
     val attackingCardFrame2 = attackingCard2.map { card =>
-      createCardFrame(CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
-        Some(card), highlightGreen = attackerWins, highlightRed = false)
+      createCardFrame(
+        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        Some(card),
+        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightRed = false
+      )
     }
-
-    val defendingCardFrame = createCardFrame(CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.7f),
-      Some(defendingCard), highlightGreen = false, highlightRed = defenderWins)
 
     val extraAttackingCardFrame = extraAttackerCard.map { card =>
-      createCardFrame(CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
-        Some(card), highlightGreen = attackerWins, highlightRed = false)
+      createCardFrame(
+        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        Some(card),
+        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightRed = false
+      )
     }
+
+    val defendingCardFrame = createCardFrame(
+      CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+      Some(defendingCard),
+      highlightGreen = false,
+      highlightRed = !attackSuccess // ✅ Only red if defender wins
+    )
 
     val extraDefendingCardFrame = extraDefenderCard.map { card =>
-      createCardFrame(CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
-        Some(card), highlightGreen = false, highlightRed = defenderWins)
+      createCardFrame(
+        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        Some(card),
+        highlightGreen = false,
+        highlightRed = !attackSuccess
+      )
     }
 
-    val winnerText = new Text(s"🏆 Winner: " + (if (attackerWins) player1 else player2)) {
-      style = if (attackerWins) "-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: green;"
-      else s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: red;"
-      opacity = 0.0 // Initially hidden
+    // Winner logic
+    // Winner logic
+    val winnerName = if (attackSuccess) attacker.name else defender.name
+    val highlightLeftGreen = winnerName == player1.name
+    val highlightRightRed = winnerName == player2.name
+
+    val winnerColor = if (winnerName == player1.name) "green" else "red"
+
+    val winnerText = new Text(s"🏆 Winner: $winnerName") {
+      style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: $winnerColor;"
+      opacity = 0.0
     }
+
+
+
     // ✅ Function to show winner text with a fade-in effect
     def showWinnerText(): Unit = {
       val fadeIn = new FadeTransition(Duration(500), winnerText)
@@ -220,41 +258,96 @@ object ComparisonDialogGenerator {
       }
     }
 
-//    val resultText = new Text(resultMessage)
-
-
-    val attackerInfo = new VBox(5, attackerAvatar)
-    val defenderInfo = new VBox(5, defenderAvatar)
-
-    val attackingCardsBox = new HBox(10)
-    attackingCardFrame1.foreach(frame => attackingCardsBox.children.add(frame))
-    attackingCardFrame2.foreach(frame => attackingCardsBox.children.add(frame))
-    attackingCardsBox.alignment = scalafx.geometry.Pos.Center
-
-    val tiebreakerCardsBox = new HBox(10)
-    extraAttackingCardFrame.foreach(frame => tiebreakerCardsBox.children.add(frame))
-    extraDefendingCardFrame.foreach(frame => tiebreakerCardsBox.children.add(frame))
-    tiebreakerCardsBox.alignment = scalafx.geometry.Pos.Center
-
-    val cardImagesBox = new VBox(10, new HBox(20, attackingCardsBox, defendingCardFrame) {
+    val player1CardsBox = new HBox(10) {
       alignment = scalafx.geometry.Pos.Center
-    })
+    }
+    val player2CardsBox = new HBox(10) {
+      alignment = scalafx.geometry.Pos.Center
+    }
 
+    val leftCardFrames: Seq[StackPane] = {
+      val frames = scala.collection.mutable.ListBuffer[StackPane]()
+
+      if (attacker.name == player1.name) {
+        frames ++= attackingCardFrame1
+        frames ++= attackingCardFrame2
+        frames ++= extraAttackingCardFrame
+      }
+      if (defender.name == player1.name) {
+        frames += defendingCardFrame
+        extraDefendingCardFrame.foreach(frames += _)
+      }
+
+      frames.toSeq
+    }
+
+    val rightCardFrames: Seq[StackPane] = {
+      val frames = scala.collection.mutable.ListBuffer[StackPane]()
+
+      if (attacker.name == player2.name) {
+        frames ++= attackingCardFrame1
+        frames ++= attackingCardFrame2
+        frames ++= extraAttackingCardFrame
+      }
+      if (defender.name == player2.name) {
+        frames += defendingCardFrame
+        extraDefendingCardFrame.foreach(frames += _)
+      }
+
+      frames.toSeq
+    }
+
+
+    val leftCardsBox = new HBox(10) {
+      alignment = scalafx.geometry.Pos.Center
+      children ++= leftCardFrames.map(_.delegate)
+    }
+
+    val rightCardsBox = new HBox(10) {
+      alignment = scalafx.geometry.Pos.Center
+      children ++= rightCardFrames.map(_.delegate)
+    }
+
+
+    // Optional: Tiebreaker row in center if needed
+    val tiebreakerCardsBox = new HBox(10) {
+      alignment = scalafx.geometry.Pos.Center
+    }
+    extraAttackingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
+    extraDefendingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
+
+    // Horizontal box: player1 left, player2 right (fixed layout)
+    val cardImagesHBox = new HBox(20) {
+      alignment = scalafx.geometry.Pos.Center
+      children ++= Seq(leftCardsBox, rightCardsBox)
+    }
+
+
+
+    val cardImagesBox = new VBox(10, cardImagesHBox)
+
+    // Optional: add tiebreaker row if needed
     if (extraAttackerCard.isDefined || extraDefenderCard.isDefined) {
       cardImagesBox.children.add(tiebreakerCardsBox)
     }
 
-    val playerInfoBox = new HBox(10, attackerInfo, cardImagesBox, defenderInfo) {
+
+    val playerInfoBox = new HBox(10,
+      new VBox(5, leftAvatar),
+      new VBox(10, cardImagesBox),
+      new VBox(5, rightAvatar)
+    ) {
       alignment = scalafx.geometry.Pos.Center
     }
 
+
     val backgroundImagePath = "/images/data/frames/pause (1).png"
     val imageUrl = Option(getClass.getResource(backgroundImagePath))
-    .map(_.toExternalForm)
-    .getOrElse {
-      println(s"Error: Image not found at $backgroundImagePath")
-      ""
-    }
+      .map(_.toExternalForm)
+      .getOrElse {
+        println(s"Error: Image not found at $backgroundImagePath")
+        ""
+      }
 
     val root = new VBox(10, playerInfoBox, winnerText, resultText) {
       alignment = scalafx.geometry.Pos.Center

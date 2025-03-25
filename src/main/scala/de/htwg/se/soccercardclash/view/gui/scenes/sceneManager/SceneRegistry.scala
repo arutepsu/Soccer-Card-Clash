@@ -65,7 +65,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
 
 
   def getAttackerDefendersScene: AttackerDefendersScene = {
-    // 🗑️ Delete old instance before creating a new one
     clearHandAndDefenderScenes()
 
     _attackerDefendersScene = Some(new AttackerDefendersScene(
@@ -80,7 +79,6 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
   }
 
   def getAttackerHandScene: AttackerHandScene = {
-    // 🗑️ Delete old instance before creating a new one
     clearHandAndDefenderScenes()
 
     _attackerHandScene = Some(new AttackerHandScene(
@@ -96,32 +94,23 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
 
   def clearHandAndDefenderScenes(): Unit = {
     if (_attackerHandScene.nonEmpty || _attackerDefendersScene.nonEmpty) {
-      println("🗑️ DEBUG: Removing AttackerHandScene and AttackerDefendersScene from memory and observers")
 
-      // 🔥 Remove from observers list BEFORE setting to None
       _attackerHandScene.foreach { scene =>
         if (controller.subscribers.contains(scene)) {
-          println(s"❌ Removing observer: ${scene.getClass.getSimpleName}")
           controller.remove(scene)
         }
       }
 
       _attackerDefendersScene.foreach { scene =>
         if (controller.subscribers.contains(scene)) {
-          println(s"❌ Removing observer: ${scene.getClass.getSimpleName}")
           controller.remove(scene)
         }
       }
 
-      // 🔥 Set instances to None (delete from memory)
       _attackerHandScene = None
       _attackerDefendersScene = None
 
-      println("✅ DEBUG: AttackerHandScene and AttackerDefendersScene cleared!")
     }
   }
-
-
-
 
 }
