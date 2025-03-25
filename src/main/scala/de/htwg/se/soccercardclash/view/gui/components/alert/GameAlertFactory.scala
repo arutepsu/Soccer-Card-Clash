@@ -15,7 +15,6 @@ import scala.concurrent.Future
 
 object GameAlertFactory {
 
-  // 🎨 Background Image for Alerts
   private val backgroundImage = new ImageView(new Image("/images/data/frames/pause (1).png")) {
     fitWidth = 800
     fitHeight = 600
@@ -23,7 +22,6 @@ object GameAlertFactory {
     cache = true
   }
 
-  // 🔔 Create an Alert with Custom Message + AutoHide
   def createAlert(message: String, overlay: Overlay, autoHide: Boolean): Node = {
     val warningText = new Text(s"⚠️ $message") {
       style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: red;" // ✅ Text is now RED
@@ -43,16 +41,14 @@ object GameAlertFactory {
       children = Seq(warningText, okButton)
     }
 
-    // 🔲 StackPane to Layer Background Image & Alert Content
     val alertPane = new StackPane {
       alignment = Pos.CENTER
-      children = Seq(backgroundImage, alertBox) // ✅ Background First, Then Content
+      children = Seq(backgroundImage, alertBox)
     }
 
-    // 🕒 Auto-hide logic
     if (autoHide) {
       Future {
-        Thread.sleep(3000) // ✅ Alert disappears after 3 seconds
+        Thread.sleep(3000)
         Platform.runLater(() => overlay.hide())
       }
     }

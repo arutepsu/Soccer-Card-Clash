@@ -15,10 +15,9 @@ import de.htwg.se.soccercardclash.view.gui.utils.Styles
 
 class PauseDialog(controller: IController,
                   playingFieldScene: PlayingFieldScene,
-                  overlay: Overlay // ✅ Use OverlayPause
+                  overlay: Overlay
                ) {
-
-  // ✅ Background Image
+  
   private val backgroundImage = new ImageView(new Image("/images/data/frames/pause (1).png")) {
     fitWidth = 800
     fitHeight = 600
@@ -41,23 +40,20 @@ class PauseDialog(controller: IController,
     )
   }
 
-  // ✅ Create the Menu Pane
   private val menuPane = new StackPane {
 
     alignment = Pos.Center
     children = Seq(backgroundImage, menuLayout)
   }
 
-  // ✅ Show the Menu Overlay inside `OverlayPause`
   def show(): Unit = {
     overlay.show(menuPane, false)
   }
 
-  // ✅ Hide the Menu Overlay
+
   def hide(): Unit = {
     overlay.hide()
   }
 
-  // ✅ Ensure Menu Closes When "Continue" is Pressed
   menuButtonBar.continueButton.onAction = _ => hide()
 }

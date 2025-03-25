@@ -16,22 +16,25 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 
 object DialogFactory {
-
-  // 🎉 Show Winner Dialog (Game Over Popup)
+  
   def showGameOverPopup(winner: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean): Unit = {
-    new WinnerDialog(winner, overlay, controller, autoHide) // ✅ Uses overlay with autoHide
+    new WinnerDialog(winner, overlay, controller, autoHide)
   }
 
   def showLoadGameConfirmation(gameFile: String, overlay: Overlay, controller: IController): Unit = {
     new ConfirmationDialog(
       overlay,
       s"Load game: $gameFile?\nDo you want to proceed?",
-      () => controller.loadGame(gameFile), // ✅ Load game on confirmation
+      () => controller.loadGame(gameFile),
       controller
     ).show()
   }
 
   def showGoalScoredDialog(player: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean = true): Unit = {
     new GoalScoredDialog(player, overlay, controller, autoHide)
+  }
+
+  def showGameSavedDialog(overlay: Overlay, autoHide: Boolean = false): Unit = {
+    new GameSavedDialog(overlay, autoHide)
   }
 }

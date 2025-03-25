@@ -24,8 +24,7 @@ class GoalScoredDialog(
 
   private val game = controller.getCurrentGame
   private val scores = game.getPlayingField.getScores
-
-  // 🎨 Background Image
+  
   private val backgroundImagePath = "/images/data/frames/pause (1).png"
   private val imageUrl = Option(getClass.getResource(backgroundImagePath))
     .map(_.toExternalForm)
@@ -39,8 +38,7 @@ class GoalScoredDialog(
     fitHeight = 400
     preserveRatio = false
   }
-
-  // 👤 Player Avatar
+  
   private val avatarPath = if (player == game.getPlayer1) {
     "/images/data/players/player1.jpeg"
   } else {
@@ -52,13 +50,11 @@ class GoalScoredDialog(
     fitHeight = 120
     preserveRatio = true
   }
-
-  // ⚽ Goal Scored Label
+  
   private val scoredLabel = new Text(s"${player.name} scored a goal!") {
     style = "-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: white;"
   }
-
-  // 📊 Score Display
+  
   private val scoreLabel = new Text(s"${game.getPlayer1.name}: ${scores.getScorePlayer1}  |  ${game.getPlayer2.name}: ${scores.getScorePlayer2}") {
     style = "-fx-font-size: 18px; -fx-fill: white;"
   }
@@ -73,11 +69,9 @@ class GoalScoredDialog(
     alignment = Pos.CENTER
     children = Seq(backgroundImageView, layout)
   }
-
-  // 🎬 Show Dialog
+  
   overlay.show(dialogPane, autoHide)
-
-  // 🕒 Auto-hide logic
+  
   if (autoHide) {
     Future {
       Thread.sleep(2500)

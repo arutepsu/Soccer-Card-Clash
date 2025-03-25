@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.{Events, IController}
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
@@ -49,6 +50,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 60
   ) { () =>
     controller.saveGame()
+    DialogFactory.showGameSavedDialog(overlay,false)
   }
 
   val mainMenuButton: Button = GameButtonFactory.createGameButton(
