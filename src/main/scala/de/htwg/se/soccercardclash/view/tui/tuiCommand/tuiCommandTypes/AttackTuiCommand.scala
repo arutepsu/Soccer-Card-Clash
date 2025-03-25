@@ -26,36 +26,30 @@ class AttackTuiCommand(controller: IController) extends ITuiCommand {
       return
     }
 
-    println("\n🛡 Defender's Field Cards:")
-    defendersField.zipWithIndex.foreach { case (card, index) =>
-      println(s"[$index] $card")
-    }
+    // Validate input
+    input match {
+      case Some(str) =>
+        str.toIntOption match {
+          case Some(position) if position >= 0 && position < defendersField.length =>
+            if (position == 3 && defendersField.exists(_ != null)) {
+              println("⚠️ You must beat the defenders before attacking the goalkeeper!")
+              return
+            }
 
-    print("\n💥 Choose a position to attack: ")
-    val inputStr = scala.io.StdIn.readLine().trim
+            println(s"⚔️ Executing attack on position: $position")
+            controller.executeSingleAttackCommand(position)
 
-    try {
-      val position = inputStr.toInt
+            val result = attackingCard.valueToInt - defendersField(position).valueToInt
+            println(s"\n📊 Result: ${attackingCard} vs ${defendersField(position)}")
+            println(s"🏆 Winner: ${if (result > 0) "Attacker" else if (result < 0) "Defender" else "Draw"}")
 
-      if (position < 0 || position >= defendersField.length) {
-        println("❌ Error: Invalid position! Choose a valid index from the list.")
-      } else {
-        if (position == 3 && defendersField.exists(_ != null)) {
-          println("⚠️ You must beat the defenders before attacking the goalkeeper!")
-          return
+          case _ =>
+            println("❌ Error: Invalid input! Expected a valid defender index.")
         }
-
-        println(s"⚔️ Executing attack on position: $position")
-        controller.executeSingleAttackCommand(position)
-
-        val result = attackingCard.valueToInt - defendersField(position).valueToInt
-        println(s"\n📊 Result: ${attackingCard} vs ${defendersField(position)}")
-        println(s"🏆 Winner: ${if (result > 0) "Attacker" else if (result < 0) "Defender" else "Draw"}")
-      }
-    } catch {
-      case _: NumberFormatException =>
-        println("❌ Error: Invalid input! Expected a number representing the defender's position.")
+      case None =>
+        println("❌ No input provided for attack position.")
     }
   }
 }
+
 

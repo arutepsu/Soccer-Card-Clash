@@ -52,3 +52,21 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           sbt clean coverage test coverageReport coveralls
+
+  count_lines:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install cloc
+        run: sudo apt-get install -y cloc
+
+      - name: Run cloc and export JSON
+        run: cloc --json --exclude-dir=.git,test,target . > cloc.json
+
+      - name: Upload cloc.json
+        uses: actions/upload-artifact@v3
+        with:
+          name: cloc-json
+          path: cloc.json

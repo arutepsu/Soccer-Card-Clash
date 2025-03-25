@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.controller.{Events, IController}
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 
-class Prompter(controller: IController) {
+class Prompter(controller: IController) extends IPrompter {
 
   def promptPlayersName(): Unit = {
     println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
@@ -44,7 +44,7 @@ class Prompter(controller: IController) {
     println(f"${playingField.getDataManager.getPlayerField(attacker)}")
     println("===================================")
   }
-  
+
   def promptShowAttackersHand(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
     val attacker = playingField.getAttacker
@@ -210,4 +210,26 @@ class Prompter(controller: IController) {
     println("❌ Invalid selection. Returning empty filename.")
     ""
   }
+}
+trait IPrompter {
+  def promptPlayersName(): Unit
+  def promptRegularAttack(): Unit
+  def promptDoubleAttack(): Unit
+  def promptBoost(): Unit
+  def promptSwap(): Unit
+  def promptNewGame(): Unit
+  def promptPlayingField(): Unit
+  def promptShowAttackersField(): Unit
+  def promptShowAttackersHand(): Unit
+  def promptShowDefendersField(): Unit
+  def promptShowDefendersHand(): Unit
+  def printGameState(): Unit
+  def promptExit(): Unit
+  def promptMainMenu(): Unit
+  def promptCreatePlayers(): Unit
+  def promptLoadGame(factory: ITuiCommandFactory): Unit
+  def showAvailableGames(): Unit
+  def loadSelectedGame(index: Int, factory: ITuiCommandFactory): Unit
+  def promptSaveGame(): Unit
+  def promptUserForFile(): String
 }

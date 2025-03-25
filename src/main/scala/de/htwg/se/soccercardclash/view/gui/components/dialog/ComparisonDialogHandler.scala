@@ -58,21 +58,32 @@ class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
         lastExtraAttackerCard = Some(extraAttackerCard)
         lastExtraDefenderCard = Some(extraDefenderCard)
 
-      case Events.RegularAttack =>
+        import javafx.application.Platform
 
+      case Events.RegularAttack =>
         (lastAttackingCard, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard), Some(defendingCard), Some(attackSuccess)) =>
-            overlay.show(
-              ComparisonDialogGenerator.showSingleComparison(
-                controller.getCurrentGame.getPlayer1,
-                controller.getCurrentGame.getPlayer2,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, attackSuccess, overlay.getPane.getWidth
-              ), true
-            )
+            Platform.runLater(() => {
+              overlay.show(
+                ComparisonDialogGenerator.showSingleComparison(
+                  controller.getCurrentGame.getPlayer1,
+                  controller.getCurrentGame.getPlayer2,
+                  controller.getCurrentGame.getPlayingField.getAttacker,
+                  controller.getCurrentGame.getPlayingField.getDefender,
+                  attackingCard,
+                  defendingCard,
+                  attackSuccess,
+                  overlay.getPane.getWidth
+                ),
+                true
+              )
+            })
 
-          case _ =>
+          case _ => // no-op
         }
+
         resetLastCards()
+
 
       case Events.DoubleAttack =>
 
