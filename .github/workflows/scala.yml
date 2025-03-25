@@ -76,7 +76,10 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git checkout -b badges || git checkout badges
-          git add .github/workflows/cloc.json
+          git add .github/stats/cloc.json
           git commit -m "Update cloc stats" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:badges
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
