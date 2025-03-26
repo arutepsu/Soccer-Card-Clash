@@ -4,8 +4,10 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAct
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.controller.command.memento.base.*
-import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionState
@@ -14,7 +16,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
 import org.mockito.ArgumentMatchers.{eq => meq}
 
 import scala.util.{Failure, Success}

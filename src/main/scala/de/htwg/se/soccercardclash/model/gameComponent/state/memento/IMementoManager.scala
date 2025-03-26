@@ -1,6 +1,6 @@
-package de.htwg.se.soccercardclash.controller.command.memento
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento
 
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 
 trait IMementoManager {
   def createMemento(): Memento

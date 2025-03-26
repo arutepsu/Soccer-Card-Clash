@@ -1,9 +1,10 @@
-package de.htwg.se.soccercardclash.controller.command.memento.factory
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory
 
-import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
-import de.htwg.se.soccercardclash.controller.command.memento.base.{Memento, MementoManager}
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.{IMementoCreator, IMementoCreatorFactory, IMementoRestorer, IMementoRestorerFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.{Memento, MementoManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 
 import javax.inject.{Inject, Singleton}
 

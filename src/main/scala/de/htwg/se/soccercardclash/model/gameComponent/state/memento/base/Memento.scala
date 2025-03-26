@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.controller.command.memento.base
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.base
 
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.model.cardComponent.ICard

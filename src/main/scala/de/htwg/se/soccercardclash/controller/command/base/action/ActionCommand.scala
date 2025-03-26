@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.controller.command.base.action
 
 import de.htwg.se.soccercardclash.controller.command.ICommand
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.IMementoRestorer
-import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
-import de.htwg.se.soccercardclash.controller.command.memento.base.{Memento, MementoManager}
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
 

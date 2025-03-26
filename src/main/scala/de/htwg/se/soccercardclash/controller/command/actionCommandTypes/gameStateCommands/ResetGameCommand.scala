@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.gameSta
 
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
 

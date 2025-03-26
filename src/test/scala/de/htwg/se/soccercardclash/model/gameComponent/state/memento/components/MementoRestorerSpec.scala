@@ -1,7 +1,8 @@
-package de.htwg.se.soccercardclash.controller.command.memento.components
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.components
 
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.{IMementoCreator, IMementoRestorer, MementoRestorer}
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import org.mockito.Mockito.*
@@ -15,6 +16,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.HandCardsQueue
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores

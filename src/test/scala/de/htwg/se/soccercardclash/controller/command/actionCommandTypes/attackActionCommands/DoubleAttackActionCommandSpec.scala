@@ -9,7 +9,8 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+
 import org.mockito.ArgumentMatchers.{anyInt, eq => meq}
 
 class DoubleAttackActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {

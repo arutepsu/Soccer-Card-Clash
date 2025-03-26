@@ -1,8 +1,10 @@
 package de.htwg.se.soccercardclash.module
 
 import com.google.inject.AbstractModule
-import de.htwg.se.soccercardclash.controller.command.memento.factory.*
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.{IMementoManagerFactory, MementoManagerFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import com.google.inject.assistedinject.FactoryModuleBuilder
 
 class MementoModule extends AbstractModule {

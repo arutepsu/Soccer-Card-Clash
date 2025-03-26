@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAct
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands.{RegularSwapActionCommand, ReverseSwapActionCommand}
 import de.htwg.se.soccercardclash.controller.command.base.workflow.{CreateGameWorkflowCommand, LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand, WorkflowCommand}
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.util.Events

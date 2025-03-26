@@ -13,7 +13,10 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
 import scala.util.{Failure, Success}
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 
 // Subclass to expose private members
 private class TestableResetGameCommand(game: IGame, factory: IMementoManagerFactory)

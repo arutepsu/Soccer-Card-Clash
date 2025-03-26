@@ -1,9 +1,9 @@
-package de.htwg.se.soccercardclash.controller.command.memento.base
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.base
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.command.memento.IMementoManager
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.{IMementoCreator, IMementoRestorer}
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*

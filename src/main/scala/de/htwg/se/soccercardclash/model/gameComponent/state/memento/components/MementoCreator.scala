@@ -1,8 +1,9 @@
-package de.htwg.se.soccercardclash.controller.command.memento.componenets
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.components
 
 import com.google.inject.assistedinject.Assisted
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions}
 

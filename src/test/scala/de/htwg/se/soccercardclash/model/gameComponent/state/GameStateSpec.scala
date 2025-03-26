@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playingFiledComponent.{IPlayingField, manager}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers

@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state
 
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.gameComponent.IGame

@@ -13,7 +13,10 @@ import scala.util.{Failure, Success}
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
-import de.htwg.se.soccercardclash.controller.command.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 
 // Subclass to expose protected members
 private class TestableRegularSwapActionCommand(cardIndex: Int, game: IGame, factory: IMementoManagerFactory)

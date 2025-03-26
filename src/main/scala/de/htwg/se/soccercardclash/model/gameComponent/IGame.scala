@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.controller.command.memento.base.Memento
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField

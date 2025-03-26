@@ -1,12 +1,14 @@
-package de.htwg.se.soccercardclash.controller.command.memento.factory
+package de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory
 
-import de.htwg.se.soccercardclash.controller.command.memento.base.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.controller.command.memento.componenets.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.{Memento, MementoManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 class MementoManagerFactorySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "MementoManagerFactory" should {
