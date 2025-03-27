@@ -128,10 +128,7 @@ class PlayingFieldScene(
     children = Seq(
       new BorderPane {
         top = new BorderPane {
-          left = null
-//          center = scoresBar
           center = playersBar
-          right = null
         }
 
         center = new BorderPane {
@@ -150,6 +147,7 @@ class PlayingFieldScene(
       overlay.getPane
     )
   }
+
 
 
   root = mainLayout

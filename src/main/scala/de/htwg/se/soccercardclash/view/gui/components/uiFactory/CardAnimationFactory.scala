@@ -257,18 +257,16 @@ object CardAnimationFactory {
 
   /** Stops the hover effect when the mouse leaves */
   def removeHoverEffect(card: GameCard, selectedIndex: Option[Int], index: Int): Unit = {
-    if (!selectedIndex.contains(index)) { // Do not remove if selected
-      // Stop ongoing animations
+    if (!selectedIndex.contains(index)) {
+
       card.userData match {
         case animation: ScaleTransition => animation.stop()
         case _ =>
       }
 
-      // Reset stored animation to prevent restarting
-      card.userData = null
-
-      // Reset the card effect
-      card.effect = null
+      // Use Option to wrap and reset userData and effect
+      card.userData = Option.empty[Any]
+      card.effect = Option.empty[javafx.scene.effect.Effect].orNull
 
       val zoomOut = new ScaleTransition(Duration(200), card)
       zoomOut.toX = 1.0
@@ -276,6 +274,7 @@ object CardAnimationFactory {
       zoomOut.play()
     }
   }
+
 
 
   /** Handles goalkeeper selection and deselection */

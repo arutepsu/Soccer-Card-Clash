@@ -72,51 +72,50 @@ object SceneManager extends Observable with Observer {
   }
 
   def switchScene(newScene: Scene): Unit = {
-    if (currentScene.contains(newScene)) {
-      return
-    }
+    if (currentScene.contains(newScene)) return
 
-    Platform.runLater(() => {
-      val oldSceneOpt = currentScene
-      // 🗑️ If switching to Hand or Defender scenes, delete old instances
-      newScene match {
-        case _: AttackerHandScene | _: AttackerDefendersScene =>
-          println("🗑️ DEBUG: Clearing old Hand & Defender scene instances")
+      Platform.runLater(() => {
+        val oldSceneOpt = currentScene
+
+        newScene match {
+          case _: AttackerHandScene | _: AttackerDefendersScene =>
+            println("🗑️ DEBUG: Clearing old Hand & Defender scene instances")
+            sceneRegistry.clearHandAndDefenderScenes()
+          case _ =>
+        }
+
+        if (newScene.isInstanceOf[PlayingFieldScene]) {
+          println("🗑️ DEBUG: Clearing AttackerHandScene and AttackerDefendersScene instances")
           sceneRegistry.clearHandAndDefenderScenes()
-        case _ =>
-      }
+        }
 
-      // 🗑️ If switching back to PlayingFieldScene, also delete Hand & Defender scenes
-      if (newScene.isInstanceOf[PlayingFieldScene]) {
-        println("🗑️ DEBUG: Clearing AttackerHandScene and AttackerDefendersScene instances")
-        sceneRegistry.clearHandAndDefenderScenes()
-      }
-      // 🔥 Remove previous observer before switching
-      oldSceneOpt.foreach {
-        case oldObserver: Observer if controller.subscribers.contains(oldObserver) =>
-          println(s"❌ Removing observer: ${oldObserver.getClass.getSimpleName}")
-          controller.remove(oldObserver)
-        case _ =>
-      }
+        oldSceneOpt.foreach {
+          case oldObserver: Observer if controller.subscribers.contains(oldObserver) =>
+            println(s"❌ Removing observer: ${oldObserver.getClass.getSimpleName}")
+            controller.remove(oldObserver)
+          case _ =>
+        }
 
-      lastSceneWidth = stage.width()
-      lastSceneHeight = stage.height()
+        lastSceneWidth = stage.width()
+        lastSceneHeight = stage.height()
 
-      val fadeOut = oldSceneOpt match {
-        case Some(oldScene) if oldScene.root.value != null =>
-          val fadeOutTransition = new FadeTransition(Duration(200), oldScene.root.value)
-          fadeOutTransition.toValue = 0.2
-          fadeOutTransition
-        case _ => null
-      }
+        val maybeFadeOut = for {
+          oldScene <- oldSceneOpt
+          rootNode <- Option(oldScene.root.value)
+        } yield {
+          val fade = new FadeTransition(Duration(200), rootNode)
+          fade.toValue = 0.2
+          fade
+        }
 
-      if (fadeOut != null) {
-        fadeOut.play()
-        fadeOut.setOnFinished(_ => applySceneTransition(newScene))
-      } else {
-        applySceneTransition(newScene)
-      }
-    })
+        maybeFadeOut match {
+          case Some(fadeOut) =>
+            fadeOut.play()
+            fadeOut.setOnFinished(_ => applySceneTransition(newScene))
+          case None =>
+            applySceneTransition(newScene)
+        }
+      })
   }
 
 
