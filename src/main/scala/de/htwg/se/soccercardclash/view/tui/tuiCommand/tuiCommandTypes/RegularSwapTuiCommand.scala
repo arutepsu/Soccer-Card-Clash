@@ -3,10 +3,11 @@ package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
+import scala.util.{Try, Success, Failure}
 
 class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false
-  
+
   override def execute(input: Option[String]): Unit = {
     val attacker = controller.getCurrentGame.getPlayingField.getAttacker
     val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
@@ -25,24 +26,21 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
       waitingForIndex = true
     }
   }
-  
+
   def handleSwapInput(input: String): Unit = {
     if (!waitingForIndex) return
 
     val attacker = controller.getCurrentGame.getPlayingField.getAttacker
     val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
 
-    try {
-      val position = input.toInt
-      if (position >= 0 && position < handCards.size) {
+    Try(input.toInt) match {
+      case Success(position) if position >= 0 && position < handCards.size =>
         println(s"✅ Swapping card at position: $position with last card (${handCards.last})")
         controller.regularSwap(position)
         println("✅ Cards are swapped!")
-      } else {
+      case Success(_) =>
         println("❌ Invalid index! Choose a valid hand card index.")
-      }
-    } catch {
-      case _: NumberFormatException =>
+      case Failure(_) =>
         println("❌ Error: Invalid input! Enter a number corresponding to the card index.")
     }
 

@@ -3,6 +3,7 @@ package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
+import scala.util.{Try, Success, Failure}
 
 class BoostTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
@@ -19,16 +20,13 @@ class BoostTuiCommand(controller: IController) extends ITuiCommand {
 
       input match {
         case Some(indexStr) =>
-          try {
-            val position = indexStr.toInt
-            if (position < defenders.size) {
+          Try(indexStr.toInt) match {
+            case Success(position) if position < defenders.size =>
               println(s"✅ Boosting defender at position: $position")
               controller.boostDefender(position)
-            } else {
+            case Success(_) =>
               println("❌ Invalid index! Choose from the available defenders.")
-            }
-          } catch {
-            case _: NumberFormatException =>
+            case Failure(_) =>
               println("❌ Error: Invalid boost format! Expected `:boost <position>`.")
           }
         case None =>
