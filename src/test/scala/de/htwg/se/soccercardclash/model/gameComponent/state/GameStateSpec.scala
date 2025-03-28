@@ -85,8 +85,8 @@ class GameStateSpec extends AnyWordSpec with Matchers with MockitoSugar {
       state.player2Score shouldBe 4
 
       val xml = state.toXml
-      (xml \ "player1Score").text shouldBe "3"
-      (xml \ "player2Score").text shouldBe "4"
+      (xml \ "player1Score").headOption.map(_.text.trim.toInt) shouldBe Some(3)
+      (xml \ "player2Score").headOption.map(_.text.trim.toInt) shouldBe Some(4)
 
       val json = state.toJson
       (json \ "player1Score").as[Int] shouldBe 3

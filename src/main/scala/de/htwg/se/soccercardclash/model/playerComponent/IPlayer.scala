@@ -18,7 +18,7 @@ trait IPlayer extends Serializable {
 
   def setName(newName: String): IPlayer
 
-  def performAction(action: PlayerActionPolicies): IPlayer
+  def performAction(action: PlayerActionPolicies): IPlayer // delegated to PlayerActionManager, adjust in MementoManager as well
 
   def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer
 
