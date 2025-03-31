@@ -37,7 +37,6 @@ class XmlComponentSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val testFile = "games/test.xml"
       val dummyXml = <game><player>Bob</player></game>
 
-      // Write dummy XML to file
       Using(new PrintWriter(new File(testFile))) { pw =>
         pw.write(dummyXml.toString())
       }
@@ -55,7 +54,7 @@ class XmlComponentSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "return None if deserialization fails" in {
       val testFile = "games/broken.xml"
-      val brokenXml = "<broken><not-elem></broken>" // Malformed
+      val brokenXml = "<broken><not-elem></broken>"
 
       Using(new PrintWriter(new File(testFile))) { pw =>
         pw.write(brokenXml)
