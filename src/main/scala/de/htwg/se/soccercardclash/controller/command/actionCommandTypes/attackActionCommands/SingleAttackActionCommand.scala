@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
 
 import scala.util.{Failure, Success, Try}
 class SingleAttackActionCommand(defenderIndex: Int, game: IGame, mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {

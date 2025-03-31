@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.module
 
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.base.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import com.google.inject.AbstractModule
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
 
   class PlayingFieldModule extends AbstractModule {
     

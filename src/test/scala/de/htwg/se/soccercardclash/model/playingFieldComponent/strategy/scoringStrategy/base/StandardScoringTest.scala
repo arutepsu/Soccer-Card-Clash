@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.scoringStrategy.base
 
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IScoringStrategy
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.StandardScoring
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IScoringStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.base.StandardScoring
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

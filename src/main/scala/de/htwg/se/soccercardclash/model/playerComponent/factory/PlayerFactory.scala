@@ -9,11 +9,11 @@ import play.api.libs.json._
 
 @Singleton
 class PlayerFactory @Inject()() extends IPlayerFactory {
-  override def createPlayer(name: String, cards: List[ICard]): IPlayer = {
-    Player(name, cards)
+  override def createPlayer(name: String): IPlayer = {
+    Player(name)
   }
 }
 trait IPlayerFactory {
-  def createPlayer(name: String, cards: List[ICard]): IPlayer
+  def createPlayer(name: String): IPlayer
 
 }

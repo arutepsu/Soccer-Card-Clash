@@ -11,8 +11,8 @@ val dataManager = field.getDataManager
 val attackManager = field.getActionManager
 val playerActionService = attackManager.getPlayerActionService
 
-val attacker = field.getAttacker
-val defender = field.getDefender
+val attacker = field.getRoles.attacker
+val defender = field.getRoles.defender
 
 def printAttackersDefenderField(phase: String): Unit = {
   val defenders = dataManager.getPlayerDefenders(attacker).map(_.toString)

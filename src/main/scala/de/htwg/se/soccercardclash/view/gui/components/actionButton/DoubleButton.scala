@@ -10,18 +10,18 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
                         ): Unit = {
 
     val defenderFieldBar =
-      if (playingFieldScene.playingField.getDefender == playingFieldScene.player1)
+      if (playingFieldScene.playingField.getRoles.defender == playingFieldScene.player1)
         playingFieldScene.player1FieldBar
       else
         playingFieldScene.player2FieldBar
-    val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getDefender)
+    val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getRoles.defender)
 
     if (defenderCards.nonEmpty) {
       defenderFieldBar.selectedDefenderIndex match {
         case Some(defenderIndex) =>
           println(s"🔥 Attacking defender at index: $defenderIndex")
           controller.executeDoubleAttackCommand(defenderIndex)
-          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
+          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
           defenderFieldBar.resetSelectedDefender()
 
         case None =>
@@ -31,7 +31,7 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
     } else {
       println("⚽ All defenders are gone! Attacking the goalkeeper!")
       controller.executeDoubleAttackCommand(0)
-      playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getAttacker.name, playingFieldScene.playingField.getDefender.name)
+      playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
     }
   }
 }

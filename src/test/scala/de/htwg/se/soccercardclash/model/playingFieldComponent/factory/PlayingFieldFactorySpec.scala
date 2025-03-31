@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.factory
 
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.{IPlayingFieldFactory, IPlayingFieldManagerFactory, PlayingFieldFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.{IPlayingFieldFactory, IPlayingFieldManagerFactory, PlayingFieldFactory}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,8 +44,8 @@ class PlayingFieldFactorySpec extends AnyWordSpec with Matchers with MockitoSuga
 
       playingField should not be null
       playingField shouldBe a[PlayingField]
-      playingField.getAttacker shouldBe player1
-      playingField.getDefender shouldBe player2
+      playingField.getRoles.attacker shouldBe player1
+      playingField.getRoles.defender shouldBe player2
       playingField.getDataManager shouldBe mockDataManager
       playingField.getActionManager shouldBe mockActionManager
       playingField.getRoles shouldBe mockRolesManager

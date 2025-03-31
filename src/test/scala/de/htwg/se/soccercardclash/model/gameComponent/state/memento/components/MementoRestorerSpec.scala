@@ -9,9 +9,9 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
@@ -19,8 +19,9 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.HandCardsQue
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 class ObservableMockPlayingField extends Observable with IPlayingField {
+
   var lastObservedEvent: Option[ObservableEvent] = None
 
   override def notifyObservers(e: ObservableEvent): Unit = {
@@ -28,13 +29,18 @@ class ObservableMockPlayingField extends Observable with IPlayingField {
     super.notifyObservers(e)
   }
 
-  // All other methods throw by default unless overridden
-  override def getRoles: IRolesManager = ???
-  override def getDataManager: IDataManager = ???
-  override def getScores: IPlayerScores = ???
-  override def getActionManager: IActionManager = ???
-  override def getAttacker: IPlayer = ???
-  override def getDefender: IPlayer = ???
+  // Provide mocks instead of throwing
+  private val dummyRoles = mock(classOf[IRolesManager])
+  private val dummyDataManager = mock(classOf[IDataManager])
+  private val dummyScores = mock(classOf[IPlayerScores])
+  private val dummyActionManager = mock(classOf[IActionManager])
+  private val dummyPlayer = mock(classOf[IPlayer])
+
+  override def getRoles: IRolesManager = dummyRoles
+  override def getDataManager: IDataManager = dummyDataManager
+  override def getScores: IPlayerScores = dummyScores
+  override def getActionManager: IActionManager = dummyActionManager
+
   override def reset(): Unit = {}
   override def setPlayingField(): Unit = {}
 }

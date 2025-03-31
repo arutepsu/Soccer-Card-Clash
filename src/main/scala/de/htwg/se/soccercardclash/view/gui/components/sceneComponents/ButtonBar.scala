@@ -9,7 +9,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, DoubleButton, SingleButton}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog

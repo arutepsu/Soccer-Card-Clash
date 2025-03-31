@@ -19,23 +19,23 @@ class MementoCreator @Inject()(@Assisted game: IGame) extends IMementoCreator {
     val playingField = game.getPlayingField
 
     Memento(
-      attacker = playingField.getAttacker,
-      defender = playingField.getDefender,
-      player1Defenders = playingField.getDataManager.getPlayerDefenders(playingField.getAttacker).map(_.copy()),
-      player2Defenders = playingField.getDataManager.getPlayerDefenders(playingField.getDefender).map(_.copy()),
-      player1Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getAttacker).map(_.copy()),
-      player2Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getDefender).map(_.copy()),
-      player1Hand = playingField.getDataManager.getPlayerHand(playingField.getAttacker).map(_.copy()).toList,
-      player2Hand = playingField.getDataManager.getPlayerHand(playingField.getDefender).map(_.copy()).toList,
+      attacker = playingField.getRoles.attacker,
+      defender = playingField.getRoles.defender,
+      player1Defenders = playingField.getDataManager.getPlayerDefenders(playingField.getRoles.attacker).map(_.copy()),
+      player2Defenders = playingField.getDataManager.getPlayerDefenders(playingField.getRoles.defender).map(_.copy()),
+      player1Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getRoles.attacker).map(_.copy()),
+      player2Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getRoles.defender).map(_.copy()),
+      player1Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.attacker).map(_.copy()).toList,
+      player2Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.defender).map(_.copy()).toList,
       player1Score = playingField.getScores.getScorePlayer1,
       player2Score = playingField.getScores.getScorePlayer2,
 
-      player1Actions = playingField.getAttacker.actionStates.map {
+      player1Actions = playingField.getRoles.attacker.actionStates.map {
         case (action, CanPerformAction(remainingUses)) => action -> remainingUses
         case (action, OutOfActions) => action -> 0
       },
 
-      player2Actions = playingField.getDefender.actionStates.map {
+      player2Actions = playingField.getRoles.defender.actionStates.map {
         case (action, CanPerformAction(remainingUses)) => action -> remainingUses
         case (action, OutOfActions) => action -> 0
       }

@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.factory
 
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.IPlayingFieldFactory
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.IPlayingFieldFactory
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import org.scalatest.matchers.should.Matchers
@@ -9,7 +9,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import play.api.libs.json._
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
 import scala.xml.Elem
 import org.mockito.ArgumentMatchers.any
 

@@ -12,11 +12,11 @@ import de.htwg.se.soccercardclash.model.gameComponent.io.IGamePersistence
 import de.htwg.se.soccercardclash.model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{ActionManager, IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{ActionManager, IActionManager}
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
 import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer

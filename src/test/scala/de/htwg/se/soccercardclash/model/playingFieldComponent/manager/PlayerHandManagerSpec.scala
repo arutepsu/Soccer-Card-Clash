@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.PlayerHandManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.PlayerHandManager
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.should.Matchers
@@ -22,6 +22,10 @@ class PlayerHandManagerSpec extends AnyWordSpec with Matchers with MockitoSugar 
 
       val player1 = mock[IPlayer]
       val player2 = mock[IPlayer]
+
+      when(player1.name).thenReturn("Alice")
+      when(player2.name).thenReturn("Bob")
+
       val cards1 = List(mock[ICard], mock[ICard])
       val cards2 = List(mock[ICard])
       val hand1 = mock[IHandCardsQueue]

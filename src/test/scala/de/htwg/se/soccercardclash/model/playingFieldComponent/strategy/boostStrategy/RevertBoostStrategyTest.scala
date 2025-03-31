@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStrategy
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base.RevertCard
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.RevertCard
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.{IRevertStrategy, RevertBoostStrategy, RevertCardActionCommand}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{IRevertStrategy, RevertBoostStrategy, RevertCardActionCommand}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

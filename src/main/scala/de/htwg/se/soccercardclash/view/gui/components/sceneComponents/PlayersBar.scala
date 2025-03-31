@@ -29,7 +29,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   updateBar()
 
   def updateAttackerHighlight(): Unit = {
-    val currentDefender = controller.getCurrentGame.getPlayingField.getDefender
+    val currentDefender = controller.getCurrentGame.getPlayingField.getRoles.defender
 
     children.foreach {
       case node: javafx.scene.layout.VBox =>
@@ -50,8 +50,8 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
     playerScoreLabels = Map()
 
     val playingField = controller.getCurrentGame.getPlayingField
-    val player1 = playingField.getAttacker
-    val player2 = playingField.getDefender
+    val player1 = playingField.getRoles.attacker
+    val player2 = playingField.getRoles.defender
 
     val players = List(player1, player2)
 
@@ -104,7 +104,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
 
   def refreshActionStates(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
-    val players = List(playingField.getAttacker, playingField.getDefender)
+    val players = List(playingField.getRoles.attacker, playingField.getRoles.defender)
 
     players.foreach { player =>
       actionsLabels.get(player).foreach { actionsLabel =>
@@ -119,9 +119,9 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
 
   def refreshScores(): Unit = {
     val scores = controller.getCurrentGame.getPlayingField.getScores
-    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getAttacker)
+    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getRoles.attacker)
       .foreach(_.text = s"Score: ${scores.getScorePlayer1}")
-    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getDefender)
+    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getRoles.defender)
       .foreach(_.text = s"Score: ${scores.getScorePlayer2}")
   }
 

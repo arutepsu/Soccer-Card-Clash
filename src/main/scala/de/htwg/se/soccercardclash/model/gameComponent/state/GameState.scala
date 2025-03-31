@@ -7,9 +7,9 @@ import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 
 import play.api.libs.json.*
@@ -42,9 +42,10 @@ trait IGameState extends Serializable {
 
   def toXml: Elem = {
     <root>
-      {playingField.toXml}<player1Hand>
-      {player1Hand.getCards.map(_.toXml)}
-    </player1Hand>
+        {playingField.toXml}
+      <player1Hand>
+        {player1Hand.getCards.map(_.toXml)}
+      </player1Hand>
       <player2Hand>
         {player2Hand.getCards.map(_.toXml)}
       </player2Hand>

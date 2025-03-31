@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.controller.command.factory.ICommandFactory
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.util.{Events, Observer, UndoManager}
 
 

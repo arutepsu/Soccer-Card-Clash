@@ -16,74 +16,79 @@ import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
 import scala.collection.mutable
 
 class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   "createGame" should "initialize players and playing field correctly" in {
-    val playerFactory = mock[IPlayerFactory]
+    val playerFactory = new PlayerFactory() // using the real one
+
     val playingFieldFactory = mock[IPlayingFieldFactory]
     val deckFactory = mock[IDeckFactory]
 
-    val player1 = mock[IPlayer]
-    val player2 = mock[IPlayer]
+    val dummyCard = mock[ICard]
+    val deck = scala.collection.mutable.Queue.fill(52)(dummyCard)
+
     val playingField = mock[IPlayingField]
     val rolesManager = mock[IRolesManager]
     val dataManager = mock[IDataManager]
     val actionManager = mock[IActionManager]
-    val dummyCard = mock[ICard]
-    val dummyHand = List.fill(26)(dummyCard)
-
-    // Return a real deck so .dequeue() works
-    val deck = scala.collection.mutable.Queue.fill(52)(dummyCard)
 
     when(deckFactory.createDeck()).thenReturn(deck)
+    when(deckFactory.shuffleDeck(deck)).thenAnswer(_ => ())
 
-    when(playerFactory.createPlayer(any(), any())).thenReturn(player1, player2)
-    when(player1.getCards).thenReturn(dummyHand)
-    when(player2.getCards).thenReturn(dummyHand)
+    // Let the real factory handle player creation
+    val player1 = playerFactory.createPlayer("Alice")
+    val player2 = playerFactory.createPlayer("Bob")
 
     when(playingFieldFactory.createPlayingField(player1, player2)).thenReturn(playingField)
     when(playingField.getRoles).thenReturn(rolesManager)
     when(playingField.getDataManager).thenReturn(dataManager)
     when(playingField.getActionManager).thenReturn(actionManager)
 
-
     val initializer = new GameInitializer(playerFactory, playingFieldFactory, deckFactory)
-
     initializer.createGame("Alice", "Bob")
 
+    // Assertions
     initializer.getPlayer1 shouldBe player1
     initializer.getPlayer2 shouldBe player2
     initializer.getPlayingField shouldBe playingField
     initializer.getActionManager shouldBe actionManager
 
+    verify(deckFactory).shuffleDeck(deck)
     verify(rolesManager).setRoles(player1, player2)
-    verify(dataManager).initializePlayerHands(dummyHand, dummyHand)
     verify(playingField).setPlayingField()
+
+    verify(dataManager).initializePlayerHands(
+      argThat((hand: List[ICard]) => hand.size == 26),
+      argThat((hand: List[ICard]) => hand.size == 26)
+    )
   }
 
   "initializeFromState" should "set up the game state from a saved state" in {
-    val playerFactory = mock[IPlayerFactory]
+    val playerFactory = new PlayerFactory() // using the real one
+
     val playingFieldFactory = mock[IPlayingFieldFactory]
     val deckFactory = mock[IDeckFactory]
 
-    val state = mock[IGameState]
-    val player1 = mock[IPlayer]
-    val player2 = mock[IPlayer]
+    val player1 = playerFactory.createPlayer("Alice")
+    val player2 = playerFactory.createPlayer("Bob")
 
-    val player1Hand = new HandCardsQueue(List(mock[ICard]))
-    val player2Hand = new HandCardsQueue(List(mock[ICard]))
+    val player1Card = mock[ICard]
+    val player2Card = mock[ICard]
+    val player1Hand = new HandCardsQueue(List(player1Card))
+    val player2Hand = new HandCardsQueue(List(player2Card))
     val player1Defenders = List(mock[ICard])
     val player2Defenders = List(mock[ICard])
     val player1GK = Some(mock[ICard])
     val player2GK = Some(mock[ICard])
 
+    val state = mock[IGameState]
     val playingField = mock[IPlayingField]
     val dataManager = mock[IDataManager]
 
@@ -103,7 +108,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     initializer.initializeFromState(state)
 
-    verify(dataManager).initializePlayerHands(player1Hand.toList, player2Hand.toList)
+    verify(dataManager).initializePlayerHands(List(player1Card), List(player2Card))
     verify(dataManager).setPlayerDefenders(player1, player1Defenders)
     verify(dataManager).setPlayerDefenders(player2, player2Defenders)
     verify(dataManager).setPlayerGoalkeeper(player1, player1GK)

@@ -12,42 +12,28 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "A Player" should {
 
-    "return the correct name and cards" in {
-      val card1 = mock[ICard]
-      val card2 = mock[ICard]
-      val player = Player("Alice", List(card1, card2))
-
+    "return the correct name" in {
+      val player = Player("Alice")
       player.name shouldBe "Alice"
-      player.getCards should contain inOrderOnly (card1, card2)
     }
 
     "update its name correctly" in {
-      val player = Player("Bob", Nil)
+      val player = Player("Bob")
       val renamed = player.setName("Robert")
 
       renamed.name shouldBe "Robert"
-      renamed.cards shouldBe player.cards
-    }
-
-    "update its hand cards correctly" in {
-      val card1 = mock[ICard]
-      val card2 = mock[ICard]
-
-      val player = Player("Charlie", List())
-      val updated = player.setHandCards(List(card1, card2))
-
-      updated.getCards should contain theSameElementsInOrderAs List(card1, card2)
+      renamed.getActionStates shouldBe player.getActionStates
     }
 
     "update action states correctly" in {
-      val player = Player("Dana", Nil)
+      val player = Player("Dana")
       val updated = player.updateActionState(PlayerActionPolicies.Boost, OutOfActions)
 
       updated.getActionStates(PlayerActionPolicies.Boost) shouldBe OutOfActions
     }
 
     "replace all action states when setActionStates is used" in {
-      val player = Player("Eva", Nil)
+      val player = Player("Eva")
       val newStates = Map(PlayerActionPolicies.Swap -> CanPerformAction(1))
       val updated = player.setActionStates(newStates)
 
@@ -55,7 +41,7 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "call performAction on the current state" in {
-      val player = Player("Frank", Nil)
+      val player = Player("Frank")
       val policy = PlayerActionPolicies.Boost
       val mockedState = mock[PlayerActionState]
 
@@ -69,16 +55,16 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "not change if an unknown action is performed" in {
-      val player = Player("Grace", Nil, Map.empty)
+      val player = Player("Grace", Map.empty)
       val unchanged = player.performAction(PlayerActionPolicies.Boost)
 
       unchanged shouldBe player
     }
 
     "have proper equality and hashCode based on name only" in {
-      val p1 = Player("Hank", Nil)
-      val p2 = Player("Hank", List(mock[ICard]))
-      val p3 = Player("Ivy", Nil)
+      val p1 = Player("Hank")
+      val p2 = Player("Hank", Map(PlayerActionPolicies.Swap -> OutOfActions))
+      val p3 = Player("Ivy")
 
       p1 shouldEqual p2
       p1 should not equal p3
@@ -86,22 +72,19 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "have correct toString format" in {
-      val card = mock[ICard]
-      when(card.toString).thenReturn("Ace_of_Spades")
-
-      val player = Player("Jack", List(card))
-
-      player.toString should include ("Player: Jack")
-      player.toString should include ("Ace_of_Spades")
+      val player = Player("Jack")
+      player.toString shouldBe "Player: Jack"
     }
+
     "not be equal to a non-Player object" in {
-      val player = Player("Leo", Nil)
+      val player = Player("Leo")
       val notAPlayer = "Leo"
 
       player.equals(notAPlayer) shouldBe false
     }
+
     "not be equal to null" in {
-      val player = Player("Mia", Nil)
+      val player = Player("Mia")
       player.equals(null) shouldBe false
     }
   }

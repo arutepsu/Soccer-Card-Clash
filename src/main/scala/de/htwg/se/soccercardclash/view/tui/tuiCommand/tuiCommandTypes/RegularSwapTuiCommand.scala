@@ -9,7 +9,7 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForIndex: Boolean = false
 
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val attacker = controller.getCurrentGame.getPlayingField.getRoles.attacker
     val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
 
     if (handCards.isEmpty) {
@@ -30,7 +30,7 @@ class RegularSwapTuiCommand(controller: IController) extends ITuiCommand {
   def handleSwapInput(input: String): Unit = {
     if (!waitingForIndex) return
 
-    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val attacker = controller.getCurrentGame.getPlayingField.getRoles.attacker
     val handCards = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerHand(attacker)
 
     Try(input.toInt) match {

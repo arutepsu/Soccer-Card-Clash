@@ -7,7 +7,7 @@ import scala.util.{Try, Success, Failure}
 
 class BoostTuiCommand(controller: IController) extends ITuiCommand {
   override def execute(input: Option[String]): Unit = {
-    val attacker = controller.getCurrentGame.getPlayingField.getAttacker
+    val attacker = controller.getCurrentGame.getPlayingField.getRoles.attacker
     val defenders = controller.getCurrentGame.getPlayingField.getDataManager.getPlayerDefenders(attacker)
 
     if (defenders.isEmpty) {

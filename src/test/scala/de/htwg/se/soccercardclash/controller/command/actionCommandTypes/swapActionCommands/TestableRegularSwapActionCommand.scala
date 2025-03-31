@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapAct
 import org.mockito.ArgumentMatchers.{eq => meq}
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -12,7 +12,7 @@ import org.mockito.ArgumentMatchers._
 import scala.util.{Failure, Success}
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento

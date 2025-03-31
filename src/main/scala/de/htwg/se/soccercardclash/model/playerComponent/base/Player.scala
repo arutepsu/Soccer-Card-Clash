@@ -8,13 +8,11 @@ import play.api.libs.json._
 import scala.xml._
 case class Player(
                    name: String,
-                   cards: List[ICard],
                    actionStates: Map[PlayerActionPolicies, PlayerActionState] =
                    PlayerActionPolicies.values.map(action => action -> CanPerformAction(action.maxUses)).toMap
                  ) extends IPlayer {
 
-  override def toString: String = s"Player: $name, Cards: ${cards.mkString(", ")}"
-  override def getCards: List[ICard] = cards
+  override def toString: String = s"Player: $name"
 
   override def setName(newName: String): IPlayer = this.copy(name = newName)
 
@@ -29,8 +27,6 @@ case class Player(
   override def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer = {
     this.copy(actionStates = actionStates.updated(action, newState))
   }
-
-  override def setHandCards(newCards: List[ICard]): IPlayer = this.copy(cards = newCards)
 
   override def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer = {
     this.copy(actionStates = newActionStates)

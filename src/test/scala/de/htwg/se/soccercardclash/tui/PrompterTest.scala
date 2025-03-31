@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IRolesManager
 import scala.collection.mutable.Queue
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -13,8 +13,8 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import org.mockito.Mockito.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
 import de.htwg.se.soccercardclash.view.tui.Prompter
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 
@@ -90,7 +90,10 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     when(mockGame.getPlayingField).thenReturn(mockField)
 
     // Mock the getAttacker method
-    when(mockField.getAttacker).thenReturn(mockAttacker)
+    val mockRoles = mock(classOf[IRolesManager])
+    when(mockRoles.attacker).thenReturn(mockAttacker)
+    when(mockField.getRoles).thenReturn(mockRoles)
+
     when(mockAttacker.name).thenReturn("Attacker")
 
     // Mock getDataManager to return a mock IDataManager
@@ -118,9 +121,12 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockCard1 = mock(classOf[ICard])
     val mockCard2 = mock(classOf[ICard])
 
+    val mockRolesManager = mock(classOf[IRolesManager])
+    when(mockRolesManager.defender).thenReturn(mockDefender)
+    when(mockField.getRoles).thenReturn(mockRolesManager)
+
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
-    when(mockField.getDefender).thenReturn(mockDefender)
     when(mockDefender.name).thenReturn("Defender")
     when(mockField.getDataManager).thenReturn(mockDataManager)
 
@@ -136,7 +142,8 @@ class PrompterTest extends AnyFlatSpec with Matchers {
   }
 
 
-//  it should "print current game state" in {
+
+  //  it should "print current game state" in {
 //    val mockController = mock(classOf[IController])
 //    val mockGame = mock(classOf[IGame])
 //    val mockField = mock(classOf[PlayingField])

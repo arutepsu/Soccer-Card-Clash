@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.animation.ScaleTransition
 import scalafx.geometry.Pos
@@ -23,7 +23,7 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
   this.getStylesheets.add(Styles.playersFieldBarCss)
   styleClass.add("players-field-bar")
   private val statusLabel = new Label {
-    text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
+    text = s"${playingField.getRoles.attacker.name} attacks ${playingField.getRoles.defender.name}!"
     styleClass.add("status-label")
   }
 
@@ -76,7 +76,7 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
       defenderCard.onMouseExited = (_: MouseEvent) =>
         CardAnimationFactory.removeHoverEffect(defenderCard, _selectedDefenderIndex, index)
 
-      if (playingField.getDefender == player) {
+      if (playingField.getRoles.defender == player) {
         defenderCard.onMouseClicked = (_: MouseEvent) => {
           if (_selectedDefenderIndex.contains(index)) {
             println(s"❌ Deselected: $card (Index: $index)")
@@ -142,8 +142,8 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
 
   /** **Update the entire field dynamically WITHOUT updating goalkeeper** */
   def updateBar(): Unit = {
-    val newDefender = playingField.getDefender
-    val newAttacker = playingField.getAttacker
+    val newDefender = playingField.getRoles.defender
+    val newAttacker = playingField.getRoles.attacker
     // Check if the player is now the new defender
     val isNowDefender = player == newDefender
 
@@ -159,6 +159,6 @@ class PlayersFieldBar(val player: IPlayer, playingField: IPlayingField) extends 
 
   /** **Update game status dynamically** */
   def updateGameStatus(): Unit = {
-    statusLabel.text = s"${playingField.getAttacker.name} attacks ${playingField.getDefender.name}!"
+    statusLabel.text = s"${playingField.getRoles.attacker.name} attacks ${playingField.getRoles.defender.name}!"
   }
 }

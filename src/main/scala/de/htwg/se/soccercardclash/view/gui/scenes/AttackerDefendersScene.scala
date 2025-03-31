@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}

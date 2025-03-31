@@ -86,12 +86,12 @@ class Tui(controller: IController) extends Observer {
     commandKey match {
       case TuiKeys.Attack.key =>
         promptState = PromptState.SingleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getDefender)
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
         prompter.promptRegularAttack()
 
       case TuiKeys.DoubleAttack.key =>
         controller.notifyObservers(Events.DoubleAttack)
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getDefender)
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
         prompter.promptDoubleAttack()
 
       case TuiKeys.BoostDefender.key =>
@@ -181,17 +181,17 @@ class Tui(controller: IController) extends Observer {
 
       case Events.RegularAttack =>
         promptState = PromptState.SingleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getDefender)
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
         prompter.promptShowAttackersHand()
 
       case Events.DoubleAttack =>
         promptState = PromptState.DoubleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getDefender)
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
         prompter.promptShowAttackersHand()
 
       case Events.BoostDefender =>
         promptState = PromptState.Boost
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getAttacker)
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.attacker)
 
       case Events.RegularSwap =>
         promptState = PromptState.RegularSwap

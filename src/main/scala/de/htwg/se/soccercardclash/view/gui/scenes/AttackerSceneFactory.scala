@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 
 object AttackerSceneFactory {
   

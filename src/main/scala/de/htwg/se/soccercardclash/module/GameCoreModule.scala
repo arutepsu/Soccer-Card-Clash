@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.base.Game
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import com.google.inject.AbstractModule
 

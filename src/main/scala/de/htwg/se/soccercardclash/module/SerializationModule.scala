@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonCompon
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
 import de.htwg.se.soccercardclash.model.gameComponent.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameStateFactory
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.{IPlayingFieldFactory, PlayingFieldDeserializer}
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer

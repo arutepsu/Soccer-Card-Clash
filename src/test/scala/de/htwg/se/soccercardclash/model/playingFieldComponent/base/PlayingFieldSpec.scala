@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.base
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.IPlayingFieldManagerFactory
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.IPlayingFieldManagerFactory
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -38,8 +38,8 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       val field = new PlayingField(player1, player2)
 
-      field.getAttacker shouldBe player1
-      field.getDefender shouldBe player2
+      field.getRoles.attacker shouldBe player1
+      field.getRoles.defender shouldBe player2
       field.getDataManager shouldBe dataManager
       field.getActionManager shouldBe actionManager
       field.getRoles shouldBe rolesManager

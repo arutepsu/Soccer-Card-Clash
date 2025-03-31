@@ -3,15 +3,15 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IDataManager, IPlayerFieldManager, IPlayerHandManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.DataManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IDataManager, IPlayerFieldManager, IPlayerHandManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.DataManager
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IRolesManager
 import scala.collection.mutable
 
 class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
@@ -25,14 +25,19 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val mockPlayer = mock[IPlayer]
       val mockHand = mock[IHandCardsQueue]
 
-      when(mockField.getAttacker).thenReturn(mockPlayer)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(mockPlayer)
+      when(mockField.getRoles).thenReturn(mockRoles)
+
       when(mockHandManager.getPlayerHand(mockPlayer)).thenReturn(mockHand)
 
       val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
 
+      // Ensure we're querying the exact mockPlayer
       dataManager.getPlayerHand(mockPlayer) shouldBe mockHand
       verify(mockHandManager).getPlayerHand(mockPlayer)
     }
+
 
     "delegate getPlayerDefenders to fieldManager" in {
       val mockField = mock[IPlayingField]
@@ -59,8 +64,11 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val cards1 = mutable.Queue[ICard]()
       val cards2 = mutable.Queue[ICard]()
 
-      when(mockField.getAttacker).thenReturn(mockPlayer1)
-      when(mockField.getDefender).thenReturn(mockPlayer2)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(mockPlayer1)
+      when(mockRoles.defender).thenReturn(mockPlayer2)
+      when(mockField.getRoles).thenReturn(mockRoles)
+
       when(mockHandManager.getPlayerHand(mockPlayer1)).thenReturn(mockQueue1)
       when(mockHandManager.getPlayerHand(mockPlayer2)).thenReturn(mockQueue2)
       when(mockQueue1.getCards).thenReturn(cards1)
@@ -84,8 +92,11 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val cards1 = List(mock[ICard])
       val cards2 = List(mock[ICard])
 
-      when(mockField.getAttacker).thenReturn(p1)
-      when(mockField.getDefender).thenReturn(p2)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(p1)
+      when(mockRoles.defender).thenReturn(p2)
+      when(mockField.getRoles).thenReturn(mockRoles)
+
 
       val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
 
@@ -100,12 +111,18 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val attacker = mock[IPlayer]
       val card = mock[ICard]
 
-      when(mockField.getAttacker).thenReturn(attacker)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(attacker)
+      when(mockField.getRoles).thenReturn(mockRoles)
+
+      // ✅ Missing piece: what getAttackingCard returns
       when(mockHandManager.getAttackingCard(attacker)).thenReturn(card)
 
       val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+
       dataManager.getAttackingCard shouldBe card
     }
+
     "return defender card from handManager" in {
       val mockField = mock[IPlayingField]
       val mockHandManager = mock[IPlayerHandManager]
@@ -113,12 +130,18 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val defender = mock[IPlayer]
       val card = mock[ICard]
 
-      when(mockField.getDefender).thenReturn(defender)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.defender).thenReturn(defender)
+      when(mockField.getRoles).thenReturn(mockRoles)
+
+      // ✅ Missing: return card from hand manager
       when(mockHandManager.getDefenderCard(defender)).thenReturn(card)
 
       val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+
       dataManager.getDefenderCard shouldBe card
     }
+
     "set player hand via handManager" in {
       val player = mock[IPlayer]
       val hand = mock[IHandCardsQueue]
@@ -255,7 +278,9 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val field = mock[IPlayingField]
       val attacker = mock[IPlayer]
 
-      when(field.getAttacker).thenReturn(attacker)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(attacker)
+      when(field.getRoles).thenReturn(mockRoles)
 
       val dataManager = new DataManager(field, mock[IPlayerHandManager], mock[IPlayerFieldManager])
       dataManager.getPlayer1 shouldBe attacker
@@ -265,7 +290,9 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val field = mock[IPlayingField]
       val defender = mock[IPlayer]
 
-      when(field.getDefender).thenReturn(defender)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.defender).thenReturn(defender)
+      when(field.getRoles).thenReturn(mockRoles)
 
       val dataManager = new DataManager(field, mock[IPlayerHandManager], mock[IPlayerFieldManager])
       dataManager.getPlayer2 shouldBe defender

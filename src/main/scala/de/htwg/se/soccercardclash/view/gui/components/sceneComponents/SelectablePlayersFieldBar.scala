@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.geometry.Pos
 import scalafx.scene.control.Label

@@ -39,7 +39,7 @@ class Prompter(controller: IController) extends IPrompter {
 
   def promptShowAttackersField(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
-    val attacker = playingField.getAttacker
+    val attacker = playingField.getRoles.attacker
 
     println("\n===================================")
     println(f"${attacker.name} field cards after boost: ")
@@ -49,7 +49,7 @@ class Prompter(controller: IController) extends IPrompter {
 
   def promptShowAttackersHand(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
-    val attacker = playingField.getAttacker
+    val attacker = playingField.getRoles.attacker
 
     println("\n===================================")
     println(f"${attacker.name} field cards after swap: ")
@@ -71,7 +71,7 @@ class Prompter(controller: IController) extends IPrompter {
 
   def promptShowDefendersHand(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
-    val defender = playingField.getDefender
+    val defender = playingField.getRoles.defender
 
     println("\n===================================")
     println(f"${defender.name} field cards after switch: ")
@@ -82,8 +82,8 @@ class Prompter(controller: IController) extends IPrompter {
   
   def printGameState(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
-    val attacker = playingField.getAttacker
-    val defender = playingField.getDefender
+    val attacker = playingField.getRoles.attacker
+    val defender = playingField.getRoles.defender
 
     println("\n===================================")
     println("🏆 **CURRENT GAME STATE**")

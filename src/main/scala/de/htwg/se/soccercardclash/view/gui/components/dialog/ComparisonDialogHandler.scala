@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -68,8 +68,8 @@ class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
                 ComparisonDialogGenerator.showSingleComparison(
                   controller.getCurrentGame.getPlayer1,
                   controller.getCurrentGame.getPlayer2,
-                  controller.getCurrentGame.getPlayingField.getAttacker,
-                  controller.getCurrentGame.getPlayingField.getDefender,
+                  controller.getCurrentGame.getPlayingField.getRoles.attacker,
+                  controller.getCurrentGame.getPlayingField.getRoles.defender,
                   attackingCard,
                   defendingCard,
                   attackSuccess,
@@ -93,7 +93,7 @@ class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
               ComparisonDialogGenerator.showDoubleComparison(
                 controller.getCurrentGame.getPlayer1,
                 controller.getCurrentGame.getPlayer2,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, attackSuccess, overlay.getPane.getWidth
+                controller.getCurrentGame.getPlayingField.getRoles.attacker, controller.getCurrentGame.getPlayingField.getRoles.defender, attackingCard1, attackingCard2, defendingCard, attackSuccess, overlay.getPane.getWidth
               ), true
             )
 
@@ -109,7 +109,7 @@ class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
               ComparisonDialogGenerator.showTieComparison(
                 controller.getCurrentGame.getPlayer1,
                 controller.getCurrentGame.getPlayer2,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
+                controller.getCurrentGame.getPlayingField.getRoles.attacker, controller.getCurrentGame.getPlayingField.getRoles.defender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
               ), true
             )
 
@@ -125,7 +125,7 @@ class ComparisonDialogHandler(controller: IController, overlay: Overlay) {
               ComparisonDialogGenerator.showDoubleTieComparison(
                 controller.getCurrentGame.getPlayer1,
                 controller.getCurrentGame.getPlayer2,
-                controller.getCurrentGame.getPlayingField.getAttacker, controller.getCurrentGame.getPlayingField.getDefender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
+                controller.getCurrentGame.getPlayingField.getRoles.attacker, controller.getCurrentGame.getPlayingField.getRoles.defender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
               ), true
             )
 

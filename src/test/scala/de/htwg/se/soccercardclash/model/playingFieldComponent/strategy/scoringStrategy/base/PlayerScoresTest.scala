@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.scoringStrategy.base
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -18,8 +18,6 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     override def getRoles: IRolesManager = mock[IRolesManager]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
-    override def getAttacker: IPlayer = mock[IPlayer]
-    override def getDefender: IPlayer = mock[IPlayer]
     override def reset(): Unit = {}
     override def setPlayingField(): Unit = {}
     override def notifyObservers(e: ObservableEvent): Unit = super.notifyObservers(e)

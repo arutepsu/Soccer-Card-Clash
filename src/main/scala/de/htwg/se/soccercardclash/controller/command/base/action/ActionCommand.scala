@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoMana
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
 
 
 abstract class ActionCommand(

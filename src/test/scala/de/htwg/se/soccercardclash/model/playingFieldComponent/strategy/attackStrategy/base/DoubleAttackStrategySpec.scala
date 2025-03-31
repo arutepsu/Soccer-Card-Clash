@@ -3,12 +3,12 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.attackSt
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -24,8 +24,6 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
     override def getDataManager: IDataManager = mock[IDataManager]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
-    override def getAttacker: IPlayer = mock[IPlayer]
-    override def getDefender: IPlayer = mock[IPlayer]
     override def reset(): Unit = {}
     override def setPlayingField(): Unit = {}
     override def notifyObservers(e: ObservableEvent): Unit = super.notifyObservers(e)

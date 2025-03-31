@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import scalafx.scene.control.Button

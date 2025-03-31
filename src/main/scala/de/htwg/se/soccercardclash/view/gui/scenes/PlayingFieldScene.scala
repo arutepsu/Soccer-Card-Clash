@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
 import scalafx.stage.Stage
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import scalafx.scene.Node

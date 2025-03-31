@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.components.uiFactory
 
 import javafx.event.EventHandler
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import scalafx.Includes.*
 import scalafx.animation.{FadeTransition, ScaleTransition, StrokeTransition, TranslateTransition}
 import scalafx.scene.control.Button

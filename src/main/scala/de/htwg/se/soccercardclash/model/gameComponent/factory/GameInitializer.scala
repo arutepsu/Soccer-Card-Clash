@@ -12,10 +12,10 @@ import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{ActionManager, IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{ActionManager, IActionManager}
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
 
@@ -30,7 +30,6 @@ trait IGameInitializer {
   def getPlayer1: IPlayer
   def getPlayer2: IPlayer
   def getActionManager: IActionManager
-
   def createGame(playerName1: String, playerName2: String): Unit
   def initializeFromState(state: IGameState): Unit
 }
@@ -56,25 +55,23 @@ class GameInitializer @Inject()(
     player1 = p1
     player2 = p2
 
-    playingField = playingFieldFactory.createPlayingField(player1, player2)
-    playingField.getRoles.setRoles(player1, player2)
-
-    val dataManager = playingField.getDataManager
-    dataManager.initializePlayerHands(player1.getCards.toList, player2.getCards.toList)
-
-    playingField.setPlayingField()
-  }
-
-  private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
     val deck = deckFactory.createDeck()
     deckFactory.shuffleDeck(deck)
 
     val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
-    val p1 = playerFactory.createPlayer(playerName1, hand1)
-    val p2 = playerFactory.createPlayer(playerName2, hand2)
+    playingField = playingFieldFactory.createPlayingField(player1, player2)
+    playingField.getRoles.setRoles(player1, player2)
 
+    val dataManager = playingField.getDataManager
+    dataManager.initializePlayerHands(hand1, hand2)
+
+    playingField.setPlayingField()
+  }
+  private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) = {
+    val p1 = playerFactory.createPlayer(playerName1)
+    val p2 = playerFactory.createPlayer(playerName2)
     (p1, p2)
   }
 

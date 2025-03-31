@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-import de.htwg.se.soccercardclash.model.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
 
 import play.api.libs.json.*
 import java.io.{File, PrintWriter}

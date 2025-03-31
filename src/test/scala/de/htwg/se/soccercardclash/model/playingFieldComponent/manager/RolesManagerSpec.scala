@@ -2,9 +2,9 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, RolesManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, RolesManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.util.Observable
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
@@ -12,15 +12,21 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
 class ObservablePlayingField extends Observable with IPlayingField {
-  override def getAttacker: IPlayer = ???
-  override def getDefender: IPlayer = ???
-  override def getDataManager: IDataManager = ???
-  override def getActionManager: IActionManager = ???
-  override def getRoles: IRolesManager = ???
-  override def getScores: IPlayerScores = ???
+
+  private val dummyDataManager = mock(classOf[IDataManager])
+  private val dummyActionManager = mock(classOf[IActionManager])
+  private val dummyRolesManager = mock(classOf[IRolesManager])
+  private val dummyPlayerScores = mock(classOf[IPlayerScores])
+
+  override def getDataManager: IDataManager = dummyDataManager
+  override def getActionManager: IActionManager = dummyActionManager
+  override def getRoles: IRolesManager = dummyRolesManager
+  override def getScores: IPlayerScores = dummyPlayerScores
+
   override def setPlayingField(): Unit = {}
   override def reset(): Unit = {}
 }
+
 
 class RolesManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -60,8 +66,8 @@ class RolesManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val manager = new RolesManager(mockField, attacker, defender)
       manager.reset()
 
-      manager.attacker shouldBe Player("NewAttacker", List())
-      manager.defender shouldBe Player("NewDefender", List())
+      manager.attacker shouldBe Player("NewAttacker")
+      manager.defender shouldBe Player("NewDefender")
     }
     "switch roles and notify observers" in {
       val mockField = spy(new ObservablePlayingField)

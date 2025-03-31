@@ -35,7 +35,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val mockCardDeserializer = mock[CardDeserializer]
 
       when(mockCardDeserializer.fromXml(any[Elem])).thenReturn(mockCard)
-      when(mockFactory.createPlayer("John", List(mockCard))).thenReturn(mockPlayer)
+      when(mockFactory.createPlayer("John")).thenReturn(mockPlayer)
       when(mockPlayer.setActionStates(Map(PlayerActionPolicies.Boost -> OutOfActions))).thenReturn(mockPlayer)
 
       val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
@@ -59,7 +59,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val mockCardDeserializer = mock[CardDeserializer]
 
       when(mockCardDeserializer.fromJson(any[JsObject])).thenReturn(mockCard)
-      when(mockFactory.createPlayer("Alice", List(mockCard))).thenReturn(mockPlayer)
+      when(mockFactory.createPlayer("Alice")).thenReturn(mockPlayer)
       when(mockPlayer.setActionStates(Map(PlayerActionPolicies.Swap -> CanPerformAction(2)))).thenReturn(mockPlayer)
 
       val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
@@ -177,27 +177,24 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
 
     ex.getMessage should include ("InvalidState")
   }
-  "throw exception when card deserialization fails in XML" in {
+  "deserialize player with no cards and no actions" in {
     val xml: Elem =
       <Player name="Jake">
-        <Cards>
-          <Card><value>999</value><suit>Imaginary</suit><type>Regular</type></Card>
-        </Cards>
         <ActionStates></ActionStates>
       </Player>
 
     val mockFactory = mock[IPlayerFactory]
     val mockCardDeserializer = mock[CardDeserializer]
-    when(mockCardDeserializer.fromXml(any[Elem]))
-      .thenThrow(new IllegalArgumentException("Invalid card"))
+    val mockPlayer = mock[IPlayer]
+
+    when(mockFactory.createPlayer("Jake")).thenReturn(mockPlayer)
+    when(mockPlayer.setActionStates(Map.empty)).thenReturn(mockPlayer)
 
     val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer)
 
-    val ex = intercept[RuntimeException] {
-      deserializer.fromXml(xml)
-    }
+    val result = deserializer.fromXml(xml)
 
-    ex.getMessage should include ("Invalid card")
+    result shouldBe mockPlayer
   }
 
 }

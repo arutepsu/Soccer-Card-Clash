@@ -3,27 +3,37 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.PlayerFieldManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.PlayerFieldManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.util.Observable
-
+import org.mockito.Mockito
 class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   // Fix: Real class that mixes both interfaces
   class ObservablePlayingField extends Observable with IPlayingField {
-    override def getAttacker: IPlayer = ???
-    override def getDefender: IPlayer = ???
-    override def getDataManager = ???
-    override def getActionManager = ???
-    override def getRoles = ???
-    override def getScores = ???
+
+    val dummyDataManager = Mockito.mock(classOf[IDataManager])
+    val dummyActionManager = Mockito.mock(classOf[IActionManager])
+    val dummyRolesManager = Mockito.mock(classOf[IRolesManager])
+    val dummyScores = Mockito.mock(classOf[IPlayerScores])
+
+    override def getDataManager: IDataManager = dummyDataManager
+    override def getActionManager: IActionManager = dummyActionManager
+    override def getRoles: IRolesManager = dummyRolesManager
+    override def getScores: IPlayerScores = dummyScores
+
     override def setPlayingField(): Unit = {}
     override def reset(): Unit = {}
   }
+
 
   "A PlayerFieldManager" should {
 
@@ -48,7 +58,8 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val card = mock[ICard]
       val attacker = mock[IPlayer]
       val field = spy(new ObservablePlayingField)
-      doReturn(attacker).when(field).getAttacker
+
+      when(field.getRoles.attacker).thenReturn(attacker)
 
       manager.setGoalkeeperForAttacker(field, card)
       manager.getPlayerGoalkeeper(attacker) shouldBe Some(card)

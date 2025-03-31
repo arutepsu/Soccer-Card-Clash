@@ -3,15 +3,15 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStr
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base.DefenderBoostStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.DefenderBoostStrategy
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.util.{Events, NoBoostsEvent, ObservableEvent}
 import de.htwg.se.soccercardclash.util.Observable
 
@@ -26,10 +26,6 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     override def getScores: IPlayerScores = mock[IPlayerScores]
 
     override def getActionManager: IActionManager = mock[IActionManager]
-
-    override def getAttacker: IPlayer = mock[IPlayer]
-
-    override def getDefender: IPlayer = mock[IPlayer]
 
     override def reset(): Unit = {}
 

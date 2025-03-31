@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.module
 
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import com.google.inject.{AbstractModule, Provides}
@@ -24,5 +24,5 @@ class PlayerModule extends AbstractModule {
 
   @Provides
   def providePlayer(factory: IPlayerFactory): IPlayer =
-    factory.createPlayer("Player1", List.empty)
+    factory.createPlayer("Player1")
 }

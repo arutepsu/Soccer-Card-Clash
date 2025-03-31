@@ -1,14 +1,14 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.{ActionManager, IActionManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.AttackHandler
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.{BoostManager, IBoostManager}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.SwapManager
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{ActionManager, IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.AttackHandler
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IBoostManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.SwapManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

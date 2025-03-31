@@ -6,8 +6,8 @@ import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.{IGameState, IGameStateManager}
 import de.htwg.se.soccercardclash.model.gameComponent.io.IGamePersistence
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
 import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

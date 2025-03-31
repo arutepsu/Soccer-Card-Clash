@@ -10,16 +10,16 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.model.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 
 import scala.collection.mutable
 class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
@@ -56,8 +56,11 @@ class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(game.getPlayingField).thenReturn(playingField)
       when(playingField.getDataManager).thenReturn(dataManager)
       when(playingField.getScores).thenReturn(scores)
-      when(playingField.getAttacker).thenReturn(attacker)
-      when(playingField.getDefender).thenReturn(defender)
+      val mockRoles = mock[IRolesManager]
+      when(mockRoles.attacker).thenReturn(attacker)
+      when(mockRoles.defender).thenReturn(defender)
+      when(playingField.getRoles).thenReturn(mockRoles)
+
 
       when(dataManager.getPlayerDefenders(attacker)).thenReturn(List(card1))
       when(dataManager.getPlayerDefenders(defender)).thenReturn(List(card2))
