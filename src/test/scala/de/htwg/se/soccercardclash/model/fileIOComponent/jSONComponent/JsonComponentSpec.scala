@@ -104,6 +104,35 @@ class JsonComponentSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val result = jsonComponent.load("invalid.json")
       result shouldBe None
     }
+    "load" should {
+
+      "return None if file does not exist" in {
+        val jsonComponent = new JsonComponent(mockDeserializer)
+        val result = jsonComponent.load("non_existing_file.json")
+        result shouldBe None
+      }
+
+      "return None if deserialization fails due to bad JSON" in {
+        // Arrange: Create a temp file with invalid JSON
+        val badFileName = "invalid.json"
+        val folder = new File("games")
+        if (!folder.exists()) folder.mkdir()
+
+        val writer = new PrintWriter(new File(s"games/$badFileName"))
+        writer.write("{ bad json }") // intentionally invalid JSON
+        writer.close()
+
+        // Act: This should fail parsing or deserialization
+        val component = new JsonComponent(mockDeserializer)
+        val result = component.load(badFileName)
+
+        // Assert: load returns None
+        result shouldBe None
+
+        // Cleanup
+        new File(s"games/$badFileName").delete()
+      }
+    }
 
   }
 }

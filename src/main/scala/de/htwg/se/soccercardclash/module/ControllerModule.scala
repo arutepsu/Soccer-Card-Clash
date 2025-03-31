@@ -11,9 +11,8 @@ class ControllerModule extends AbstractModule {
   
   override def configure(): Unit = {
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
-    bind(classOf[Observable]).to(classOf[Controller]).in(classOf[Singleton])
+    bind(classOf[Observable]).to(classOf[IController])
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
-//    install(new GameCoreModule())
-//    install(new MementoModule())
+
   }
 }
