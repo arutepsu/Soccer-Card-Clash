@@ -162,7 +162,12 @@ class PlayingFieldScene(
 
   override def update(e: ObservableEvent): Unit = {
 
-    comparisonHandler.handleComparisonEvent(e)
+    Future {
+      Thread.sleep(100)
+      Platform.runLater(() => {
+        comparisonHandler.handleComparisonEvent(e)
+      })
+    }
 
     e match {
       case NoDoubleAttacksEvent(player) =>

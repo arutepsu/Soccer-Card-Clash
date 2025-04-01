@@ -13,7 +13,8 @@ class ShowAvailableGamesTuiCommand(controller: IController, prompter: IPrompter,
         val parts = value.split(" ")
         if (parts.length == 2 && parts(1).forall(_.isDigit)) {
           val index = parts(1).toInt - 1
-          prompter.loadSelectedGame(index, factory)
+//          prompter.loadSelectedGame(index, factory)
+          factory.createLoadSelectedGameTuiCommand(index)
         } else {
           println("❌ Usage: select <number>")
         }

@@ -12,6 +12,7 @@ enum TuiKeys(val key: String) {
   case RegularSwap extends TuiKeys(":regularswap")
   case ReverseSwap extends TuiKeys(":reverseswap")
   case BoostDefender extends TuiKeys(":boostdefender")
+  case BoostGoalkeeper extends TuiKeys(":boostgoalkeeper")
   case Exit extends TuiKeys(":exit")
   case ShowGames extends TuiKeys(":load")
 }

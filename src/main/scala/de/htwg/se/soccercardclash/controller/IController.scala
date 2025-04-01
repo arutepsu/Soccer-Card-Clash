@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPla
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer, UndoManager}
 
 import scala.collection.mutable
-trait IController extends Observable{
+trait IController extends Observable {
   def getCurrentGame: IGame
   def executeCommand(command: ICommand, event: Events): Unit
   def undo(): Unit

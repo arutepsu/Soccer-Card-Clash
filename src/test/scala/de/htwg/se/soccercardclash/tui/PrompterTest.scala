@@ -85,32 +85,33 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockField = mock(classOf[PlayingField])
     val mockAttacker = mock(classOf[Player])
 
-    // Mock the getCurrentGame and getPlayingField methods
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
 
-    // Mock the getAttacker method
     val mockRoles = mock(classOf[IRolesManager])
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockField.getRoles).thenReturn(mockRoles)
-
     when(mockAttacker.name).thenReturn("Attacker")
 
-    // Mock getDataManager to return a mock IDataManager
     val mockDataManager = mock(classOf[IDataManager])
     when(mockField.getDataManager).thenReturn(mockDataManager)
 
-    // Mock the getPlayerField method to return a List (not a String)
-    when(mockDataManager.getPlayerField(mockAttacker)).thenReturn(List("⚽", "🔥"))
+    val mockHandQueue = mock(classOf[IHandCardsQueue])
+    val mockCard1 = mock(classOf[ICard])
+    val mockCard2 = mock(classOf[ICard])
 
-    // Capture the output of promptShowAttackersField
-    val output = captureOutput(new Prompter(mockController).promptShowAttackersField())
+    when(mockCard1.toString).thenReturn("⚽")
+    when(mockCard2.toString).thenReturn("🔥")
+    when(mockHandQueue.getCards).thenReturn(mutable.Queue(mockCard1, mockCard2))
+    when(mockDataManager.getPlayerHand(mockAttacker)).thenReturn(mockHandQueue)
 
-    // Check if the expected output is present
-    output should include("Attacker field cards after boost")
-    output should include("⚽")
-    output should include("🔥")
+    val output = captureOutput(new Prompter(mockController).promptShowAttackersHand())
+
+    output should include("Attacker's hand cards")
+    output should include(mockCard1.toString)
+    output should include(mockCard2.toString)
   }
+
 
   it should "print defender's field after attack" in {
     val mockController = mock(classOf[IController])
@@ -130,67 +131,65 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     when(mockDefender.name).thenReturn("Defender")
     when(mockField.getDataManager).thenReturn(mockDataManager)
 
+    // ✅ Fix here: use getPlayerDefenders
     when(mockCard1.toString).thenReturn("🛡️")
     when(mockCard2.toString).thenReturn("⚔️")
-    when(mockDataManager.getPlayerField(mockDefender)).thenReturn(List(mockCard1, mockCard2))
+    when(mockDataManager.getPlayerDefenders(mockDefender)).thenReturn(List(mockCard1, mockCard2))
 
     val output = captureOutput(new Prompter(mockController).promptShowDefendersField(mockDefender))
 
-    output should include("Defender field cards after attack")
+    output should include("Defender's defender cards")
     output should include("🛡️")
     output should include("⚔️")
   }
 
+  it should "print current game state with attacker hand and defender defenders" in {
+    val mockController = mock(classOf[IController])
+    val mockGame = mock(classOf[IGame])
+    val mockField = mock(classOf[PlayingField])
+    val mockAttacker = mock(classOf[Player])
+    val mockDefender = mock(classOf[Player])
+    val mockDataManager = mock(classOf[IDataManager])
+    val mockHandQueue = mock(classOf[IHandCardsQueue])
+    val mockCard1 = mock(classOf[ICard])
+    val mockCard2 = mock(classOf[ICard])
+    val mockDefenderCard = mock(classOf[ICard])
 
+    // Roles manager
+    val mockRoles = mock(classOf[IRolesManager])
+    when(mockRoles.attacker).thenReturn(mockAttacker)
+    when(mockRoles.defender).thenReturn(mockDefender)
+    when(mockField.getRoles).thenReturn(mockRoles)
 
-  //  it should "print current game state" in {
-//    val mockController = mock(classOf[IController])
-//    val mockGame = mock(classOf[IGame])
-//    val mockField = mock(classOf[PlayingField])
-//    val mockAttacker = mock(classOf[Player])
-//    val mockDefender = mock(classOf[Player])
-//
-//    // Mock controller, game, and playing field
-//    when(mockController.getCurrentGame).thenReturn(mockGame)
-//    when(mockGame.getPlayingField).thenReturn(mockField)
-//
-//    // Mock the attacker and defender
-//    when(mockField.getAttacker).thenReturn(mockAttacker)
-//    when(mockField.getDefender).thenReturn(mockDefender)
-//
-//    // Mock attacker and defender names
-//    when(mockAttacker.name).thenReturn("Attacker")
-//    when(mockDefender.name).thenReturn("Defender")
-//
-//    // Mock getDataManager and its methods to return valid mocks
-//    val mockDataManager = mock(classOf[IDataManager])
-//    when(mockField.getDataManager).thenReturn(mockDataManager)
-//
-//    // Mock IHandCardsQueue to return an iterable collection (e.g., Seq)
-//    val mockHandQueue = mock(classOf[IHandCardsQueue])
-//
-//    // Ensure getCards returns a valid Iterable (e.g., Seq)
-//    val mockCards: Seq[String] = Seq("Card1", "Card2") // Immutable sequence, iterable
-//    when(mockHandQueue.getCards).thenReturn(mockCards)
-//
-//    // Mock getPlayerHand to return the mocked hand queue
-//    when(mockDataManager.getPlayerHand(mockAttacker)).thenReturn(mockHandQueue)
-//
-//    // Mock getPlayerDefenders to return a valid list
-//    when(mockDataManager.getPlayerDefenders(mockDefender)).thenReturn(List("Def1"))
-//
-//    // Capture the output of printGameState
-//    val output = captureOutput(new Prompter(mockController).printGameState())
-//
-//    // Check if the expected output is present
-//    output should include("🏆 **CURRENT GAME STATE**")
-//    output should include("⚔️ Attacker: Attacker")
-//    output should include("🛡️ Defender: Defender")
-//    output should include("Card1")
-//    output should include("Card2")
-//    output should include("Def1")
-//  }
+    // Game & field
+    when(mockController.getCurrentGame).thenReturn(mockGame)
+    when(mockGame.getPlayingField).thenReturn(mockField)
+    when(mockField.getDataManager).thenReturn(mockDataManager)
 
+    // Player names
+    when(mockAttacker.name).thenReturn("Attacker")
+    when(mockDefender.name).thenReturn("Defender")
+
+    // Cards and mocks
+    when(mockCard1.toString).thenReturn("⚽")
+    when(mockCard2.toString).thenReturn("🔥")
+    when(mockDefenderCard.toString).thenReturn("🛡️")
+
+    when(mockHandQueue.getCards).thenReturn(mutable.Queue(mockCard1, mockCard2))
+    when(mockDataManager.getPlayerHand(mockAttacker)).thenReturn(mockHandQueue)
+    when(mockDataManager.getPlayerDefenders(mockDefender)).thenReturn(List(mockDefenderCard))
+
+    // Capture and assert
+    val output = captureOutput {
+      new Prompter(mockController).printGameState()
+    }
+
+    output should include("🏆 **CURRENT GAME STATE**")
+    output should include("⚔️ Attacker: Attacker")
+    output should include("🛡️ Defender: Defender")
+    output should include("🎴 Attacker's Hand: ⚽, 🔥")
+    output should include("🏟️ Defender's Defenders: 🛡️")
+  }
 
 
   it should "print prompt for exit" in {

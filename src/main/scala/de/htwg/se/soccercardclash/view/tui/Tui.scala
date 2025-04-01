@@ -14,7 +14,7 @@ import scala.io.StdIn
 
 enum PromptState {
   case None
-  case STARTGAME
+  case StartGame
   case LoadGame
   case SaveGame
   case SingleAttack
@@ -24,6 +24,7 @@ enum PromptState {
   case Redo
   case Undo
   case Boost
+  case BoostGoalkeeper
   case PlayingField
   case MainMenu
   case CreatePlayers
@@ -31,22 +32,15 @@ enum PromptState {
   case Reverted
 }
 
-
-
 class Tui(controller: IController) extends Observer {
   controller.add(this)
 
   private var promptState: PromptState = PromptState.None
-  val prompter: IPrompter = new Prompter(controller)
-  private val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, prompter)
+  protected val prompter: IPrompter = new Prompter(controller)
+  protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, new Prompter(controller))
   private val createPlayersNameTuiCommand: CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
-  private var waitingForNames: Boolean = false
 
   private val commands: Map[String, ITuiCommand] = Map(
-    TuiKeys.Attack.key -> tuiCommandFactory.createSingleAttackTuiCommand(),
-    TuiKeys.DoubleAttack.key -> tuiCommandFactory.createDoubleAttackTuiCommand(),
-    TuiKeys.BoostDefender.key -> tuiCommandFactory.createBoostDefenderTuiCommand(),
-    TuiKeys.RegularSwap.key -> tuiCommandFactory.createRegularSwapTuiCommand(),
     TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
     TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
     TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
@@ -55,22 +49,30 @@ class Tui(controller: IController) extends Observer {
     TuiKeys.ShowGames.key -> tuiCommandFactory.createShowGamesTuiCommand()
   )
 
+  private val promptHandlers: Map[PromptState, String => Unit] = Map(
+    PromptState.SingleAttack -> (input => runCommand(tuiCommandFactory.createSingleAttackTuiCommand(), input)),
+    PromptState.DoubleAttack -> (input => runCommand(tuiCommandFactory.createDoubleAttackTuiCommand(), input)),
+    PromptState.Boost -> (input => runCommand(tuiCommandFactory.createBoostDefenderTuiCommand(), input)),
+    PromptState.RegularSwap -> (input => runCommand(tuiCommandFactory.createRegularSwapTuiCommand(), input)),
+    PromptState.ReverseSwap -> (_ => runCommand(tuiCommandFactory.createReverseSwapTuiCommand(), "")),
+    PromptState.BoostGoalkeeper -> (_ => runCommand(tuiCommandFactory.createBoostGoalkeeperTuiCommand(), "")),
+    PromptState.LoadGame -> handleLoadGameInput
+  )
+
   def processInputLine(input: String): Unit = {
-    println(s"🛠 Received input: '$input'")
+    println(s"\uD83D\uDEE0 Received input: '$input'")
 
-    if (createPlayersNameTuiCommand.handlePlayerNames(input)) {
-      return
-    }
+    if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
 
-    promptState match {
-      case PromptState.SingleAttack    => handleSingleAttackInput(input)
-      case PromptState.DoubleAttack    => handleDoubleAttackInput(input)
-      case PromptState.Boost           => handleBoostInput(input)
-      case PromptState.RegularSwap     => handleSwapInput(input)
-//      case PromptState.ReverseSwap     => handleReverseSwapInput()
-      case PromptState.LoadGame        => handleLoadGameInput(input)
-      case _                           => handlePrimaryCommand(input)
-    }
+      promptHandlers.get(promptState) match {
+        case Some(handler) => handler(input)
+        case None => handlePrimaryCommand(input)
+      }
+  }
+
+  private def runCommand(command: ITuiCommand, input: String): Unit = {
+    command.execute(Some(input))
+    promptState = PromptState.None
   }
 
   private def handlePrimaryCommand(input: String): Unit = {
@@ -86,19 +88,31 @@ class Tui(controller: IController) extends Observer {
     commandKey match {
       case TuiKeys.Attack.key =>
         promptState = PromptState.SingleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
         prompter.promptRegularAttack()
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
 
       case TuiKeys.DoubleAttack.key =>
-        controller.notifyObservers(Events.DoubleAttack)
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
+        promptState = PromptState.DoubleAttack
         prompter.promptDoubleAttack()
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
 
       case TuiKeys.BoostDefender.key =>
-        controller.notifyObservers(Events.BoostDefender)
+        promptState = PromptState.Boost
+        prompter.promptBoost()
+        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.attacker)
 
       case TuiKeys.RegularSwap.key =>
-        controller.notifyObservers(Events.RegularSwap)
+        promptState = PromptState.RegularSwap
+        prompter.promptSwap()
+        prompter.promptShowAttackersHand()
+
+      case TuiKeys.ReverseSwap.key =>
+        promptState = PromptState.ReverseSwap
+        prompter.promptShowAttackersHand()
+
+      case TuiKeys.BoostGoalkeeper.key =>
+        promptState = PromptState.BoostGoalkeeper
+        prompter.promptShowGoalkeeper(controller.getCurrentGame.getPlayingField.getRoles.attacker)
 
       case TuiKeys.CreatePlayers.key =>
         controller.notifyObservers(Events.CreatePlayers)
@@ -111,49 +125,22 @@ class Tui(controller: IController) extends Observer {
 
       case _ =>
         commands.get(commandKey) match {
-          case Some(command) =>
-            command.execute(commandArg)
-          case None =>
-            println("❌ Unknown command. Try again.")
+          case Some(command) => command.execute(commandArg)
+          case None => println("❌ Unknown command. Try again.")
         }
     }
   }
 
-  private def handleSingleAttackInput(input: String): Unit = {
-    tuiCommandFactory.createSingleAttackTuiCommand().execute(Some(input))
-    promptState = PromptState.None
-  }
-
-
-  private def handleDoubleAttackInput(input: String): Unit = {
-    tuiCommandFactory.createDoubleAttackTuiCommand().execute(Some(input))
-    promptState = PromptState.None
-  }
-
-  private def handleBoostInput(input: String): PromptState = {
-    tuiCommandFactory.createBoostDefenderTuiCommand().execute(Some(input))
-    PromptState.None
-  }
-
-  private def handleSwapInput(input: String): PromptState = {
-    tuiCommandFactory.createRegularSwapTuiCommand().execute(Some(input))
-    PromptState.None
-  }
-
-
   private def handleLoadGameInput(input: String): Unit = {
-    val pattern = """select\s+(\d+)""".r
+    val pattern = """select\\s+(\\d+)""".r
     input match {
       case pattern(numStr) =>
         val index = numStr.toIntOption.getOrElse(-1)
         if (index >= 0) {
-          prompter.loadSelectedGame(index, tuiCommandFactory)
+          tuiCommandFactory.createLoadSelectedGameTuiCommand(index).execute()
           promptState = PromptState.None
-        } else {
-          println("❌ Invalid number.")
-        }
-      case _ =>
-        println("❌ Usage: select <number>")
+        } else println("❌ Invalid number.")
+      case _ => println("❌ Usage: select <number>")
     }
   }
 
@@ -168,7 +155,7 @@ class Tui(controller: IController) extends Observer {
         prompter.promptCreatePlayers()
 
       case Events.StartGame =>
-        promptState = PromptState.STARTGAME
+        promptState = PromptState.StartGame
         prompter.promptNewGame()
 
       case Events.Quit =>
@@ -193,8 +180,16 @@ class Tui(controller: IController) extends Observer {
         promptState = PromptState.Boost
         prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.attacker)
 
+      case Events.BoostGoalkeeper =>
+        promptState = PromptState.BoostGoalkeeper
+        prompter.promptShowGoalkeeper(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+
       case Events.RegularSwap =>
         promptState = PromptState.RegularSwap
+        prompter.promptShowAttackersHand()
+
+      case Events.ReverseSwap =>
+        promptState = PromptState.ReverseSwap
         prompter.promptShowAttackersHand()
 
       case Events.LoadGame =>
@@ -207,11 +202,13 @@ class Tui(controller: IController) extends Observer {
 
       case Events.Undo =>
         promptState = PromptState.Undo
-        println("Undo")
+        prompter.promptUndo()
+        prompter.printGameState()
 
       case Events.Redo =>
         promptState = PromptState.Redo
-        println("Redo")
+        prompter.promptRedo()
+        prompter.printGameState()
 
       case _ =>
     }

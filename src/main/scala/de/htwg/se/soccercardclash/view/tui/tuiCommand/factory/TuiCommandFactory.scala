@@ -11,16 +11,18 @@ trait ITuiCommandFactory {
   def createSingleAttackTuiCommand(): ITuiCommand
   def createDoubleAttackTuiCommand(): ITuiCommand
   def createBoostDefenderTuiCommand(): ITuiCommand
+  def createBoostGoalkeeperTuiCommand(): ITuiCommand
   def createRegularSwapTuiCommand(): ITuiCommand
+  def createReverseSwapTuiCommand(): ITuiCommand
   def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand
   def createSaveGameTuiCommand(): ITuiCommand
   def createLoadGameTuiCommand(fileName: String): ITuiCommand
+  def createLoadSelectedGameTuiCommand(index: Int): ITuiCommand
   def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand
   def createShowGamesTuiCommand() :ITuiCommand
   def createUndoTuiCommand(): ITuiCommand
   def createRedoTuiCommand(): ITuiCommand
   def createExitTuiCommand(): ITuiCommand
-
 
 }
 
@@ -28,9 +30,10 @@ class TuiCommandFactory(controller: IController, prompter: IPrompter) extends IT
 
   override def createSingleAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
   override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
-  override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostTuiCommand(controller)
+  override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostDefenderTuiCommand(controller)
+  override def createBoostGoalkeeperTuiCommand(): ITuiCommand = new BoostGoalkeeperTuiCommand(controller)
   override def createRegularSwapTuiCommand(): ITuiCommand = new RegularSwapTuiCommand(controller)
-
+  override def createReverseSwapTuiCommand(): ITuiCommand = new ReverseSwapTuiCommand(controller)
   override def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand =
     new CreatePlayersNameTuiCommand(controller)
 
@@ -43,6 +46,11 @@ class TuiCommandFactory(controller: IController, prompter: IPrompter) extends IT
   override def createLoadGameTuiCommand(fileName: String): ITuiCommand = {
     new LoadGameTuiCommand(controller, fileName)
   }
+
+  override  def createLoadSelectedGameTuiCommand(index: Int): ITuiCommand = {
+    new LoadSelectedGameTuiCommand(controller, index, this)
+  }
+
   override def createShowGamesTuiCommand() : ITuiCommand = {
   new ShowAvailableGamesTuiCommand(controller, prompter, this)
   }
