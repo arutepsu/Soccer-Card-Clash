@@ -9,26 +9,49 @@ on:
 permissions:
   contents: write
 
+
 jobs:
-  test-and-cover:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'temurin'
+          distribution: 'adopt'
 
       - name: Install sbt (via Coursier)
         uses: coursier/setup-action@v1
         with:
           apps: sbt
 
-      - name: Run tests and upload coverage to Coveralls
+      - name: Compile
+        run: sbt compile
+
+      - name: Run tests
+        run: sbt test
+
+  run_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Install sbt (via Coursier)
+        uses: coursier/setup-action@v1
+        with:
+          apps: sbt
+
+      - name: Run coverage and upload to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
