@@ -9,21 +9,16 @@ import de.htwg.se.soccercardclash.model.cardComponent.boosting.BoostingPolicies
 import play.api.libs.json.*
 import scala.xml.*
 
-class RegularCard(initialValue: Value, override val suit: Suit) extends Card(suit) {
-
-  private var _value: Value = initialValue
-
-  def setValue(newValue: Value): Unit = _value = newValue
+class RegularCard(val value: Value, override val suit: Suit) extends Card(suit) {
 
   override def boost(): Card = {
     val boostAmount = BoostingPolicies.getBoostAmount(this.value)
-    new BoostedCard(this, boostAmount)
+    BoostedCard(this, boostAmount)
   }
 
   override def revertBoost(): Card = this
 
   override def copy(): Card = new RegularCard(value, suit)
 
-  override def value: Value = _value
   
 }

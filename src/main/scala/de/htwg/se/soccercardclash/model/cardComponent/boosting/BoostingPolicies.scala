@@ -6,6 +6,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
 object BoostingPolicies {
 
   val maxAllowedValue: Int = Value.valueToInt(Value.Ace)
+  
   private val boostValues: Map[Value, Int] = Map(
     Two -> 6, Three -> 5, Four -> 5, Five -> 4, Six -> 4,
     Seven -> 3, Eight -> 3, Nine -> 2, Ten -> 2,

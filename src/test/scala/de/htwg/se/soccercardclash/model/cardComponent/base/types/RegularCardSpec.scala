@@ -19,14 +19,7 @@ class RegularCardSpec extends AnyWordSpec with Matchers {
       card.value shouldBe Four
       card.suit shouldBe Hearts
     }
-
-    "allow setting a new value" in {
-      val card = new RegularCard(Seven, Diamonds)
-      card.setValue(Ten)
-
-      card.value shouldBe Ten
-    }
-
+    
     "boost correctly by the defined policy amount" in {
       val card = new RegularCard(Five, Clubs)
       val boosted = card.boost()
