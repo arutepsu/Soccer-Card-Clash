@@ -40,27 +40,6 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       updated.getActionStates shouldBe newStates
     }
 
-    "call performAction on the current state" in {
-      val player = Player("Frank")
-      val policy = PlayerActionPolicies.Boost
-      val mockedState = mock[PlayerActionState]
-
-      val stateMap = Map(policy -> mockedState)
-      val playerWithMock = player.setActionStates(stateMap)
-
-      val resultPlayer = mock[IPlayer]
-      when(mockedState.performAction(playerWithMock, policy)).thenReturn(resultPlayer)
-
-      playerWithMock.performAction(policy) shouldBe resultPlayer
-    }
-
-    "not change if an unknown action is performed" in {
-      val player = Player("Grace", Map.empty)
-      val unchanged = player.performAction(PlayerActionPolicies.Boost)
-
-      unchanged shouldBe player
-    }
-
     "have proper equality and hashCode based on name only" in {
       val p1 = Player("Hank")
       val p2 = Player("Hank", Map(PlayerActionPolicies.Swap -> OutOfActions))

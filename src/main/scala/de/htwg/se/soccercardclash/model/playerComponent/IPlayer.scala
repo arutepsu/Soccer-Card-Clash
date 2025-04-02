@@ -14,8 +14,6 @@ trait IPlayer extends Serializable {
 
   def setName(newName: String): IPlayer
 
-  def performAction(action: PlayerActionPolicies): IPlayer // delegated to PlayerActionManager, adjust in MementoManager as well
-
   def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer
 
   def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer
@@ -35,7 +33,6 @@ trait IPlayer extends Serializable {
 
   def toJson: JsObject = Json.obj(
     "name" -> name,
-//    "cards" -> cards.map(_.toJson),
     "actionStates" -> actionStates.map { case (policy, state) => policy.toString -> state.toString }
   )
 

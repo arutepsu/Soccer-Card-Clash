@@ -16,14 +16,6 @@ case class Player(
 
   override def setName(newName: String): IPlayer = this.copy(name = newName)
 
-  override def performAction(action: PlayerActionPolicies): IPlayer = { // // delegated to PlayerActionManager, adjust in MementoManager as well
-    actionStates.get(action) match {
-      case Some(state) => state.performAction(this, action)
-      case None =>
-        this
-    }
-  }
-
   override def updateActionState(action: PlayerActionPolicies, newState: PlayerActionState): IPlayer = {
     this.copy(actionStates = actionStates.updated(action, newState))
   }

@@ -26,11 +26,6 @@ class PlayerDeserializer @Inject()(
         throw new IllegalArgumentException("ERROR: Missing 'name' attribute in Player XML.")
       }
 
-//      val cards = (xml \ "Cards" \ "Card").map { node =>
-//        val card = cardDeserializer.fromXml(node.asInstanceOf[Elem])
-//        card
-//      }.toList
-
       val actionStates = (xml \ "ActionStates" \ "ActionState").map { node =>
         val policyStr = (node \ "@policy").text.trim
         val policy = PlayerActionPolicies.values.find(_.toString == policyStr)
@@ -54,7 +49,6 @@ class PlayerDeserializer @Inject()(
     Try {
       val name = (json \ "name").as[String].trim
 
-//      val cards = (json \ "cards").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
 
       val actionStates = (json \ "actionStates").asOpt[Map[String, String]].getOrElse(Map()).map { case (key, value) =>
         val policy = PlayerActionPolicies.values.find(_.toString == key)
