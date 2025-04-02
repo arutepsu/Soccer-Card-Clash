@@ -8,37 +8,40 @@ import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.stra
 import de.htwg.se.soccercardclash.util.{Events, NoSwapsEvent}
 
 import scala.collection.mutable
-class RegularSwapStrategy(
-                           index: Int,
-                           playerActionService: IPlayerActionManager
-                         ) extends ISwapStrategy {
+
+class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager) extends ISwapStrategy {
+
   override def swap(playingField: IPlayingField): Boolean = {
-    lazy val data: IDataManager = playingField.getDataManager
-    lazy val roles: IRolesManager = playingField.getRoles
-    val attackerBeforeAction = roles.attacker
+    val dataManager = playingField.getDataManager
+    val roles = playingField.getRoles
+    val attacker = roles.attacker
+    val hand = dataManager.getPlayerHand(attacker)
 
-    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Swap)) {
-      playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-      return false
+    def canSwap: Boolean =
+      playerActionService.canPerform(attacker, PlayerActionPolicies.Swap) &&
+        hand.getHandSize >= 2 &&
+        index >= 0 &&
+        index < hand.getHandSize
+
+    def swapCards(): Unit = {
+      val lastIndex = hand.getHandSize - 1
+      val temp1 = hand(index)
+      val temp2 = hand(lastIndex)
+      hand.update(index, temp2)
+      hand.update(lastIndex, temp1)
     }
 
-    val attackerHand = data.getPlayerHand(attackerBeforeAction)
-    if (attackerHand.getHandSize < 2 || index < 0 || index >= attackerHand.getHandSize) {
-      return false
+    if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
+      playingField.notifyObservers(NoSwapsEvent(attacker))
+      false
+    } else if (!canSwap) {
+      false
+    } else {
+      swapCards()
+      val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
+      roles.setRoles(updatedAttacker, roles.defender)
+      playingField.notifyObservers()
+      true
     }
-
-    val lastIndex = attackerHand.getHandSize - 1
-    val chosenCard = attackerHand(index)
-    val lastCard = attackerHand(lastIndex)
-
-    attackerHand.update(index, lastCard)
-    attackerHand.update(lastIndex, chosenCard)
-    
-    val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.Swap)
-
-    roles.setRoles(attackerAfterAction, roles.defender)
-
-    playingField.notifyObservers()
-    true
   }
 }

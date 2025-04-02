@@ -1,5 +1,6 @@
 package de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.base
 
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
@@ -7,35 +8,48 @@ import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.mana
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.util.NoSwapsEvent
 import scala.collection.mutable
-class ReverseSwapStrategy(
-                           playerActionService: IPlayerActionManager
-                         ) extends ISwapStrategy {
+
+class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISwapStrategy {
 
   override def swap(playingField: IPlayingField): Boolean = {
-    val data = playingField.getDataManager
+    val dataManager = playingField.getDataManager
     val roles = playingField.getRoles
-    val attackerBeforeAction = roles.attacker
+    val attacker = roles.attacker
 
-    if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.Swap)) {
-      attackerBeforeAction.actionStates.get(PlayerActionPolicies.Swap) match {
-        case Some(OutOfActions) =>
-          playingField.notifyObservers(NoSwapsEvent(attackerBeforeAction))
-        case _ => // no notify for CanPerform(0)
+    def handleNoAction(): Boolean = {
+      attacker.actionStates.get(PlayerActionPolicies.Swap).foreach {
+        case OutOfActions => playingField.notifyObservers(NoSwapsEvent(attacker))
+        case _            => ()
       }
-      return false
+      false
     }
 
-    val attackerHand = data.getPlayerHand(attackerBeforeAction)
-    if (attackerHand.getHandSize < 2) return false
+    def reverseCards(cards: mutable.Queue[ICard]): List[ICard] = cards.toList.reverse
 
-    val reversedCards = attackerHand.getCards.reverse
-    while (attackerHand.getHandSize > 0) attackerHand.removeLastCard()
-    reversedCards.foreach(attackerHand.addCard)
-    reversedCards.indices.foreach(i => attackerHand.update(i, reversedCards(i)))
 
-    val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.Swap)
-    roles.setRoles(attackerAfterAction, roles.defender)
-    playingField.notifyObservers()
-    true
+    def applyReversedHand(hand: IHandCardsQueue, cards: List[ICard]): Unit = {
+
+      hand.getHandSize until 0 by -1 foreach (_ => hand.removeLastCard())
+      cards.foreach(hand.addCard)
+      cards.zipWithIndex.foreach((card, i) => hand.update(i, card))
+    }
+
+    Option.when(playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
+      val hand = dataManager.getPlayerHand(attacker)
+      val cards = hand.getCards
+      if (cards.size >= 2) {
+        val reversed = cards.toList.reverse
+        applyReversedHand(hand, reversed)
+        val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
+        roles.setRoles(updatedAttacker, roles.defender)
+        playingField.notifyObservers()
+        true
+      } else {
+        false
+      }
+    }.getOrElse {
+      handleNoAction()
+    }
+
   }
 }
