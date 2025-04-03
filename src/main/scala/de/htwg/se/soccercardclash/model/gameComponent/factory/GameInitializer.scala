@@ -83,7 +83,7 @@ class GameInitializer @Inject()(
     playingField = playingFieldFactory.createPlayingField(player1, player2)
 
     val dataManager = playingField.getDataManager
-    dataManager.initializePlayerHands(state.player1Hand.getCards.toList, state.player2Hand.getCards.toList)
+    dataManager.initializePlayerHands(state.player1Hand.toList, state.player2Hand.toList)
     dataManager.setPlayerDefenders(player1, state.player1Defenders)
     dataManager.setPlayerDefenders(player2, state.player2Defenders)
 

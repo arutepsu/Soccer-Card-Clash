@@ -38,9 +38,11 @@ class PlayerHandManager @Inject()(handCardsQueueFactory: IHandCardsQueueFactory)
     playerHands += (player.name -> newHand)
   }
 
-  override def getAttackingCard(attacker: IPlayer): ICard = getPlayerHand(attacker).getCards.last
+  override def getAttackingCard(attacker: IPlayer): ICard =
+    getPlayerHand(attacker).toList.last
 
-  override def getDefenderCard(defender: IPlayer): ICard = getPlayerHand(defender).getCards.last
+  override def getDefenderCard(defender: IPlayer): ICard =
+    getPlayerHand(defender).toList.last
 
   override def clearAll(): Unit = {
     playerHands = Map.empty

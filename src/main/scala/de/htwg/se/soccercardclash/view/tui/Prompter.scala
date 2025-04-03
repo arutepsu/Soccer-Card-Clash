@@ -40,7 +40,7 @@ class Prompter(controller: IController) extends IPrompter {
   def promptShowAttackersHand(): Unit = {
     val playingField = controller.getCurrentGame.getPlayingField
     val attacker = playingField.getRoles.attacker
-    val hand = playingField.getDataManager.getPlayerHand(attacker).getCards
+    val hand = playingField.getDataManager.getPlayerHand(attacker).toList
 
     println("\n===================================")
     println(s"${attacker.name}'s hand cards: ")
@@ -82,7 +82,7 @@ class Prompter(controller: IController) extends IPrompter {
     println(s"🛡️ Defender: ${defender.name}")
     println("-----------------------------------")
 
-    val attackerHand = playingField.getDataManager.getPlayerHand(attacker).getCards
+    val attackerHand = playingField.getDataManager.getPlayerHand(attacker).toList
     println(s"🎴 ${attacker.name}'s Hand: " +
       (if (attackerHand.nonEmpty) attackerHand.mkString(", ") else "No cards left!")
     )

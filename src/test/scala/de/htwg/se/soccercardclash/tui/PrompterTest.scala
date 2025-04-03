@@ -102,16 +102,15 @@ class PrompterTest extends AnyFlatSpec with Matchers {
 
     when(mockCard1.toString).thenReturn("⚽")
     when(mockCard2.toString).thenReturn("🔥")
-    when(mockHandQueue.getCards).thenReturn(mutable.Queue(mockCard1, mockCard2))
+    when(mockHandQueue.toList).thenReturn(List(mockCard1, mockCard2)) // ✅ FIXED here
     when(mockDataManager.getPlayerHand(mockAttacker)).thenReturn(mockHandQueue)
 
     val output = captureOutput(new Prompter(mockController).promptShowAttackersHand())
 
     output should include("Attacker's hand cards")
-    output should include(mockCard1.toString)
-    output should include(mockCard2.toString)
+    output should include("⚽")
+    output should include("🔥")
   }
-
 
   it should "print defender's field after attack" in {
     val mockController = mock(classOf[IController])
@@ -175,7 +174,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     when(mockCard2.toString).thenReturn("🔥")
     when(mockDefenderCard.toString).thenReturn("🛡️")
 
-    when(mockHandQueue.getCards).thenReturn(mutable.Queue(mockCard1, mockCard2))
+    when(mockHandQueue.toList).thenReturn(List(mockCard1, mockCard2))
     when(mockDataManager.getPlayerHand(mockAttacker)).thenReturn(mockHandQueue)
     when(mockDataManager.getPlayerDefenders(mockDefender)).thenReturn(List(mockDefenderCard))
 

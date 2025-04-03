@@ -28,7 +28,7 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
     val attackerHand = fieldState.getPlayerHand(attacker)
     val defenderHand = fieldState.getPlayerHand(defender)
     Try {
-      val attackingCard = attackerHand.removeLastCard()
+      val (attackingCard, updatedAttackerHand) = attackerHand.removeLastCard().get
 
       val defenderCard = if (fieldState.allDefendersBeaten(defender)) {
         fieldState.getPlayerGoalkeeper(defender).getOrElse(
@@ -40,41 +40,42 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
 
       playingField.notifyObservers(ComparedCardsEvent(attackingCard, defenderCard))
 
-
       val result = if (fieldState.allDefendersBeaten(defender)) {
         processGoalkeeperAttack(
           attacker,
           defender,
-          attackerHand,
+          updatedAttackerHand, // use updated hand here
           defenderHand,
           attackingCard,
           fieldState,
           revertStrategy,
           scores,
           roles,
-          playingField)
+          playingField
+        )
       } else {
         processDefenderAttack(
           attacker,
           defender,
-          attackerHand,
+          updatedAttackerHand, // use updated hand here
           defenderHand,
           attackingCard,
           fieldState,
           revertStrategy,
           roles,
-          playingField)
+          playingField
+        )
       }
 
       playingField.notifyObservers()
       result
     } match {
       case Success(result) => result
-      case Failure(exception) => false
+      case Failure(_) => false
     }
-  }
 
-  private def processGoalkeeperAttack(
+  }
+    private def processGoalkeeperAttack(
                                        attacker: IPlayer,
                                        defender: IPlayer,
                                        attackerHand: IHandCardsQueue,
@@ -166,39 +167,48 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                        ): Boolean = {
 
     val revertedCard = revertStrategy.revertCard(defenderCard)
-    if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
-      val extraAttackerCard = attackerHand.removeLastCard()
-      val extraDefenderCard = defenderHand.removeLastCard()
-      playingField.notifyObservers(TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard))
-      playingField.notifyObservers(Events.TieComparison)
-      val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
-      if (tiebreakerResult > 0) {
-        attackerWins(
-          attackerHand,
-          playingField,
-          attackingCard,
-          revertStrategy.revertCard(defenderCard),
-          extraAttackerCard,
-          extraDefenderCard)
-        fieldState.removeDefenderCard(roles.defender, defenderCard)
-        fieldState.removeDefenderCard(roles.defender, revertedCard)
-      } else {
-        defenderWins(
-          defenderHand,
-          playingField,
-          attackingCard,
-          revertStrategy.revertCard(defenderCard),
-          extraAttackerCard,
-          extraDefenderCard)
-        fieldState.removeDefenderCard(roles.defender, defenderCard)
-        fieldState.removeDefenderCard(roles.defender, revertedCard)
-        fieldState.refillDefenderField(roles.defender)
-        roles.switchRoles()
+    if attackerHand.getHandSize > 0 && defenderHand.getHandSize > 0 then {
+      (attackerHand.removeLastCard(), defenderHand.removeLastCard()) match {
+        case (Success((extraAttackerCard, updatedAttackerHand)), Success((extraDefenderCard, updatedDefenderHand))) =>
+          playingField.notifyObservers(TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard))
+          playingField.notifyObservers(Events.TieComparison)
+
+          val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
+
+          if tiebreakerResult > 0 then
+            attackerWins(
+              updatedAttackerHand,
+              playingField,
+              attackingCard,
+              revertStrategy.revertCard(defenderCard),
+              extraAttackerCard,
+              extraDefenderCard
+            )
+            fieldState.removeDefenderCard(roles.defender, defenderCard)
+            fieldState.removeDefenderCard(roles.defender, revertedCard)
+          else
+            defenderWins(
+              updatedDefenderHand,
+              playingField,
+              attackingCard,
+              revertStrategy.revertCard(defenderCard),
+              extraAttackerCard,
+              extraDefenderCard
+            )
+            fieldState.removeDefenderCard(roles.defender, defenderCard)
+            fieldState.removeDefenderCard(roles.defender, revertedCard)
+            fieldState.refillDefenderField(roles.defender)
+            roles.switchRoles()
+
+        case _ =>
+          // One or both hands were empty or invalid
+          roles.switchRoles()
       }
     } else {
       roles.switchRoles()
     }
+
     true
   }
 
@@ -207,13 +217,12 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                             playingField: IPlayingField,
                             cards: ICard*
                           ): Unit = {
-    cards.foreach { card =>
-      hand.addCard(card)
-    }
+    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    playingField.getDataManager.setPlayerHand(playingField.getRoles.attacker, updatedHand)
 
     playingField.notifyObservers(AttackResultEvent(playingField.getRoles.attacker, playingField.getRoles.defender, attackSuccess = true))
-
   }
+
 
 
   private def defenderWins(
@@ -221,10 +230,11 @@ class SingleAttackStrategy(defenderIndex: Int) extends IAttackStrategy {
                             playingField: IPlayingField,
                             cards: ICard*
                           ): Unit = {
-    cards.foreach(hand.addCard)
+    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    playingField.getDataManager.setPlayerHand(playingField.getRoles.defender, updatedHand)
 
     playingField.notifyObservers(AttackResultEvent(playingField.getRoles.attacker, playingField.getRoles.defender, attackSuccess = false))
-
   }
+
 
 }

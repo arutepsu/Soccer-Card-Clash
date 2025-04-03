@@ -18,21 +18,23 @@ class SelectablePlayersHandBar(player: IPlayer, playingField: IPlayingField, isL
 
   override def createHandCardRow(): HBox = {
     val hand = playingField.getDataManager.getPlayerHand(player)
-    val handCards = hand.zipWithIndex.map { case (card, index) =>
+
+    val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
       val handCard = new HandCard(flipped = false, card = card)
       handCard.effect = new DropShadow(10, Color.BLACK)
 
-      handCard.onMouseEntered = (_: MouseEvent) => CardAnimationFactory.applyHoverEffect(handCard, _selectedCardIndex, index)
-      handCard.onMouseExited = (_: MouseEvent) => CardAnimationFactory.removeHoverEffect(handCard, _selectedCardIndex, index)
+      handCard.onMouseEntered = (_: MouseEvent) =>
+        CardAnimationFactory.applyHoverEffect(handCard, _selectedCardIndex, index)
 
-      // ✅ Allow card selection
-      handCard.onMouseClicked = (event: MouseEvent) => {
+      handCard.onMouseExited = (_: MouseEvent) =>
+        CardAnimationFactory.removeHoverEffect(handCard, _selectedCardIndex, index)
+
+      handCard.onMouseClicked = (_: MouseEvent) => {
         if (_selectedCardIndex.contains(index)) {
           handCard.effect = null
           _selectedCardIndex = None
         } else {
-          _selectedCardIndex.foreach { _ =>
-          }
+          _selectedCardIndex.foreach(_ => ())
           _selectedCardIndex = Some(index)
           handCard.effect = new DropShadow(20, Color.GOLD)
         }
@@ -47,6 +49,7 @@ class SelectablePlayersHandBar(player: IPlayer, playingField: IPlayingField, isL
       children = handCards
     }
   }
+
 
   override def updateBar(): Unit = {
     children.clear()

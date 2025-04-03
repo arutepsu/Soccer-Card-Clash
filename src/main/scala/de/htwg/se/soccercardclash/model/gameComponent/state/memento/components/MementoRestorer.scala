@@ -1,10 +1,11 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.memento.components
 
-import com.google.inject.assistedinject.Assisted
+import com.google.inject.assistedinject.{Assisted, AssistedInject}
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.util.Events
@@ -19,7 +20,7 @@ trait IMementoRestorer {
 }
 
 
-class MementoRestorer @Inject()(@Assisted game: IGame) extends IMementoRestorer {
+class MementoRestorer @AssistedInject()(@Assisted game: IGame, handCardsQueueFactory: IHandCardsQueueFactory) extends IMementoRestorer {
 
   override def restoreBoosts(memento: Memento, lastBoostedIndex: Int): Unit = {
     val playingField = game.getPlayingField
@@ -101,13 +102,12 @@ class MementoRestorer @Inject()(@Assisted game: IGame) extends IMementoRestorer 
     pf.getDataManager.setPlayerGoalkeeper(memento.attacker, memento.player1Goalkeeper.map(_.copy()))
     pf.getDataManager.setPlayerGoalkeeper(memento.defender, memento.player2Goalkeeper.map(_.copy()))
 
-    val attackerHand = pf.getDataManager.getPlayerHand(memento.attacker)
-    attackerHand.clear()
-    attackerHand.enqueueAll(memento.player1Hand.map(_.copy()))
+    val copiedPlayer1Hand = handCardsQueueFactory.create(memento.player1Hand.map(_.copy()))
+    val copiedPlayer2Hand = handCardsQueueFactory.create(memento.player2Hand.map(_.copy()))
 
-    val defenderHand = pf.getDataManager.getPlayerHand(memento.defender)
-    defenderHand.clear()
-    defenderHand.enqueueAll(memento.player2Hand.map(_.copy()))
+    pf.getDataManager.setPlayerHand(memento.attacker, copiedPlayer1Hand)
+    pf.getDataManager.setPlayerHand(memento.defender, copiedPlayer2Hand)
+
 
     pf.getScores.setScorePlayer1(memento.player1Score)
     pf.getScores.setScorePlayer2(memento.player2Score)

@@ -6,7 +6,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
-import play.api.libs.json._
+import play.api.libs.json.*
+
+import scala.util.{Failure, Success}
 
 class HandCardsQueueSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -17,7 +19,7 @@ class HandCardsQueueSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val card2 = mock[ICard]
 
       val queue = new HandCardsQueue(List(card1, card2))
-      queue.getCards should contain inOrder (card1, card2)
+      queue.toList should contain inOrder (card1, card2)
       queue.getHandSize shouldBe 2
     }
 
@@ -26,11 +28,12 @@ class HandCardsQueueSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val card2 = mock[ICard]
 
       val queue = new HandCardsQueue(List(card1))
-      queue.addCard(card2)
+      val updatedQueue = queue.addCard(card2) // get the new queue
 
-      queue.getCards.head shouldBe card2
-      queue.getHandSize shouldBe 2
+      updatedQueue.toList.head shouldBe card2
+      updatedQueue.getHandSize shouldBe 2
     }
+
 
     "remove the last card" in {
       val card1 = mock[ICard]
@@ -39,18 +42,24 @@ class HandCardsQueueSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val queue = new HandCardsQueue(List(card1, card2))
       val removed = queue.removeLastCard()
 
-      removed shouldBe card2
-      queue.getCards should contain only card1
+      removed match {
+        case Success((removedCard, updatedQueue)) =>
+          removedCard shouldBe card2
+          updatedQueue.toList should contain only card1
+        case Failure(_) =>
+          fail("Expected successful removal of last card")
+      }
     }
+
 
     "throw an exception when removing from empty queue" in {
       val queue = new HandCardsQueue(Nil)
 
-      val thrown = intercept[RuntimeException] {
-        queue.removeLastCard()
-      }
+      val result = queue.removeLastCard()
 
-      thrown.getMessage should include("Hand is empty")
+      result should matchPattern {
+        case Failure(ex: RuntimeException) if ex.getMessage.contains("Hand is empty") =>
+      }
     }
 
     "convert to XML correctly" in {

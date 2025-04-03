@@ -36,8 +36,11 @@ class GameStateSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(mockFactory.create(List(handCard1))).thenReturn(queue1)
       when(mockFactory.create(List(handCard2))).thenReturn(queue2)
 
-      doReturn(mutable.Queue(handCard1)).when(queue1).getCards
-      doReturn(mutable.Queue(handCard2)).when(queue2).getCards
+      when(queue1.cards).thenReturn(List(handCard1))
+      when(queue2.cards).thenReturn(List(handCard2))
+      when(queue1.toList).thenReturn(List(handCard1))  // ✅ ADD THIS
+      when(queue2.toList).thenReturn(List(handCard2))  // ✅ ADD THIS
+
 
       when(mockField.toXml).thenReturn(<playingField/>)
       when(mockField.toJson).thenReturn(Json.obj("field" -> "data"))

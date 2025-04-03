@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.base
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
@@ -16,7 +17,7 @@ class StandardRefillStrategy extends IRefillStrategy {
     defenderFieldRefill.refill(fieldState, defender)
   }
 
-  override def refillField(fieldState: IDataManager, player: IPlayer, hand: mutable.Queue[ICard]): Unit = {
+  override def refillField(fieldState: IDataManager, player: IPlayer, hand: IHandCardsQueue): Unit = {
     fieldRefill.refill(fieldState, player, hand)
   }
 }

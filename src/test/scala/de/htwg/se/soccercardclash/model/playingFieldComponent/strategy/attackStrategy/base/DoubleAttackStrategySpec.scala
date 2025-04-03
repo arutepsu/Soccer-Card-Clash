@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
@@ -16,6 +16,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.mock
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.util.{AttackResultEvent, DoubleComparedCardsEvent, Events, NoDoubleAttacksEvent, Observable, ObservableEvent}
+
+import scala.util.Success
 
 class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -77,7 +79,9 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       when(dataManager.getPlayerHand(defender)).thenReturn(defenderHand)
 
       when(attackerHand.getHandSize).thenReturn(2)
-      when(attackerHand.removeLastCard()).thenReturn(card2, card1)
+      when(attackerHand.removeLastCard())
+      .thenReturn(Success((card2, attackerHand)))
+      .thenReturn(Success((card1, attackerHand)))
       when(card1.valueToInt).thenReturn(5)
       when(card2.valueToInt).thenReturn(7)
       when(dataManager.allDefendersBeaten(defender)).thenReturn(false)
@@ -86,8 +90,8 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       when(revertStrategy.revertCard(defenderCard)).thenReturn(defenderCard)
 
       doNothing().when(dataManager).removeDefenderCard(defender, defenderCard)
-      doNothing().when(attackerHand).addCard(card1)
-      doNothing().when(attackerHand).addCard(card2)
+      when(attackerHand.addCard(card1)).thenReturn(attackerHand)
+      when(attackerHand.addCard(card2)).thenReturn(attackerHand)
 
       // ✅ Mock notifyObservers to avoid side effects
       doNothing().when(playingField).notifyObservers(any[ObservableEvent])

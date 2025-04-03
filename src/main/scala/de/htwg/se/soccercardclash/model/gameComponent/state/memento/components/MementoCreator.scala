@@ -25,8 +25,8 @@ class MementoCreator @Inject()(@Assisted game: IGame) extends IMementoCreator {
       player2Defenders = playingField.getDataManager.getPlayerDefenders(playingField.getRoles.defender).map(_.copy()),
       player1Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getRoles.attacker).map(_.copy()),
       player2Goalkeeper = playingField.getDataManager.getPlayerGoalkeeper(playingField.getRoles.defender).map(_.copy()),
-      player1Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.attacker).map(_.copy()).toList,
-      player2Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.defender).map(_.copy()).toList,
+      player1Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.attacker).toList.map(_.copy()),
+      player2Hand = playingField.getDataManager.getPlayerHand(playingField.getRoles.defender).toList.map(_.copy()),
       player1Score = playingField.getScores.getScorePlayer1,
       player2Score = playingField.getScores.getScorePlayer2,
 

@@ -7,47 +7,54 @@ import scala.util.{Try, Success, Failure}
 import scala.collection.mutable
 import scala.xml.*
 
-class HandCardsQueue(initialCards: List[ICard]) extends IHandCardsQueue {
+trait IHandCardsQueue {
+  def cards: List[ICard]
 
-  this.enqueueAll(initialCards)
+  def addCard(card: ICard): IHandCardsQueue
 
-  override def getCards: mutable.Queue[ICard] = this
+  def removeLastCard(): Try[(ICard, IHandCardsQueue)]
 
-  override def addCard(card: ICard): Unit = this.prepend(card)
+  def splitAtEnd(n: Int): (List[ICard], IHandCardsQueue)
 
-  override def removeLastCard(): ICard = {
-    Try {
-      if (this.nonEmpty) {
-        this.remove(this.size - 1)
-      } else {
-        throw new NoSuchElementException("Hand is empty!")
-      }
-    } match {
-      case Success(card) => card
-      case Failure(exception) =>
-        throw new RuntimeException(s"❌ Error removing last card: ${exception.getMessage}", exception)
-    }
-  }
+  def swap(index1: Int, index2: Int): Try[IHandCardsQueue]
 
-  override def getHandSize: Int = this.size
-}
+  def getHandSize: Int = cards.size
 
-trait IHandCardsQueue extends mutable.Queue[ICard] {
-  def getCards: mutable.Queue[ICard]
+  def toList: List[ICard] = cards
 
-  def addCard(card: ICard): Unit
-
-  def removeLastCard(): ICard
-
-  def getHandSize: Int
-
-  def toXml: Elem = {
-    <HandCardsQueue>
-      {getCards.map(_.toXml)}
-    </HandCardsQueue>
-  }
+  def toXml: Elem =
+    <HandCardsQueue>{cards.map(_.toXml)}</HandCardsQueue>
 
   def toJson: JsObject = Json.obj(
-    "cards" -> getCards.map(_.toJson)
+    "cards" -> cards.map(_.toJson)
   )
+}
+
+
+case class HandCardsQueue(cards: List[ICard]) extends IHandCardsQueue {
+
+  override def addCard(card: ICard): IHandCardsQueue =
+    HandCardsQueue(card :: cards)
+
+  override def removeLastCard(): Try[(ICard, IHandCardsQueue)] =
+    cards.reverse match {
+      case last :: rest => Success((last, HandCardsQueue(rest.reverse)))
+      case Nil => Failure(new NoSuchElementException("Hand is empty!"))
+    }
+
+  override def splitAtEnd(n: Int): (List[ICard], IHandCardsQueue) = {
+    val (remaining, taken) = cards.splitAt(cards.length - n max 0)
+    (taken, HandCardsQueue(remaining))
+  }
+  override def swap(index1: Int, index2: Int): Try[IHandCardsQueue] = Try {
+    if (index1 < 0 || index2 < 0 || index1 >= cards.length || index2 >= cards.length)
+      throw new IndexOutOfBoundsException("Invalid indices for swap.")
+
+    val swapped = cards
+      .updated(index1, cards(index2))
+      .updated(index2, cards(index1))
+
+    HandCardsQueue(swapped)
+  }
+
 }

@@ -15,6 +15,7 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
     val dataManager = playingField.getDataManager
     val roles = playingField.getRoles
     val attacker = roles.attacker
+    val hand = dataManager.getPlayerHand(attacker)
 
     def handleNoAction(): Boolean = {
       attacker.actionStates.get(PlayerActionPolicies.Swap).foreach {
@@ -24,24 +25,15 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
       false
     }
 
-    def reverseCards(cards: mutable.Queue[ICard]): List[ICard] = cards.toList.reverse
-
-
-    def applyReversedHand(hand: IHandCardsQueue, cards: List[ICard]): Unit = {
-
-      hand.getHandSize until 0 by -1 foreach (_ => hand.removeLastCard())
-      cards.foreach(hand.addCard)
-      cards.zipWithIndex.foreach((card, i) => hand.update(i, card))
-    }
-
     Option.when(playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
-      val hand = dataManager.getPlayerHand(attacker)
-      val cards = hand.getCards
+      val cards = hand.toList
       if (cards.size >= 2) {
-        val reversed = cards.toList.reverse
-        applyReversedHand(hand, reversed)
+        val reversedHand = HandCardsQueue(cards.reverse)
+        dataManager.setPlayerHand(attacker, reversedHand)
+
         val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
         roles.setRoles(updatedAttacker, roles.defender)
+
         playingField.notifyObservers()
         true
       } else {
@@ -50,6 +42,5 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
     }.getOrElse {
       handleNoAction()
     }
-
   }
 }

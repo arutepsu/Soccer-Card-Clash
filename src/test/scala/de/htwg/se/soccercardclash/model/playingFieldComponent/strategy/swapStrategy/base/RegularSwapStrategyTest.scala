@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IPlayerActionManager, IRolesManager}
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.base.RegularSwapStrategy
 import org.scalatest.flatspec.AnyFlatSpec
@@ -13,6 +13,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.util.{NoSwapsEvent, Observable, ObservableEvent}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 
 class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
@@ -33,16 +35,13 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val mockDefender = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
 
-    val card1 = mock[ICard]
-    val card2 = mock[ICard]
-
+    val card1 = mock[ICard]("card1")
+    val card2 = mock[ICard]("card2")
     val hand = new HandCardsQueue(List(card1, card2))
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
-
-    // Handle playerActionService methods
     when(mockPlayerActionManager.canPerform(mockAttacker, PlayerActionPolicies.Swap)).thenReturn(true)
 
     val updatedPlayer = mock[IPlayer]
@@ -51,6 +50,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     val field = new ObservableMockPlayingField {
       override def getDataManager: IDataManager = mockData
+
       override def getRoles: IRolesManager = mockRoles
     }
 
@@ -58,8 +58,14 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val result = strategy.swap(field)
 
     result shouldBe true
-    hand(0) shouldBe card2
-    hand(1) shouldBe card1
+
+    val handCaptor = ArgumentCaptor.forClass(classOf[IHandCardsQueue])
+
+    verify(mockData).setPlayerHand(ArgumentMatchers.eq(mockAttacker), handCaptor.capture())
+
+    val swappedList = handCaptor.getValue.toList
+    swappedList should contain inOrder (card2, card1)
+
     verify(mockRoles).setRoles(updatedPlayer, mockDefender)
   }
 

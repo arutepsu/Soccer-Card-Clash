@@ -69,8 +69,8 @@ class DataManager @Inject()(
     refillStrategy.refillDefenderField(this, defender)
 
   override def initializeFields(): Unit = {
-    refillStrategy.refillField(this, getPlayer1, handManager.getPlayerHand(getPlayer1).getCards)
-    refillStrategy.refillField(this, getPlayer2, handManager.getPlayerHand(getPlayer2).getCards)
+    refillStrategy.refillField(this, getPlayer1, handManager.getPlayerHand(getPlayer1))
+    refillStrategy.refillField(this, getPlayer2, handManager.getPlayerHand(getPlayer2))
   }
 
   override def getPlayer1: IPlayer = playingField.getRoles.attacker

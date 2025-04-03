@@ -177,29 +177,25 @@ object CardAnimationFactory {
   }
 
   def highlightLastHandCard(player: IPlayer, playingField: IPlayingField): Option[HandCard] = {
-    val hand = playingField.getDataManager.getPlayerHand(player)
+    val handCards = playingField.getDataManager.getPlayerHand(player).toList
 
-    if (hand.nonEmpty) {
-      val newLastCard = hand.last
-      val selectedCard = Some(new HandCard(flipped = false, card = newLastCard))
+    handCards.lastOption.map { lastCard =>
+      val cardView = new HandCard(flipped = false, card = lastCard)
 
-      selectedCard.foreach { cardView =>
-        // Apply gold glow effect
-        cardView.effect = new DropShadow(20, Color.GOLD)
-        cardView.effect = new Glow(0.8)
+      // Apply gold glow effect
+      cardView.effect = new DropShadow(20, Color.GOLD)
+      cardView.effect = new Glow(0.8)
 
-        // Scale animation to highlight the card
-        val selectAnimation = new ScaleTransition(Duration(200), cardView)
-        selectAnimation.toX = 1.2
-        selectAnimation.toY = 1.2
-        selectAnimation.play()
-      }
+      // Scale animation to highlight the card
+      val selectAnimation = new ScaleTransition(Duration(200), cardView)
+      selectAnimation.toX = 1.2
+      selectAnimation.toY = 1.2
+      selectAnimation.play()
 
-      selectedCard
-    } else {
-      None
+      cardView
     }
   }
+
 
 //  def applyHoverEffect(card: FieldCard, selectedIndex: Option[Int], index: Int): Unit = {
 //    if (!selectedIndex.contains(index)) { // Do not apply if selected

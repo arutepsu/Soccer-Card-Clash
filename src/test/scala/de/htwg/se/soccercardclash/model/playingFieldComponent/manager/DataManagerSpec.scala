@@ -59,20 +59,24 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val mockFieldManager = mock[IPlayerFieldManager]
       val mockPlayer1 = mock[IPlayer]
       val mockPlayer2 = mock[IPlayer]
-      val mockQueue1 = mock[IHandCardsQueue]
-      val mockQueue2 = mock[IHandCardsQueue]
-      val cards1 = mutable.Queue[ICard]()
-      val cards2 = mutable.Queue[ICard]()
-
       val mockRoles = mock[IRolesManager]
+
+      // Create real cards and real queues
+      val card1 = mock[ICard]
+      val card2 = mock[ICard]
+      val card3 = mock[ICard]
+      val card4 = mock[ICard]
+
+      val queue1 = new HandCardsQueue(List(card1, card2))
+      val queue2 = new HandCardsQueue(List(card3, card4))
+
+      // Setup mocks
       when(mockRoles.attacker).thenReturn(mockPlayer1)
       when(mockRoles.defender).thenReturn(mockPlayer2)
       when(mockField.getRoles).thenReturn(mockRoles)
 
-      when(mockHandManager.getPlayerHand(mockPlayer1)).thenReturn(mockQueue1)
-      when(mockHandManager.getPlayerHand(mockPlayer2)).thenReturn(mockQueue2)
-      when(mockQueue1.getCards).thenReturn(cards1)
-      when(mockQueue2.getCards).thenReturn(cards2)
+      when(mockHandManager.getPlayerHand(mockPlayer1)).thenReturn(queue1)
+      when(mockHandManager.getPlayerHand(mockPlayer2)).thenReturn(queue2)
 
       val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
       val mockRefillStrategy = mock[IRefillStrategy]
@@ -80,9 +84,12 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       dataManager.initializeFields()
 
-      verify(mockRefillStrategy).refillField(dataManager, mockPlayer1, cards1)
-      verify(mockRefillStrategy).refillField(dataManager, mockPlayer2, cards2)
+      verify(mockRefillStrategy).refillField(dataManager, mockPlayer1, queue1)
+      verify(mockRefillStrategy).refillField(dataManager, mockPlayer2, queue2)
     }
+
+
+
     "initialize player hands through handManager" in {
       val mockField = mock[IPlayingField]
       val mockHandManager = mock[IPlayerHandManager]

@@ -17,7 +17,8 @@ class HandCardsQueueFactorySpec extends AnyWordSpec with Matchers with MockitoSu
       val queue = factory.create(List(card1, card2))
 
       queue shouldBe a[HandCardsQueue]
-      queue.getCards should contain inOrder (card1, card2)
+      queue.toList should contain inOrder (card1, card2)
     }
   }
 }
+

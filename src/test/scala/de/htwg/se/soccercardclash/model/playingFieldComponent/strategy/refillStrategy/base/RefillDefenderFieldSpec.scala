@@ -32,16 +32,17 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       when(fieldState.getPlayerHand(defender)).thenReturn(handQueue)
 
       val strategy = new RefillDefenderField
-      strategy.refill(fieldState, defender)
+      val updatedHand = strategy.refill(fieldState, defender)
 
       val expectedGoalkeeper = cards.maxBy(_.valueToInt)
       val expectedDefenders = cards.filterNot(_ == expectedGoalkeeper)
 
-      handQueue.size shouldBe 0
+      updatedHand.getHandSize shouldBe 0
 
       verify(fieldState).setPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
       verify(fieldState).setPlayerDefenders(defender, expectedDefenders)
     }
+
 
     "partially refill when defender field has less than 3 cards and goalkeeper exists" in {
       val fieldState = mock[IDataManager]
@@ -67,36 +68,44 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       when(fieldState.getPlayerHand(defender)).thenReturn(handQueue)
 
       val strategy = new RefillDefenderField
-      strategy.refill(fieldState, defender)
+      val updatedHand = strategy.refill(fieldState, defender) // ✅ get the updated hand
 
       val expectedGoalkeeper = newCard
       val expectedDefenders = existingDefenders :+ goalkeeper
 
-      handQueue.size shouldBe 0
+      // ✅ updated hand should now be empty
+      updatedHand.getHandSize shouldBe 0
 
       verify(fieldState).setPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
       verify(fieldState).setPlayerDefenders(defender, expectedDefenders)
     }
 
 
-    "do nothing if defender field is full" in {
+    "should do nothing if defender field is full" in {
       val fieldState = mock[IDataManager]
       val defender = mock[IPlayer]
 
+      // Set up a full defender field (3 defenders) and a goalkeeper
       val defenders = (1 to 3).map { i =>
-        val c = mock[ICard]
-        when(c.valueToInt).thenReturn(i)
-        c
+        val card = mock[ICard]
+        when(card.valueToInt).thenReturn(i)
+        card
       }.toList
 
-      when(fieldState.getPlayerDefenders(defender)).thenReturn(defenders)
-      when(fieldState.getPlayerGoalkeeper(defender)).thenReturn(Some(mock[ICard]))
+      val goalkeeper = mock[ICard]
 
+      // Mock data manager behavior
+      when(fieldState.getPlayerDefenders(defender)).thenReturn(defenders)
+      when(fieldState.getPlayerGoalkeeper(defender)).thenReturn(Some(goalkeeper))
+
+      // Create strategy and execute
       val strategy = new RefillDefenderField
       strategy.refill(fieldState, defender)
 
+      // Verifications: these should NOT be called if the field is full
       verify(fieldState, never()).setPlayerDefenders(any(), any())
       verify(fieldState, never()).setPlayerGoalkeeper(any(), any())
     }
+
   }
 }

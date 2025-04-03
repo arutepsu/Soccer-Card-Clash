@@ -37,7 +37,7 @@ class PlayersHandBar(player: IPlayer, playingField: IPlayingField, isLeftSide: B
   def createHandCardRow(): HBox = {
     val hand = playingField.getDataManager.getPlayerHand(player)
 
-    val handCards = hand.zipWithIndex.map { case (card, index) =>
+    val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
 
       val isLastCard = index == hand.getHandSize - 1
 //      val handCard = new HandCard(flipped = !isLastCard, card = card)

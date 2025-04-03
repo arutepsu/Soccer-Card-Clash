@@ -31,16 +31,17 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(fieldState.getPlayerGoalkeeper(player)).thenReturn(None)
 
       val strategy = new RefillField
-      strategy.refill(fieldState, player, hand)
+      val updatedHand = strategy.refill(fieldState, player, hand)
 
       val expectedGoalkeeper = cards.maxBy(_.valueToInt)
       val expectedDefenders = cards.filterNot(_ == expectedGoalkeeper)
 
-      hand.size shouldBe 0
+      updatedHand.getHandSize shouldBe 0
       verify(fieldState).setPlayerField(player, cards)
       verify(fieldState).setPlayerGoalkeeper(player, Some(expectedGoalkeeper))
       verify(fieldState).setPlayerDefenders(player, expectedDefenders)
     }
+
 
     "partially refill with 2 cards if 1 defender is needed (field empty)" in {
       val fieldState = mock[IDataManager]
@@ -101,7 +102,7 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val strategy = new RefillField
       strategy.refill(fieldState, player, hand)
 
-      hand.size shouldBe 0
+      hand.getHandSize shouldBe 0
       verify(fieldState, never()).setPlayerField(any(), any())
     }
   }

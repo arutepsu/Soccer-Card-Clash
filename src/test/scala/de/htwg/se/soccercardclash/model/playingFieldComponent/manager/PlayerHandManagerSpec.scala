@@ -4,13 +4,14 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.PlayerHandManager
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
 import scala.collection.mutable
+import scala.util.Success
 
 class PlayerHandManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -72,8 +73,11 @@ class PlayerHandManagerSpec extends AnyWordSpec with Matchers with MockitoSugar 
       val card = mock[ICard]
       val queue = mock[IHandCardsQueue]
 
-      val cardsQueue = mutable.Queue(card)
-      when(queue.getCards).thenReturn(cardsQueue)
+      // Fix: Return a List, not a Queue
+      when(queue.toList).thenReturn(List(card))
+      when(queue.getHandSize).thenReturn(1)
+      when(queue.removeLastCard()).thenReturn(Success((card, queue)))
+
       manager.setPlayerHand(player, queue)
 
       manager.getAttackingCard(player) shouldBe card

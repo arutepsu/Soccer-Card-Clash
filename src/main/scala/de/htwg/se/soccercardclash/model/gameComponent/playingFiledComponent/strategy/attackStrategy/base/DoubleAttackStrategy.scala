@@ -44,12 +44,15 @@ class DoubleAttackStrategy(
     val defenderHand = fieldState.getPlayerHand(defender)
 
     Try {
-      if (attackerHand.getHandSize < 2) {
+      if (attackerHand.getHandSize < 2)
         throw new IllegalStateException("Not enough cards for a double attack.")
-      }
 
-      val attackingCard1 = attackerHand.removeLastCard()
-      val attackingCard2 = attackerHand.removeLastCard()
+      val firstResult = attackerHand.removeLastCard().get
+      val (attackingCard1, handAfterFirst) = firstResult
+
+      val secondResult = handAfterFirst.removeLastCard().get
+      val (attackingCard2, handAfterSecond) = secondResult
+
       val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
 
       val defenderCard = if (fieldState.allDefendersBeaten(defender)) {
@@ -66,7 +69,7 @@ class DoubleAttackStrategy(
         processGoalkeeperAttack(
           attackerAfterAction,
           defender,
-          attackerHand,
+          handAfterSecond, // <- updated hand
           defenderHand,
           attackingCard1,
           attackingCard2,
@@ -75,12 +78,13 @@ class DoubleAttackStrategy(
           revertStrategy,
           scores,
           roles,
-          playingField)
+          playingField
+        )
       } else {
         processDefenderAttack(
           attackerAfterAction,
           defender,
-          attackerHand,
+          handAfterSecond, // <- updated hand
           defenderHand,
           attackingCard1,
           attackingCard2,
@@ -88,7 +92,8 @@ class DoubleAttackStrategy(
           fieldState,
           revertStrategy,
           roles,
-          playingField)
+          playingField
+        )
       }
 
       playingField.notifyObservers()
@@ -96,9 +101,9 @@ class DoubleAttackStrategy(
       result
     } match {
       case Success(result) => result
-      case Failure(exception) =>
-        false
+      case Failure(_) => false
     }
+
   }
 
   private def processGoalkeeperAttack(
@@ -197,43 +202,58 @@ class DoubleAttackStrategy(
                          roles: IRolesManager,
                          playingField: IPlayingField
                        ): Boolean = {
-    if (attackerHand.nonEmpty && defenderHand.nonEmpty) {
+    if (attackerHand.getHandSize > 0 && defenderHand.getHandSize > 0) {
       playingField.notifyObservers(Events.DoubleTieComparison)
-      val extraAttackerCard = attackerHand.removeLastCard()
-      val extraDefenderCard = defenderHand.removeLastCard()
-      val revertedExtraAttackerCard = revertStrategy.revertCard(extraAttackerCard)
-      val revertedExtraDefenderCard = revertStrategy.revertCard(extraDefenderCard)
 
-      val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
-      val revertedDefenderCard = revertStrategy.revertCard(defenderCard)
-      playingField.notifyObservers(DoubleTieComparisonEvent(
-        attackingCard1, attackingCard2, defenderCard, extraAttackerCard, extraDefenderCard))
-      val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
+      val attackerCardTry = attackerHand.removeLastCard()
+      val defenderCardTry = defenderHand.removeLastCard()
 
-      if (tiebreakerResult > 0) {
-        attackerWins(
-          attackerHand,
-          playingField,
-          attackingCard1,
-          attackingCard2,
-          revertStrategy.revertCard(extraAttackerCard),
-          revertStrategy.revertCard(extraDefenderCard))
-        fieldState.removeDefenderCard(defender, fieldState.getDefenderCard(defender, defenderIndex))
-        fieldState.removeDefenderCard(defender, revertedDefenderCard)
-        true
-      } else {
-        defenderWins(
-          defenderHand,
-          playingField,
-          attackingCard1,
-          attackingCard2,
-          revertStrategy.revertCard(extraAttackerCard),
-          revertStrategy.revertCard(extraDefenderCard))
-        fieldState.removeDefenderCard(defender, fieldState.getDefenderCard(defender, defenderIndex))
-        fieldState.removeDefenderCard(defender, revertedDefenderCard)
-        fieldState.refillDefenderField(defender)
-        roles.switchRoles()
-        true
+      (attackerCardTry, defenderCardTry) match {
+        case (Success((extraAttackerCard, updatedAttackerHand)),
+        Success((extraDefenderCard, updatedDefenderHand))) =>
+
+          val revertedExtraAttackerCard = revertStrategy.revertCard(extraAttackerCard)
+          val revertedExtraDefenderCard = revertStrategy.revertCard(extraDefenderCard)
+
+          val defenderCard = fieldState.getDefenderCard(defender, defenderIndex)
+          val revertedDefenderCard = revertStrategy.revertCard(defenderCard)
+
+          playingField.notifyObservers(DoubleTieComparisonEvent(
+            attackingCard1, attackingCard2, defenderCard, extraAttackerCard, extraDefenderCard))
+
+          val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
+
+          if (tiebreakerResult > 0) {
+            attackerWins(
+              updatedAttackerHand,
+              playingField,
+              attackingCard1,
+              attackingCard2,
+              revertedExtraAttackerCard,
+              revertedExtraDefenderCard
+            )
+            fieldState.removeDefenderCard(defender, defenderCard)
+            fieldState.removeDefenderCard(defender, revertedDefenderCard)
+            true
+          } else {
+            defenderWins(
+              updatedDefenderHand,
+              playingField,
+              attackingCard1,
+              attackingCard2,
+              revertedExtraAttackerCard,
+              revertedExtraDefenderCard
+            )
+            fieldState.removeDefenderCard(defender, defenderCard)
+            fieldState.removeDefenderCard(defender, revertedDefenderCard)
+            fieldState.refillDefenderField(defender)
+            roles.switchRoles()
+            true
+          }
+
+        case _ =>
+          roles.switchRoles()
+          true
       }
     } else {
       roles.switchRoles()
@@ -246,23 +266,29 @@ class DoubleAttackStrategy(
                             playingField: IPlayingField,
                             cards: ICard*
                           ): Unit = {
-    cards.foreach { card =>
-      hand.addCard(card)
-    }
+    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    playingField.getDataManager.setPlayerHand(playingField.getRoles.attacker, updatedHand)
 
-    playingField.notifyObservers(AttackResultEvent(playingField.getRoles.attacker, playingField.getRoles.defender, attackSuccess = true))
-
+    playingField.notifyObservers(AttackResultEvent(
+      playingField.getRoles.attacker,
+      playingField.getRoles.defender,
+      attackSuccess = true
+    ))
   }
-
 
   private def defenderWins(
                             hand: IHandCardsQueue,
                             playingField: IPlayingField,
                             cards: ICard*
                           ): Unit = {
-    cards.foreach(hand.addCard)
+    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    playingField.getDataManager.setPlayerHand(playingField.getRoles.defender, updatedHand)
 
-    playingField.notifyObservers(AttackResultEvent(playingField.getRoles.attacker, playingField.getRoles.defender, attackSuccess = false))
-
+    playingField.notifyObservers(AttackResultEvent(
+      playingField.getRoles.attacker,
+      playingField.getRoles.defender,
+      attackSuccess = false
+    ))
   }
+
 }

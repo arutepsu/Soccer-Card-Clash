@@ -44,10 +44,10 @@ trait IGameState extends Serializable {
     <root>
         {playingField.toXml}
       <player1Hand>
-        {player1Hand.getCards.map(_.toXml)}
+        {player1Hand.toList.map(_.toXml)}
       </player1Hand>
       <player2Hand>
-        {player2Hand.getCards.map(_.toXml)}
+        {player2Hand.toList.map(_.toXml)}
       </player2Hand>
       <player1Field>
         {player1Defenders.map(_.toXml)}
@@ -72,8 +72,8 @@ trait IGameState extends Serializable {
 
   def toJson: JsObject = Json.obj(
     "playingField" -> playingField.toJson,
-    "player1Hand" -> player1Hand.getCards.map(_.toJson),
-    "player2Hand" -> player2Hand.getCards.map(_.toJson),
+    "player1Hand" -> player1Hand.toList.map(_.toJson),
+    "player2Hand" -> player2Hand.toList.map(_.toJson),
     "player1Field" -> player1Defenders.map(_.toJson),
     "player2Field" -> player2Defenders.map(_.toJson),
     "player1Goalkeeper" -> player1Goalkeeper.map(_.toJson).getOrElse(Json.obj()),
