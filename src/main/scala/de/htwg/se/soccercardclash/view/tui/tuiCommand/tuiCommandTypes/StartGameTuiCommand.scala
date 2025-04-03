@@ -8,6 +8,5 @@ class StartGameTuiCommand(controller: IController, player1: String, player2: Str
   override def execute(input: Option[String] = None): Unit = {
     println(s"🎮 Starting game with players: $player1 & $player2")
     controller.createGame(player1, player2)
-    controller.notifyObservers(Events.PlayingField)
   }
 }

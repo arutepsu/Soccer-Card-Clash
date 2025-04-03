@@ -118,7 +118,7 @@ class Tui(controller: IController) extends Observer {
         controller.notifyObservers(Events.CreatePlayers)
 
       case TuiKeys.Save.key =>
-        controller.notifyObservers(Events.SaveGame)
+        commands(TuiKeys.Save.key).execute()
 
       case TuiKeys.ShowGames.key =>
         controller.notifyObservers(Events.LoadGame)
@@ -132,7 +132,7 @@ class Tui(controller: IController) extends Observer {
   }
 
   private def handleLoadGameInput(input: String): Unit = {
-    val pattern = """select\\s+(\\d+)""".r
+    val pattern = """(?i)select\s+(\d+)""".r
     input match {
       case pattern(numStr) =>
         val index = numStr.toIntOption.getOrElse(-1)

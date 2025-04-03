@@ -9,7 +9,6 @@ class LoadGameTuiCommand(controller: IController, fileName: String) extends ITui
   override def execute(input: Option[String] = None): Unit = {
     Try {
       controller.loadGame(fileName)
-      controller.notifyObservers(Events.PlayingField)
     } match {
       case Success(_) =>
         println(s"✅ Game '$fileName' loaded successfully.")

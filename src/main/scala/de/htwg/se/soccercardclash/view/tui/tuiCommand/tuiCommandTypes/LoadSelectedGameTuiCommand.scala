@@ -8,6 +8,7 @@ import java.io.File
 class LoadSelectedGameTuiCommand(controller: IController, index: Int, tuiCommandFactory: ITuiCommandFactory) extends ITuiCommand {
 
   override def execute(input: Option[String] = None): Unit = {
+    
     val saveDirectory = new File("games")
     val savedGames = saveDirectory.listFiles()
       .filter(file => file.getName.endsWith(".xml") || file.getName.endsWith(".json"))
