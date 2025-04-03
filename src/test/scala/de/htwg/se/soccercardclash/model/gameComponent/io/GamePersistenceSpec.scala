@@ -8,7 +8,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-import scala.util.Failure
+import scala.util.{Success, Failure}
 
 class GamePersistenceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -19,45 +19,40 @@ class GamePersistenceSpec extends AnyWordSpec with Matchers with MockitoSugar {
     val persistence = new GamePersistence(mockFileIO)
 
     "save game successfully" in {
-      noException should be thrownBy persistence.saveGame(mockState)
+      when(mockFileIO.saveGame(mockState)).thenReturn(Success(()))
+
+      val result = persistence.saveGame(mockState)
+
+      result shouldBe Success(())
       verify(mockFileIO).saveGame(mockState)
     }
 
-    "throw exception when saveGame fails" in {
-      val errorIO = mock[IFileIO]
-      val failingPersistence = new GamePersistence(errorIO)
+    "return Failure when saveGame fails" in {
+      val error = new RuntimeException("Disk full")
+      when(mockFileIO.saveGame(mockState)).thenReturn(Failure(error))
 
-      when(errorIO.saveGame(any())).thenThrow(new RuntimeException("Disk full"))
+      val result = persistence.saveGame(mockState)
 
-      val ex = intercept[RuntimeException] {
-        failingPersistence.saveGame(mockState)
-      }
-
-      ex.getMessage should include("Failed to save the game")
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("Disk full")
     }
 
     "load game successfully" in {
-      when(mockFileIO.loadGame("game.json")).thenReturn(mockState)
+      when(mockFileIO.loadGame("game.json")).thenReturn(Success(mockState))
 
       val result = persistence.loadGame("game.json")
-      result shouldBe Some(mockState)
+
+      result shouldBe Success(mockState)
     }
 
-    "return None when loadGame returns null" in {
-      when(mockFileIO.loadGame("missing.json")).thenReturn(null)
+    "return Failure when loadGame returns error" in {
+      val error = new RuntimeException("File not found")
+      when(mockFileIO.loadGame("missing.json")).thenReturn(Failure(error))
 
       val result = persistence.loadGame("missing.json")
-      result shouldBe None
-    }
 
-    "return None if loadGame throws exception" in {
-      val faultyIO = mock[IFileIO]
-      val failingPersistence = new GamePersistence(faultyIO)
-
-      when(faultyIO.loadGame(any())).thenThrow(new RuntimeException("read error"))
-
-      val result = failingPersistence.loadGame("broken.json")
-      result shouldBe None
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("File not found")
     }
   }
 }

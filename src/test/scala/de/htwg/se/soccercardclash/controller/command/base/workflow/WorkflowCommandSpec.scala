@@ -102,13 +102,14 @@ class SaveGameWorkflowCommandSpec extends AnyWordSpec with Matchers with Mockito
       val mockGame = mock[IGame]
       val command = new SaveGameWorkflowCommand(mockGame)
 
-      doNothing().when(mockGame).saveGame() // ✅ Fix: Use doNothing() for void methods
+      when(mockGame.saveGame()).thenReturn(Success(())) // ✅ Correct for Try-returning methods
 
       val result = command.doStep()
 
       result shouldBe true
       verify(mockGame).saveGame()
     }
+
 
     "return false when game.saveGame() fails" in {
       val mockGame = mock[IGame]
@@ -133,13 +134,14 @@ class LoadGameWorkflowCommandSpec extends AnyWordSpec with Matchers with Mockito
       val mockGame = mock[IGame]
       val command = new LoadGameWorkflowCommand(mockGame, "savefile.dat")
 
-      doNothing().when(mockGame).loadGame("savefile.dat") // ✅ Fix: Use doNothing() for void methods
+      when(mockGame.loadGame("savefile.dat")).thenReturn(Success(())) // ✅ Correct
 
       val result = command.doStep()
 
       result shouldBe true
       verify(mockGame).loadGame("savefile.dat")
     }
+
 
     "return false when game.loadGame() fails" in {
       val mockGame = mock[IGame]

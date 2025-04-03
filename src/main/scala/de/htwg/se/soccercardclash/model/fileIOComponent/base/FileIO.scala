@@ -14,33 +14,22 @@ class FileIO @Inject() (
                          xmlComponent: XmlComponent
                        ) extends IFileIO {
 
-  override def saveGame(gameState: IGameState): Unit = {
-    Try {
-      xmlComponent.save(gameState)
-      jsonComponent.save(gameState)
-    } match {
-      case Success(_) =>
-      case Failure(_) => throw new RuntimeException(s"❌ FileIO: Error while saving")
-    }
+  override def saveGame(gameState: IGameState): Try[Unit] = Try {
+    xmlComponent.save(gameState)
+    jsonComponent.save(gameState)
   }
-  
-  override def loadGame(fileName: String): IGameState = {
-    Try {
-      val gameStateOpt = if (fileName.endsWith(".json")) {
-        jsonComponent.load(fileName)
-      } else if (fileName.endsWith(".xml")) {
-        xmlComponent.load(fileName)
-      } else {
-        throw new RuntimeException(s"❌ FileIO: Unsupported file format: $fileName")
-      }
 
-      gameStateOpt.getOrElse(
-        throw new RuntimeException(s"❌ FileIO: Failed to load game: No valid save data found in '$fileName'!")
-      )
-    } match {
-      case Success(gameState) => gameState
-      case Failure(exception) =>
-        throw new RuntimeException(s"❌ FileIO: Error loading game '$fileName': ${exception.getMessage}", exception)
+  override def loadGame(fileName: String): Try[IGameState] = Try {
+    val gameStateOpt = if (fileName.endsWith(".json")) {
+      jsonComponent.load(fileName)
+    } else if (fileName.endsWith(".xml")) {
+      xmlComponent.load(fileName)
+    } else {
+      throw new IllegalArgumentException(s"❌ Unsupported file format: $fileName")
+    }
+
+    gameStateOpt.getOrElse {
+      throw new NoSuchElementException(s"❌ No valid save data found in '$fileName'!")
     }
   }
 }

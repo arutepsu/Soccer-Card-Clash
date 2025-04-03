@@ -10,6 +10,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
+import scala.util.{Failure, Success}
 
 class FileIOSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -21,58 +22,67 @@ class FileIOSpec extends AnyWordSpec with Matchers with MockitoSugar {
   "FileIO" should {
 
     "save the game using both XML and JSON components" in {
-      noException should be thrownBy {
-        fileIO.saveGame(mockGameState)
-      }
+      // Arrange
+      doNothing().when(mockXmlComponent).save(mockGameState)
+      doNothing().when(mockJsonComponent).save(mockGameState)
+
+      // Act
+      val result = fileIO.saveGame(mockGameState)
+
+      // Assert
+      result shouldBe Success(())
       verify(mockXmlComponent).save(mockGameState)
       verify(mockJsonComponent).save(mockGameState)
     }
 
     "load a game from a JSON file successfully" in {
-      when(mockJsonComponent.load(anyString())).thenReturn(Some(mockGameState))
+      when(mockJsonComponent.load("savefile.json")).thenReturn(Some(mockGameState))
 
       val result = fileIO.loadGame("savefile.json")
-      result shouldBe mockGameState
+
+      result shouldBe Success(mockGameState)
     }
 
     "load a game from an XML file successfully" in {
-      when(mockXmlComponent.load(anyString())).thenReturn(Some(mockGameState))
+      when(mockXmlComponent.load("savefile.xml")).thenReturn(Some(mockGameState))
 
       val result = fileIO.loadGame("savefile.xml")
-      result shouldBe mockGameState
+
+      result shouldBe Success(mockGameState)
     }
 
-    "throw an exception for unsupported file formats" in {
-      val exception = intercept[RuntimeException] {
-        fileIO.loadGame("savefile.txt")
-      }
-      exception.getMessage should include ("Unsupported file format")
+    "return Failure for unsupported file formats" in {
+      val result = fileIO.loadGame("savefile.txt")
+
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("Unsupported file format")
     }
 
-    "throw an exception if game state is not found in JSON/XML" in {
-      when(mockJsonComponent.load(anyString())).thenReturn(None)
-      val exception = intercept[RuntimeException] {
-        fileIO.loadGame("savefile.json")
-      }
-      exception.getMessage should include ("No valid save data found")
+    "return Failure if game state is not found in JSON/XML" in {
+      when(mockJsonComponent.load("savefile.json")).thenReturn(None)
+
+      val result = fileIO.loadGame("savefile.json")
+
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("No valid save data found")
     }
 
-    "throw an exception if saving fails" in {
+    "return Failure if saving fails" in {
       doThrow(new RuntimeException("Error")).when(mockXmlComponent).save(mockGameState)
 
-      val exception = intercept[RuntimeException] {
-        fileIO.saveGame(mockGameState)
-      }
-      exception.getMessage should include ("Error while saving")
+      val result = fileIO.saveGame(mockGameState)
+
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("Error")
     }
 
-    "throw an exception if loading fails due to internal error" in {
-      when(mockJsonComponent.load(anyString())).thenThrow(new RuntimeException("Disk error"))
+    "return Failure if loading fails due to internal error" in {
+      when(mockJsonComponent.load("savefile.json")).thenThrow(new RuntimeException("Disk error"))
 
-      val exception = intercept[RuntimeException] {
-        fileIO.loadGame("savefile.json")
-      }
-      exception.getMessage should include ("Error loading game")
+      val result = fileIO.loadGame("savefile.json")
+
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include("Disk error")
     }
   }
 }

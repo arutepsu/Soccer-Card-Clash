@@ -47,18 +47,19 @@ class Game @Inject()(
 
   override def updateGameState(): Unit = gameStateManager.updateGameState(gameInitializer)
 
-  override def saveGame(): Unit = gamePersistence.saveGame(gameStateManager.getGameState)
-
-  override def loadGame(fileName: String): Unit = {
+  override def saveGame(): Try[Unit] = gamePersistence.saveGame(gameStateManager.getGameState)
+  
+  override def loadGame(fileName: String): Try[Unit] =
     gamePersistence.loadGame(fileName) match {
-      case Some(state) =>
+      case Success(state) =>
         gameInitializer.initializeFromState(state)
         gameStateManager.updateGameState(gameInitializer)
-      case None =>
-        throw new RuntimeException(s"Failed to load game: No valid game state found in '$fileName'")
-    }
-  }
+        Success(())
 
+      case Failure(exception) =>
+        Failure(new RuntimeException(s"❌ Game: Failed to load game: ${exception.getMessage}", exception))
+    }
+  
   override def reset(): Boolean = gameStateManager.reset(gameInitializer.getPlayingField)
 
   override def exit(): Unit = System.exit(0)

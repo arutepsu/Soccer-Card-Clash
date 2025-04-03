@@ -28,21 +28,19 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.*
 
 trait IGamePersistence {
-  def saveGame(state: IGameState): Unit
-  def loadGame(fileName: String): Option[IGameState]
+  def saveGame(state: IGameState): Try[Unit]
+  def loadGame(fileName: String): Try[IGameState]
 }
 
 class GamePersistence @Inject()(fileIO: IFileIO) extends IGamePersistence {
-  override def saveGame(state: IGameState): Unit = {
-    Try(fileIO.saveGame(state)) match {
-      case Success(_) =>
-      case Failure(exception) =>
-        throw new RuntimeException("Failed to save the game", exception)
-    }
+
+  override def saveGame(state: IGameState): Try[Unit] = {
+    fileIO.saveGame(state)
   }
 
-  override def loadGame(fileName: String): Option[IGameState] = {
-    Try(fileIO.loadGame(fileName)).toOption.filter(_ != null)
+  override def loadGame(fileName: String): Try[IGameState] = {
+    fileIO.loadGame(fileName)
   }
 }
+
 

@@ -18,8 +18,8 @@ trait IGame extends Serializable {
   def getPlayer1: IPlayer
   def getPlayer2: IPlayer
   def getActionManager: IActionManager
-  def saveGame(): Unit
-  def loadGame(fileName: String): Unit
+  def saveGame(): Try[Unit]
+  def loadGame(fileName: String): Try[Unit]
   def exit(): Unit
   def reset(): Boolean
   def updateGameState(): Unit

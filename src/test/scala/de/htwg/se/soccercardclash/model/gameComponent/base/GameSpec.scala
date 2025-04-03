@@ -12,6 +12,7 @@ import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
+import scala.util.{Success, Failure}
 
 class GameSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -65,7 +66,7 @@ class GameSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
 
     "load game and reinitialize initializer" in {
-      when(mockPersistence.loadGame("game.json")).thenReturn(Some(mockState))
+      when(mockPersistence.loadGame("game.json")).thenReturn(Success(mockState))
 
       game.loadGame("game.json")
 
@@ -73,15 +74,17 @@ class GameSpec extends AnyWordSpec with Matchers with MockitoSugar {
       verify(mockStateManager).updateGameState(mockInitializer)
     }
 
-    "throw error when loading game with no valid state" in {
-      when(mockPersistence.loadGame("badfile")).thenReturn(None)
+    "return Failure when loading game with no valid state" in {
+      val exceptionMessage = "No valid game state found"
+      when(mockPersistence.loadGame("badfile"))
+        .thenReturn(Failure(new RuntimeException(exceptionMessage)))
 
-      val exception = intercept[RuntimeException] {
-        game.loadGame("badfile")
-      }
+      val result = game.loadGame("badfile")
 
-      exception.getMessage should include("Failed to load game")
+      result.isFailure shouldBe true
+      result.failed.get.getMessage should include(exceptionMessage)
     }
+
 
     "reset game" in {
       when(mockInitializer.getPlayingField).thenReturn(mockField)
