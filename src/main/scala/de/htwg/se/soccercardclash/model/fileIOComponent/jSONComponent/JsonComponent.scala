@@ -13,46 +13,34 @@ import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class JsonComponent @Inject() (gameDeserializer: GameDeserializer) {
+class JsonComponent @Inject() (gameDeserializer: GameDeserializer):
 
   private val folderPath = "games/"
-  private val filePath = folderPath + "game.json"
+  private val defaultFile = s"${folderPath}game.json"
 
-  private def ensureFolderExists(): Unit = {
-    val folder = new File(folderPath)
-    if (!folder.exists()) {
-      folder.mkdir()
-    }
-  }
+  private def ensureFolderExists(): Unit =
+    Option(File(folderPath)).filterNot(_.exists()).foreach(_.mkdir())
 
-  def load(fileName: String): Option[IGameState] = {
+  def load(fileName: String): Option[IGameState] =
     ensureFolderExists()
-    val filePath = s"games/$fileName"
+    val filePath = s"$folderPath$fileName"
+    readJsonFromFile(filePath).flatMap(parseGameState)
 
-    Try {
-      val source = Source.fromFile(filePath).getLines.mkString
-      val json = Json.parse(source).as[JsObject]
-      gameDeserializer.fromJson(json)
-    } match {
-      case Success(gameState) => Some(gameState)
-      case Failure(_: java.io.FileNotFoundException) => None
-      case Failure(exception) =>
-        exception.printStackTrace()
-        None
-    }
-  }
-
-  def save(gameState: IGameState): Unit = {
+  def save(gameState: IGameState): Unit =
     ensureFolderExists()
+    writeJsonToFile(defaultFile, gameState.toJson)
 
-    Try {
-      val json = gameState.toJson
-      val pw = new PrintWriter(new File(filePath))
-      pw.write(Json.prettyPrint(json))
-      pw.close()
-    } match {
-      case Success(_) =>
-      case Failure(exception) =>
-    }
-  }
-}
+  private def readJsonFromFile(path: String): Option[JsObject] =
+    Try(Source.fromFile(path).getLines().mkString)
+      .map(Json.parse(_).as[JsObject])
+      .toOption
+
+  private def parseGameState(json: JsObject): Option[IGameState] =
+    Try(gameDeserializer.fromJson(json)).toOption
+
+  private def writeJsonToFile(path: String, json: JsValue): Unit =
+    Try(PrintWriter(File(path)))
+      .foreach(pw =>
+        pw.write(Json.prettyPrint(json))
+        pw.close()
+      )

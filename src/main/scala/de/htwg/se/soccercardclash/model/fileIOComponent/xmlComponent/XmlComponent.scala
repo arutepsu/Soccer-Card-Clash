@@ -8,50 +8,35 @@ import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 import scala.xml.{Elem, PrettyPrinter, XML}
 
-
 @Singleton
-class XmlComponent @Inject()(gameDeserializer: GameDeserializer) {
+class XmlComponent @Inject() (gameDeserializer: GameDeserializer):
 
   private val folderPath = "games/"
-  private val filePath = folderPath + "game.xml"
+  private val defaultFile = s"${folderPath}game.xml"
 
-  private def ensureFolderExists(): Unit = {
-    val folder = new File(folderPath)
-    if (!folder.exists()) {
-      folder.mkdir()
-    }
-  }
+  private def ensureFolderExists(): Unit =
+    Option(File(folderPath)).filterNot(_.exists()).foreach(_.mkdir())
 
-  def load(fileName: String): Option[IGameState] = {
+  def load(fileName: String): Option[IGameState] =
     ensureFolderExists()
-    val filePath = s"games/$fileName"
+    val filePath = s"$folderPath$fileName"
+    loadXml(filePath).flatMap(parseGameState)
 
-    Try {
-      val source = XML.loadFile(filePath)
-      gameDeserializer.fromXml(source.asInstanceOf[Elem])
-    } match {
-      case Success(gameState) => Some(gameState)
-      case Failure(_: java.io.FileNotFoundException) => None
-      case Failure(exception) =>
-        exception.printStackTrace()
-        None
-    }
-  }
-
-  def save(gameState: IGameState): Unit = {
+  def save(gameState: IGameState): Unit =
     ensureFolderExists()
+    val xml = gameState.toXml
+    writeXml(defaultFile, xml)
 
-    Try {
-      val xml = gameState.toXml
-      val prettyPrinter = new PrettyPrinter(120, 4)
-      val formattedXml = prettyPrinter.format(xml)
+  private def loadXml(path: String): Option[Elem] =
+    Try(XML.loadFile(path)).toOption.collect { case e: Elem => e }
 
-      val pw = new PrintWriter(new File(filePath))
-      pw.write(formattedXml)
-      pw.close()
-    } match {
-      case Success(_) =>
-      case Failure(exception) =>
-    }
-  }
-}
+  private def parseGameState(xml: Elem): Option[IGameState] =
+    Try(gameDeserializer.fromXml(xml)).toOption
+
+  private def writeXml(path: String, xml: Elem): Unit =
+    val pretty = PrettyPrinter(120, 4).format(xml)
+    Try(PrintWriter(File(path)))
+      .foreach(pw =>
+        pw.write(pretty)
+        pw.close()
+      )
