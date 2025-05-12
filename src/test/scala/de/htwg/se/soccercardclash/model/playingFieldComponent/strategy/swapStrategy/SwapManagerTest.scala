@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.swapStrategy
 
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.{ISwapManager, ISwapStrategy, SwapManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.{ISwapManager, ISwapStrategy, SwapManager}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -10,7 +10,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class SwapManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   "SwapManager" should "delegate to strategy and return true if successful" in {
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
     val mockStrategy = mock[ISwapStrategy]
 
     when(mockStrategy.swap(mockField)).thenReturn(true)
@@ -23,7 +23,7 @@ class SwapManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
   }
 
   it should "return false if strategy returns false" in {
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
     val mockStrategy = mock[ISwapStrategy]
 
     when(mockStrategy.swap(mockField)).thenReturn(false)

@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
-import de.htwg.se.soccercardclash.model.gameComponent.factory.GameDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.service.GameDeserializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

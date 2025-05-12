@@ -10,16 +10,17 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 
 import scala.collection.mutable
 class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
@@ -29,9 +30,9 @@ class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "create a memento with correct field, hand, scores and action states" in {
       // Mocks
       val game = mock[IGame]
-      val playingField = mock[IPlayingField]
+      val playingField = mock[IGameState]
       val dataManager = mock[IDataManager]
-      val scores = mock[IPlayerScores]
+      val scores = mock[IScores]
 
       val attacker = mock[IPlayer]
       val defender = mock[IPlayer]
@@ -56,7 +57,7 @@ class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(game.getPlayingField).thenReturn(playingField)
       when(playingField.getDataManager).thenReturn(dataManager)
       when(playingField.getScores).thenReturn(scores)
-      val mockRoles = mock[IRolesManager]
+      val mockRoles = mock[IRoles]
       when(mockRoles.attacker).thenReturn(attacker)
       when(mockRoles.defender).thenReturn(defender)
       when(playingField.getRoles).thenReturn(mockRoles)

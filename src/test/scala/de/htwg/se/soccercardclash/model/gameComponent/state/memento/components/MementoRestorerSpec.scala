@@ -9,9 +9,9 @@ import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
@@ -20,8 +20,9 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
-class ObservableMockPlayingField extends Observable with IPlayingField {
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
+class ObservableMockGameState extends Observable with IGameState {
 
   var lastObservedEvent: Option[ObservableEvent] = None
 
@@ -31,15 +32,15 @@ class ObservableMockPlayingField extends Observable with IPlayingField {
   }
 
   // Provide mocks instead of throwing
-  private val dummyRoles = mock(classOf[IRolesManager])
+  private val dummyRoles = mock(classOf[IRoles])
   private val dummyDataManager = mock(classOf[IDataManager])
-  private val dummyScores = mock(classOf[IPlayerScores])
+  private val dummyScores = mock(classOf[IScores])
   private val dummyActionManager = mock(classOf[IActionManager])
   private val dummyPlayer = mock(classOf[IPlayer])
 
-  override def getRoles: IRolesManager = dummyRoles
+  override def getRoles: IRoles = dummyRoles
   override def getDataManager: IDataManager = dummyDataManager
-  override def getScores: IPlayerScores = dummyScores
+  override def getScores: IScores = dummyScores
   override def getActionManager: IActionManager = dummyActionManager
 
   override def reset(): Unit = {}
@@ -54,7 +55,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "restore boosted card using revert strategy and update attacker actions and roles" in {
       // Create mocks
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
+      val rolesManager = mock[IRoles]
       val actionManager = mock[IActionManager]
       val boostManager = mock[IBoostManager]
       val revertStrategy = mock[IRevertStrategy]
@@ -82,10 +83,10 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
 
       // Override methods to inject mocks
-      val playingField = new ObservableMockPlayingField {
+      val playingField = new ObservableMockGameState {
         override def getDataManager: IDataManager = dataManager
 
-        override def getRoles: IRolesManager = rolesManager
+        override def getRoles: IRoles = rolesManager
 
         override def getActionManager: IActionManager = actionManager
       }
@@ -106,7 +107,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
     "restore goalkeeper boost from memento and update roles and observers" in {
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
+      val rolesManager = mock[IRoles]
       val actionManager = mock[IActionManager]
       val boostManager = mock[IBoostManager]
       val revertStrategy = mock[IRevertStrategy]
@@ -129,10 +130,10 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(revertStrategy.revertCard(goalkeeper)).thenReturn(revertedGK)
 
-      val playingField = new ObservableMockPlayingField {
+      val playingField = new ObservableMockGameState {
         override def getDataManager: IDataManager = dataManager
 
-        override def getRoles: IRolesManager = rolesManager
+        override def getRoles: IRoles = rolesManager
 
         override def getActionManager: IActionManager = actionManager
       }
@@ -156,8 +157,8 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
     "restore full game state from memento" in {
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
-      val scores = mock[IPlayerScores]
+      val rolesManager = mock[IRoles]
+      val scores = mock[IScores]
       val handCardsQueueFactory = mock[IHandCardsQueueFactory] // ✅ mocked factory
 
       val attacker = mock[IPlayer]
@@ -202,12 +203,12 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(handCardsQueueFactory.create(List(h1))).thenReturn(hand1)
       when(handCardsQueueFactory.create(List(h2))).thenReturn(hand2)
 
-      val playingField = new ObservableMockPlayingField {
+      val playingField = new ObservableMockGameState {
         override def getDataManager: IDataManager = dataManager
 
-        override def getRoles: IRolesManager = rolesManager
+        override def getRoles: IRoles = rolesManager
 
-        override def getScores: IPlayerScores = scores
+        override def getScores: IScores = scores
       }
 
       val game = mock[IGame]

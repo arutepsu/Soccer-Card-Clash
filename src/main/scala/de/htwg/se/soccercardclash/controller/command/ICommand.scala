@@ -1,9 +1,14 @@
 package de.htwg.se.soccercardclash.controller.command
 
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.util.ObservableEvent
+
 trait ICommand {
-  def doStep(): Boolean
-
-  def undoStep(): Unit
-
-  def redoStep(): Unit
+  def execute(state: IGameState): CommandResult
 }
+
+case class CommandResult(
+                          success: Boolean,
+                          state: IGameState,
+                          events: List[ObservableEvent]
+                        )

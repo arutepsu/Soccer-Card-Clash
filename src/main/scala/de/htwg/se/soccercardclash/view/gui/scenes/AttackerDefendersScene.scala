@@ -3,44 +3,40 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{Events, NoBoostsEvent, ObservableEvent, Observer}
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{BoostBar, GameStatusBar}
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{BoostBar, GameStatusBar, PlayersFieldBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.SelectableFieldCardRenderer
 import scalafx.scene.Node
 import scalafx.scene.text.Text
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.SelectablePlayersFieldBar
 import scalafx.scene.image.Image
-import scalafx.scene.layout._
-import scalafx.Includes._
-import javafx.scene.layout.{BackgroundRepeat, BackgroundPosition, BackgroundSize}
+import scalafx.scene.layout.*
+import scalafx.Includes.*
+import javafx.scene.layout.{BackgroundPosition, BackgroundRepeat, BackgroundSize}
 
 class AttackerDefendersScene(
-                                    controller: IController,
-                                    val playingFieldScene: PlayingFieldScene,
-                                    val playingField: Option[IPlayingField],
-                                    windowWidth: Double,
-                                    windowHeight: Double
+                              controller: IController,
+                              val playingFieldScene: PlayingFieldScene,
+                              val playingField: Option[IGameState],
+                              windowWidth: Double,
+                              windowHeight: Double
                                   ) extends Scene(windowWidth, windowHeight) with Observer {
 
-  playingField.foreach(_.add(this))
-  controller.add(this)
-  val getPlayingField: IPlayingField = playingField.get
-  val gameStatusBar = new GameStatusBar
 
-//  val backgroundView = new Region {
-//    style = "-fx-background-color: black;"
-//  }
+  playingFieldScene.contextHolder.add(this)
+  val gameStatusBar = new GameStatusBar
+  
   val backgroundView = new Region {
     val image = new Image(getClass.getResource("/images/data/images/field.jpg").toExternalForm)
     background = new Background(Array(
@@ -55,11 +51,17 @@ class AttackerDefendersScene(
   }
 
 
-  val attackerDefenderField: Option[SelectablePlayersFieldBar] = playingField.map { pf =>
-    val fieldBar = new SelectablePlayersFieldBar(pf.getRoles.attacker, pf)
+  val attackerDefenderField: Option[PlayersFieldBar] = playingField.map { pf =>
+    val renderer = new SelectableFieldCardRenderer(() => pf) // ✅ always uses up-to-date state
+    val fieldBar = new PlayersFieldBar(
+      player = pf.getRoles.attacker,
+      getGameState = () => pf,
+      renderer = renderer
+    )
     fieldBar.styleClass.add("selectable-field-bar")
     fieldBar
   }
+
 
   val overlay = new Overlay(this)
 
@@ -108,7 +110,7 @@ class AttackerDefendersScene(
       println(s"🔄 AttackerDefendersScene Received Event: $e")
 
       e match {
-        case NoBoostsEvent(player) =>
+        case Events.NoBoostsEvent(player) =>
           println(s"⚠️ ${player.name} has no Boosts left! Showing Alert in AttackerDefendersScene...")
           overlay.show(createBoostAlert(player), true) // ✅ Show alert in this scene only
 

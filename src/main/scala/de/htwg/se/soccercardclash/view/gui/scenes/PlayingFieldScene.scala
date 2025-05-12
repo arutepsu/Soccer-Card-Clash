@@ -1,20 +1,20 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{BorderPane, HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, DoubleComparedCardsEvent, DoubleTieComparisonEvent, Events, GameOver, ScoreEvent, NoDoubleAttacksEvent, ObservableEvent, Observer, TieComparisonEvent}
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{ButtonBar, GameStatusBar, PlayersBar, PlayersFieldBar, PlayersHandBar, SelectablePlayersFieldBar}
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{ButtonBar, DefaultHandCardRenderer, GameStatusBar, PlayersBar, PlayersFieldBar, PlayersHandBar, SelectableFieldCardRenderer}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
 import scalafx.stage.Stage
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import scalafx.scene.Node
@@ -31,69 +31,42 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class PlayingFieldScene(
                          controller: IController,
+                         val contextHolder: IGameContextHolder,
                          windowWidth: Double,
-                         windowHeight: Double,
+                         windowHeight: Double
                        ) extends Scene(windowWidth, windowHeight) with Observer {
+
   this.getStylesheets.add(Styles.playingFieldCss)
 
-  if (controller.getCurrentGame.getPlayingField == null) {
-    throw new IllegalStateException("PlayingFieldScene initialized before game was started!")
-  }
-
-  def playingField: IPlayingField = controller.getCurrentGame.getPlayingField
-  playingField.add(this)
-  def player1: IPlayer = controller.getCurrentGame.getPlayer1
-
-  def player2: IPlayer = controller.getCurrentGame.getPlayer2
-
-
-  val player1HandBar = new PlayersHandBar(player1, playingField, isLeftSide = true)
-  val player2HandBar = new PlayersHandBar(player2, playingField, isLeftSide = false)
-  var player1FieldBar = new PlayersFieldBar(player1, playingField)
-  var player2FieldBar = new PlayersFieldBar(player2, playingField)
-
-
-  def attacker: IPlayer = playingField.getRoles.attacker
-
-  def defender: IPlayer = playingField.getRoles.defender
-
-
-  val attackerHandBar = if (attacker == player1) player1HandBar else player2HandBar
-  val defenderFieldBar = if (defender == player1) player1FieldBar else player2FieldBar
-
+  // ----- Static references initialized once -----
+  val overlay = new Overlay(this)
+  val comparisonHandler = new ComparisonDialogHandler(controller, contextHolder, overlay)
   val gameStatusBar = new GameStatusBar
 
-  val overlay = new Overlay(this)
-  private val comparisonHandler = new ComparisonDialogHandler(controller, overlay)
+  val player1HandBar = new PlayersHandBar(
+    contextHolder.get.state.getPlayer1,
+    contextHolder.get.state,
+    isLeftSide = true,
+    renderer = DefaultHandCardRenderer
+  )
 
-  val playerFields = new HBox {
-    alignment = Pos.CENTER
-    spacing = 150
-    children = Seq(defenderFieldBar)
-  }
+  val player2HandBar = new PlayersHandBar(
+    contextHolder.get.state.getPlayer2,
+    contextHolder.get.state,
+    isLeftSide = false,
+    renderer = DefaultHandCardRenderer
+  )
+  val renderer = new SelectableFieldCardRenderer(() => contextHolder.get.state)
 
-  val playerHands = new HBox {
-    alignment = Pos.CENTER
-    spacing = 300
-    children = Seq(attackerHandBar)
-  }
-  val player1ScoreText = new Label(s"${playingField.getScores.getScorePlayer1}") {
-    styleClass += "player-score"
-  }
-
-  val player2ScoreText = new Label(s"${playingField.getScores.getScorePlayer2}") {
-    styleClass += "player-score"
-  }
+  var currentDefenderFieldBar: Option[PlayersFieldBar] = None
+  val player1ScoreText = new Label { styleClass += "player-score" }
+  val player2ScoreText = new Label { styleClass += "player-score" }
 
   val player1ScoreBox = new VBox {
     styleClass += "score-box"
     children = Seq(
-      new Label("⚽") {
-        styleClass += "score-icon"
-      },
-      new Label(player1.name) {
-        styleClass += "player-name"
-      },
+      new Label("⚽") { styleClass += "score-icon" },
+      new Label(contextHolder.get.state.getPlayer1.name) { styleClass += "player-name" },
       player1ScoreText
     )
   }
@@ -101,16 +74,11 @@ class PlayingFieldScene(
   val player2ScoreBox = new VBox {
     styleClass += "score-box"
     children = Seq(
-      new Label("⚽") {
-        styleClass += "score-icon"
-      },
-      new Label(player2.name) {
-        styleClass += "player-name"
-      },
+      new Label("⚽") { styleClass += "score-icon" },
+      new Label(contextHolder.get.state.getPlayer2.name) { styleClass += "player-name" },
       player2ScoreText
     )
   }
-
 
   val scoresBar = new HBox {
     spacing = 50
@@ -119,59 +87,38 @@ class PlayingFieldScene(
     styleClass += "scores-bar"
   }
 
-  val buttonBar = new ButtonBar(controller, playingField, this, gameStatusBar)
-
-
+  val buttonBar = new ButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
   val playersBar = new PlayersBar(controller, this)
 
-  val mainLayout = new StackPane {
+  val playerFields = new HBox { alignment = Pos.Center; spacing = 150 }
+  val playerHands = new HBox { alignment = Pos.Center; spacing = 300 }
+
+  private val mainLayout = new StackPane {
     children = Seq(
       new BorderPane {
-        top = new BorderPane {
-          center = playersBar
-        }
-
+        top = new BorderPane { center = playersBar }
         center = new BorderPane {
           left = buttonBar
-          center = new VBox {
-            spacing = 10
-            alignment = Pos.Center
-            children = Seq(gameStatusBar, playerFields)
-          }
+          center = new VBox { spacing = 10; alignment = Pos.Center; children = Seq(gameStatusBar, playerFields) }
         }
-
-        bottom = new BorderPane {
-          center = playerHands
-        }
+        bottom = new BorderPane { center = playerHands }
       },
       overlay.getPane
     )
   }
 
-
-
   root = mainLayout
 
-  private var lastAttackingCard: Option[ICard] = None
-  private var lastAttackingCard1: Option[ICard] = None
-  private var lastAttackingCard2: Option[ICard] = None
-  private var lastDefendingCard: Option[ICard] = None
-  private var lastExtraAttackerCard: Option[ICard] = None
-  private var lastExtraDefenderCard: Option[ICard] = None
-  private var lastAttackSuccess: Option[Boolean] = None
-
+  contextHolder.add(this)
+  updateDisplay()
+  // ---------------- UPDATE METHODS ----------------
   override def update(e: ObservableEvent): Unit = {
-
+    println(s":received EVENT! $e")
     Future {
       Thread.sleep(100)
-      Platform.runLater(() => {
-        comparisonHandler.handleComparisonEvent(e)
-      })
+      Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
     }
-
     e match {
-      case NoDoubleAttacksEvent(player) =>
-        overlay.show(createDoubleAttackAlert(player), true)
 
       case Events.RegularAttack =>
 
@@ -198,108 +145,117 @@ class PlayingFieldScene(
             updateDisplay()
           })
         }
-
       case Events.MainMenu =>
-        if (SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
-          return
+        println("🏠 Returning to Main Menu")
+        if (!SceneManager.currentScene.contains(SceneManager.sceneRegistry.getMainMenuScene)) {
+          controller.remove(this)
+          SceneManager.update(e)
         }
-        controller.remove(this)
-        SceneManager.update(e)
 
-      case ScoreEvent(player) =>
+      case Events.NoDoubleAttacksEvent(player) =>
+        overlay.show(createDoubleAttackAlert(player), true)
+
+      case Events.ScoreEvent(player) =>
+        println(s"⚽ Goal scored by ${player.name}")
         Future {
           Thread.sleep(4000)
           Platform.runLater(() => {
-            println(s"⚽ Goal scored by ${player.name}")
             showGoalScoredDialog(player, autoHide = true)
             updateDisplay()
           })
         }
-
-
-      case GameOver(winner) =>
+      case Events.GameOver(winner) =>
+        println(s"🏆 Game Over! Winner: ${winner.name}")
         Future {
           Thread.sleep(4000)
-          Platform.runLater(() => {
-            println(f"🎉 WINNER! : ${winner.name}")
-            showGameOverPopup(winner, autoHide = false)
-          })
+          Platform.runLater(() => showGameOverPopup(winner, autoHide = false))
         }
+      case other =>
+        println(s"🔔 Unhandled Events case: $other")
+    }
+  }
+
+  private def buildViewContext(state: IGameState): Option[PlayingFieldViewContext] = {
+    if (state == null) return None
+    val player1 = state.getPlayer1
+    val player2 = state.getPlayer2
+    val dataManager = state.getDataManager
+    val hasGoalkeeper1 = dataManager.getPlayerGoalkeeper(player1).nonEmpty
+    Some(PlayingFieldViewContext(
+      state,
+      player1,
+      player2,
+      state.getRoles.attacker,
+      state.getRoles.defender,
+      dataManager,
+      state.getScores.getScorePlayer1,
+      state.getScores.getScorePlayer2,
+      hasGoalkeeper1
+    ))
+  }
+
+  def updateDisplay(): Unit = {
+    println("!!!!!display updated!!!!!")
+    buildViewContext(contextHolder.get.state) match {
+      case Some(viewCtx) if viewCtx.hasGoalkeeper1 =>
+        updateFieldBars(viewCtx)
+        updateHands(viewCtx)
+        updateAvatars()
+        updateScores(viewCtx)
       case _ =>
+        println("⚠️ Skipping update → invalid state or missing goalkeeper")
     }
   }
 
-  private def showGameOverPopup(winner: IPlayer, autoHide: Boolean): Unit = {
-    DialogFactory.showGameOverPopup(winner, overlay, controller, autoHide)
-  }
+  private def updateFieldBars(ctx: PlayingFieldViewContext): Unit = {
+    val defender = ctx.state.getRoles.defender
 
-  private def showGoalScoredDialog(winner: IPlayer, autoHide: Boolean): Unit = {
-  DialogFactory.showGoalScoredDialog(winner, overlay, controller, autoHide)
-  }
-  private def createDoubleAttackAlert(player: IPlayer): Node = {
-    GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
-  }
+    val defenderRenderer = new SelectableFieldCardRenderer(() => ctx.state)
 
-  private def updateFieldBar() : Unit = {
-    val currentPlayingField = controller.getCurrentGame.getPlayingField
+    val newDefenderFieldBar = new PlayersFieldBar(
+      player = defender,
+      getGameState = () => ctx.state,
+      renderer = defenderRenderer
+    )
 
-    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(
-      controller.getCurrentGame.getPlayer1).isEmpty) {
-      return
-    }
-
-    val currentPlayer1 = controller.getCurrentGame.getPlayer1
-    val currentPlayer2 = controller.getCurrentGame.getPlayer2
-
-    val attacker = currentPlayingField.getRoles.attacker
-    val defender = currentPlayingField.getRoles.defender
-
-    player1FieldBar = new PlayersFieldBar(currentPlayer1, currentPlayingField)
-    player2FieldBar = new PlayersFieldBar(currentPlayer2, currentPlayingField)
-    player1FieldBar.updateBar()
-    player2FieldBar.updateBar()
-    val newDefenderFieldBar = if (defender == currentPlayer1) player1FieldBar else player2FieldBar
     playerFields.children.clear()
     playerFields.children.add(newDefenderFieldBar)
-    newDefenderFieldBar.updateBar()
 
+    currentDefenderFieldBar = Some(newDefenderFieldBar)
+    newDefenderFieldBar.updateGameStatus()
   }
 
-  private def updateHands() : Unit = {
-    val currentPlayingField = controller.getCurrentGame.getPlayingField
-
-    if (currentPlayingField == null || currentPlayingField.getDataManager.getPlayerGoalkeeper(
-      controller.getCurrentGame.getPlayer1).isEmpty) {
-      return
-    }
-
-    val currentPlayer1 = controller.getCurrentGame.getPlayer1
-    val currentPlayer2 = controller.getCurrentGame.getPlayer2
-
-    val attacker = currentPlayingField.getRoles.attacker
-    val defender = currentPlayingField.getRoles.defender
-
-    val newAttackerHandBar = if (attacker == currentPlayer1) player1HandBar else player2HandBar
+  private def updateHands(ctx: PlayingFieldViewContext): Unit = {
+    val newAttackerHandBar =
+      new PlayersHandBar(
+      ctx.attacker,
+      ctx.state, isLeftSide = ctx.attacker == ctx.player1,
+      renderer = DefaultHandCardRenderer)
     playerHands.children.clear()
     playerHands.children.add(newAttackerHandBar)
-    newAttackerHandBar.updateBar()
+    newAttackerHandBar.updateBar(ctx.state)
   }
+
+
+  private def updateScores(ctx: PlayingFieldViewContext): Unit = {
+    player1ScoreText.text = s"${ctx.score1}"
+    player2ScoreText.text = s"${ctx.score2}"
+  }
+
   private def updateAvatars(): Unit = {
     playersBar.refreshOnRoleSwitch()
     playersBar.refreshActionStates()
   }
-  private def updateScores() : Unit = {
-    val score1 = controller.getCurrentGame.getPlayingField.getScores.getScorePlayer1
-    val score2 = controller.getCurrentGame.getPlayingField.getScores.getScorePlayer2
-    player1ScoreText.text = s"$score1"
-    player2ScoreText.text = s"$score2"
-  }
-  def updateDisplay(): Unit = {
-    updateFieldBar()
-    updateHands()
-    updateAvatars()
-    updateScores()
-  }
-  
-}
 
+  private def showGameOverPopup(winner: IPlayer, autoHide: Boolean): Unit = {
+    DialogFactory.showGameOverPopup(winner, overlay, controller, contextHolder, autoHide)
+  }
+
+  private def showGoalScoredDialog(winner: IPlayer, autoHide: Boolean): Unit = {
+    DialogFactory.showGoalScoredDialog(winner, overlay, controller, contextHolder, autoHide)
+  }
+
+  private def createDoubleAttackAlert(player: IPlayer): Node = {
+    GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
+  }
+}

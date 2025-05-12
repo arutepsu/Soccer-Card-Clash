@@ -1,43 +1,49 @@
 package de.htwg.se.soccercardclash.module
 
-import de.htwg.se.soccercardclash.model.gameComponent.factory.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.*
-import de.htwg.se.soccercardclash.model.gameComponent.io.*
+import de.htwg.se.soccercardclash.controller.{GameContextHolder, IGameContextHolder}
+import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.*
-import de.htwg.se.soccercardclash.model.gameComponent.base.Game
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import com.google.inject.AbstractModule
-
+import com.google.inject.{AbstractModule, Scopes}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
 class GameCoreModule extends AbstractModule {
   
   override def configure(): Unit = {
     bind(classOf[IGameInitializer])
       .toConstructor(classOf[GameInitializer]
-        .getConstructor(classOf[IPlayerFactory], classOf[IPlayingFieldFactory], classOf[IDeckFactory]))
+        .getConstructor(
+          classOf[IPlayerFactory],
+          classOf[IDeckFactory],
+          classOf[IDataManagerFactory],
+          classOf[IRolesFactory],
+          classOf[IScoresFactory]
+        ))
 
-    bind(classOf[IGameStateFactory])
-      .toConstructor(classOf[GameStateFactory]
-        .getConstructor(classOf[IHandCardsQueueFactory]))
-      .asEagerSingleton()
 
-    bind(classOf[IGameStateManager])
-      .toConstructor(classOf[GameStateManager]
-        .getConstructor(classOf[IGameStateFactory], classOf[IHandCardsQueueFactory]))
+//    bind(classOf[IGameStateFactory])
+//      .toConstructor(classOf[GameStateFactory]
+//        .getConstructor(classOf[IHandCardsQueueFactory]))
+//      .asEagerSingleton()S
+
+    bind(classOf[IGameContextHolder]).to(classOf[GameContextHolder]).in(Scopes.SINGLETON)
+//    bind(classOf[IGameStateManager])
+//      .toConstructor(classOf[GameStateManager]
+//        .getConstructor(classOf[IHandCardsQueueFactory]))
 
     bind(classOf[IGamePersistence])
       .toConstructor(classOf[GamePersistence]
         .getConstructor(classOf[IFileIO]))
 
-    bind(classOf[IGame])
-      .toConstructor(classOf[Game].getConstructor(
-        classOf[IGameInitializer],
-        classOf[IGameStateManager],
-        classOf[IGamePersistence],
-      ))
+//    bind(classOf[IGame])
+//      .toConstructor(classOf[Game].getConstructor(
+//        classOf[IGameInitializer],
+//        classOf[IGameStateManager],
+//        classOf[IGamePersistence],
+//      ))
   }
 }
 

@@ -1,14 +1,15 @@
 package de.htwg.se.soccercardclash.model.gameComponent.io
 
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
+import de.htwg.se.soccercardclash.model.gameComponent.service.GamePersistence
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-import scala.util.{Success, Failure}
+import scala.util.{Failure, Success}
 
 class GamePersistenceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 

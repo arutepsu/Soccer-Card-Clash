@@ -3,12 +3,13 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.attackSt
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IPlayerActionManager, IRolesManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.DoubleAttackStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.DoubleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IRevertStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -21,8 +22,8 @@ import scala.util.Success
 
 class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-  class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
-    override def getRoles: IRolesManager = mock[IRolesManager]
+  class ObservableMockGameState extends Observable with IGameState with MockitoSugar {
+    override def getRoles: IRoles = mock[IRoles]
     override def getDataManager: IDataManager = mock[IDataManager]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
@@ -34,9 +35,9 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
   "DoubleAttackStrategy" should {
 
     "execute a successful double attack on a defender" in {
-      val playingField = spy(new ObservableMockPlayingField)
+      val playingField = spy(new ObservableMockGameState)
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
+      val rolesManager = mock[IRoles]
       val attacker = mock[IPlayer]
       val updatedAttacker = mock[IPlayer]
       val defender = mock[IPlayer]
@@ -109,9 +110,9 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
 
     "fail when not enough cards in attacker’s hand" in {
-      val playingField = spy(new ObservableMockPlayingField)
+      val playingField = spy(new ObservableMockGameState)
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
+      val rolesManager = mock[IRoles]
       val attacker = mock[IPlayer]
       val updatedAttacker = mock[IPlayer]
       val defender = mock[IPlayer]
@@ -147,8 +148,8 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
     }
 
     "notify observers if attacker is out of double attacks" in {
-      val playingField = spy(new ObservableMockPlayingField)
-      val rolesManager = mock[IRolesManager]
+      val playingField = spy(new ObservableMockGameState)
+      val rolesManager = mock[IRoles]
       val attacker = mock[IPlayer]
       val defender = mock[IPlayer]
       val revertStrategy = mock[IRevertStrategy]

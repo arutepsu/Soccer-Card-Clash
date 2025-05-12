@@ -1,12 +1,12 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
-
 import play.api.libs.json.*
+
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}
 import scala.io.Source

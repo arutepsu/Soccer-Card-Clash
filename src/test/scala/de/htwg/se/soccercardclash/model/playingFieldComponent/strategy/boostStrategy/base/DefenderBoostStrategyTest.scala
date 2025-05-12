@@ -3,27 +3,28 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStr
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.DefenderBoostStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.DefenderBoostStrategy
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.util.{Events, NoBoostsEvent, ObservableEvent}
 import de.htwg.se.soccercardclash.util.Observable
 
 class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   // Custom observable mock that avoids ClassCastException
-  class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
-    override def getRoles: IRolesManager = mock[IRolesManager]
+  class ObservableMockGameState extends Observable with IGameState with MockitoSugar {
+    override def getRoles: IRoles = mock[IRoles]
 
     override def getDataManager: IDataManager = mock[IDataManager]
 
-    override def getScores: IPlayerScores = mock[IPlayerScores]
+    override def getScores: IScores = mock[IScores]
 
     override def getActionManager: IActionManager = mock[IActionManager]
 
@@ -36,7 +37,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
   "DefenderBoostStrategy" should "successfully boost a card if allowed" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
@@ -52,9 +53,9 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     when(card.boost()).thenReturn(boostedCard)
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List(card))
 
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def getDataManager: IDataManager = mockData
-      override def getRoles: IRolesManager = mockRoles
+      override def getRoles: IRoles = mockRoles
     }
 
     val strategy = new DefenderBoostStrategy(0, mockPlayerActionManager)
@@ -68,17 +69,17 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
   it should "fail if index is out of bounds" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
 
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List.empty)
 
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def getDataManager: IDataManager = mockData
 
-      override def getRoles: IRolesManager = mockRoles
+      override def getRoles: IRoles = mockRoles
     }
 
     val strategy = new DefenderBoostStrategy(1, mockPlayerActionManager)
@@ -90,7 +91,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
   it should "fail and notify if attacker is out of boosts (OutOfActions)" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val card = mock[ICard]
     val mockPlayerActionManager = mock[IPlayerActionManager]
@@ -100,9 +101,9 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List(card))
 
     var notified = false
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def getDataManager: IDataManager = mockData
-      override def getRoles: IRolesManager = mockRoles
+      override def getRoles: IRoles = mockRoles
       override def notifyObservers(e: ObservableEvent): Unit = {
         notified = true
         e shouldBe NoBoostsEvent(mockAttacker)
@@ -120,7 +121,7 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
 
   it should "fail and notify if attacker has 0 remaining boost uses" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
     val card = mock[ICard]
@@ -132,10 +133,10 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     when(mockData.getPlayerDefenders(mockAttacker)).thenReturn(List(card))
 
     var notified = false
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def getDataManager: IDataManager = mockData
 
-      override def getRoles: IRolesManager = mockRoles
+      override def getRoles: IRoles = mockRoles
 
       override def notifyObservers(e: ObservableEvent): Unit = {
         notified = true

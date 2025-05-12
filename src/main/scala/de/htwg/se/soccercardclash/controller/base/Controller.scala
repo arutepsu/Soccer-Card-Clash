@@ -1,73 +1,108 @@
 package de.htwg.se.soccercardclash.controller.base
 
 import com.google.inject.Inject
-import de.htwg.se.soccercardclash.controller.command.ICommand
-import de.htwg.se.soccercardclash.controller.command.factory.ICommandFactory
-import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.IGame
+import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.util.{Events, Observer, UndoManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
+import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent, Observer, UndoManager}
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
+class Controller @Inject()(
+                            commandFactory: ICommandFactory,
+                            gameService: IGameService,
+                            handFactory: IHandCardsQueueFactory,
+                            actionManager: IActionManager,
+                            contextHolder: IGameContextHolder
+                          ) extends IController {
 
+  private def run(ctx: GameContext, command: ICommand, mainEvent: ObservableEvent): (GameContext, Boolean) = {
 
-class Controller @Inject()(private val game: IGame, private val commandFactory: ICommandFactory) extends IController {
-  private val undoManager = new UndoManager
+    val result = ctx.undoManager.doStep(command, ctx.state)
+    val updatedCtx = ctx.copy(state = result.state)
+    val allEvents = if (result.success) mainEvent :: result.events else mainEvent :: fallbackEventFor(mainEvent, ctx)
+    EventDispatcher.dispatch(contextHolder, allEvents)
 
-  override def getCurrentGame: IGame = game
-
-  override def undo(): Unit = {
-    undoManager.undoStep()
-    notifyObservers(Events.Undo)
+    (updatedCtx, result.success)
   }
 
-  override def redo(): Unit = {
-    undoManager.redoStep()
-    notifyObservers(Events.Redo)
+  private def fallbackEventFor(mainEvent: ObservableEvent, ctx: GameContext): List[ObservableEvent] = {
+    val attacker = ctx.state.getRoles.attacker
+    mainEvent match {
+      case Events.DoubleAttack => List(Events.NoDoubleAttacksEvent(attacker))
+      case ev if ev == Events.BoostDefender || ev == Events.BoostGoalkeeper =>
+        List(Events.NoBoostsEvent(attacker))
+      case ev if ev == Events.RegularSwap || ev == Events.ReverseSwap =>
+        List(Events.NoSwapsEvent(attacker))
+
+      case _ => Nil
+    }
   }
 
-  override def executeSingleAttackCommand(defenderPosition: Int): Unit = {
-    executeCommand(commandFactory.createSingleAttackCommand(defenderPosition), Events.RegularAttack)
+  def singleAttack(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createSingleAttackCommand(defenderIndex), Events.RegularAttack)
+
+  def doubleAttack(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createDoubleAttackCommand(defenderIndex), Events.DoubleAttack)
+
+  def regularSwap(index: Int, ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createRegularSwapCommand(index), Events.RegularSwap)
+
+  def reverseSwap(ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createReverseSwapCommand(), Events.ReverseSwap)
+
+  def boostDefender(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createBoostDefenderCommand(defenderIndex), Events.BoostDefender)
+
+  def boostGoalkeeper(ctx: GameContext): (GameContext, Boolean) =
+    run(ctx, commandFactory.createBoostGoalkeeperCommand(), Events.BoostGoalkeeper)
+
+  override def createGame(player1: String, player2: String): Unit = {
+    val ctx = GameContext(gameService.createNewGame(player1, player2), new UndoManager)
+    contextHolder.set(ctx)
+    contextHolder.notifyObservers(Events.PlayingField)
   }
 
-  override def executeDoubleAttackCommand(defenderPosition: Int): Unit = {
-    executeCommand(commandFactory.createDoubleAttackCommand(defenderPosition), Events.DoubleAttack)
+  override def loadGame(fileName: String): Boolean = {
+    gameService.loadGame(fileName).toOption match {
+      case Some(state) =>
+        contextHolder.set(GameContext(state, new UndoManager))
+        contextHolder.notifyObservers(Events.PlayingField)
+        true
+      case None =>
+        false
+    }
   }
 
-  override def boostDefender(defenderPosition: Int): Unit = {
-    executeCommand(commandFactory.createBoostDefenderCommand(defenderPosition), Events.BoostDefender)
+  def saveGame(ctx: GameContext): Boolean = {
+    val success = gameService.saveGame(ctx.state).isSuccess
+    if (success) contextHolder.notifyObservers(Events.SaveGame)
+    success
   }
 
-  override def boostGoalkeeper(): Unit = {
-    executeCommand(commandFactory.createBoostGoalkeeperCommand(), Events.BoostGoalkeeper)
+  def undo(ctx: GameContext): GameContext = {
+    val (newState, events) = ctx.undoManager.undoStep(ctx.state)
+    val updatedCtx = ctx.copy(state = newState)
+    contextHolder.set(updatedCtx)
+
+    EventDispatcher.dispatch(contextHolder, Events.Undo :: events)
+
+    updatedCtx
   }
 
-  override def regularSwap(index: Int): Unit = {
-    executeCommand(commandFactory.createRegularSwapCommand(index), Events.RegularSwap)
+  def redo(ctx: GameContext): GameContext = {
+    val (newState, events) = ctx.undoManager.redoStep(ctx.state)
+    val updatedCtx = ctx.copy(state = newState)
+    contextHolder.set(updatedCtx)
+
+    EventDispatcher.dispatch(contextHolder, Events.Redo :: events)
+    updatedCtx
   }
 
-  override def reverseSwap(): Unit = {
-    executeCommand(commandFactory.createReverseSwapCommand(), Events.ReverseSwap)
-  }
+  def quit(): Unit = System.exit(0)
 
-  override def createGame(player1: String, player2: String): Unit =
-    executeCommand(commandFactory.createCreateGameCommand(game, player1, player2), Events.PlayingField)
-
-  override def quit(): Unit =
-    executeCommand(commandFactory.createQuitCommand(game), Events.Quit)
-
-  override def saveGame(): Unit =
-    executeCommand(commandFactory.createSaveGameCommand(), Events.SaveGame)
-
-  override def loadGame(fileName: String): Unit = {
-    executeCommand(commandFactory.createLoadGameCommand(fileName), Events.PlayingField)
-  }
-
-  override def resetGame(): Unit = {
-    executeCommand(commandFactory.createResetGameCommand(), Events.ResetGame)
-  }
-
-  override def executeCommand(command: ICommand, event: Events): Unit = {
-    undoManager.doStep(command)
-    notifyObservers(event)
-  }
 }

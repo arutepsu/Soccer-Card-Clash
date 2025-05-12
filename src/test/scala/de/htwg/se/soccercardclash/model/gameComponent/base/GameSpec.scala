@@ -2,12 +2,11 @@ package de.htwg.se.soccercardclash.model.gameComponent.base
 
 import de.htwg.se.soccercardclash.model.gameComponent.base.Game
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
+import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
 import de.htwg.se.soccercardclash.model.gameComponent.state.{IGameState, IGameStateManager}
-import de.htwg.se.soccercardclash.model.gameComponent.io.IGamePersistence
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -20,7 +19,7 @@ class GameSpec extends AnyWordSpec with Matchers with MockitoSugar {
     val mockInitializer = mock[IGameInitializer]
     val mockStateManager = mock[IGameStateManager]
     val mockPersistence = mock[IGamePersistence]
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
     val mockPlayer1 = mock[IPlayer]
     val mockPlayer2 = mock[IPlayer]
     val mockActionManager = mock[IActionManager]

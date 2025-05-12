@@ -7,7 +7,7 @@ import scalafx.scene.text.Text
 import scalafx.scene.control.TextField
 import scalafx.geometry.Pos
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -15,15 +15,17 @@ import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 
-class CreatePlayerScene(controller: IController) extends Scene(new StackPane) with Observer {
+class CreatePlayerScene(
+                         controller: IController,
+                         contextHolder: IGameContextHolder
+                       ) extends Scene(new StackPane) with Observer {
 
-  controller.add(this) // Register as an observer
+  contextHolder.add(this)
 
-  private val overlay = new Overlay(this) // ✅ Added Overlay for Alerts
+  private val overlay = new Overlay(this)
 
   val maxAllowedPlayersCount = 2
 
-  // ✅ Declare playerTextInputFields at the class level
   val playerTextInputFields: Seq[TextField] = for (_ <- 1 to maxAllowedPlayersCount) yield new TextField()
 
   val rootVBox: VBox = new VBox {
@@ -64,9 +66,7 @@ class CreatePlayerScene(controller: IController) extends Scene(new StackPane) wi
       text = "Back",
       width = 250,
       height = 60
-    ) { () =>
-      controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
-      controller.resetGame() // ✅ Reset game after switching scenes
+    ) { () => controller.notifyObservers(Events.MainMenu)
     }
 
     startButton.styleClass.add("start-button")
@@ -79,17 +79,14 @@ class CreatePlayerScene(controller: IController) extends Scene(new StackPane) wi
     children.add(startButtonBox)
   }
 
-  // ✅ Set root to a StackPane with rootVBox and overlay
   root = new StackPane {
     children = Seq(rootVBox, overlay.getPane)
   }
 
-  // ✅ Ensure overlay covers the full scene
   overlay.getPane.prefWidth = 800
   overlay.getPane.prefHeight = 600
-  overlay.getPane.visible = false // Initially hidden
+  overlay.getPane.visible = false
 
-  // ✅ Now `playerTextInputFields` is accessible
   def getPlayerNames(): Seq[String] = {
     playerTextInputFields.map(_.text.value.trim).filter(_.nonEmpty)
   }
@@ -98,26 +95,23 @@ class CreatePlayerScene(controller: IController) extends Scene(new StackPane) wi
     val playerNames = getPlayerNames()
 
     if (playerNames.size != 2) {
-      showAlert("Exactly 2 players are required to start the game.") // ✅ Uses GameAlertFactory
+      showAlert("Exactly 2 players are required to start the game.")
       return
     }
     controller.createGame(playerNames.head, playerNames(1))
-    
   }
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
-      println("🔄 CreatePlayerScene Updating!")
-      playerTextInputFields.head.text = controller.getCurrentGame.getPlayer1.name
-      playerTextInputFields(1).text = controller.getCurrentGame.getPlayer2.name
+      playerTextInputFields.head.text = contextHolder.get.state.getPlayer1.name
+      playerTextInputFields(1).text = contextHolder.get.state.getPlayer2.name
       SceneManager.update(e)
     })
   }
-  // ✅ Replaces JavaFX Alert with GameAlertFactory
   private def showAlert(content: String): Unit = {
     Platform.runLater(() => {
-      val alert = GameAlertFactory.createAlert(content, overlay, autoHide = false) // ✅ Use factory method
-      overlay.show(alert, autoHide = false) // ✅ Display the alert using overlay
+      val alert = GameAlertFactory.createAlert(content, overlay, autoHide = false)
+      overlay.show(alert, autoHide = false)
     })
   }
 }

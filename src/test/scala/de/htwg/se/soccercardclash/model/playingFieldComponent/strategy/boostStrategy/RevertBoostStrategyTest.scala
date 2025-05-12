@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStrategy
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.RevertCard
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.RevertCard
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{IRevertStrategy, RevertBoostStrategy, RevertCardActionCommand}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{IRevertStrategy, RevertBoostStrategy, RevertCardActionCommand}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -13,7 +13,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class RevertBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   "RevertBoostStrategy" should "delegate revertCard to RevertCard" in {
-    val mockPlayingField = mock[IPlayingField]
+    val mockPlayingField = mock[IGameState]
     val mockCard = mock[ICard]
 
     val spyReverter = spy(new RevertCard)
@@ -23,7 +23,7 @@ class RevertBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     val revertedCard = mock[ICard]
     val strategyWithStub = new RevertBoostStrategy(mockPlayingField) {
       override val cardReverter: RevertCard = new RevertCard {
-        override def revertCard(field: IPlayingField, card: ICard): ICard = {
+        override def revertCard(field: IGameState, card: ICard): ICard = {
           field shouldBe mockPlayingField
           card shouldBe mockCard
           revertedCard

@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.tui
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.tui
@@ -32,12 +32,15 @@ enum PromptState {
   case Reverted
 }
 
-class Tui(controller: IController) extends Observer {
-  controller.add(this)
+class Tui(
+           controller: IController,
+           gameContextHolder: IGameContextHolder,
+         ) extends Observer {
 
+  controller.add(this)
+  protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
+  protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
   private var promptState: PromptState = PromptState.None
-  protected val prompter: IPrompter = new Prompter(controller)
-  protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, new Prompter(controller))
   private val createPlayersNameTuiCommand: CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
 
   private val commands: Map[String, ITuiCommand] = Map(
@@ -89,17 +92,17 @@ class Tui(controller: IController) extends Observer {
       case TuiKeys.Attack.key =>
         promptState = PromptState.SingleAttack
         prompter.promptRegularAttack()
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
 
       case TuiKeys.DoubleAttack.key =>
         promptState = PromptState.DoubleAttack
         prompter.promptDoubleAttack()
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
 
       case TuiKeys.BoostDefender.key =>
         promptState = PromptState.Boost
         prompter.promptBoost()
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.attacker)
 
       case TuiKeys.RegularSwap.key =>
         promptState = PromptState.RegularSwap
@@ -112,7 +115,7 @@ class Tui(controller: IController) extends Observer {
 
       case TuiKeys.BoostGoalkeeper.key =>
         promptState = PromptState.BoostGoalkeeper
-        prompter.promptShowGoalkeeper(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+        prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
       case TuiKeys.CreatePlayers.key =>
         controller.notifyObservers(Events.CreatePlayers)
@@ -168,21 +171,21 @@ class Tui(controller: IController) extends Observer {
 
       case Events.RegularAttack =>
         promptState = PromptState.SingleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
         prompter.promptShowAttackersHand()
 
       case Events.DoubleAttack =>
         promptState = PromptState.DoubleAttack
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.defender)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
         prompter.promptShowAttackersHand()
 
       case Events.BoostDefender =>
         promptState = PromptState.Boost
-        prompter.promptShowDefendersField(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+        prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.attacker)
 
       case Events.BoostGoalkeeper =>
         promptState = PromptState.BoostGoalkeeper
-        prompter.promptShowGoalkeeper(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+        prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
       case Events.RegularSwap =>
         promptState = PromptState.RegularSwap

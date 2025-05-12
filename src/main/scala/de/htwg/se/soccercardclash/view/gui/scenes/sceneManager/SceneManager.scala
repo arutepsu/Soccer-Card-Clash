@@ -2,7 +2,8 @@ package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
 import scalafx.Includes.*
 import scalafx.scene.layout.StackPane
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.util.Events.CardBoosted
 import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.application.Platform
 import scalafx.scene.Scene
@@ -11,6 +12,8 @@ import scalafx.util.Duration
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 import de.htwg.se.soccercardclash.view.gui.scenes.*
+import de.htwg.se.soccercardclash.view.gui.utils.CardImageLoader
+
 
 object SceneManager extends Observable with Observer {
   private var stage: Stage = _
@@ -18,15 +21,18 @@ object SceneManager extends Observable with Observer {
   private var lastSceneHeight: Double = 600
   var currentScene: Option[Scene] = None
   private var controller: IController = _
+  private var contextHolder: IGameContextHolder = _
   var sceneRegistry: SceneRegistry = _
 
-  def init(primaryStage: Stage, ctrl: IController): Unit = {
+  def init(primaryStage: Stage, ctrl: IController, holder: IGameContextHolder): Unit = {
     stage = primaryStage
     controller = ctrl
+    contextHolder = holder
     controller.add(this)
 
-    sceneRegistry = new SceneRegistry(controller, this)
+    sceneRegistry = new SceneRegistry(controller, this, contextHolder)
   }
+
 
   import scala.util.boundary, boundary.break
 
@@ -38,12 +44,11 @@ object SceneManager extends Observable with Observer {
         case _: PlayingFieldScene if e == Events.PlayingField => true
         case _: AttackerHandScene if e == Events.AttackerHandCards => true
         case _: AttackerDefendersScene if e == Events.AttackerDefenderCards => true
-//        case _: PauseDialog if e == Events.PauseGame => true
         case _: LoadGameScene if e == Events.LoadGame => true
         case _ => false
       }
 
-      if (!sceneMatchesEvent) { // ✅ Skip scene switch only if event matches current scene
+      if (!sceneMatchesEvent) {
         e match {
           case Events.MainMenu => switchScene(sceneRegistry.getMainMenuScene)
           case Events.CreatePlayers => switchScene(sceneRegistry.getCreatePlayerScene)
@@ -67,7 +72,7 @@ object SceneManager extends Observable with Observer {
   def refreshCurrentScene(): Unit = {
     Platform.runLater(() => {
       currentScene.foreach(_.root.value.requestLayout())
-      notifyObservers()
+//      notifyObservers()
     })
   }
 
@@ -79,19 +84,16 @@ object SceneManager extends Observable with Observer {
 
         newScene match {
           case _: AttackerHandScene | _: AttackerDefendersScene =>
-            println("🗑️ DEBUG: Clearing old Hand & Defender scene instances")
             sceneRegistry.clearHandAndDefenderScenes()
           case _ =>
         }
 
         if (newScene.isInstanceOf[PlayingFieldScene]) {
-          println("🗑️ DEBUG: Clearing AttackerHandScene and AttackerDefendersScene instances")
           sceneRegistry.clearHandAndDefenderScenes()
         }
 
         oldSceneOpt.foreach {
           case oldObserver: Observer if controller.subscribers.contains(oldObserver) =>
-            println(s"❌ Removing observer: ${oldObserver.getClass.getSimpleName}")
             controller.remove(oldObserver)
           case _ =>
         }
@@ -111,8 +113,12 @@ object SceneManager extends Observable with Observer {
         maybeFadeOut match {
           case Some(fadeOut) =>
             fadeOut.play()
-            fadeOut.setOnFinished(_ => applySceneTransition(newScene))
+            fadeOut.setOnFinished(_ => {
+              CardImageLoader.clearCache()
+              applySceneTransition(newScene)
+            })
           case None =>
+            CardImageLoader.clearCache()
             applySceneTransition(newScene)
         }
       })
@@ -125,16 +131,12 @@ object SceneManager extends Observable with Observer {
       currentScene = Some(newScene)
       applySceneSize()
 
-      // 🔥 Ensure old instances of the same scene are removed before adding the new one
       controller.subscribers.filter(_.getClass == newScene.getClass).foreach { duplicateObserver =>
-        println(s"❌ Removing duplicate observer: ${duplicateObserver.getClass.getSimpleName}") // Debugging
         controller.remove(duplicateObserver)
       }
 
-      // ✅ Add the new scene as an observer only if it's not already present
       newScene match {
         case newObserverScene: Observer if !controller.subscribers.contains(newObserverScene) =>
-          println(s"✅ Adding observer: ${newObserverScene.getClass.getSimpleName}")
           controller.add(newObserverScene)
         case _ =>
       }
@@ -146,7 +148,9 @@ object SceneManager extends Observable with Observer {
         fadeIn.play()
       }
 
-      notifyObservers()
+//      notifyObservers()
+      controller.printAllObservers()
+
     })
   }
 

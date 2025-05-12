@@ -1,24 +1,23 @@
 package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands
 
-import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
-import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
-import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}
 
-class RegularSwapActionCommand(cardIndex: Int, game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
-  private val actionManager: IActionManager = game.getActionManager
-  protected var swapSuccessful: Option[Boolean] = None
-  override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.regularSwap(cardIndex, actionManager.getPlayerActionService))
-    result match {
-      case Success(value) =>
-        swapSuccessful = Some(value)
-        value
-      case Failure(exception) =>
-        swapSuccessful = Some(false)
-        false
+class RegularSwapActionCommand(
+                                cardIndex: Int,
+                                actionManager: IActionManager
+                              ) extends ActionCommand {
+
+  override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] = {
+    Try(actionManager.regularSwap(state, cardIndex)) match {
+      case Success((true, updatedState, events)) =>
+        Some((updatedState, events))
+      case _ =>
+        None
     }
   }
 }

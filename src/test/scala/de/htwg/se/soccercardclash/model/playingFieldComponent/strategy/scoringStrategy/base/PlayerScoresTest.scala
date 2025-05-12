@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.scoringStrategy.base
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.base.PlayerScores
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Scores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -13,9 +13,9 @@ import de.htwg.se.soccercardclash.util.{GameOver, ScoreEvent, Observable, Observ
 
 class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
-  class ObservableMockPlayingField extends Observable with IPlayingField with MockitoSugar {
+  class ObservableMockGameState extends Observable with IGameState with MockitoSugar {
     override def getDataManager: IDataManager = mock[IDataManager]
-    override def getRoles: IRolesManager = mock[IRolesManager]
+    override def getRoles: IRoles = mock[IRoles]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
     override def reset(): Unit = {}
@@ -24,25 +24,25 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
   }
 
   "PlayerScores" should "initialize both scores to 0" in {
-    val field = new ObservableMockPlayingField
+    val field = new ObservableMockGameState
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
 
     scores.getScorePlayer1 shouldBe 0
     scores.getScorePlayer2 shouldBe 0
   }
 
   it should "score a goal using the scoring strategy" in {
-    val field = new ObservableMockPlayingField
+    val field = new ObservableMockGameState
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
     val strategy = mock[IScoringStrategy]
 
     when(strategy.calculatePoints(0)).thenReturn(5)
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
     scores.setScoringStrategy(strategy)
 
     scores.scoreGoal(player1)
@@ -56,7 +56,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     var captured: Option[ScoreEvent] = None
 
-    val testField = new ObservableMockPlayingField {
+    val testField = new ObservableMockGameState {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
           case g: ScoreEvent => captured = Some(g)
@@ -65,7 +65,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
       }
     }
 
-    val scores = new PlayerScores(testField, player1, player2)
+    val scores = new Scores(testField, player1, player2)
     scores.scoreGoal(player1)
 
     captured match {
@@ -83,7 +83,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     var captured: Option[GameOver] = None
 
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
           case g: GameOver => captured = Some(g)
@@ -92,7 +92,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
       }
     }
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
     scores.setScoringStrategy(strategy)
     scores.scoreGoal(player1) // triggers GameOver
 
@@ -111,7 +111,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     var captured: Option[GameOver] = None
 
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
           case g: GameOver => captured = Some(g)
@@ -120,7 +120,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
       }
     }
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
     scores.setScoringStrategy(strategy)
     scores.scoreGoal(player2) // triggers GameOver
 
@@ -140,7 +140,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     var goalEventTriggered = false
     var gameOverTriggered = false
 
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def notifyObservers(e: ObservableEvent): Unit = {
         e match {
           case ScoreEvent(p) if p == player1 => goalEventTriggered = true
@@ -150,7 +150,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
       }
     }
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
     scores.setScoringStrategy(strategy)
     scores.scoreGoal(player1)
 
@@ -163,11 +163,11 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val player2 = mock[IPlayer]
 
     var wasNotified = false
-    val field = new ObservableMockPlayingField {
+    val field = new ObservableMockGameState {
       override def notifyObservers(e: ObservableEvent): Unit = wasNotified = true
     }
 
-    val scores = new PlayerScores(field, player1, player2)
+    val scores = new Scores(field, player1, player2)
     scores.setScorePlayer1(3)
     scores.setScorePlayer2(4)
 

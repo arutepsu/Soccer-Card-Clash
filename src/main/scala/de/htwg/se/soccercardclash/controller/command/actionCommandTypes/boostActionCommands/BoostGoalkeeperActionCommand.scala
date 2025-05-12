@@ -1,40 +1,23 @@
 package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands
 
 import de.htwg.se.soccercardclash.controller.command.ICommand
-import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
-import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
-import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.IBoostManager
+import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}
 
-class BoostGoalkeeperActionCommand(game: IGame,  mementoManagerFactory: IMementoManagerFactory) extends ActionCommand(game, mementoManagerFactory) {
-  private val actionManager: IActionManager = game.getActionManager
-  protected var boostSuccessful: Option[Boolean] = None
-  override protected def executeAction(): Boolean = {
-    val result = Try(actionManager.boostGoalkeeper(actionManager.getPlayerActionService))
-    result match {
-      case Success(value) =>
-        boostSuccessful = Some(value)
-        value
-      case Failure(exception) =>
-        boostSuccessful = Some(false)
-        false
-    }
-  }
-  override def undoStep(): Unit = {
-    memento.foreach(m => {
-      mementoManager.restoreGoalkeeperBoost(m)
-    })
-  }
+class BoostGoalkeeperActionCommand(actionManager: IActionManager) extends ActionCommand {
 
-  override def redoStep(): Unit = {
-    memento match {
-      case Some(savedMemento) if boostSuccessful.contains(true) =>
-        mementoManager.restoreGameState(savedMemento)
-        executeAction()
+  override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] = {
+    Try(actionManager.boostGoalkeeper(state)) match {
+      case Success((true, updatedState, events)) =>
+        Some((updatedState, events))
       case _ =>
+        None
     }
   }
-  
 }
+

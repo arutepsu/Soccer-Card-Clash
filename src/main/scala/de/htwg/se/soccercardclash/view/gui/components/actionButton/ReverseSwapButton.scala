@@ -4,18 +4,16 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import de.htwg.se.soccercardclash.view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
 class ReverseSwapButton extends ActionButton[AttackerHandScene] {
-  override def execute(
-                        controller: IController,
-                        attackerHandScene: AttackerHandScene,
-                      ): Unit = {
-    attackerHandScene.attackerHandBar match {
-      case Some(handBar) =>
-        controller.reverseSwap()
-        attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REVERSE_SWAP_PERFORMED)
-        attackerHandScene.playingField.foreach(_.notifyObservers())
-        attackerHandScene.playingFieldScene.updateDisplay() //TODO: Fix later
-        handBar.updateBar()
-      case None =>
+  override def execute(controller: IController, attackerHandScene: AttackerHandScene): Unit = {
+    val contextHolder = attackerHandScene.playingFieldScene.contextHolder
+    val ctx = contextHolder.get
+
+    val (newCtx, success) = controller.reverseSwap(ctx)
+    if (success) {
+      contextHolder.set(newCtx)
+      attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REVERSE_SWAP_PERFORMED)
+      attackerHandScene.playingFieldScene.updateDisplay() // optional if observing
+      attackerHandScene.attackerHandBar.updateBar(newCtx.state)
     }
   }
 }

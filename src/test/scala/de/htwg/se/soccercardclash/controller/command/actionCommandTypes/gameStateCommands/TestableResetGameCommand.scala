@@ -3,8 +3,8 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.gameSta
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import org.scalatest.matchers.should.Matchers

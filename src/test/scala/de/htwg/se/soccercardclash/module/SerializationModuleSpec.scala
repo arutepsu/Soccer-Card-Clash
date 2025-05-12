@@ -7,9 +7,9 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
-import de.htwg.se.soccercardclash.model.gameComponent.factory.{GameDeserializer, GameInitializer}
+import de.htwg.se.soccercardclash.model.gameComponent.service.{GameDeserializer, GameInitializer}
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameStateFactory
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.state.factory.PlayingFieldDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

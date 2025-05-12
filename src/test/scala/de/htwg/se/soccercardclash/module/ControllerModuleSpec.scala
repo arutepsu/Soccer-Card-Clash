@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.module
 import com.google.inject.{AbstractModule, Guice}
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.command.factory.{CommandFactory, ICommandFactory}
+import de.htwg.se.soccercardclash.controller.command.{CommandFactory, ICommandFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.util.Observable
 import org.scalatest.matchers.should.Matchers

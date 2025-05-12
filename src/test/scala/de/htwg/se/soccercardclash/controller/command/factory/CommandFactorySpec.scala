@@ -4,13 +4,14 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackAc
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.gameStateCommands.ResetGameCommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands.{RegularSwapActionCommand, ReverseSwapActionCommand}
-import de.htwg.se.soccercardclash.controller.command.base.workflow.{CreateGameWorkflowCommand, LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand}
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.command.CommandFactory
+import de.htwg.se.soccercardclash.controller.command.workflow.{CreateGameWorkflowCommand, LoadGameWorkflowCommand, QuitWorkflowCommand, SaveGameWorkflowCommand}
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento

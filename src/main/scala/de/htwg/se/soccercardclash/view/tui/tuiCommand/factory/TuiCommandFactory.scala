@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.factory
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.BoostDefenderActionCommand
 import de.htwg.se.soccercardclash.view.tui.IPrompter
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.*
@@ -26,14 +26,14 @@ trait ITuiCommandFactory {
 
 }
 
-class TuiCommandFactory(controller: IController, prompter: IPrompter) extends ITuiCommandFactory {
+class TuiCommandFactory(controller: IController, contextHolder: IGameContextHolder, prompter: IPrompter) extends ITuiCommandFactory {
 
-  override def createSingleAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller)
-  override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller)
-  override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostDefenderTuiCommand(controller)
-  override def createBoostGoalkeeperTuiCommand(): ITuiCommand = new BoostGoalkeeperTuiCommand(controller)
-  override def createRegularSwapTuiCommand(): ITuiCommand = new RegularSwapTuiCommand(controller)
-  override def createReverseSwapTuiCommand(): ITuiCommand = new ReverseSwapTuiCommand(controller)
+  override def createSingleAttackTuiCommand(): ITuiCommand = new AttackTuiCommand(controller, contextHolder)
+  override def createDoubleAttackTuiCommand(): ITuiCommand = new DoubleAttackTuiCommand(controller, contextHolder)
+  override def createBoostDefenderTuiCommand(): ITuiCommand = new BoostDefenderTuiCommand(controller, contextHolder)
+  override def createBoostGoalkeeperTuiCommand(): ITuiCommand = new BoostGoalkeeperTuiCommand(controller, contextHolder)
+  override def createRegularSwapTuiCommand(): ITuiCommand = new RegularSwapTuiCommand(controller, contextHolder)
+  override def createReverseSwapTuiCommand(): ITuiCommand = new ReverseSwapTuiCommand(controller, contextHolder)
   override def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand =
     new CreatePlayersNameTuiCommand(controller)
 
@@ -41,7 +41,7 @@ class TuiCommandFactory(controller: IController, prompter: IPrompter) extends IT
     new StartGameTuiCommand(controller, player1, player2)
 
   override def createSaveGameTuiCommand(): ITuiCommand =
-    new SaveGameTuiCommand(controller)
+    new SaveGameTuiCommand(controller, contextHolder)
 
   override def createLoadGameTuiCommand(fileName: String): ITuiCommand = {
     new LoadGameTuiCommand(controller, fileName)
@@ -55,8 +55,8 @@ class TuiCommandFactory(controller: IController, prompter: IPrompter) extends IT
   new ShowAvailableGamesTuiCommand(controller, prompter, this)
   }
 
-  override def createUndoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.undo())
-  override def createRedoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.redo())
+  override def createUndoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.undo(contextHolder.get))
+  override def createRedoTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.redo(contextHolder.get))
   override def createExitTuiCommand(): ITuiCommand = new WorkflowTuiCommand(() => controller.quit())
 
 }

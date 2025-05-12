@@ -11,9 +11,9 @@ import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.PlayingFieldDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.state.factory.PlayingFieldDeserializer
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.HandCardsQueue
 
@@ -23,7 +23,7 @@ class GameStateFactoryTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val handCardsQueueFactory = mock[IHandCardsQueueFactory]
     val factory = new GameStateFactory(handCardsQueueFactory)
 
-    val playingField = mock[IPlayingField]
+    val playingField = mock[IGameState]
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
 

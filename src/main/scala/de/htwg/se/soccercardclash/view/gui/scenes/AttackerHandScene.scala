@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import de.htwg.se.soccercardclash.util.{Events, NoSwapsEvent, ObservableEvent, Observer}
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages, PlayersHandBar, SelectableHandCardRenderer}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -18,30 +18,32 @@ import scalafx.application.Platform
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.SelectablePlayersHandBar
 
 class AttackerHandScene(
-                              controller: IController,
-                              val playingFieldScene: PlayingFieldScene,
-                              val playingField: Option[IPlayingField],
-                              windowWidth: Double,
-                              windowHeight: Double,
+                         controller: IController,
+                         val playingFieldScene: PlayingFieldScene,
+                         val contextHolder: IGameContextHolder,
+                         windowWidth: Double,
+                         windowHeight: Double,
                             ) extends Scene(windowWidth, windowHeight) with Observer {
-  playingField.foreach(_.add(this))
-  controller.add(this)
+  playingFieldScene.contextHolder.add(this)
+
   this.getStylesheets.add(Styles.attackerHandSceneCss)
   val overlay = new Overlay(this)
-  val getPlayingField: IPlayingField = playingField.get
+  val getPlayingField: IGameState =  contextHolder.get.state
   val gameStatusBar = new GameStatusBar
   val backgroundView = new Region {
     style = "-fx-background-color: black;"
   }
+  
+  val selectableRenderer = new SelectableHandCardRenderer(() => contextHolder.get.state)
+  val attackerHandBar = new PlayersHandBar(
+    player = contextHolder.get.state.getRoles.attacker,
+    playingField = contextHolder.get.state,
+    isLeftSide = true,
+    renderer = selectableRenderer
+  )
 
-  val attackerHandBar: Option[SelectablePlayersHandBar] = playingField.map { pf =>
-    val handBar = new SelectablePlayersHandBar(pf.getRoles.attacker, pf, isLeftSide = true)
-    handBar.styleClass.add("selectable-hand-bar")
-    handBar
-  }
 
   // ✅ Back to Game button
   val backButton: Button = GameButtonFactory.createGameButton(
@@ -83,28 +85,41 @@ class AttackerHandScene(
     alignment = Pos.CENTER
     spacing = 20
     padding = Insets(20)
-    children = attackerHandBar.toSeq :+ buttonLayout
+    children = Seq(attackerHandBar, buttonLayout)
+
   }
 
   root = new StackPane {
     styleClass.add("attacker-hand-scene")
     children = Seq(backgroundView, layout, overlay.getPane) // ✅ Add Overlay to Scene
   }
+  def updateDisplay(): Unit = {
+    println("AttackerHandScene → updating UI with latest state")
+    val gameState = contextHolder.get.state // or however you access IGameState
+    attackerHandBar.updateBar(gameState)
+    gameStatusBar.updateStatus("Hand view refreshed for attacker: " + gameState.getRoles.attacker.name)
+  }
+
 
   override def update(e: ObservableEvent): Unit = {
     Platform.runLater(() => {
       println(s"🔄 AttackerHandScene Received Event: $e")
 
       e match {
-        case NoSwapsEvent(player) =>
+        case Events.NoSwapsEvent(player) =>
           println(s"⚠️ ${player.name} has no Swaps left! Showing Alert in AttackerHandScene...")
-          overlay.show(createSwapAlert(player), true) // ✅ Show alert in this scene only
+          overlay.show(createSwapAlert(player), true)
 
+        case Events.AttackerHandCards =>
+          println(s"🔄 ${this.getClass.getSimpleName}: refreshing UI from event $e...")
+          updateDisplay()
+          playingFieldScene.updateDisplay()
         case _ =>
-          SceneManager.update(e) // ✅ Handle other events normally
+          SceneManager.update(e)
       }
     })
   }
+
 
   // ✅ Method to create an Alert for No Swaps Left
   private def createSwapAlert(player: IPlayer): Node = {

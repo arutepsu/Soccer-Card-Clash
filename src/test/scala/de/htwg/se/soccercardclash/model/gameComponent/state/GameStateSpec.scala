@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.{IPlayingField, manager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.{IGameState, manager}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
@@ -18,7 +18,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "GameState" should {
     "expose all values from memento and convert to JSON/XML" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockFactory = mock[IHandCardsQueueFactory]
 
       val player1 = mock[IPlayer]

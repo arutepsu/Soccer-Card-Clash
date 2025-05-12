@@ -4,7 +4,7 @@ import com.google.inject.{AbstractModule, Guice}
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IPlayerFieldManager, IPlayerHandManager, PlayerFieldManager, PlayerHandManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{FieldCards, HandCards, IFieldCards, IHandCards}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,7 +28,7 @@ class PlayerModuleSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "bind IPlayerFieldManager to PlayerFieldManager" in {
-      injector.getInstance(classOf[IPlayerFieldManager]) should not be null
+      injector.getInstance(classOf[IFieldCards]) should not be null
     }
 
     "bind PlayerDeserializer with dependencies" in {
@@ -36,7 +36,7 @@ class PlayerModuleSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "bind IPlayerHandManager with queue factory" in {
-      injector.getInstance(classOf[IPlayerHandManager]) should not be null
+      injector.getInstance(classOf[IHandCards]) should not be null
     }
 
     "provide a default player using @Provides method" in {

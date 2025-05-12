@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image
@@ -9,7 +9,10 @@ import de.htwg.se.soccercardclash.util.*
 //import view.gui.scenes.MainMenuScene
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 
-class Gui(controller: IController) extends JFXApp3 with Observer {
+class Gui(
+           controller: IController,
+           contextHolder: IGameContextHolder
+         ) extends JFXApp3 with Observer {
 
   override def start(): Unit = {
     val stage = new PrimaryStage {
@@ -17,7 +20,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
       icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
     }
 
-    SceneManager.init(stage, controller)
+    SceneManager.init(stage, controller, contextHolder)
     controller.notifyObservers(Events.MainMenu)
   }
   

@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAc
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.BoostGoalkeeperActionCommand
 import de.htwg.se.soccercardclash.controller.command.base.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.IMementoManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.memento.base.Memento

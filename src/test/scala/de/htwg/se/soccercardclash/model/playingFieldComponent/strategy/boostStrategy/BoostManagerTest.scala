@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStrategy
 
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IBoostManager, IBoostStrategy, IRevertStrategy, RevertBoostStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IBoostManager, IBoostStrategy, IRevertStrategy, RevertBoostStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -10,7 +10,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class BoostManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   "BoostManager" should "apply a boost strategy and return true if successful" in {
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
     val mockStrategy = mock[IBoostStrategy]
 
     when(mockStrategy.boost(mockField)).thenReturn(true)
@@ -23,7 +23,7 @@ class BoostManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
   }
 
   it should "apply a boost strategy and return false if unsuccessful" in {
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
     val mockStrategy = mock[IBoostStrategy]
 
     when(mockStrategy.boost(mockField)).thenReturn(false)
@@ -36,7 +36,7 @@ class BoostManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
   }
 
   it should "provide a RevertBoostStrategy from getRevertStrategy" in {
-    val mockField = mock[IPlayingField]
+    val mockField = mock[IGameState]
 
     val manager = new BoostManager(mockField)
     val strategy = manager.getRevertStrategy

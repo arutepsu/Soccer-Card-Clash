@@ -4,9 +4,8 @@ import com.google.inject.{Guice, AbstractModule}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
-import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
-import de.htwg.se.soccercardclash.model.gameComponent.io.IGamePersistence
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.IPlayingFieldFactory
+import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
+import de.htwg.se.soccercardclash.model.gameComponent.state.factory.IPlayingFieldFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameStateManager
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory

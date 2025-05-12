@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.Events
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{StackPane, VBox}
@@ -11,6 +11,7 @@ import scalafx.scene.text.Text
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.geometry.Pos
 import scalafx.scene.Node
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.application.Platform
@@ -20,11 +21,12 @@ class GoalScoredDialog(
                         player: IPlayer,
                         overlay: Overlay,
                         controller: IController,
+                        gameContextHolder: IGameContextHolder,
                         autoHide: Boolean = true
                       ) {
 
-  private val game = controller.getCurrentGame
-  private val scores = game.getPlayingField.getScores
+  private val game = gameContextHolder.get.state
+  private val scores = game.getScores
   
   private val backgroundImagePath = "/images/data/frames/pause (1).png"
   private val imageUrl = Option(getClass.getResource(backgroundImagePath))

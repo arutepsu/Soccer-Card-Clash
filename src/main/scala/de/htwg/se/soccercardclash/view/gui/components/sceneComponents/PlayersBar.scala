@@ -14,9 +14,10 @@ import scalafx.geometry.Insets
 import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
+import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
 
 
-class PlayersBar(controller: IController, scene: Scene) extends HBox {
+class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox {
 
   spacing = 10
   alignment = Pos.TOP_RIGHT
@@ -29,7 +30,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   updateBar()
 
   def updateAttackerHighlight(): Unit = {
-    val currentDefender = controller.getCurrentGame.getPlayingField.getRoles.defender
+    val currentDefender = scene.contextHolder.get.state.getRoles.defender
 
     children.foreach {
       case node: javafx.scene.layout.VBox =>
@@ -49,7 +50,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
     actionsLabels = Map()
     playerScoreLabels = Map()
 
-    val playingField = controller.getCurrentGame.getPlayingField
+    val playingField = scene.contextHolder.get.state
     val player1 = playingField.getRoles.attacker
     val player2 = playingField.getRoles.defender
 
@@ -103,7 +104,7 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   }
 
   def refreshActionStates(): Unit = {
-    val playingField = controller.getCurrentGame.getPlayingField
+    val playingField = scene.contextHolder.get.state
     val players = List(playingField.getRoles.attacker, playingField.getRoles.defender)
 
     players.foreach { player =>
@@ -118,10 +119,10 @@ class PlayersBar(controller: IController, scene: Scene) extends HBox {
   }
 
   def refreshScores(): Unit = {
-    val scores = controller.getCurrentGame.getPlayingField.getScores
-    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getRoles.attacker)
+    val scores = scene.contextHolder.get.state.getScores
+    playerScoreLabels.get(scene.contextHolder.get.state.getRoles.attacker)
       .foreach(_.text = s"Score: ${scores.getScorePlayer1}")
-    playerScoreLabels.get(controller.getCurrentGame.getPlayingField.getRoles.defender)
+    playerScoreLabels.get(scene.contextHolder.get.state.getRoles.defender)
       .foreach(_.text = s"Score: ${scores.getScorePlayer2}")
   }
 

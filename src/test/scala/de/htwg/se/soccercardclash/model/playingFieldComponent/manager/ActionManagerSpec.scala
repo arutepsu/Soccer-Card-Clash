@@ -1,14 +1,14 @@
 package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 
 import org.mockito.ArgumentMatchers.any
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{ActionManager, IActionManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.AttackHandler
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IBoostManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.SwapManager
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{ActionManager, IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.AttackManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IBoostManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.SwapManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -19,7 +19,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
   "ActionManager" should {
 
     "initialize and return the correct playing field" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val manager = new ActionManager(mockField, mockService)
 
@@ -27,7 +27,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "reset all internal strategies correctly" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val manager = new ActionManager(mockField, mockService)
 
@@ -41,9 +41,9 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate singleAttack to AttackHandler with correct strategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
-      val mockHandler = mock[AttackHandler]
+      val mockHandler = mock[AttackManager]
       val manager = new ActionManager(mockField, mockService)
       manager.attackHandler = mockHandler
 
@@ -56,9 +56,9 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate doubleAttack to AttackHandler with correct strategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
-      val mockHandler = mock[AttackHandler]
+      val mockHandler = mock[AttackManager]
       val manager = new ActionManager(mockField, mockService)
       manager.attackHandler = mockHandler
 
@@ -71,7 +71,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate reverseSwap to SwapManager with ReverseSwapStrategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val mockSwap = mock[SwapManager]
       val manager = new ActionManager(mockField, mockService)
@@ -86,7 +86,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate regularSwap to SwapManager with HandSwapStrategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val mockSwap = mock[SwapManager]
       val manager = new ActionManager(mockField, mockService)
@@ -101,7 +101,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate boostDefender to BoostManager with DefenderBoostStrategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val mockBoost = mock[BoostManager]
       val manager = new ActionManager(mockField, mockService)
@@ -116,7 +116,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "delegate boostGoalkeeper to BoostManager with GoalkeeperBoostStrategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val mockBoost = mock[BoostManager]
       val manager = new ActionManager(mockField, mockService)
@@ -131,7 +131,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "return the current boost strategy" in {
-      val mockField = mock[IPlayingField]
+      val mockField = mock[IGameState]
       val mockService = mock[IPlayerActionManager]
       val manager = new ActionManager(mockField, mockService)
 

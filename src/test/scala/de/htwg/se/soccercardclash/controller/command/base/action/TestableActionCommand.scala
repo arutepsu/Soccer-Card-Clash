@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.controller.command.base.action
 
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar

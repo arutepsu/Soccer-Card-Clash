@@ -6,33 +6,38 @@ import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
 case class SingleButton() extends ActionButton[PlayingFieldScene] {
   override def execute(
                         controller: IController,
-                        playingFieldScene: PlayingFieldScene,
-                        ): Unit = {
+                        playingFieldScene: PlayingFieldScene
+                      ): Unit = {
 
-    val defenderFieldBar =
-      if (playingFieldScene.playingField.getRoles.defender == playingFieldScene.player1)
-        playingFieldScene.player1FieldBar
-      else
-        playingFieldScene.player2FieldBar
+    val contextHolder = playingFieldScene.contextHolder
+    val ctx = contextHolder.get
 
+    val playingField = ctx.state
+    val attacker = playingField.getRoles.attacker
+    val defender = playingField.getRoles.defender
 
+    val defenderCards = playingField.getDataManager.getPlayerDefenders(defender)
 
-    val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getRoles.defender)
+    val targetIndex = playingFieldScene.currentDefenderFieldBar
+      .flatMap(_.selectedDefenderIndex)
+      .orElse(if (defenderCards.isEmpty) Some(0) else None)
 
-    if (defenderCards.nonEmpty) {
-
-      defenderFieldBar.selectedDefenderIndex match {
-        case Some(defenderIndex) =>
-          controller.executeSingleAttackCommand(defenderIndex)
-          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
-          defenderFieldBar.resetSelectedDefender()
-
-        case None =>
-          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-      }
-    } else {
-      controller.executeSingleAttackCommand(0)
-      playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
+    targetIndex match {
+      case Some(index) =>
+        println(s"⚡ Performing Single Attack on index: $index")
+        val (newCtx, success) = controller.singleAttack(index, ctx)
+        if (success) {
+          contextHolder.set(newCtx)
+          playingFieldScene.gameStatusBar.updateStatus(
+            GameStatusMessages.ATTACK_INITIATED,
+            newCtx.state.getRoles.attacker.name,
+            newCtx.state.getRoles.defender.name
+          )
+          playingFieldScene.currentDefenderFieldBar.foreach(_.resetSelectedDefender())
+        }
+      case None =>
+        println("⚠️ No defender selected for attack!")
+        playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
     }
   }
 }

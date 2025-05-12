@@ -4,6 +4,7 @@ import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}

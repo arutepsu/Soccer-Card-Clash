@@ -2,11 +2,12 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.boostStr
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.base.RevertCard
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.RevertCard
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -15,8 +16,8 @@ import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
 
 class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
-  class ObservableMockPlayingField(roles: IRolesManager, dataManager: IDataManager) extends Observable with IPlayingField {
-    override def getRoles: IRolesManager = roles
+  class ObservableMockGameState(roles: IRoles, dataManager: IDataManager) extends Observable with IGameState {
+    override def getRoles: IRoles = roles
     override def getDataManager: IDataManager = dataManager
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
@@ -27,7 +28,7 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   "RevertCard" should "revert a BoostedCard and update it in both fields" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
 
@@ -43,7 +44,7 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
     when(mockData.getPlayerDefenders(mockDefender)).thenReturn(List(boostedCard))
 
     var notified: Option[ObservableEvent] = None
-    val field = new ObservableMockPlayingField(mockRoles, mockData) {
+    val field = new ObservableMockGameState(mockRoles, mockData) {
       override def notifyObservers(e: ObservableEvent): Unit = {
         notified = Some(e)
       }
@@ -59,7 +60,7 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   it should "return the same card if it is not boosted" in {
     val mockData = mock[IDataManager]
-    val mockRoles = mock[IRolesManager]
+    val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
     val regularCard = mock[RegularCard]
@@ -71,7 +72,7 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
     when(mockData.getPlayerDefenders(mockDefender)).thenReturn(List(regularCard))
 
     var notified: Option[ObservableEvent] = None
-    val field = new ObservableMockPlayingField(mockRoles, mockData) {
+    val field = new ObservableMockGameState(mockRoles, mockData) {
       override def notifyObservers(e: ObservableEvent): Unit = {
         notified = Some(e)
       }

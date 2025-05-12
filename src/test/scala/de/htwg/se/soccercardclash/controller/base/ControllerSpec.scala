@@ -1,13 +1,12 @@
 package de.htwg.se.soccercardclash.controller.base
 
 import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.command.ICommand
-import de.htwg.se.soccercardclash.controller.command.base.workflow.WorkflowCommand
-import de.htwg.se.soccercardclash.controller.command.factory.ICommandFactory
+import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.command.workflow.WorkflowCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach

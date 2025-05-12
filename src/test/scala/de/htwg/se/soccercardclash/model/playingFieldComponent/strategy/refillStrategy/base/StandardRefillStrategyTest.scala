@@ -2,10 +2,10 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.refillSt
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.IRefillStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.base.{RefillDefenderField, RefillField, StandardRefillStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.base.{RefillDefenderField, RefillField, StandardRefillStrategy}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar

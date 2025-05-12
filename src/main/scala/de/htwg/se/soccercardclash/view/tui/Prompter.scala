@@ -2,13 +2,13 @@ package de.htwg.se.soccercardclash.view.tui
 
 import java.io.File
 import scala.io.StdIn
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 
-class Prompter(controller: IController) extends IPrompter {
+class Prompter(controller: IController, gameContextHolder: IGameContextHolder) extends IPrompter {
 
   def promptPlayersName(): Unit = {
     println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
@@ -38,7 +38,7 @@ class Prompter(controller: IController) extends IPrompter {
   }
 
   def promptShowAttackersHand(): Unit = {
-    val playingField = controller.getCurrentGame.getPlayingField
+    val playingField = gameContextHolder.get.state
     val attacker = playingField.getRoles.attacker
     val hand = playingField.getDataManager.getPlayerHand(attacker).toList
 
@@ -51,7 +51,7 @@ class Prompter(controller: IController) extends IPrompter {
 
   def promptShowDefendersField(player: IPlayer): Unit = {
 
-    val field = controller.getCurrentGame.getPlayingField
+    val field = gameContextHolder.get.state
     println("\n===================================")
     println(f"${player.name}'s defender cards: ")
     println(f"${field.getDataManager.getPlayerDefenders(player)}")
@@ -61,7 +61,7 @@ class Prompter(controller: IController) extends IPrompter {
 
   def promptShowGoalkeeper(player: IPlayer): Unit = {
 
-    val field = controller.getCurrentGame.getPlayingField
+    val field = gameContextHolder.get.state
     println("\n===================================")
     println(f"${player.name}'s goalkeeper Card: ")
     println(f"${field.getDataManager.getPlayerGoalkeeper(player)}")
@@ -70,7 +70,7 @@ class Prompter(controller: IController) extends IPrompter {
   }
 
   def printGameState(): Unit = {
-    val playingField = controller.getCurrentGame.getPlayingField
+    val playingField = gameContextHolder.get.state
     val attacker = playingField.getRoles.attacker
     val defender = playingField.getRoles.defender
 
@@ -116,7 +116,7 @@ class Prompter(controller: IController) extends IPrompter {
     val saveDirectory = new File("games")
 
     if (!saveDirectory.exists() || !saveDirectory.isDirectory) {
-      println("❌ ERROR: The save directory 'games/' does not exist.")
+      println("The save directory 'games/' does not exist.")
       return
     }
 

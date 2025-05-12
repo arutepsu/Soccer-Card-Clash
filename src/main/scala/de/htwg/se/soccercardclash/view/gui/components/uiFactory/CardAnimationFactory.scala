@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.components.uiFactory
 
 import javafx.event.EventHandler
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.Includes.*
 import scalafx.animation.{FadeTransition, ScaleTransition, StrokeTransition, TranslateTransition}
 import scalafx.scene.control.Button
@@ -176,7 +176,7 @@ object CardAnimationFactory {
     }
   }
 
-  def highlightLastHandCard(player: IPlayer, playingField: IPlayingField): Option[HandCard] = {
+  def highlightLastHandCard(player: IPlayer, playingField: IGameState): Option[HandCard] = {
     val handCards = playingField.getDataManager.getPlayerHand(player).toList
 
     handCards.lastOption.map { lastCard =>

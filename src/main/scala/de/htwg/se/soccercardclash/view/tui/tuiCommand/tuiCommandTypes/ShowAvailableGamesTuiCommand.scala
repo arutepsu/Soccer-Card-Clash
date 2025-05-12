@@ -20,9 +20,6 @@ class ShowAvailableGamesTuiCommand(controller: IController, prompter: IPrompter,
         }
 
       case _ =>
-        if (controller.getCurrentGame != null) {
-          println("ℹ️ A game is already loaded. This will not affect the current session.")
-        }
 
         println("🎮 Showing available saved games:")
         prompter.showAvailableGames()

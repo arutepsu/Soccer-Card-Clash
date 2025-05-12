@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.util
 
-class ObservableEvent {}
+trait ObservableEvent
 
 class Observable {
   var subscribers: Vector[Observer] = Vector()
@@ -15,15 +15,27 @@ class Observable {
     subscribers = subscribers.filterNot(o => o == s)
   }
 
-  def notifyObservers(e: ObservableEvent = ObservableEvent()): Unit = {
+  def notifyObservers(e: ObservableEvent): Unit = {
     if (subscribers.isEmpty) {
       return
     }
     subscribers.distinct.foreach(_.update(e))
   }
 
-
   def removeAllObservers(): Unit = {
     subscribers = Vector()
   }
+
+  def printAllObservers(): Unit = {
+    println("📋 All Observers (including duplicates):")
+    if (subscribers.isEmpty) {
+      println("  (No observers registered)")
+    } else {
+      subscribers.zipWithIndex.foreach { case (observer, index) =>
+        println(s"  [$index] ${observer.getClass.getSimpleName} @ ${observer.hashCode()}")
+      }
+    }
+  }
+
+
 }

@@ -2,9 +2,9 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.refillSt
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.HandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.base.RefillField
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.base.RefillField
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
 import org.scalatest.wordspec.AnyWordSpec

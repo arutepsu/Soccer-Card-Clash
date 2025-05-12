@@ -3,25 +3,26 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.attackSt
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.{IActionManager, IDataManager, IRolesManager}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.boostStrategy.{BoostManager, IRevertStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IRevertStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.util.{AttackResultEvent, ComparedCardsEvent, Events, Observable, ObservableEvent, TieComparisonEvent}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.attackStrategy.base.SingleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.SingleAttackStrategy
 import org.mockito.ArgumentMatchers.any
 
 import scala.util.{Failure, Success}
 
 class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-  class ObservableMockPlayingField extends Observable with IPlayingField {
-    override def getRoles: IRolesManager = mock[IRolesManager]
+  class ObservableMockGameState extends Observable with IGameState {
+    override def getRoles: IRoles = mock[IRoles]
     override def getDataManager: IDataManager = mock[IDataManager]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
@@ -38,7 +39,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
       // Mocks
       val dataManager = mock[IDataManager]
-      val rolesManager = mock[IRolesManager]
+      val rolesManager = mock[IRoles]
       val attacker = mock[IPlayer]
       val defender = mock[IPlayer]
       val attackerHand = mock[IHandCardsQueue]
@@ -51,7 +52,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       val actionManager = mock[IActionManager]
 
       // Boost manager
-      val playingField = new ObservableMockPlayingField {
+      val playingField = new ObservableMockGameState {
         override def notifyObservers(e: ObservableEvent): Unit = {
           // Capture only the ComparedCardsEvent (first one)
           if (notifiedEvent.isEmpty && e.isInstanceOf[ComparedCardsEvent]) {
@@ -60,7 +61,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
         }
 
         override def getActionManager: IActionManager = actionManager
-        override def getRoles: IRolesManager = rolesManager
+        override def getRoles: IRoles = rolesManager
         override def getDataManager: IDataManager = dataManager
         override def getScores: IPlayerScores = scores
       }

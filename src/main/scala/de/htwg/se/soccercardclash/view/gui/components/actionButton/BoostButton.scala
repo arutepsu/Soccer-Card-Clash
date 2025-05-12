@@ -6,27 +6,38 @@ import de.htwg.se.soccercardclash.view.gui.scenes.{AttackerDefendersScene, Playi
 case class BoostButton() extends ActionButton[AttackerDefendersScene] {
   override def execute(
                         controller: IController,
-                        attackerDefendersScene: AttackerDefendersScene,
-                        ): Unit = {
+                        attackerDefendersScene: AttackerDefendersScene
+                      ): Unit = {
+
     attackerDefendersScene.attackerDefenderField match {
       case Some(field) =>
+        val contextHolder = attackerDefendersScene.playingFieldScene.contextHolder
+        val ctx = contextHolder.get
+
         if (field.isGoalkeeperSelected) {
           println("⚽ Boosting Goalkeeper!")
-          controller.boostGoalkeeper()
-          attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
-        } else field.selectedCardIndex match {
+          val (newCtx, success) = controller.boostGoalkeeper(ctx)
+          if (success) {
+            contextHolder.set(newCtx)
+            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
+          }
+        } else field.selectedDefenderIndex match {
           case Some(index) =>
             println(s"⚡ Boosting defender at index: $index")
-            controller.boostDefender(index)
-            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
+            val (newCtx, success) = controller.boostDefender(index, ctx)
+            if (success) {
+              contextHolder.set(newCtx)
+              attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
+            }
           case None =>
             println("⚠️ No defender selected for boosting!")
         }
-        
-        attackerDefendersScene.playingField.foreach(_.notifyObservers())
-        field.updateBar()
 
-      case None => println("❌ No valid attacker/defender field to boost!")
+//        attackerDefendersScene.playingField.foreach(_.notifyObservers())
+        field.updateBar(contextHolder.get.state)
+
+      case None =>
+        println("❌ No valid attacker/defender field to boost!")
     }
   }
 }

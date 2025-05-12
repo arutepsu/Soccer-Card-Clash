@@ -1,0 +1,69 @@
+package de.htwg.se.soccercardclash.controller.command.workflow
+
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
+import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.util.{Events, ObservableEvent}
+
+import scala.util.{Failure, Success, Try}
+
+
+abstract class WorkflowCommand extends ICommand {
+
+  def doStep(state: IGameState): (IGameState, List[ObservableEvent])
+
+  override def execute(state: IGameState): CommandResult = {
+    val (newState, events) = doStep(state)
+    CommandResult(success = true, newState, events)
+  }
+}
+
+class CreateGameWorkflowCommand(
+                                 gameService: IGameService,
+                                 player1: String,
+                                 player2: String
+                               ) extends WorkflowCommand {
+
+  override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
+    val newState = gameService.createNewGame(player1, player2)
+    (newState, List(Events.PlayingField))
+  }
+}
+
+class QuitWorkflowCommand extends WorkflowCommand {
+
+  override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
+    System.exit(0)
+    (state, List.empty)
+  }
+}
+
+
+class SaveGameWorkflowCommand(
+                               gameService: IGameService
+                             ) extends WorkflowCommand {
+
+  override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
+    val success = gameService.saveGame(state).isSuccess
+    val event = Events.SaveGame
+    (state, List(event))
+  }
+}
+
+class LoadGameWorkflowCommand(
+                               gameService: IGameService,
+                               fileName: String
+                             ) extends WorkflowCommand {
+
+  override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
+    gameService.loadGame(fileName) match {
+      case Success(loadedState) =>
+        (loadedState, List(Events.LoadGame))
+      case Failure(_) =>
+        (state, List.empty)
+    }
+  }
+}
+
+

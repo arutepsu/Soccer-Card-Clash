@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.application.Platform
 import scalafx.scene.Scene
 import scalafx.stage.Stage
@@ -10,7 +10,8 @@ import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Obs
 import de.htwg.se.soccercardclash.view.gui.scenes._
 import de.htwg.se.soccercardclash.view.gui.scenes.CreatePlayerScene
 
-class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
+class SceneRegistry(controller: IController, sceneManager: SceneManager.type, contextHolder: IGameContextHolder) {
+
 
   private var _mainMenuScene: Option[MainMenuScene] = None
   private var _createPlayerScene: Option[CreatePlayerScene] = None
@@ -50,46 +51,57 @@ class SceneRegistry(controller: IController, sceneManager: SceneManager.type) {
 
   def getCreatePlayerScene: CreatePlayerScene = {
     if (_createPlayerScene.isEmpty) {
-      _createPlayerScene = Some(new CreatePlayerScene(controller))
+      _createPlayerScene = Some(new CreatePlayerScene(controller, contextHolder))
     }
     _createPlayerScene.get
   }
-  
+
   def getPlayingFieldScene: PlayingFieldScene = {
     if (_playingFieldScene.isEmpty) {
-      _playingFieldScene = Some(new PlayingFieldScene(controller, 800, 600))
+      _playingFieldScene = Some(new PlayingFieldScene(controller, contextHolder, 800, 600))
     }
     _playingFieldScene.get
   }
 
 
   def getAttackerDefendersScene: AttackerDefendersScene = {
-    clearHandAndDefenderScenes()
+    if (_attackerDefendersScene.isEmpty) {
+      clearHandAndDefenderScenes()
 
-    _attackerDefendersScene = Some(new AttackerDefendersScene(
-      controller,
-      getPlayingFieldScene,
-      Some(controller.getCurrentGame.getPlayingField),
-      800,
-      600
-    ))
-    controller.add(_attackerDefendersScene.get)
+      val scene = new AttackerDefendersScene(
+        controller,
+        getPlayingFieldScene,
+        Some(contextHolder.get.state),
+        800,
+        600
+      )
+      _attackerDefendersScene = Some(scene)
+
+      controller.add(scene)
+    }
     _attackerDefendersScene.get
   }
 
-  def getAttackerHandScene: AttackerHandScene = {
-    clearHandAndDefenderScenes()
 
-    _attackerHandScene = Some(new AttackerHandScene(
-      controller,
-      getPlayingFieldScene,
-      Some(controller.getCurrentGame.getPlayingField),
-      800,
-      600
-    ))
-    controller.add(_attackerHandScene.get)
+  def getAttackerHandScene: AttackerHandScene = {
+    if (_attackerHandScene.isEmpty) {
+      clearHandAndDefenderScenes()
+
+      val scene = new AttackerHandScene(
+        controller,
+        getPlayingFieldScene,
+        contextHolder,
+        800,
+        600
+      )
+      _attackerHandScene = Some(scene)
+
+      controller.add(scene)
+    }
     _attackerHandScene.get
   }
+
+
 
   def clearHandAndDefenderScenes(): Unit = {
     if (_attackerHandScene.nonEmpty || _attackerDefendersScene.nonEmpty) {

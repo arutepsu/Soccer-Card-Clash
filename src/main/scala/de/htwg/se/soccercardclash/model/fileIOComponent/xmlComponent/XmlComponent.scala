@@ -1,7 +1,8 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent
 
-import de.htwg.se.soccercardclash.model.gameComponent.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}

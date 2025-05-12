@@ -5,7 +5,6 @@ import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IRolesManager
 import scala.collection.mutable.Queue
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -13,11 +12,15 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import org.mockito.Mockito.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.view.tui.Prompter
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import java.io.{ByteArrayOutputStream, File, PrintStream}
+import java.nio.file.{Files, Path}
+import scala.Console
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
 import scala.collection.mutable
 class PrompterTest extends AnyFlatSpec with Matchers {
 
@@ -82,13 +85,13 @@ class PrompterTest extends AnyFlatSpec with Matchers {
   it should "print attacker's field after boost" in {
     val mockController = mock(classOf[IController])
     val mockGame = mock(classOf[IGame])
-    val mockField = mock(classOf[PlayingField])
+    val mockField = mock(classOf[GameState])
     val mockAttacker = mock(classOf[Player])
 
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
 
-    val mockRoles = mock(classOf[IRolesManager])
+    val mockRoles = mock(classOf[IRoles])
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockField.getRoles).thenReturn(mockRoles)
     when(mockAttacker.name).thenReturn("Attacker")
@@ -115,13 +118,13 @@ class PrompterTest extends AnyFlatSpec with Matchers {
   it should "print defender's field after attack" in {
     val mockController = mock(classOf[IController])
     val mockGame = mock(classOf[IGame])
-    val mockField = mock(classOf[PlayingField])
+    val mockField = mock(classOf[GameState])
     val mockDefender = mock(classOf[Player])
     val mockDataManager = mock(classOf[IDataManager])
     val mockCard1 = mock(classOf[ICard])
     val mockCard2 = mock(classOf[ICard])
 
-    val mockRolesManager = mock(classOf[IRolesManager])
+    val mockRolesManager = mock(classOf[IRoles])
     when(mockRolesManager.defender).thenReturn(mockDefender)
     when(mockField.getRoles).thenReturn(mockRolesManager)
 
@@ -145,7 +148,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
   it should "print current game state with attacker hand and defender defenders" in {
     val mockController = mock(classOf[IController])
     val mockGame = mock(classOf[IGame])
-    val mockField = mock(classOf[PlayingField])
+    val mockField = mock(classOf[GameState])
     val mockAttacker = mock(classOf[Player])
     val mockDefender = mock(classOf[Player])
     val mockDataManager = mock(classOf[IDataManager])
@@ -155,7 +158,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockDefenderCard = mock(classOf[ICard])
 
     // Roles manager
-    val mockRoles = mock(classOf[IRolesManager])
+    val mockRoles = mock(classOf[IRoles])
     when(mockRoles.attacker).thenReturn(mockAttacker)
     when(mockRoles.defender).thenReturn(mockDefender)
     when(mockField.getRoles).thenReturn(mockRoles)
@@ -189,7 +192,65 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     output should include("🎴 Attacker's Hand: ⚽, 🔥")
     output should include("🏟️ Defender's Defenders: 🛡️")
   }
+  it should "print the goalkeeper card of the given player" in {
+    val mockController = mock(classOf[IController])
+    val mockGame = mock(classOf[IGame])
+    val mockField = mock(classOf[IGameState])
+    val mockDataManager = mock(classOf[IDataManager])
+    val mockPlayer = mock(classOf[IPlayer])
+    val mockCard = mock(classOf[ICard])
 
+    when(mockPlayer.name).thenReturn("Alice")
+    when(mockCard.toString).thenReturn("🧤 GoalkeeperCard")
+
+    when(mockController.getCurrentGame).thenReturn(mockGame)
+    when(mockGame.getPlayingField).thenReturn(mockField)
+    when(mockField.getDataManager).thenReturn(mockDataManager)
+    when(mockDataManager.getPlayerGoalkeeper(mockPlayer)).thenReturn(Some(mockCard))
+
+    val prompter = new Prompter(mockController)
+    val output = captureOutput {
+      prompter.promptShowGoalkeeper(mockPlayer)
+    }
+
+    output should include("Alice's goalkeeper Card")
+    output should include("🧤 GoalkeeperCard")
+  }
+  it should "print the main menu" in {
+    val prompter = new Prompter(mock(classOf[IController]))
+    val output = captureOutput(prompter.promptMainMenu())
+
+    output should include("Welcome to Soccer Card Clash")
+    output should include(":start")
+    output should include(":load")
+    output should include(":exit")
+  }
+
+  it should "print player creation message" in {
+    val prompter = new Prompter(mock(classOf[IController]))
+    val output = captureOutput(prompter.promptCreatePlayers())
+
+    output should include("Creating Players")
+  }
+  it should "print game save confirmation" in {
+    val prompter = new Prompter(mock(classOf[IController]))
+    val output = captureOutput(prompter.promptSaveGame())
+
+    output should include("Game saved successfully")
+  }
+
+  it should "print undo message" in {
+    val prompter = new Prompter(mock(classOf[IController]))
+    val output = captureOutput(prompter.promptUndo())
+
+    output should include("Undo")
+  }
+  it should "print redo message" in {
+    val prompter = new Prompter(mock(classOf[IController]))
+    val output = captureOutput(prompter.promptRedo())
+
+    output should include("Redo")
+  }
 
   it should "print prompt for exit" in {
     val mockController = mock(classOf[IController])
@@ -197,4 +258,5 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val output = captureOutput(prompter.promptExit())
     output should include("👋 Goodbye!")
   }
+
 }

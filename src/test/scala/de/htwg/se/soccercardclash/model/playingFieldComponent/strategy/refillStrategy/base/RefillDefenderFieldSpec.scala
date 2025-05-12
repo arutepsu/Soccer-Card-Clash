@@ -7,9 +7,9 @@ import org.mockito.ArgumentMatchers.*
 import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.IDataManager
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{HandCardsQueue, IHandCardsQueue}
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.refillStrategy.base.{RefillDefenderField, RefillField}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.base.{RefillDefenderField, RefillField}
 
 class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
 

@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.Events
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{StackPane, VBox}
@@ -16,7 +16,7 @@ import scala.concurrent.Future
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 
-class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean) {
+class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, contextHolder: IGameContextHolder, autoHide: Boolean) {
 
   // 🎨 Load Background Image
   val backgroundImagePath = "/images/data/frames/pause (1).png"
@@ -34,7 +34,7 @@ class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, a
   }
 
   // 🏆 Determine Winner's Avatar Path
-  val winnerAvatarPath = if (winner == controller.getCurrentGame.getPlayer1) {
+  val winnerAvatarPath = if (winner == contextHolder.get.state.getPlayer1) {
     "/images/data/players/player1.jpeg"
   } else {
     "/images/data/players/player2.jpeg"
@@ -63,7 +63,6 @@ class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, a
       Thread.sleep(300) // ✅ Small delay before switching scenes for smooth transition
       Platform.runLater {
         controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
-        controller.resetGame()
       }
     }
   }

@@ -14,17 +14,17 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.gameComponent.IGame
-import de.htwg.se.soccercardclash.model.gameComponent.io.IGamePersistence
 import de.htwg.se.soccercardclash.model.gameComponent.state.{GameState, GameStateFactory, IGameState, IGameStateFactory}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.base.PlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.factory.IGameInitializer
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.strategy.scoringStrategy.IPlayerScores
+import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.factory.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 
 class GameStateManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
@@ -34,11 +34,11 @@ class GameStateManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val manager = new GameStateManager(gameStateFactory, handCardsQueueFactory)
 
     val gameInitializer = mock[IGameInitializer]
-    val playingField = mock[IPlayingField]
+    val playingField = mock[IGameState]
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
     val dataManager = mock[IDataManager]
-    val scores = mock[IPlayerScores]
+    val scores = mock[IScores]
     val dummyState = mock[IGameState]
 
     val card = mock[ICard]
@@ -115,7 +115,7 @@ class GameStateManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val handCardsQueueFactory = mock[IHandCardsQueueFactory]
     val manager = new GameStateManager(gameStateFactory, handCardsQueueFactory)
 
-    val field = mock[IPlayingField]
+    val field = mock[IGameState]
     val result = manager.reset(field)
 
     result shouldBe true

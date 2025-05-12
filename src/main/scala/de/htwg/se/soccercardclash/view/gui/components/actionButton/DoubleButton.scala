@@ -3,35 +3,43 @@ package de.htwg.se.soccercardclash.view.gui.components.actionButton
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
+
 case class DoubleButton() extends ActionButton[PlayingFieldScene] {
   override def execute(
                         controller: IController,
-                        playingFieldScene: PlayingFieldScene,
-                        ): Unit = {
+                        playingFieldScene: PlayingFieldScene
+                      ): Unit = {
 
-    val defenderFieldBar =
-      if (playingFieldScene.playingField.getRoles.defender == playingFieldScene.player1)
-        playingFieldScene.player1FieldBar
-      else
-        playingFieldScene.player2FieldBar
-    val defenderCards = playingFieldScene.playingField.getDataManager.getPlayerDefenders(playingFieldScene.playingField.getRoles.defender)
+    val contextHolder = playingFieldScene.contextHolder
+    val ctx = contextHolder.get
 
-    if (defenderCards.nonEmpty) {
-      defenderFieldBar.selectedDefenderIndex match {
-        case Some(defenderIndex) =>
-          println(s"🔥 Attacking defender at index: $defenderIndex")
-          controller.executeDoubleAttackCommand(defenderIndex)
-          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
-          defenderFieldBar.resetSelectedDefender()
+    val state = ctx.state
+    val defender = state.getRoles.defender
+    val defenderCards = state.getDataManager.getPlayerDefenders(defender)
 
-        case None =>
-          println("⚠️ No defender selected for attack!")
-          playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
-      }
+    val maybeIndex = if (defenderCards.nonEmpty) {
+      playingFieldScene.currentDefenderFieldBar.flatMap(_.selectedDefenderIndex)
     } else {
-      println("⚽ All defenders are gone! Attacking the goalkeeper!")
-      controller.executeDoubleAttackCommand(0)
-      playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.ATTACK_INITIATED, playingFieldScene.playingField.getRoles.attacker.name, playingFieldScene.playingField.getRoles.defender.name)
+      Some(0) // fallback to goalkeeper
+    }
+
+    maybeIndex match {
+      case Some(defenderIndex) =>
+        val (newCtx, success) = controller.doubleAttack(defenderIndex, ctx)
+        if (success) {
+          contextHolder.set(newCtx)
+          playingFieldScene.gameStatusBar.updateStatus(
+            GameStatusMessages.ATTACK_INITIATED,
+            newCtx.state.getRoles.attacker.name,
+            newCtx.state.getRoles.defender.name
+          )
+          playingFieldScene.currentDefenderFieldBar.foreach(_.resetSelectedDefender())
+        }
+
+      case None =>
+        println("⚠️ No defender selected for double attack!")
+        playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
     }
   }
 }
+

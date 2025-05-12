@@ -11,14 +11,14 @@ import scala.concurrent.Future
 import scalafx.application.Platform
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 
 object DialogFactory {
   
-  def showGameOverPopup(winner: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean): Unit = {
-    new WinnerDialog(winner, overlay, controller, autoHide)
+  def showGameOverPopup(winner: IPlayer, overlay: Overlay, controller: IController,contextHolder: IGameContextHolder, autoHide: Boolean): Unit = {
+    new WinnerDialog(winner, overlay, controller, contextHolder, autoHide)
   }
 
   def showLoadGameConfirmation(gameFile: String, overlay: Overlay, controller: IController): Unit = {
@@ -30,8 +30,12 @@ object DialogFactory {
     ).show()
   }
 
-  def showGoalScoredDialog(player: IPlayer, overlay: Overlay, controller: IController, autoHide: Boolean = true): Unit = {
-    new GoalScoredDialog(player, overlay, controller, autoHide)
+  def showGoalScoredDialog(player: IPlayer,
+                           overlay: Overlay,
+                           controller: IController,
+                           gameContextHolder: IGameContextHolder,
+                           autoHide: Boolean = true): Unit = {
+    new GoalScoredDialog(player, overlay, controller, gameContextHolder, autoHide)
   }
 
   def showGameSavedDialog(overlay: Overlay, autoHide: Boolean = false): Unit = {

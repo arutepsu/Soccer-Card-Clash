@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.IPlayingField
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import scalafx.scene.control.Button
@@ -30,7 +30,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     width = 180,
     height = 60
   ) { () =>
-    controller.undo()
+    controller.undo(playingFieldScene.contextHolder.get)
     playingFieldScene.update(Events.Undo)
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
   }
@@ -40,7 +40,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     width = 180,
     height = 60
   ) { () =>
-    controller.redo()
+    controller.redo(playingFieldScene.contextHolder.get)
     playingFieldScene.update(Events.Redo)
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
@@ -50,7 +50,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     width = 180,
     height = 60
   ) { () =>
-    controller.saveGame()
+    controller.saveGame(playingFieldScene.contextHolder.get)
     DialogFactory.showGameSavedDialog(overlay,false)
   }
 
@@ -63,8 +63,8 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     Future {
       Thread.sleep(300) // ✅ Small delay before switching scenes for smooth transition
       Platform.runLater {
+        playingFieldScene.contextHolder.clear()
         controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
-        controller.resetGame()
       }
     }
   }

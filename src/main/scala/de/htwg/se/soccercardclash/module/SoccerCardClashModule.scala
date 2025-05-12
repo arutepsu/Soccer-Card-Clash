@@ -12,6 +12,6 @@ class SoccerCardClashModule extends AbstractModule {
     install(new GameCoreModule())
     install(new SerializationModule())
     install(new FileIOModule())
-    install(new MementoModule())
+
   }
 }
