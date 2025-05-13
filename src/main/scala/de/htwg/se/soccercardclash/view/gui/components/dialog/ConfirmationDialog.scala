@@ -12,7 +12,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.Events
 
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController) {
   
@@ -34,7 +33,6 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
     height = 60
   ) { () =>
     overlay.hide()
-    println("✅ Confirmation OK clicked")
 
     Future {
       Thread.sleep(300)
@@ -50,7 +48,6 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
     height = 60
   ) { () =>
     overlay.hide()
-    println("❌ Confirmation Cancel clicked")
   }
   
   private val buttonBox = new HBox(10, okButton, cancelButton) {
@@ -69,7 +66,6 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
   }
   
   def show(): Unit = {
-    println("🔲 Showing Confirmation Dialog")
     overlay.show(dialogPane, autoHide = false)
   }
   

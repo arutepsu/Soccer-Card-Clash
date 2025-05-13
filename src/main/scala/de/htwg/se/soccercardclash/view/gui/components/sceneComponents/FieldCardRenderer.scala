@@ -57,7 +57,7 @@ class PlayersFieldBar(
   }
 
   def updateBar(gameState: IGameState): Unit = {
-    println(s"🔄 Updating PlayersFieldBar for ${player.name}...")
+    println(s"Updating PlayersFieldBar for ${player.name}...")
     val newDefenderRow = renderer.createDefenderRow(player, () => gameState)
     val newGoalkeeperRow = renderer.createGoalkeeperRow(player, () => gameState)
 
@@ -101,15 +101,13 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
 
   private def handleCardSelected(clickedIndex: Int): Unit = {
     if (selectedDefenderIndex.contains(clickedIndex)) {
-      // Deselect if already selected
-      println(s"❌ Deselected: index $clickedIndex")
+      println(s"Deselected: index $clickedIndex")
       selectedDefenderIndex = None
       _isGoalkeeperSelected = false
     } else {
-      // Select new card
-      println(s"✅ Selected: index $clickedIndex")
+      println(s"Selected: index $clickedIndex")
       selectedDefenderIndex = Some(clickedIndex)
-      _isGoalkeeperSelected = clickedIndex == -1 // ✅ -1 indicates goalkeeper
+      _isGoalkeeperSelected = clickedIndex == -1
     }
   }
 
@@ -141,7 +139,7 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
 
     val fieldCard = FieldCardFactory.createSelectableFieldCard(
       card = goalkeeper,
-      index = -1, // ✅ special index for goalkeeper
+      index = -1,
       selectedIndex = selectedDefenderIndex,
       isGoalkeeper = true,
       onSelected = handleCardSelected

@@ -1,22 +1,23 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.base.Controller
+import de.htwg.se.soccercardclash.util.*
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.control.ListView
 import scalafx.scene.layout.VBox
-import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
-import scalafx.application.Platform
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 
-class MainMenuScene(controller: IController) extends Scene with Observer {
-  controller.add(this)
+class MainMenuScene(controller: IController) extends GameScene {
+
   this.getStylesheets.add(Styles.mainMenuCss)
+
   root = new VBox {
     spacing = 10
     alignment = Pos.Center
@@ -25,21 +26,14 @@ class MainMenuScene(controller: IController) extends Scene with Observer {
         styleClass.add("title-label")
       },
       GameButtonFactory.createGameButton("Create New Game", 200, 80) {
-        () => controller.notifyObservers(Events.CreatePlayers)
+        () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
       },
       GameButtonFactory.createGameButton("Load Game", 200, 80) {
-        () => controller.notifyObservers(Events.LoadGame)
+        () => GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)
       },
       GameButtonFactory.createGameButton("Quit", 200, 80) {
-        () => controller.notifyObservers(Events.Quit)
+        () => controller.quit()
       }
     )
-  }
-
-  override def update(e: ObservableEvent): Unit = {
-    Platform.runLater(() => {
-      println(s"🔄 GUI Received Event: $e")
-      SceneManager.update(e)
-    })
   }
 }

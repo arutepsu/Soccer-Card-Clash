@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataMan
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.collection.mutable
 import scala.util.{Failure, Success}
@@ -28,7 +28,7 @@ class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager)
         index < hand.getHandSize
 
     if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
-      return (false, playingField, List(Events.NoSwapsEvent(attacker)))
+      return (false, playingField, List(StateEvent.NoSwapsEvent(attacker)))
     }
 
     if (!canSwap) {
@@ -45,7 +45,7 @@ class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager)
           .withDataManager(updatedDataManager)
           .withRolesManager(updatedRoles)
 
-        (true, updatedField, List(Events.RegularSwap))
+        (true, updatedField, List(GameActionEvent.RegularSwap))
 
       case Failure(_) =>
         (false, playingField, Nil)

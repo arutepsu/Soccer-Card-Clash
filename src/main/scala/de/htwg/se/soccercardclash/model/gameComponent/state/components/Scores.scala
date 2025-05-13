@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStra
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.base.StandardScoring
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.*
 import play.api.libs.json.{JsObject, Json}
 
 import scala.xml.Elem
@@ -30,7 +30,7 @@ case class Scores(
   override def getScorePlayer1: Int = player1Score
   override def getScorePlayer2: Int = player2Score
 
-  override def scoreGoal(player: IPlayer): (IScores, List[Events]) = {
+  override def scoreGoal(player: IPlayer): (IScores, List[StateEvent]) = {
     val (newScore1, newScore2) =
       if (player == player1)
         (scoringStrategy.calculatePoints(player1Score), player2Score)
@@ -38,7 +38,7 @@ case class Scores(
         (player1Score, scoringStrategy.calculatePoints(player2Score))
 
     val updated = this.copy(player1Score = newScore1, player2Score = newScore2)
-    val events = List(Events.ScoreEvent(player)) ++ updated.checkForWinner()
+    val events = List(StateEvent.ScoreEvent(player)) ++ updated.checkForWinner()
     (updated, events)
   }
 
@@ -54,9 +54,9 @@ case class Scores(
   override def reset(): IScores =
     this.copy(player1Score = 0, player2Score = 0)
 
-  private def checkForWinner(): List[Events] = {
-    if (player1Score >= 3) List(Events.GameOver(player1))
-    else if (player2Score >= 3) List(Events.GameOver(player2))
+  private def checkForWinner(): List[StateEvent] = {
+    if (player1Score >= 3) List(StateEvent.GameOver(player1))
+    else if (player2Score >= 3) List(StateEvent.GameOver(player2))
     else Nil
   }
 }
@@ -67,7 +67,7 @@ trait IScores {
 
   def setScoringStrategy(strategy: IScoringStrategy): IScores
 
-  def scoreGoal(player: IPlayer): (IScores, List[Events])
+  def scoreGoal(player: IPlayer): (IScores, List[StateEvent])
 
   def setScorePlayer1(score: Int): IScores
 

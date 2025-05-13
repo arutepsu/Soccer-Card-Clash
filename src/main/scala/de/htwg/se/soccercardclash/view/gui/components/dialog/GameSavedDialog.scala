@@ -2,7 +2,6 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.Events
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
@@ -29,7 +28,7 @@ class GameSavedDialog(overlay: Overlay, autoHide: Boolean) {
     preserveRatio = false
   }
   
-  val savedLabel = new Text("💾 Game Saved!") {
+  val savedLabel = new Text("Game Saved!") {
     style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: white;"
   }
   

@@ -13,14 +13,13 @@ class PlayerAvatar(
                     playerIndex: Int,
                     scaleAvatar: Float,
                     scaleFont: Float,
-                    profilePicturePath: String, // ✅ Profile Picture Path
+                    profilePicturePath: String,
                   ) extends VBox {
 
   val avatar: ImageView = Try {
     ImageUtils.importImageAsView(profilePicturePath, scaleAvatar)
   }.recover { case e: Exception =>
-    println(s"⚠️ [ERROR] Profile image not found: $profilePicturePath (${e.getMessage})")
-    ImageUtils.importImageAsView("/images/data/players/player2.jpeg", scaleAvatar) // ✅ Fallback
+    ImageUtils.importImageAsView("/images/data/players/player2.jpeg", scaleAvatar)
   }.get
 
   alignment = Pos.TOP_CENTER

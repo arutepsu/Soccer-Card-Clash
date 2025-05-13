@@ -11,7 +11,7 @@ import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, Observer, StateEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGenerator
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
@@ -168,8 +168,6 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGenerator
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
@@ -191,26 +189,26 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
 
   def handleComparisonEvent(e: ObservableEvent): Unit = {
     e match {
-      case Events.ComparedCardsEvent(attackingCard, defendingCard) =>
+      case StateEvent.ComparedCardsEvent(attackingCard, defendingCard) =>
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
         println(f"${lastAttackingCard} and ${lastDefendingCard}")
 
-      case Events.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defendingCard) =>
+      case StateEvent.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defendingCard) =>
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)
 
-      case Events.AttackResultEvent(attacker, defender, attackSuccess) =>
+      case StateEvent.AttackResultEvent(attacker, defender, attackSuccess) =>
         lastAttackSuccess = Some(attackSuccess)
         println(f"${lastAttackSuccess}")
-      case Events.TieComparisonEvent(attackingCard, defendingCard, extraAttackerCard, extraDefenderCard) =>
+      case StateEvent.TieComparisonEvent(attackingCard, defendingCard, extraAttackerCard, extraDefenderCard) =>
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
         lastExtraAttackerCard = Some(extraAttackerCard)
         lastExtraDefenderCard = Some(extraDefenderCard)
 
-      case Events.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard) =>
+      case StateEvent.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard) =>
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)
@@ -219,7 +217,7 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
 
         import javafx.application.Platform
 
-      case Events.RegularAttack =>
+      case GameActionEvent.RegularAttack =>
         (lastAttackingCard, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard), Some(defendingCard), Some(attackSuccess)) =>
             Platform.runLater(() => {
@@ -238,13 +236,13 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
               )
             })
 
-          case _ => // no-op
+          case _ =>
         }
 
         resetLastCards()
 
 
-      case Events.DoubleAttack =>
+      case GameActionEvent.DoubleAttack =>
 
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastAttackSuccess) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(attackSuccess)) =>
@@ -261,7 +259,7 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         }
         resetLastCards()
 
-      case Events.TieComparison =>
+      case GameActionEvent.TieComparison =>
 
         (lastAttackingCard, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
@@ -278,7 +276,7 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         }
         resetLastCards()
 
-      case Events.DoubleTieComparison =>
+      case GameActionEvent.DoubleTieComparison =>
 
         (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
           case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>

@@ -33,7 +33,6 @@ object HandCardFactory {
     val handCard = new HandCard(flipped = false, card = card)
     handCard.effect = new DropShadow(10, Color.BLACK)
 
-    // Delegate hover animations to CardAnimationFactory
     handCard.onMouseEntered = _ =>
       CardAnimationFactory.applyHoverEffect(handCard, selectedIndex, index)
 
@@ -43,7 +42,7 @@ object HandCardFactory {
     handCard.onMouseClicked = _ => {
       if (selectedIndex.contains(index)) {
         handCard.effect = null
-        onSelected(-1) // deselect
+        onSelected(-1)
       } else {
         onSelected(index)
         handCard.effect = new DropShadow(20, Color.GOLD)

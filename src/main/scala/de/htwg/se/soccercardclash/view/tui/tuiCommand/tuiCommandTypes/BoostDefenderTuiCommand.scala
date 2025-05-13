@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
-import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 
 import scala.util.{Failure, Success, Try}

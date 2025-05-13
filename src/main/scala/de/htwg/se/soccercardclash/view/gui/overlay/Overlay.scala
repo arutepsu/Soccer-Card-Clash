@@ -1,24 +1,27 @@
 package de.htwg.se.soccercardclash.view.gui.overlay
 
+import de.htwg.se.soccercardclash.view.gui.scenes.GameScene
 import scalafx.animation.FadeTransition
 import scalafx.application.Platform
 import scalafx.geometry.Pos
 import scalafx.scene.Node
 import scalafx.scene.layout.StackPane
 import scalafx.util.Duration
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.scene.Scene
-import scalafx.animation._
+import scalafx.animation.*
 import scalafx.util.Duration
 import scalafx.scene.Node
 import scalafx.scene.layout.StackPane
 import scalafx.application.Platform
 import scalafx.scene.effect.GaussianBlur
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Overlay(gameScene: Scene) {
+class Overlay(gameScene: GameScene) {
   protected val overlayPane: StackPane = new StackPane {
     style = "-fx-background-color: rgba(0, 0, 0, 0.0); -fx-padding: 20px;"
     visible = false

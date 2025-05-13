@@ -5,6 +5,6 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStatus
 import scalafx.scene.Scene
 
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
-trait ActionButton[S <: Scene] { // Restricts to Scene or its subclasses
+trait ActionButton[S <: Scene] {
   def execute(controller: IController, scene: S): Unit
 }

@@ -28,11 +28,9 @@ class PlayersHandBar(
                       isLeftSide: Boolean,
                       renderer: HandCardRenderer
                     ) extends HBox {
-
-  // Align left or right
+  
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
-
-  // Spacing dynamically calculated
+  
   spacing = Math.max(
     -30 + (playingField.getDataManager.getPlayerHand(player).getHandSize * -2),
     -50
@@ -50,22 +48,18 @@ class PlayersHandBar(
     style =
       "-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: rgba(0,0,0,0.5); -fx-padding: 5px; -fx-background-radius: 10px;"
   }
-
-  // Initial rendering
+  
   private var currentHandRow: HBox = renderer.createHandCardRow(player, playingField)
-
-  // Add components
+  
   children = Seq(playerLabel, currentHandRow)
-
-  /** Updates the hand display */
+  
   def updateBar(newGameState: IGameState): Unit = {
     println(s"🔄 Updating hand for ${player.name} with animation...")
 
     val newHandRow = renderer.createHandCardRow(player, newGameState)
 
     val oldRow = currentHandRow
-
-    // Animate old hand row before replacing
+    
     oldRow.getChildren.forEach { node =>
       val moveTransition = new TranslateTransition(Duration(500), node)
       moveTransition.byX = 25
@@ -84,23 +78,20 @@ class PlayersHandBar(
       scaleTransition.play()
       rotateTransition.play()
     }
-
-    // Schedule replacement after animations
+    
     Future {
       Thread.sleep(500)
       Platform.runLater(() => {
         children.set(1, newHandRow)
         currentHandRow = newHandRow
-
-        // Fade-in new cards
+        
         newHandRow.getChildren.forEach { node =>
           val fadeTransition = new FadeTransition(Duration(500), node)
           fadeTransition.fromValue = 0.0
           fadeTransition.toValue = 1.0
           fadeTransition.play()
         }
-
-        // Optional: highlight last card via external factory
+        
         selectedCard = CardAnimationFactory.highlightLastHandCard(player, newGameState)
       })
     }
@@ -118,7 +109,7 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
   }
 
   override def createHandCardRow(player: IPlayer, dummyState: IGameState): HBox = {
-    val gameState = getGameState() // <- always fetch latest!
+    val gameState = getGameState()
     val hand = gameState.getDataManager.getPlayerHand(player)
 
     val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
@@ -147,8 +138,7 @@ object DefaultHandCardRenderer extends HandCardRenderer {
     val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
       val handCard = new HandCard(flipped = false, card = card)
       handCard.effect = new DropShadow(10, Color.BLACK)
-
-      // Hover animation
+      
       handCard.onMouseEntered = _ => {
         val hoverEffect = new ScaleTransition(Duration(200), handCard)
         hoverEffect.toX = 1.15

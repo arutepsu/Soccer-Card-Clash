@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.controller
 
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}
 
 class GameContextHolder extends IGameContextHolder {
   private var currentCtxOpt: Option[GameContext] = None
@@ -14,19 +14,13 @@ class GameContextHolder extends IGameContextHolder {
     currentCtxOpt = Some(ctx)
   }
 
-  def update(f: GameContext => (GameContext, List[ObservableEvent])): Unit = {
-    val (newCtx, events) = f(get)
-    currentCtxOpt = Some(newCtx)
-  }
-
   def clear(): Unit = {
     currentCtxOpt = None
   }
 }
 
-trait IGameContextHolder extends Observable{
+trait IGameContextHolder{
   def get: GameContext
   def set(ctx: GameContext): Unit
-  def update(f: GameContext => (GameContext, List[ObservableEvent])): Unit
   def clear(): Unit
 }

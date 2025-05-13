@@ -11,33 +11,33 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
 
     attackerDefendersScene.attackerDefenderField match {
       case Some(field) =>
-        val contextHolder = attackerDefendersScene.playingFieldScene.contextHolder
+        val contextHolder = attackerDefendersScene.contextHolder
         val ctx = contextHolder.get
 
         if (field.isGoalkeeperSelected) {
-          println("⚽ Boosting Goalkeeper!")
+          println("Boosting Goalkeeper!")
           val (newCtx, success) = controller.boostGoalkeeper(ctx)
           if (success) {
             contextHolder.set(newCtx)
-            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
+//            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
           }
         } else field.selectedDefenderIndex match {
           case Some(index) =>
-            println(s"⚡ Boosting defender at index: $index")
+            println(s"Boosting defender at index: $index")
             val (newCtx, success) = controller.boostDefender(index, ctx)
             if (success) {
               contextHolder.set(newCtx)
-              attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
+//              attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
             }
           case None =>
-            println("⚠️ No defender selected for boosting!")
+            println("No defender selected for boosting!")
         }
 
 //        attackerDefendersScene.playingField.foreach(_.notifyObservers())
         field.updateBar(contextHolder.get.state)
 
       case None =>
-        println("❌ No valid attacker/defender field to boost!")
+        println("No valid attacker/defender field to boost!")
     }
   }
 }

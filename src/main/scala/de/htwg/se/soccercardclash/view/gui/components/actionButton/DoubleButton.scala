@@ -20,7 +20,7 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
     val maybeIndex = if (defenderCards.nonEmpty) {
       playingFieldScene.currentDefenderFieldBar.flatMap(_.selectedDefenderIndex)
     } else {
-      Some(0) // fallback to goalkeeper
+      Some(0)
     }
 
     maybeIndex match {
@@ -37,7 +37,7 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
         }
 
       case None =>
-        println("⚠️ No defender selected for double attack!")
+        println("No defender selected for double attack!")
         playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
     }
   }

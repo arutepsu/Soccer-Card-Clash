@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.*
 
 import scala.util.{Failure, Success, Try}
 
@@ -27,7 +27,7 @@ class CreateGameWorkflowCommand(
 
   override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
     val newState = gameService.createNewGame(player1, player2)
-    (newState, List(Events.PlayingField))
+    (newState, List(SceneSwitchEvent.PlayingField))
   }
 }
 
@@ -46,7 +46,7 @@ class SaveGameWorkflowCommand(
 
   override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
     val success = gameService.saveGame(state).isSuccess
-    val event = Events.SaveGame
+    val event = GameActionEvent.SaveGame
     (state, List(event))
   }
 }
@@ -59,7 +59,7 @@ class LoadGameWorkflowCommand(
   override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
     gameService.loadGame(fileName) match {
       case Success(loadedState) =>
-        (loadedState, List(Events.LoadGame))
+        (loadedState, List(SceneSwitchEvent.LoadGame))
       case Failure(_) =>
         (state, List.empty)
     }

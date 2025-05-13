@@ -95,14 +95,14 @@ object ComparisonDialogGenerator {
                                 extraDefenderCard: Option[ICard],
                                 sceneWidth: Double
                               ): Node = {
-    val baseWidth = 1200.0 // Reference width for scaling
+    val baseWidth = 1200.0
     val scaleFactor = Math.max(0.7, Math.min(1.5, sceneWidth / baseWidth))
 
-    val resultMessage = if (attackSuccess) "✅ Attack Successful!" else "❌ Attack Failed!"
+    val resultMessage = if (attackSuccess) "Attack Successful!" else "Attack Failed!"
 
     val resultText = new Text(resultMessage) {
       style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: white;"
-      opacity = 0.0 // Initially hidden
+      opacity = 0.0
     }
 
     def showResultText(): Unit = {
@@ -118,8 +118,8 @@ object ComparisonDialogGenerator {
     val player1AvatarPath = "/images/data/players/player1.jpeg"
     val player2AvatarPath = "/images/data/players/player2.jpeg"
 
-    val leftAvatarImagePath = player1AvatarPath  // player1 is always on the left
-    val rightAvatarImagePath = player2AvatarPath // player2 is always on the right
+    val leftAvatarImagePath = player1AvatarPath
+    val rightAvatarImagePath = player2AvatarPath
 
 
 
@@ -164,13 +164,11 @@ object ComparisonDialogGenerator {
       val frame = new StackPane {
         children = Seq(image, borderEffect)
       }
-
-      // ✅ Step 1: Slide cards into position
+      
       slideInNode(frame, fromX = if (highlightGreen) -200 else 200, durationMillis = 700)
-
-      // ✅ Step 2: After 1 second, highlight the winning/losing card
+      
       Future {
-        Thread.sleep(1000) // Wait 1 second before highlighting
+        Thread.sleep(1000)
         Platform.runLater {
           borderEffect.stroke = if (highlightGreen) Color.LimeGreen else if (highlightRed) Color.Red else Color.Transparent
         }
@@ -183,7 +181,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightGreen = attackSuccess, 
         highlightRed = false
       )
     }
@@ -192,7 +190,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightGreen = attackSuccess, 
         highlightRed = false
       )
     }
@@ -201,7 +199,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, // ✅ Only green if attacker won
+        highlightGreen = attackSuccess, 
         highlightRed = false
       )
     }
@@ -210,7 +208,7 @@ object ComparisonDialogGenerator {
       CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.7f),
       Some(defendingCard),
       highlightGreen = false,
-      highlightRed = !attackSuccess // ✅ Only red if defender wins
+      highlightRed = !attackSuccess
     )
 
     val extraDefendingCardFrame = extraDefenderCard.map { card =>
@@ -221,9 +219,7 @@ object ComparisonDialogGenerator {
         highlightRed = !attackSuccess
       )
     }
-
-    // Winner logic
-    // Winner logic
+    
     val winnerName = if (attackSuccess) attacker.name else defender.name
     val highlightLeftGreen = winnerName == player1.name
     val highlightRightRed = winnerName == player2.name
@@ -234,10 +230,7 @@ object ComparisonDialogGenerator {
       style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: $winnerColor;"
       opacity = 0.0
     }
-
-
-
-    // ✅ Function to show winner text with a fade-in effect
+    
     def showWinnerText(): Unit = {
       val fadeIn = new FadeTransition(Duration(500), winnerText)
       fadeIn.fromValue = 0.0
@@ -308,15 +301,13 @@ object ComparisonDialogGenerator {
       children ++= rightCardFrames.map(_.delegate)
     }
 
-
-    // Optional: Tiebreaker row in center if needed
+    
     val tiebreakerCardsBox = new HBox(10) {
       alignment = scalafx.geometry.Pos.Center
     }
     extraAttackingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
     extraDefendingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
-
-    // Horizontal box: player1 left, player2 right (fixed layout)
+    
     val cardImagesHBox = new HBox(20) {
       alignment = scalafx.geometry.Pos.Center
       children ++= Seq(leftCardsBox, rightCardsBox)
@@ -326,7 +317,6 @@ object ComparisonDialogGenerator {
 
     val cardImagesBox = new VBox(10, cardImagesHBox)
 
-    // Optional: add tiebreaker row if needed
     if (extraAttackerCard.isDefined || extraDefenderCard.isDefined) {
       cardImagesBox.children.add(tiebreakerCardsBox)
     }
@@ -353,11 +343,11 @@ object ComparisonDialogGenerator {
       alignment = scalafx.geometry.Pos.Center
       style =
         s"""
-           | -fx-background-image: url('$imageUrl'); /* ✅ Ensures correct image loading */
-           | -fx-background-size: 100% 100%; /* ✅ Makes the image twice as big */
+           | -fx-background-image: url('$imageUrl'); /* Ensures correct image loading */
+           | -fx-background-size: 100% 100%; /* Makes the image twice as big */
            | -fx-background-repeat: no-repeat;
            | -fx-background-position: center;
-           | -fx-background-color: transparent; /* ✅ Removes default white background */
+           | -fx-background-color: transparent; /* Removes default white background */
            | -fx-padding: 15px;
            | -fx-border-radius: 10px;
 """.stripMargin
@@ -379,7 +369,7 @@ object ComparisonDialogGenerator {
 
     val slideIn = new TranslateTransition(Duration(durationMillis), node)
     slideIn.toX = 0
-    slideIn.interpolator = Interpolator.EaseOut // ✅ Smooth deceleration
+    slideIn.interpolator = Interpolator.EaseOut
     slideIn.play()
   }
 

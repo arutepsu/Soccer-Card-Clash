@@ -13,9 +13,6 @@ class UndoManager {
     if (result.success) {
       undoStack = (command, currentState) :: undoStack
       redoStack = Nil
-      println(s"[UndoManager] ✅ Executed ${command.getClass.getSimpleName}, pushed to undo stack.")
-    } else {
-      println(s"[UndoManager] ❌ Command ${command.getClass.getSimpleName} failed, no state change.")
     }
 
     result
@@ -26,11 +23,9 @@ class UndoManager {
       case (command, prevState) :: rest =>
         undoStack = rest
         redoStack = (command, currentState) :: redoStack
-        println("[UndoManager] 🔄 Undo → restoring previous state.")
-        (prevState, List(Events.Undo))
+        (prevState, List(GameActionEvent.Undo))
 
       case Nil =>
-        println("[UndoManager] ⚠️ Nothing to undo.")
         (currentState, List.empty)
     }
   }
@@ -40,11 +35,9 @@ class UndoManager {
       case (command, nextState) :: rest =>
         redoStack = rest
         undoStack = (command, currentState) :: undoStack
-        println("[UndoManager] 🔁 Redo → restoring next state.")
-        (nextState, List(Events.Redo))
+        (nextState, List(GameActionEvent.Redo))
 
       case Nil =>
-        println("[UndoManager] ⚠️ Nothing to redo.")
         (currentState, List.empty)
     }
   }
@@ -52,6 +45,5 @@ class UndoManager {
   def clear(): Unit = {
     undoStack = Nil
     redoStack = Nil
-    println("[UndoManager] 🧹 Cleared undo/redo stacks.")
   }
 }

@@ -1,16 +1,18 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.Events
+import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.StartGameTuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
+
+import java.lang.invoke.SwitchPoint
 
 class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
   private var waitingForNames: Boolean = false
 
   override def execute(input: Option[String] = None): Unit = {
     waitingForNames = true
-    controller.notifyObservers(Events.CreatePlayers)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
   }
 
   def handlePlayerNames(input: String): Boolean = {
@@ -21,8 +23,8 @@ class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
       val player1 = playerNames(0)
       val player2 = playerNames(1)
 
-      println(s"✅ Players set: $player1 & $player2")
-      controller.notifyObservers(Events.CreatePlayers)
+      println(s"Players set: $player1 & $player2")
+      controller.notifyObservers(SceneSwitchEvent.CreatePlayer)
 
       val startGameCommand = new StartGameTuiCommand(controller, player1, player2)
       startGameCommand.execute()
@@ -30,7 +32,7 @@ class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
       waitingForNames = false
       return true
     } else {
-      println("❌ Invalid format! Enter names in the format: `player1 player2`.")
+      println("Invalid format! Enter names in the format: `player1 player2`.")
     }
     false
   }

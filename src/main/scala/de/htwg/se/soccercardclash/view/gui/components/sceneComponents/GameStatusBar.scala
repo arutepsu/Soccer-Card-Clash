@@ -17,13 +17,11 @@ class GameStatusBar extends HBox {
   }
 
   children.add(statusLabel)
-
-  /** Updates the game status message dynamically */
+  
   def updateStatus(message: String, attacker: String = "", defender: String = ""): Unit = {
-    // Replace placeholders with actual names if provided
     val formattedMessage = message.replace("{attacker}", attacker).replace("{defender}", defender)
 
     statusLabel.text = formattedMessage
-    statusLabel.effect = new DropShadow(10, Color.YELLOW) // Highlight effect for visibility
+    statusLabel.effect = new DropShadow(10, Color.YELLOW)
   }
 }

@@ -4,30 +4,29 @@ import java.io.File
 import scala.io.StdIn
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 
 class Prompter(controller: IController, gameContextHolder: IGameContextHolder) extends IPrompter {
 
   def promptPlayersName(): Unit = {
-    println(f"👥 Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
+    println(f"Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
   }
 
   def promptRegularAttack(): Unit = {
-    println("⚔️ Select a defender to attack (enter position):")
+    println("⚔Select a defender to attack (enter position):")
   }
 
   def promptDoubleAttack(): Unit = {
-    println("⚔️ Select a defender to attack (enter position):")
+    println("Select a defender to attack (enter position):")
   }
 
   def promptBoost(): Unit = {
-    println("🔥 Choose a defender to boost (enter position):")
+    println("Choose a defender to boost (enter position):")
   }
 
   def promptSwap(): Unit = {
-    println("🔄 Choose a card to swap from attacker's hand (enter position):")
+    println("Choose a card to swap from attacker's hand (enter position):")
   }
   def promptNewGame(): Unit = {
     println("Creating a new game!")
@@ -75,20 +74,20 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     val defender = playingField.getRoles.defender
 
     println("\n===================================")
-    println("🏆 **CURRENT GAME STATE**")
+    println("**CURRENT GAME STATE**")
     println("===================================")
 
-    println(s"⚔️ Attacker: ${attacker.name}")
-    println(s"🛡️ Defender: ${defender.name}")
+    println(s"Attacker: ${attacker.name}")
+    println(s"Defender: ${defender.name}")
     println("-----------------------------------")
 
     val attackerHand = playingField.getDataManager.getPlayerHand(attacker).toList
-    println(s"🎴 ${attacker.name}'s Hand: " +
+    println(s"${attacker.name}'s Hand: " +
       (if (attackerHand.nonEmpty) attackerHand.mkString(", ") else "No cards left!")
     )
 
     val defenderField = playingField.getDataManager.getPlayerDefenders(defender)
-    println(s"🏟️ ${defender.name}'s Defenders: " +
+    println(s"${defender.name}'s Defenders: " +
       (if (defenderField.nonEmpty) defenderField.mkString(", ") else "No defenders!")
     )
 
@@ -96,7 +95,7 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
   }
 
   def promptExit(): Unit = {
-    println("👋 Goodbye!")
+    println("Goodbye!")
   }
   def promptMainMenu(): Unit = {
     println("=========================================")
@@ -125,20 +124,20 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
       .map(_.getName)
 
     if (savedGames.isEmpty) {
-      println("⚠️ No saved games found in 'games/'.")
+      println("No saved games found in 'games/'.")
       return
     }
 
-    println("\n📂 Available saved games:")
+    println("\nAvailable saved games:")
     savedGames.zipWithIndex.foreach { case (fileName, index) =>
       println(s"  ${index + 1}. $fileName")
     }
 
-    println("\n📝 Type 'select <number>' to load a game.")
+    println("\nType 'select <number>' to load a game.")
   }
 
   def promptSaveGame(): Unit = {
-    println("✅ Game saved successfully!")
+    println("Game saved successfully!")
   }
 
   def promptUndo(): Unit = {

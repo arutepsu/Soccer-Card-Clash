@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, R
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-import de.htwg.se.soccercardclash.util.Events
+import de.htwg.se.soccercardclash.util.{GameActionEvent, StateEvent}
 
 class RevertCard {
   def revertCard(playingField: IGameState, card: ICard): ICard = {
@@ -31,7 +31,7 @@ class RevertCard {
       .setPlayerDefenders(defender, updatedDefenderField)
 
     val updatedState = playingField.withDataManager(dataManager)
-    updatedState.notifyObservers(Events.CardReverted(revertedCard, attacker))
+    updatedState.notifyObservers(StateEvent.CardReverted(revertedCard, attacker))
 
     revertedCard
   }

@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.view.tui
 
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.application.Platform
-import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent, Observer}
+import de.htwg.se.soccercardclash.util.{GameActionEvent, Observable, ObservableEvent, Observer, GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.tui
 import de.htwg.se.soccercardclash.view.tui.PromptState
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
@@ -37,6 +37,7 @@ class Tui(
            gameContextHolder: IGameContextHolder,
          ) extends Observer {
 
+  GlobalObservable.add(this)
   controller.add(this)
   protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
   protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
@@ -118,18 +119,18 @@ class Tui(
         prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
       case TuiKeys.CreatePlayers.key =>
-        controller.notifyObservers(Events.CreatePlayers)
+        GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
 
       case TuiKeys.Save.key =>
         commands(TuiKeys.Save.key).execute()
 
       case TuiKeys.ShowGames.key =>
-        controller.notifyObservers(Events.LoadGame)
+        GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)
 
       case _ =>
         commands.get(commandKey) match {
           case Some(command) => command.execute(commandArg)
-          case None => println("❌ Unknown command. Try again.")
+          case None => println("Unknown command. Try again.")
         }
     }
   }
@@ -142,73 +143,73 @@ class Tui(
         if (index >= 0) {
           tuiCommandFactory.createLoadSelectedGameTuiCommand(index).execute()
           promptState = PromptState.None
-        } else println("❌ Invalid number.")
-      case _ => println("❌ Usage: select <number>")
+        } else println("Invalid number.")
+      case _ => println("Usage: select <number>")
     }
   }
 
   override def update(e: ObservableEvent): Unit = {
     e match {
-      case Events.MainMenu =>
+      case SceneSwitchEvent.MainMenu =>
         promptState = PromptState.MainMenu
         prompter.promptMainMenu()
 
-      case Events.CreatePlayers =>
+      case SceneSwitchEvent.CreatePlayer =>
         promptState = PromptState.CreatePlayers
         prompter.promptCreatePlayers()
 
-      case Events.StartGame =>
+      case SceneSwitchEvent.StartGame =>
         promptState = PromptState.StartGame
         prompter.promptNewGame()
 
-      case Events.Quit =>
+      case SceneSwitchEvent.Exit =>
         promptState = PromptState.Exit
         prompter.promptExit()
 
-      case Events.PlayingField =>
+      case SceneSwitchEvent.PlayingField =>
         promptState = PromptState.PlayingField
         prompter.promptPlayingField()
 
-      case Events.RegularAttack =>
+      case GameActionEvent.RegularAttack =>
         promptState = PromptState.SingleAttack
         prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
         prompter.promptShowAttackersHand()
 
-      case Events.DoubleAttack =>
+      case GameActionEvent.DoubleAttack =>
         promptState = PromptState.DoubleAttack
         prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.defender)
         prompter.promptShowAttackersHand()
 
-      case Events.BoostDefender =>
+      case GameActionEvent.BoostDefender =>
         promptState = PromptState.Boost
         prompter.promptShowDefendersField(gameContextHolder.get.state.getRoles.attacker)
 
-      case Events.BoostGoalkeeper =>
+      case GameActionEvent.BoostGoalkeeper =>
         promptState = PromptState.BoostGoalkeeper
         prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
-      case Events.RegularSwap =>
+      case GameActionEvent.RegularSwap =>
         promptState = PromptState.RegularSwap
         prompter.promptShowAttackersHand()
 
-      case Events.ReverseSwap =>
+      case GameActionEvent.ReverseSwap =>
         promptState = PromptState.ReverseSwap
         prompter.promptShowAttackersHand()
 
-      case Events.LoadGame =>
+      case SceneSwitchEvent.LoadGame =>
         promptState = PromptState.LoadGame
         prompter.showAvailableGames()
 
-      case Events.SaveGame =>
+      case GameActionEvent.SaveGame =>
         promptState = PromptState.SaveGame
         prompter.promptSaveGame()
 
-      case Events.Undo =>
+      case GameActionEvent.Undo =>
         promptState = PromptState.Undo
         prompter.promptUndo()
         prompter.printGameState()
 
-      case Events.Redo =>
+      case GameActionEvent.Redo =>
         promptState = PromptState.Redo
         prompter.promptRedo()
         prompter.printGameState()

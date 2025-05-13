@@ -10,7 +10,7 @@ import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.util.Events
+import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, DoubleButton, SingleButton}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 
@@ -43,7 +43,7 @@ case class ButtonBar(controller: IController, playingField: IGameState, playingF
     width = 180,
     height = 50
   ) { () =>
-    controller.notifyObservers(Events.AttackerDefenderCards)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.AttackerDefenderCards)
 
   }
   val pause: Button = GameButtonFactory.createGameButton(
@@ -52,7 +52,7 @@ case class ButtonBar(controller: IController, playingField: IGameState, playingF
     height = 50
   ) { () =>
     val menuOverlay = new PauseDialog(controller, playingFieldScene, playingFieldScene.overlay) // ✅ Create menu overlay
-    menuOverlay.show() // ✅ Show menu overlay inside OverlayPause
+    menuOverlay.show()
   }
 
 
@@ -61,7 +61,7 @@ case class ButtonBar(controller: IController, playingField: IGameState, playingF
     width = 180,
     height = 50
   ) { () =>
-    controller.notifyObservers(Events.AttackerHandCards)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.AttackerHandCards)
   }
 
   children = Seq(

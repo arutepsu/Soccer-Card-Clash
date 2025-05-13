@@ -13,6 +13,7 @@ import scalafx.application.Platform
 import scala.concurrent.ExecutionContext.Implicits.global
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 
 object DialogFactory {

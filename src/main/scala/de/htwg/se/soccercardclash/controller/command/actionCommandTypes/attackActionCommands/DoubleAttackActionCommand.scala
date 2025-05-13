@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.A
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 //import de.htwg.se.soccercardclash.model.gameComponent.state.memento.factory.IMementoManagerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}
 

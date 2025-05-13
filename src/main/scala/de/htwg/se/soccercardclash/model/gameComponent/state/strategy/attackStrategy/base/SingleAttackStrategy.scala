@@ -9,7 +9,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrate
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.util.{Failure, Success, Try}
 
@@ -37,7 +37,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
         else
           updatedDataManager.getDefenderCard(defender, defenderIndex)
 
-      val comparisonEvent = Events.ComparedCardsEvent(attackingCard, defenderCard)
+      val comparisonEvent = StateEvent.ComparedCardsEvent(attackingCard, defenderCard)
 
       val (finalManager, updatedRoles, updatedScores, additionalEvents) =
         if (updatedDataManager.allDefendersBeaten(defender))
@@ -120,7 +120,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
         updatedManager,
         updatedRoles,
         updatedScores,
-        List(resultEvent, Events.RegularAttack) ++ scoreEvents
+        List(resultEvent, GameActionEvent.RegularAttack) ++ scoreEvents
       )
 
     } else {
@@ -143,7 +143,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
         updatedManager,
         updatedRoles,
         scores,
-        List(resultEvent, Events.RegularAttack)
+        List(resultEvent, GameActionEvent.RegularAttack)
       )
     }
   }
@@ -158,7 +158,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(attacker, updatedHand)
 
-    val event = Events.AttackResultEvent(attacker, defender, attackSuccess = true)
+    val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
     (updatedManager, event)
   }
 
@@ -172,7 +172,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(defender, updatedHand)
 
-    val event = Events.AttackResultEvent(attacker, defender, attackSuccess = false)
+    val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
     (updatedManager, event)
   }
 
@@ -218,7 +218,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
           .removeDefenderCard(defender, defenderCard)
           .removeDefenderCard(defender, revertedCard)
 
-        (updatedManager, roles, List(resultEvent, Events.RegularAttack))
+        (updatedManager, roles, List(resultEvent, GameActionEvent.RegularAttack))
 
       case _ =>
         val (updatedManager0, resultEvent) = defenderWins(
@@ -235,7 +235,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
           .refillDefenderField(defender)
         val updatedRoles = roles.switchRoles()
 
-        (updatedManager, updatedRoles, List(resultEvent, Events.RegularAttack))
+        (updatedManager, updatedRoles, List(resultEvent, GameActionEvent.RegularAttack))
     }
   }
 
@@ -261,7 +261,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
         val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
         val events = List(
-          Events.TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard)
+          StateEvent.TieComparisonEvent(attackingCard, defenderCard, extraAttackerCard, extraDefenderCard)
         )
 
         if (tiebreakerResult > 0) {
@@ -304,7 +304,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
       case _ =>
         // One or both players had no extra card
         val updatedRoles = roles.switchRoles()
-        (dataManager, updatedRoles, List(Events.TieComparison))
+        (dataManager, updatedRoles, List(GameActionEvent.TieComparison))
     }
   }
 

@@ -24,7 +24,7 @@ object GameAlertFactory {
 
   def createAlert(message: String, overlay: Overlay, autoHide: Boolean): Node = {
     val warningText = new Text(s"⚠️ $message") {
-      style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: red;" // ✅ Text is now RED
+      style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: red;"
     }
 
     val okButton = GameButtonFactory.createGameButton(

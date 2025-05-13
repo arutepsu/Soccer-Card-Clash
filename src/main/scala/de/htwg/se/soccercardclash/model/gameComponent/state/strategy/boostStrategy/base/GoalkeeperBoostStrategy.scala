@@ -7,7 +7,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.components.Roles
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.IBoostStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 class GoalkeeperBoostStrategy(
                                playerActionService: IPlayerActionManager
@@ -24,7 +24,7 @@ class GoalkeeperBoostStrategy(
     goalkeeperOpt match {
       case Some(goalkeeper) =>
         if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Boost)) {
-          return (false, playingField, List(Events.NoBoostsEvent(attacker)))
+          return (false, playingField, List(StateEvent.NoBoostsEvent(attacker)))
         }
 
         val boostedGoalkeeper = goalkeeper.boost()
@@ -36,7 +36,7 @@ class GoalkeeperBoostStrategy(
           .withDataManager(updatedDataManager)
           .withRolesManager(updatedRoles)
 
-        (true, updatedField, List(Events.BoostGoalkeeper))
+        (true, updatedField, List(GameActionEvent.BoostGoalkeeper))
 
       case None =>
         (false, playingField, Nil)

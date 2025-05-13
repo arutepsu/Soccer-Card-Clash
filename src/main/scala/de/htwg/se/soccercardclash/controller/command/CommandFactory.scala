@@ -10,7 +10,6 @@ import de.htwg.se.soccercardclash.controller.command.workflow.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.util.Events
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.WorkflowTuiCommand
 class CommandFactory @Inject()(gameService: IGameService, actionManager: IActionManager) extends ICommandFactory {
 

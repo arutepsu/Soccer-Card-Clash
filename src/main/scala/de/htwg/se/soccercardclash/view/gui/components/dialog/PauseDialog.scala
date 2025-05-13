@@ -24,8 +24,7 @@ class PauseDialog(controller: IController,
     smooth = true
     cache = true
   }
-
-  // ✅ Menu Layout
+  
   private val menuButtonBar = new MenuButtonBar(controller, playingFieldScene, overlay)
 
   private val menuLayout = new VBox {

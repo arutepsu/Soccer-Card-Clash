@@ -4,10 +4,10 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.collection.mutable
 
@@ -22,7 +22,7 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
 
     if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
       attacker.actionStates.get(PlayerActionPolicies.Swap) match {
-        case Some(OutOfActions) => return (false, playingField, List(Events.NoSwapsEvent(attacker)))
+        case Some(OutOfActions) => return (false, playingField, List(StateEvent.NoSwapsEvent(attacker)))
         case _ => return (false, playingField, Nil)
       }
     }
@@ -39,7 +39,7 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
 
       val updatedField2 = updatedField1.withRolesManager(updatedRoles)
 
-      (true, updatedField2, List(Events.ReverseSwap))
+      (true, updatedField2, List(GameActionEvent.ReverseSwap))
     } else {
       (false, playingField, Nil)
     }

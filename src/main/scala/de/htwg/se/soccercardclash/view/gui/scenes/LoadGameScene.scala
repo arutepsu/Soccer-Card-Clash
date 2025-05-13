@@ -1,48 +1,27 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import scalafx.scene.Scene
-import scalafx.scene.layout.{HBox, StackPane, VBox}
-import scalafx.scene.text.Text
-import scalafx.scene.control.{Button, ListView}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
-import scalafx.application.Platform
-import scalafx.scene.Node
-
-import java.io.File
-import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.{Events, ObservableEvent, Observer}
-import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import scalafx.scene.Scene
-import scalafx.scene.layout.{HBox, StackPane, VBox}
-import scalafx.scene.text.Text
-import scalafx.scene.control.{Button, ListView}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
-import scalafx.application.Platform
-import scalafx.scene.Node
-
-import java.io.File
-import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
-import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.{ObservableEvent, Observer}
-import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ConfirmationDialog, DialogFactory}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
+import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import scalafx.application.Platform
+import scalafx.collections.ObservableBuffer
+import scalafx.geometry.Pos
+import scalafx.scene.{Node, Scene}
+import scalafx.scene.control.{Button, ListView}
+import scalafx.scene.layout.{HBox, StackPane, VBox}
+import scalafx.scene.text.Text
 
-class LoadGameScene(controller: IController) extends Scene with Observer {
-  controller.add(this)
+import java.io.File
 
-  // 📂 Directory where saved games are stored
+class LoadGameScene(controller: IController) extends GameScene {
+
   private val gamesFolder = new File("games")
-
-  // 📌 Observable list for saved games
   private val savedGames = ObservableBuffer[String]()
 
-  // 🔄 Load saved games from the folder
   private def loadSavedGames(): Unit = {
     savedGames.clear()
     if (gamesFolder.exists() && gamesFolder.isDirectory) {
@@ -55,26 +34,21 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     }
   }
 
-  // 📌 Overlay for dialogs
   private val overlay = new Overlay(this)
 
-  // 📜 ListView for saved games
-  private val listView = new ListView(savedGames)
-
-  // 🔙 Back button to main menu
-  private val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
-    () => controller.notifyObservers(Events.MainMenu)
-  }
-
-  // 🖱️ ListView Click Event: Open Confirmation on Selection
-  listView.onMouseClicked = _ => {
-    val selectedGame = listView.selectionModel().getSelectedItem
-    if (selectedGame != null) {
-      showLoadConfirmation(selectedGame)
+  private val listView = new ListView(savedGames) {
+    onMouseClicked = _ => {
+      val selectedGame = selectionModel().getSelectedItem
+      if (selectedGame != null) {
+        showLoadConfirmation(selectedGame)
+      }
     }
   }
 
-  // 🏗️ Root Layout
+  private val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
+    () => GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
+  }
+
   private val rootVBox = new VBox {
     spacing = 10
     alignment = Pos.Center
@@ -85,30 +59,22 @@ class LoadGameScene(controller: IController) extends Scene with Observer {
     )
   }
 
-  // ✅ Add Overlay to Scene
   this.root = new StackPane {
     children = Seq(rootVBox, overlay.getPane)
   }
 
-  // 🔄 Populate ListView when Scene is Loaded
+  overlay.getPane.prefWidth = 800
+  overlay.getPane.prefHeight = 600
+  overlay.getPane.visible = false
+
   loadSavedGames()
 
-  private def showLoadConfirmation(gameFile: String): Unit = {
-    Platform.runLater(() => {
-      println(s"📢 Showing Load Confirmation for: $gameFile") // Debugging
-
-      // ✅ Use DialogFactory instead of creating ConfirmationDialog manually
-      DialogFactory.showLoadGameConfirmation(gameFile, overlay, controller)
-    })
+  override def handleStateEvent(e: StateEvent): Unit = {
   }
 
-
-
-  // 🔄 Observer Pattern: Handle Scene Transitions
-  override def update(e: ObservableEvent): Unit = {
-    Platform.runLater(() => {
-      println(s"🔄 GUI Received Event: $e")
-      SceneManager.update(e)
-    })
+  private def showLoadConfirmation(gameFile: String): Unit = {
+    Platform.runLater {
+      DialogFactory.showLoadGameConfirmation(gameFile, overlay, controller)
+    }
   }
 }

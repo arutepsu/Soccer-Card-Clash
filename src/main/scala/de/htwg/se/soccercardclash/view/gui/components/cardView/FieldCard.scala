@@ -15,11 +15,9 @@ case class FieldCard(
                     ) extends GameCard(flipped, isLastCard = false, isSelectable, card, scaleFactor) {
 
   override def flip(): GameCard = this.copy(flipped = !flipped)
-
-  // 🔥 Get width of the card
+  
   def getWidth: Double = this.prefWidth.value
-
-  // 🔥 Get height of the card
+  
   def getHeight: Double = this.prefHeight.value
 }
 object FieldCardFactory {
@@ -27,8 +25,7 @@ object FieldCardFactory {
     val fieldCard = FieldCard(flipped = false, card = card)
     fieldCard.styleClass.add("field-card")
     fieldCard.effect = new DropShadow(10, Color.BLACK)
-
-    // Apply boost visual if needed
+    
     card match
       case boosted: BoostedCard => CardAnimationFactory.applyBoostEffect(fieldCard)
       case _ =>
@@ -46,17 +43,14 @@ object FieldCardFactory {
     val fieldCard = FieldCard(flipped = false, card = card)
     fieldCard.styleClass.add("field-card")
     fieldCard.effect = new DropShadow(10, Color.BLACK)
-
-    // Boost animation
+    
     card match
       case boosted: BoostedCard => CardAnimationFactory.applyBoostEffect(fieldCard)
       case _ =>
-
-    // Hover
+    
     fieldCard.onMouseEntered = _ => CardAnimationFactory.applyHoverEffect(fieldCard, selectedIndex, index)
     fieldCard.onMouseExited = _ => CardAnimationFactory.removeHoverEffect(fieldCard, selectedIndex, index)
-
-    // Click selection
+    
     fieldCard.onMouseClicked = _ => {
       if (selectedIndex.contains(index)) {
         fieldCard.effect = null

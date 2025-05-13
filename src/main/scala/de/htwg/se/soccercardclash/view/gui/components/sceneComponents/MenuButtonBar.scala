@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.util.Events
+import de.htwg.se.soccercardclash.util.{GameActionEvent, GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
@@ -22,7 +22,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     width = 180,
     height = 60
   ) { () =>
-    overlay.hide() // ✅ Hide the overlay before continuing
+    overlay.hide()
   }
 
   val undoButton: Button = GameButtonFactory.createGameButton(
@@ -31,7 +31,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 60
   ) { () =>
     controller.undo(playingFieldScene.contextHolder.get)
-    playingFieldScene.update(Events.Undo)
+    playingFieldScene.update(GameActionEvent.Undo)
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
   }
 
@@ -41,7 +41,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     height = 60
   ) { () =>
     controller.redo(playingFieldScene.contextHolder.get)
-    playingFieldScene.update(Events.Redo)
+    playingFieldScene.update(GameActionEvent.Redo)
     playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
 
@@ -59,12 +59,12 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
     width = 180,
     height = 60
   ) { () =>
-    overlay.hide() // ✅ Hide the overlay first
+    overlay.hide()
     Future {
-      Thread.sleep(300) // ✅ Small delay before switching scenes for smooth transition
+      Thread.sleep(300)
       Platform.runLater {
         playingFieldScene.contextHolder.clear()
-        controller.notifyObservers(Events.MainMenu) // ✅ Notify SceneManager
+        GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
       }
     }
   }

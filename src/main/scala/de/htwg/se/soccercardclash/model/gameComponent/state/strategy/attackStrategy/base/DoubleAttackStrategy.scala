@@ -4,14 +4,14 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.IAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IBoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.util.{Failure, Success, Try}
 
@@ -31,7 +31,7 @@ class DoubleAttackStrategy(
     val dataManager = state.getDataManager
 
     if (!playerActionService.canPerform(attackerBeforeAction, PlayerActionPolicies.DoubleAttack)) {
-      return (false, state, List(Events.NoDoubleAttacksEvent(attackerBeforeAction)))
+      return (false, state, List(StateEvent.NoDoubleAttacksEvent(attackerBeforeAction)))
     }
 
     val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.DoubleAttack)
@@ -55,7 +55,7 @@ class DoubleAttackStrategy(
         else
           dataManagerAfterDraw.getDefenderCard(defender, defenderIndex)
 
-      val comparisonEvent = Events.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defenderCard)
+      val comparisonEvent = StateEvent.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defenderCard)
 
       val (finalManager, updatedRoles, updatedScores, additionalEvents) =
         if (dataManagerAfterDraw.allDefendersBeaten(defender))
@@ -144,7 +144,7 @@ class DoubleAttackStrategy(
         updatedManager,
         updatedRoles,
         updatedScores,
-        List(resultEvent, Events.DoubleAttack) ++ scoreEvents
+        List(resultEvent, GameActionEvent.DoubleAttack) ++ scoreEvents
       )
 
     } else {
@@ -168,7 +168,7 @@ class DoubleAttackStrategy(
         updatedManager,
         updatedRoles,
         scores,
-        List(resultEvent, Events.DoubleAttack)
+        List(resultEvent, GameActionEvent.DoubleAttack)
       )
     }
   }
@@ -182,7 +182,7 @@ class DoubleAttackStrategy(
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(attacker, updatedHand)
-    val event = Events.AttackResultEvent(attacker, defender, attackSuccess = true)
+    val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
 
     (updatedManager, event)
   }
@@ -196,7 +196,7 @@ class DoubleAttackStrategy(
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(defender, updatedHand)
-    val event = Events.AttackResultEvent(attacker, defender, attackSuccess = false)
+    val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
     (updatedManager, event)
   }
 
@@ -232,7 +232,7 @@ class DoubleAttackStrategy(
         .removeDefenderCard(defender, defenderCard)
         .removeDefenderCard(defender, revertedDefenderCard)
 
-      (updatedManager, roles, List(resultEvent, Events.DoubleAttack))
+      (updatedManager, roles, List(resultEvent, GameActionEvent.DoubleAttack))
 
     } else if (attackValue < defenderValue) {
       val (updatedManager0, resultEvent) = defenderWins(
@@ -252,7 +252,7 @@ class DoubleAttackStrategy(
 
       val updatedRoles = roles.switchRoles()
 
-      (updatedManager, updatedRoles, List(resultEvent, Events.DoubleAttack))
+      (updatedManager, updatedRoles, List(resultEvent, GameActionEvent.DoubleAttack))
 
     } else {
       handleTie(
@@ -296,7 +296,7 @@ class DoubleAttackStrategy(
           val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
           val events = List(
-            Events.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defenderCard, extraAttackerCard, extraDefenderCard)
+            StateEvent.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defenderCard, extraAttackerCard, extraDefenderCard)
           )
 
           if (tiebreakerResult > 0) {
@@ -338,12 +338,12 @@ class DoubleAttackStrategy(
 
         case _ =>
           val updatedRoles = roles.switchRoles()
-          (dataManager, updatedRoles, List(Events.DoubleTieComparison))
+          (dataManager, updatedRoles, List(GameActionEvent.DoubleTieComparison))
       }
 
     } else {
       val updatedRoles = roles.switchRoles()
-      (dataManager, updatedRoles, List(Events.DoubleTieComparison))
+      (dataManager, updatedRoles, List(GameActionEvent.DoubleTieComparison))
     }
   }
 

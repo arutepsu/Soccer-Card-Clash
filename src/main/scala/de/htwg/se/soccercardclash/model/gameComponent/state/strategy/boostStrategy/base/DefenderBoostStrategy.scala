@@ -7,7 +7,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.components.Roles
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.IBoostStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.util.{EventDispatcher, Events, ObservableEvent}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManager) extends IBoostStrategy {
 
@@ -24,7 +24,7 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
     }
 
     if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Boost)) {
-      return (false, playingField, List(Events.NoBoostsEvent(attacker)))
+      return (false, playingField, List(StateEvent.NoBoostsEvent(attacker)))
     }
 
     val originalCard = defenders(index)
@@ -39,7 +39,7 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
       .withDataManager(updatedDataManager)
       .withRolesManager(updatedRoles)
 
-    (true, updatedField, List(Events.BoostDefender))
+    (true, updatedField, List(GameActionEvent.BoostDefender))
   }
 
 }

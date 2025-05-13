@@ -1,33 +1,36 @@
 package de.htwg.se.soccercardclash.view.gui
 
+import com.google.inject.Injector
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.module.SceneModule
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image
 import scalafx.stage.Stage
 import de.htwg.se.soccercardclash.util.*
-//import view.gui.scenes.MainMenuScene
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 
 class Gui(
            controller: IController,
-           contextHolder: IGameContextHolder
-         ) extends JFXApp3 with Observer {
+           contextHolder: IGameContextHolder,
+           parentInjector: Injector
+         ) extends JFXApp3 {
 
   override def start(): Unit = {
-    val stage = new PrimaryStage {
-      title = "Soccer Card Game"
+    val primary = new PrimaryStage {
+      title = "Soccer Card Clash"
       icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
+      width = 1000
+      height = 600
     }
 
-    SceneManager.init(stage, controller, contextHolder)
-    controller.notifyObservers(Events.MainMenu)
-  }
-  
-  override def update(e: ObservableEvent): Unit = {
-    Platform.runLater(() => {
-      println(s"🔄 GUI Received Event: $e")
-      SceneManager.update(e)
-    })
+    val sceneInjector = parentInjector.createChildInjector(new SceneModule(primary))
+
+    val sceneManager = sceneInjector.getInstance(classOf[SceneManager])
+    GlobalObservable.add(sceneManager)
+    Platform.runLater {
+      GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
+    }
+
   }
 }

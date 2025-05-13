@@ -36,7 +36,7 @@ case class SingleButton() extends ActionButton[PlayingFieldScene] {
           playingFieldScene.currentDefenderFieldBar.foreach(_.resetSelectedDefender())
         }
       case None =>
-        println("⚠️ No defender selected for attack!")
+        println("No defender selected for attack!")
         playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
     }
   }

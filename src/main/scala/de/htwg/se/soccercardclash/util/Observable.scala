@@ -19,23 +19,26 @@ class Observable {
     if (subscribers.isEmpty) {
       return
     }
-    subscribers.distinct.foreach(_.update(e))
+
+    val distinctSubscribers = subscribers.distinct
+
+    distinctSubscribers.zipWithIndex.foreach { case (observer, index) =>
+      observer.update(e)
+    }
   }
+
+
 
   def removeAllObservers(): Unit = {
     subscribers = Vector()
   }
 
   def printAllObservers(): Unit = {
-    println("📋 All Observers (including duplicates):")
     if (subscribers.isEmpty) {
-      println("  (No observers registered)")
     } else {
       subscribers.zipWithIndex.foreach { case (observer, index) =>
-        println(s"  [$index] ${observer.getClass.getSimpleName} @ ${observer.hashCode()}")
+        println(s"[$index] ${observer.getClass.getSimpleName} @ ${observer.hashCode()}")
       }
     }
   }
-
-
 }
