@@ -8,6 +8,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.ICardFactory
 import de.htwg.se.soccercardclash.util.Deserializer
 import play.api.libs.json.*
+
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 import scala.xml.*
@@ -39,7 +40,7 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
         case "Boosted" =>
           val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
           val baseCard = cardFactory.createCard(value, suit)
-          new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+          BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
         case _ =>
           throw new IllegalArgumentException(s"Unknown card type: $cardType")
       }
@@ -61,7 +62,7 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
         case "Boosted" =>
           val additionalValue = (json \ "additionalValue").asOpt[Int].getOrElse(0)
           val baseCard = cardFactory.createCard(value, suit)
-          new BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+          BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
         case _ => throw new IllegalArgumentException(s"Unknown card type: $cardType")
       }
     } match {

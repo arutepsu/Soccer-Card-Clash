@@ -89,7 +89,6 @@ class CreatePlayerScene @Inject()(
     }
 
     controller.createGame(playerNames.head, playerNames(1))
-    GlobalObservable.notifyObservers(SceneSwitchEvent.PlayingField)
   }
 
   private def getPlayerNames(): Seq[String] =

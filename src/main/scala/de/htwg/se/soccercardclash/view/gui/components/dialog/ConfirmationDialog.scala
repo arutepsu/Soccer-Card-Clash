@@ -1,17 +1,19 @@
 package de.htwg.se.soccercardclash.view.gui.components.dialog
 
-import scalafx.scene.layout.{VBox, StackPane, HBox}
+import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.text.Text
 import scalafx.scene.control.Button
 import scalafx.geometry.Pos
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.Node
 import scalafx.application.Platform
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController) {
   

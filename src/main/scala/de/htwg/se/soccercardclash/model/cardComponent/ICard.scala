@@ -2,24 +2,38 @@ package de.htwg.se.soccercardclash.model.cardComponent
 
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
-import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
+import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
 import de.htwg.se.soccercardclash.util.Serializable
 import play.api.libs.json.*
+
 import scala.xml.*
 
 
 
 trait ICard extends Serializable {
   def value: Value
+
   def suit: Suit
+
   def boost(): ICard
+
   def revertBoost(): ICard
-  def valueToInt: Int
-  def compare(that: ICard): Int
-  def fileName: String
-  def copy(): ICard
-  def hashCode(): Int
-  def equals(obj: Any): Boolean
+
+  def compare(that: ICard): Int = (this.value, that.value) match {
+    case (Value.Two, Value.Ace) => 1
+    case (Value.Ace, Value.Two) => -1
+    case _ => this.valueToInt.compare(that.valueToInt)
+  }
+
+  def valueToInt: Int = Value.valueToInt(value)
+
+  def fileName: String =
+    s"${value.toString.toLowerCase.replace(" ", "_")}_of_${Suit.suitToString(suit).toLowerCase}.png"
+
+  override def toString: String =
+    s"${value.toString} of ${Suit.suitToString(suit)}"
+
   def toXml: Elem = this match {
     case regularCard: RegularCard =>
       <Card>

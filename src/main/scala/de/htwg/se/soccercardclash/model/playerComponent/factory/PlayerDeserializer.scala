@@ -41,7 +41,7 @@ class PlayerDeserializer @Inject()(
     } match {
       case Success(player) => player
       case Failure(exception) =>
-        throw new RuntimeException(s"❌ Error parsing Player XML: ${exception.getMessage}", exception)
+        throw new RuntimeException(s"Error parsing Player XML: ${exception.getMessage}", exception)
     }
   }
 
@@ -63,7 +63,7 @@ class PlayerDeserializer @Inject()(
     } match {
       case Success(player) => player
       case Failure(exception) =>
-        throw new RuntimeException(s"❌ Error parsing Player JSON: ${exception.getMessage}", exception)
+        throw new RuntimeException(s"Error parsing Player JSON: ${exception.getMessage}", exception)
     }
   }
 }

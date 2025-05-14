@@ -7,8 +7,11 @@ object EventDispatcher {
   def dispatch(controller: IController, events: List[ObservableEvent]): Unit =
     events.foreach(controller.notifyObservers)
 
-  def dispatchSingle(controller: IController, event: ObservableEvent): Unit = {
-    controller.notifyObservers(event)
+  def dispatchSingle(controller: IController, event: ObservableEvent): Unit = event match {
+    case sceneEvent: SceneSwitchEvent=>
+      GlobalObservable.notifyObservers(sceneEvent)
+    case other =>
+      controller.notifyObservers(other)
   }
 }
 

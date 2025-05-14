@@ -138,14 +138,12 @@ class PlayingFieldScene(
 
   override def handleStateEvent(e: StateEvent): Unit = e match
     case StateEvent.ScoreEvent(player) =>
-      println(s"Goal scored by ${player.name}")
       delayed(4000) {
         showGoalScoredDialog(player, autoHide = true)
         updateDisplay()
       }
 
     case StateEvent.GameOver(winner) =>
-      println(s"Game Over! Winner: ${winner.name}")
       delayed(4000) {
         showGameOverPopup(winner, autoHide = false)
       }
@@ -156,7 +154,6 @@ class PlayingFieldScene(
     case _ =>
 
   override def update(e: ObservableEvent): Unit = {
-    println(s":received EVENT! $e")
     Future {
       Thread.sleep(100)
       Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
@@ -199,7 +196,6 @@ class PlayingFieldScene(
         updateAvatars()
         updateScores(viewCtx)
       case _ =>
-        println("Skipping update → invalid state or missing goalkeeper")
     }
   }
 

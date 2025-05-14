@@ -1,24 +1,14 @@
 package de.htwg.se.soccercardclash.model.cardComponent.base.types
 
-import de.htwg.se.soccercardclash.model.cardComponent.base.Card
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.{Clubs, Diamonds, Hearts, Spades, Suit}
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.*
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import de.htwg.se.soccercardclash.model.cardComponent.boosting.BoostingPolicies
-import play.api.libs.json.*
-import scala.xml.*
 
-class RegularCard(val value: Value, override val suit: Suit) extends Card(suit) {
+case class RegularCard(value: Value, suit: Suit) extends ICard {
+  override def boost(): ICard = BoostedCard(this, BoostingPolicies.getBoostAmount(value))
 
-  override def boost(): Card = {
-    val boostAmount = BoostingPolicies.getBoostAmount(this.value)
-    BoostedCard(this, boostAmount)
-  }
+  override def revertBoost(): ICard = this
 
-  override def revertBoost(): Card = this
-
-  override def copy(): Card = new RegularCard(value, suit)
-
-  
 }

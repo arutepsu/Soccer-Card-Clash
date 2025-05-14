@@ -41,8 +41,7 @@ class PlayersHandBar(
     case selectable: SelectableHandCardRenderer => selectable.getSelectedIndex
     case _ => None
   }
-
-  // Player label at top
+  
   private val playerLabel = new Label {
     text = s"${player.name}'s Hand"
     style =
@@ -54,7 +53,6 @@ class PlayersHandBar(
   children = Seq(playerLabel, currentHandRow)
   
   def updateBar(newGameState: IGameState): Unit = {
-    println(s"🔄 Updating hand for ${player.name} with animation...")
 
     val newHandRow = renderer.createHandCardRow(player, newGameState)
 

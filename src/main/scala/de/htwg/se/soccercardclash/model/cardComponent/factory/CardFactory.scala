@@ -13,7 +13,7 @@ import scala.util.Random
 @Singleton
 class CardFactory @Inject()() extends ICardFactory {
   override def createCard(value: Value, suit: Suit): ICard = {
-    new RegularCard(value, suit)
+    RegularCard(value, suit)
   }
 }
 

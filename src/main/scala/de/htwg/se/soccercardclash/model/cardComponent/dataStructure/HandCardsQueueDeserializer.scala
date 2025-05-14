@@ -16,7 +16,7 @@ trait IHandCardsQueueFactory {
 @Singleton
 class HandCardsQueueFactory @Inject()() extends IHandCardsQueueFactory {
   override def create(cards: List[ICard]): IHandCardsQueue = {
-    new HandCardsQueue(cards)
+    HandCardsQueue(cards)
   }
 }
 

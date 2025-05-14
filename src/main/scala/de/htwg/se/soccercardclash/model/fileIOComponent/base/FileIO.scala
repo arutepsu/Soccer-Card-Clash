@@ -26,11 +26,11 @@ class FileIO @Inject() (
     } else if (fileName.endsWith(".xml")) {
       xmlComponent.load(fileName)
     } else {
-      throw new IllegalArgumentException(s"❌ Unsupported file format: $fileName")
+      throw new IllegalArgumentException(s"Unsupported file format: $fileName")
     }
 
     gameStateOpt.getOrElse {
-      throw new NoSuchElementException(s"❌ No valid save data found in '$fileName'!")
+      throw new NoSuchElementException(s"No valid save data found in '$fileName'!")
     }
   }
 }
