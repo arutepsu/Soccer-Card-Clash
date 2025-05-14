@@ -1,14 +1,13 @@
 package de.htwg.se.soccercardclash.module
 
-import com.google.inject.Singleton
+import com.google.inject.{AbstractModule, Singleton}
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.util.Observable
-import com.google.inject.AbstractModule
 import de.htwg.se.soccercardclash.controller.command.{CommandFactory, ICommandFactory}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.util.Observable
 
 class ControllerModule extends AbstractModule {
 

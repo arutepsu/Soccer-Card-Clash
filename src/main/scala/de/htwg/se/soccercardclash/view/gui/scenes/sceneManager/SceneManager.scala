@@ -39,6 +39,7 @@ class SceneManager(
     val newScene: GameScene = e match {
       case SceneSwitchEvent.MainMenu            => new MainMenuScene(controller)
       case SceneSwitchEvent.CreatePlayer        => new CreatePlayerScene(controller, contextHolder)
+      case SceneSwitchEvent.CreatePlayerWithAI  => new CreatePlayerWithAIScene(controller, contextHolder)
       case SceneSwitchEvent.LoadGame            => new LoadGameScene(controller)
       case SceneSwitchEvent.PlayingField        => new PlayingFieldScene(controller, contextHolder)
       case SceneSwitchEvent.AttackerHandCards   => new AttackerHandScene(controller, contextHolder)

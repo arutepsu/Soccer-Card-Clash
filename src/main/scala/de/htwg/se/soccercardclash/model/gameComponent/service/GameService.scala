@@ -4,6 +4,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
+import de.htwg.se.soccercardclash.model.playerComponent.strategy.SimpleAIStrategy
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
@@ -16,6 +17,9 @@ class GameService @Inject()(
   def createNewGame(player1: String, player2: String): IGameState =
     initializer.createGameState(player1, player2)
 
+  def createNewGameWithAI(humanPlayerName: String): IGameState =
+    initializer.createGameStateWithAI(humanPlayerName, new SimpleAIStrategy)
+    
   def loadGame(file: String): Try[IGameState] = {
     persistence.loadGame(file)
       .map(initializer.initializeFromState)
@@ -31,6 +35,7 @@ class GameService @Inject()(
 }
 trait IGameService {
   def createNewGame(player1: String, player2: String): IGameState
+  def createNewGameWithAI(humanPlayerName: String): IGameState
   def loadGame(file: String): Try[IGameState]
   def saveGame(state: IGameState): Try[Unit]
 }

@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.module
 
 import com.google.inject.{AbstractModule, Provides}
-import de.htwg.se.soccercardclash.model.cardComponent.factory.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.*
+import de.htwg.se.soccercardclash.model.cardComponent.factory.*
 
 class CardModule extends AbstractModule {
 

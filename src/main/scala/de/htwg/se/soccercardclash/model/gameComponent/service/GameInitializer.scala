@@ -14,9 +14,9 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.playerComponent.strategy.IPlayerStrategy
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
-
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
@@ -26,6 +26,7 @@ import scala.xml.*
 trait IGameInitializer {
   def createGameState(playerName1: String, playerName2: String): IGameState
   def initializeFromState(state: IGameState): IGameState
+  def createGameStateWithAI(humanName: String, strategy: IPlayerStrategy): IGameState
 }
 class GameInitializer @Inject()(
                                  playerFactory: IPlayerFactory,
@@ -93,8 +94,37 @@ class GameInitializer @Inject()(
     GameState(dataManager, roles, scores)
   }
 
+  override def createGameStateWithAI(humanName: String, strategy: IPlayerStrategy): IGameState = {
+    val aiName = "AI"
+    val aiPlayer = playerFactory.createAIPlayer(aiName, strategy)
+    val humanPlayer = playerFactory.createPlayer(humanName)
+
+    val deck = deckFactory.createDeck()
+    deckFactory.shuffleDeck(deck)
+
+    val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
+    val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
+
+    val dataManager = dataManagerFactory.createFromData(
+      player1 = aiPlayer,       // AI goes first (attacker)
+      player1Hand = hand1,
+      player2 = humanPlayer,
+      player2Hand = hand2,
+      player1Defenders = List.empty,
+      player2Defenders = List.empty,
+      player1Goalkeeper = None,
+      player2Goalkeeper = None
+    )
+
+    val roles = rolesFactory.create(aiPlayer, humanPlayer) // Ensure AI is attacker
+    val scores = scoresFactory.create(aiPlayer, humanPlayer)
+
+    GameState(dataManager, roles, scores)
+  }
 
 
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) =
     (playerFactory.createPlayer(playerName1), playerFactory.createPlayer(playerName2))
+
+
 }

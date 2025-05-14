@@ -12,16 +12,12 @@ class PlayerModule extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
-//    bind(classOf[IPlayerFieldManager]).to(classOf[PlayerFieldManager])
     bind(classOf[IFieldCardsFactory]).to(classOf[FieldCardsFactory])
 
     bind(classOf[PlayerDeserializer])
       .toConstructor(classOf[PlayerDeserializer]
         .getConstructor(classOf[IPlayerFactory], classOf[CardDeserializer]))
-
-//    bind(classOf[IPlayerHandManager])
-//      .toConstructor(classOf[PlayerHandManager]
-//        .getConstructor(classOf[IHandCardsQueueFactory]))
+    
   }
 
   @Provides

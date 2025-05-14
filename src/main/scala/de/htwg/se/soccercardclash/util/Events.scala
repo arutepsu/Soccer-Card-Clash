@@ -10,6 +10,7 @@ sealed trait SceneSwitchEvent extends ObservableEvent
 object SceneSwitchEvent:
   case object MainMenu extends SceneSwitchEvent
   case object CreatePlayer extends SceneSwitchEvent
+  case object CreatePlayerWithAI extends SceneSwitchEvent
   case object LoadGame extends SceneSwitchEvent
   case object Exit extends SceneSwitchEvent
   case object StartGame extends SceneSwitchEvent
@@ -57,4 +58,15 @@ object StateEvent:
   case class NoDoubleAttacksEvent(player: IPlayer) extends StateEvent
   case class ScoreEvent(player: IPlayer) extends StateEvent
 
-  
+
+sealed trait PlayerAction
+
+case class SingleAttackAction(defenderIndex: Int) extends PlayerAction
+case class DoubleAttackAction(defenderIndex: Int) extends PlayerAction
+case class RegularSwapAction(index: Int) extends PlayerAction
+case object ReverseSwapAction extends PlayerAction
+case class BoostDefenderAction(defenderIndex: Int) extends PlayerAction
+case object BoostGoalkeeperAction extends PlayerAction
+case object UndoAction extends PlayerAction
+case object RedoAction extends PlayerAction
+case object NoOpAction extends PlayerAction

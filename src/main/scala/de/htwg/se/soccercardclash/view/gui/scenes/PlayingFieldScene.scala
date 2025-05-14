@@ -22,6 +22,8 @@ import scalafx.scene.text.Text
 import scalafx.scene.{Node, Scene}
 import scalafx.stage.Stage
 import scalafx.util.Duration
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -154,12 +156,24 @@ class PlayingFieldScene(
     case _ =>
 
   override def update(e: ObservableEvent): Unit = {
-    Future {
-      Thread.sleep(100)
-      Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
+    e match {
+      case TurnEvent.NextTurnEvent =>
+        Future {
+          Thread.sleep(5000)
+          Platform.runLater(() => handleAITurn())
+        }
+
+      case _ =>
+        // Comparison handler logic
+        Future {
+          Thread.sleep(100)
+          Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
+        }
     }
+
     super.update(e)
   }
+
 
   private def delayedUpdate(ms: Int): Unit = delayed(ms)(updateDisplay())
 
@@ -250,4 +264,24 @@ class PlayingFieldScene(
   private def createDoubleAttackAlert(player: IPlayer): Node = {
     GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
   }
+  def handleAITurn(): Unit = {
+    println("!!!!!!!!!!!!!ai moves!")
+    val ctx = contextHolder.get
+    ctx.state.getRoles.attacker match {
+      case player: Player if player.isAI =>
+        val strategy = player.playerType.asInstanceOf[AI].strategy
+        Future {
+          Thread.sleep(1000)
+          Platform.runLater(() => {
+            val currentCtx = contextHolder.get
+            val action = strategy.decideAction(currentCtx, player)
+            val (newCtx, _) = controller.executePlayerAction(action, currentCtx)
+            contextHolder.set(newCtx)
+          })
+        }
+
+      case _ => // Human turn — no action
+    }
+  }
+
 }

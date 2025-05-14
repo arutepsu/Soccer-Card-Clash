@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
@@ -12,8 +13,9 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerform
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent, Observer, UndoManager, Observable}
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-
+import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 import de.htwg.se.soccercardclash.util.*
+
 class Controller @Inject()(
                             commandFactory: ICommandFactory,
                             gameService: IGameService,
@@ -28,6 +30,11 @@ class Controller @Inject()(
     val updatedCtx = ctx.copy(state = result.state)
     val allEvents = if (result.success) mainEvent :: result.events else mainEvent :: fallbackEventFor(mainEvent, ctx)
     EventDispatcher.dispatch(this, allEvents)
+
+    if (result.success) {
+      EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+    }
+
 
     (updatedCtx, result.success)
   }
@@ -68,6 +75,13 @@ class Controller @Inject()(
     EventDispatcher.dispatchSingle(this, SceneSwitchEvent.PlayingField)
   }
 
+  override def createGameWithAI(humanPlayerName: String): Unit = {
+    val ctx = GameContext(gameService.createNewGameWithAI(humanPlayerName), new UndoManager)
+    contextHolder.set(ctx)
+    EventDispatcher.dispatchSingle(this, SceneSwitchEvent.PlayingField)
+    EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+  }
+
   override def loadGame(fileName: String): Boolean = {
     gameService.loadGame(fileName).toOption match {
       case Some(state) =>
@@ -103,4 +117,26 @@ class Controller @Inject()(
 
   override def quit(): Unit = System.exit(0)
 
+  override def executePlayerAction(action: PlayerAction, ctx: GameContext): (GameContext, Boolean) = {
+    action match {
+      case SingleAttackAction(defenderIndex) =>
+        singleAttack(defenderIndex, ctx)
+      case DoubleAttackAction(defenderIndex) =>
+        doubleAttack(defenderIndex, ctx)
+      case RegularSwapAction(index) =>
+        regularSwap(index, ctx)
+      case ReverseSwapAction =>
+        reverseSwap(ctx)
+      case BoostDefenderAction(defenderIndex) =>
+        boostDefender(defenderIndex, ctx)
+      case BoostGoalkeeperAction =>
+        boostGoalkeeper(ctx)
+      case UndoAction =>
+        (undo(ctx), true)
+      case RedoAction =>
+        (redo(ctx), true)
+      case NoOpAction =>
+        (ctx, true)
+    }
+  }
 }

@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.Observable
+import de.htwg.se.soccercardclash.util.{Observable, PlayerAction}
 
 import scala.collection.mutable
 trait IController extends Observable {
@@ -17,10 +17,11 @@ trait IController extends Observable {
   def boostDefender(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean)
   def boostGoalkeeper(ctx: GameContext): (GameContext, Boolean)
   def createGame(player1: String, player2: String): Unit
+  def createGameWithAI(humanPlayerName: String): Unit
   def loadGame(fileName: String): Boolean
   def saveGame(ctx: GameContext): Boolean
   def undo(ctx: GameContext): GameContext
   def redo(ctx: GameContext): GameContext
   def quit(): Unit
-
+  def executePlayerAction(action: PlayerAction, ctx: GameContext): (GameContext, Boolean)
 }
