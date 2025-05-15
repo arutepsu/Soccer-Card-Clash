@@ -11,9 +11,9 @@
 
 /* Title Styling */
 .title {
-    -fx-font-size: 50px; /* ✅ Bigger and bolder */
+    -fx-font-size: 48px;
     -fx-font-weight: bold;
-    -fx-text-fill: #FFD700; /* ✅ Gold color */
+    -fx-text-fill: #FFD700;
     -fx-font-family: "Segoe UI";
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
@@ -23,7 +23,7 @@
     -fx-font-size: 28px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Segoe UI";
 }
 
 /* Player Input Fields */
@@ -35,18 +35,3 @@
     -fx-padding: 10px;
     -fx-background-radius: 5px;
 }
-
-/* Start Button */
-/*.start-button {*/
-/*    -fx-font-size: 22px;*/
-/*    -fx-font-weight: bold;*/
-/*    -fx-text-fill: white;*/
-/*    !*-fx-background-color: #7A2626;*!*/
-/*    -fx-border-radius: 10px;*/
-/*    -fx-background-radius: 10px;*/
-/*    -fx-padding: 15px 30px;*/
-/*}*/
-
-/*.start-button:hover {*/
-/*    -fx-background-color: #A83232; !* ✅ Lighter red on hover *!*/
-/*}*/

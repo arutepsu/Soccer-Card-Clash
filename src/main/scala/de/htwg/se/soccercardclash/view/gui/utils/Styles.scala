@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.utils
 
 object Styles {
-  val playingFieldCss: String = getClass.getResource("/scenes/Styles.css").toExternalForm
+  val generalCss: String = getClass.getResource("/scenes/Styles.css").toExternalForm
   val mainMenuCss: String = getClass.getResource("/scenes/MainMenuScene.css").toExternalForm
   val createPlayerCss: String = getClass.getResource("/scenes/CreatePlayer.css").toExternalForm
   val createPlayerWitAICss: String = getClass.getResource("/scenes/CreatePlayerWithAI.css").toExternalForm

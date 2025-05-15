@@ -10,7 +10,7 @@ import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.TextField
+import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
 
@@ -32,14 +32,12 @@ class CreatePlayerWithAIScene @Inject()(
     this.getStylesheets.add(Styles.createPlayerWitAICss)
     styleClass.add("create-player-ai-panel")
 
-    val createPlayersTitle = new Text {
-      text = "Create Player"
-      styleClass.add("title")
+    val createPlayersTitle: Label = new Label("Create Player") {
+      styleClass += "title"
     }
 
-    val nameTitle = new Text {
-      text = "Enter Player's Name"
-      styleClass.add("subtitle")
+    val nameTitle: Label = new Label("Enter Player's Name") {
+      styleClass += ("subtitle")
     }
 
     children.addAll(createPlayersTitle, nameTitle)

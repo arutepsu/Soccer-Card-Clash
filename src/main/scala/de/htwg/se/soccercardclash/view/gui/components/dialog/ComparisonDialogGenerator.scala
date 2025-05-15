@@ -15,6 +15,7 @@ import scalafx.scene.shape.Rectangle
 import scalafx.scene.text.*
 import scalafx.stage.{Modality, Stage}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.{UIAction, UIActionScheduler}
 import de.htwg.se.soccercardclash.view.gui.utils.{CardImageLoader, Styles}
 import scalafx.animation.*
 import scalafx.util.Duration
@@ -177,12 +178,16 @@ object ComparisonDialogGenerator {
 
       slideInNode(frame, fromX = if (highlightGreen) -200 else 200, durationMillis = 700)
 
-      Future {
-        Thread.sleep(1000)
-        Platform.runLater {
-          borderEffect.stroke = if (highlightGreen) Color.LimeGreen else if (highlightRed) Color.Red else Color.Transparent
-        }
+      val pause = new PauseTransition(Duration(1000))
+      pause.setOnFinished(_ => borderEffect.stroke =
+        if (highlightGreen) Color.LimeGreen
+        else if (highlightRed) Color.Red
+        else Color.Transparent
+      )
+      Platform.runLater {
+        pause.play()
       }
+
 
       frame
     }
@@ -245,11 +250,12 @@ object ComparisonDialogGenerator {
       val fadeIn = new FadeTransition(Duration(500), winnerText)
       fadeIn.fromValue = 0.0
       fadeIn.toValue = 1.0
-      fadeIn.play()
+      Platform.runLater {
+        fadeIn.play()
+      }
     }
 
-    runLater(1500) { showWinnerText() }
-    runLater(1500) { showResultText() }
+
 
 
     val player1CardsBox = new HBox(10) {
@@ -353,7 +359,19 @@ object ComparisonDialogGenerator {
            | -fx-border-radius: 10px;
 """.stripMargin
     }
+    val scheduler = UIActionScheduler()
 
+    scheduler.runSequence(
+      UIAction.delayed(0) {
+        fadeInNode(root, 700)
+      },
+      UIAction.delayed(1500) {
+        showWinnerText()
+      },
+      UIAction.delayed(1500) {
+        showResultText()
+      }
+    )
     fadeInNode(root, 700)
     root
   }

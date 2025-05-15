@@ -5,31 +5,35 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.*
 import scala.concurrent.Future
 
-class UIAction(val delay: Int, val block: () => Unit)
+import scalafx.animation.PauseTransition
+import scalafx.application.Platform
+import scalafx.util.Duration
+
+case class UIAction(delay: Int, block: () => Unit)
 
 object UIAction {
-  // Enables syntax: UIAction(3000) { ... }
-  def apply(delay: Int)(block: => Unit): UIAction =
-    new UIAction(delay, () => block)
+  def delayed(delay: Int)(block: => Unit): UIAction =
+    UIAction(delay, () => block)
 }
 
 
-class UIActionScheduler(using ec: ExecutionContext) {
+class UIActionScheduler {
 
-  private def run(action: UIAction): Future[Unit] = Future {
-    Thread.sleep(action.delay)
-    Platform.runLater(action.block())
-  }
-
-  /** Run a sequence of actions in order, each after its own delay. */
   def runSequence(actions: UIAction*): Unit = {
-    actions.foldLeft(Future.successful(())) { (f, next) =>
-      f.flatMap(_ => run(next))
-    }
-  }
+    def run(index: Int): Unit = {
+      if (index >= actions.length) return
 
-  /** Run an async operation, then schedule a UIAction with its result. */
-  def runAsyncThen[A](future: => Future[A])(next: A => UIAction): Unit = {
-    future.foreach(result => run(next(result)))
+      val UIAction(delay, block) = actions(index)
+      val pause = new PauseTransition(Duration(delay))
+      pause.setOnFinished(_ => {
+        Platform.runLater { block() }
+        run(index + 1)
+      })
+      Platform.runLater {
+        pause.play()
+      }
+    }
+
+    run(0)
   }
 }

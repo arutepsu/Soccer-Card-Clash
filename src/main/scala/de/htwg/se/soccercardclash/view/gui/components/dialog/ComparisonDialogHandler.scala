@@ -20,7 +20,6 @@ import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -51,6 +50,7 @@ import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGen
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.UIAction
 import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -66,6 +66,81 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
   private var lastExtraDefenderCard: Option[ICard] = None
   private var lastAttackSuccess: Option[Boolean] = None
 
+  def createOverlayAction(e: GameActionEvent): Option[UIAction] = {
+    val width = overlay.getPane.getWidth
+    val state = contextHolder.get.state
+    val attacker = state.getRoles.attacker
+    val defender = state.getRoles.defender
+
+    e match {
+      case GameActionEvent.RegularAttack =>
+        for {
+          card <- lastAttackingCard
+          defCard <- lastDefendingCard
+          success <- lastAttackSuccess
+        } yield UIAction.delayed(0) {
+          overlay.show(
+            ComparisonDialogGenerator.showSingleComparison(
+              state.getPlayer1, state.getPlayer2,
+              attacker, defender,
+              card, defCard, success, width
+            ),
+            true
+          )
+        }
+
+      case GameActionEvent.DoubleAttack =>
+        for {
+          c1 <- lastAttackingCard1
+          c2 <- lastAttackingCard2
+          defCard <- lastDefendingCard
+          success <- lastAttackSuccess
+        } yield UIAction.delayed(0) {
+          overlay.show(
+            ComparisonDialogGenerator.showDoubleComparison(
+              state.getPlayer1, state.getPlayer2,
+              attacker, defender, c1, c2, defCard, success, width
+            ),
+            true
+          )
+        }
+
+      case GameActionEvent.TieComparison =>
+        for {
+          c1 <- lastAttackingCard
+          c2 <- lastDefendingCard
+          c3 <- lastExtraAttackerCard
+          c4 <- lastExtraDefenderCard
+        } yield UIAction.delayed(0) {
+          overlay.show(
+            ComparisonDialogGenerator.showTieComparison(
+              state.getPlayer1, state.getPlayer2,
+              attacker, defender, c1, c2, c3, c4, width
+            ),
+            true
+          )
+        }
+
+      case GameActionEvent.DoubleTieComparison =>
+        for {
+          c1 <- lastAttackingCard1
+          c2 <- lastAttackingCard2
+          c3 <- lastDefendingCard
+          c4 <- lastExtraAttackerCard
+          c5 <- lastExtraDefenderCard
+        } yield UIAction.delayed(0) {
+          overlay.show(
+            ComparisonDialogGenerator.showDoubleTieComparison(
+              state.getPlayer1, state.getPlayer2,
+              attacker, defender, c1, c2, c3, c4, c5, width
+            ),
+            true
+          )
+        }
+
+      case _ => None
+    }
+  }
   def handleComparisonEvent(e: ObservableEvent): Unit = {
     e match {
       case StateEvent.ComparedCardsEvent(attackingCard, defendingCard) =>
@@ -93,89 +168,12 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         lastDefendingCard = Some(defendingCard)
         lastExtraAttackerCard = Some(extraAttackerCard)
         lastExtraDefenderCard = Some(extraDefenderCard)
-
-        import javafx.application.Platform
-
-      case GameActionEvent.RegularAttack =>
-        (lastAttackingCard, lastDefendingCard, lastAttackSuccess) match {
-          case (Some(attackingCard), Some(defendingCard), Some(attackSuccess)) =>
-            Platform.runLater(() => {
-              overlay.show(
-                ComparisonDialogGenerator.showSingleComparison(
-                  contextHolder.get.state.getPlayer1,
-                  contextHolder.get.state.getPlayer2,
-                  contextHolder.get.state.getRoles.attacker,
-                  contextHolder.get.state.getRoles.defender,
-                  attackingCard,
-                  defendingCard,
-                  attackSuccess,
-                  overlay.getPane.getWidth
-                ),
-                true
-              )
-            })
-
-          case _ =>
-        }
-
-        resetLastCards()
-
-
-      case GameActionEvent.DoubleAttack =>
-
-        (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastAttackSuccess) match {
-          case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(attackSuccess)) =>
-            overlay.show(
-              ComparisonDialogGenerator.showDoubleComparison(
-                contextHolder.get.state.getPlayer1,
-                contextHolder.get.state.getPlayer2,
-                contextHolder.get.state.getRoles.attacker,
-                contextHolder.get.state.getRoles.defender, attackingCard1, attackingCard2, defendingCard, attackSuccess, overlay.getPane.getWidth
-              ), true
-            )
-
-          case _ =>
-        }
-        resetLastCards()
-
-      case GameActionEvent.TieComparison =>
-
-        (lastAttackingCard, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
-          case (Some(attackingCard), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
-            overlay.show(
-              ComparisonDialogGenerator.showTieComparison(
-                contextHolder.get.state.getPlayer1,
-                contextHolder.get.state.getPlayer2,
-                contextHolder.get.state.getRoles.attacker,
-                contextHolder.get.state.getRoles.defender, attackingCard, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
-              ), true
-            )
-
-          case _ =>
-        }
-        resetLastCards()
-
-      case GameActionEvent.DoubleTieComparison =>
-
-        (lastAttackingCard1, lastAttackingCard2, lastDefendingCard, lastExtraAttackerCard, lastExtraDefenderCard) match {
-          case (Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
-            overlay.show(
-              ComparisonDialogGenerator.showDoubleTieComparison(
-                contextHolder.get.state.getPlayer1,
-                contextHolder.get.state.getPlayer2,
-                contextHolder.get.state.getRoles.attacker,
-                contextHolder.get.state.getRoles.defender, attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard, overlay.getPane.getWidth
-              ), true
-            )
-
-          case _ =>
-        }
-        resetLastCards()
+        
       case _ =>
     }
   }
 
-  private def resetLastCards(): Unit = {
+  def resetLastCards(): Unit = {
     lastAttackingCard = None
     lastAttackingCard1 = None
     lastAttackingCard2 = None

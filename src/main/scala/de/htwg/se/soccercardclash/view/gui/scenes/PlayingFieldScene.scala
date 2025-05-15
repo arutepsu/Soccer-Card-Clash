@@ -31,7 +31,7 @@ class PlayingFieldScene(
                          controller: IController,
                          val contextHolder: IGameContextHolder,
                        ) extends GameScene {
-  this.getStylesheets.add(Styles.playingFieldCss)
+  this.getStylesheets.add(Styles.generalCss)
 
 
   val overlay = new Overlay(this)
@@ -131,29 +131,30 @@ class PlayingFieldScene(
 
 
   private val scheduler = UIActionScheduler() // using given ExecutionContext
-  override def handleGameAction(e: GameActionEvent): Unit = e match
-    case GameActionEvent.RegularAttack | GameActionEvent.DoubleAttack =>
-      scheduler.runSequence(
-        UIAction(3000) { updateDisplay() }
-      )
 
-    case GameActionEvent.Undo | GameActionEvent.Redo |
-         GameActionEvent.BoostDefender | GameActionEvent.BoostGoalkeeper |
-         GameActionEvent.RegularSwap | GameActionEvent.ReverseSwap =>
-      scheduler.runSequence(
-        UIAction(100) { updateDisplay() }
-      )
+  override def handleGameAction(e: GameActionEvent): Unit = {
+    val overlayAction = comparisonHandler.createOverlayAction(e)
+    val delay = e match {
+      case GameActionEvent.RegularAttack | GameActionEvent.DoubleAttack => 3000
+      case GameActionEvent.Undo | GameActionEvent.Redo |
+           GameActionEvent.BoostDefender | GameActionEvent.BoostGoalkeeper |
+           GameActionEvent.RegularSwap | GameActionEvent.ReverseSwap => 100
+      case _ => 0
+    }
 
-    case _ =>
+    val updateAction = UIAction.delayed(delay) { updateDisplay() }
+    scheduler.runSequence((overlayAction.toSeq :+ updateAction)*)
+    comparisonHandler.resetLastCards()
+  }
 
 
   override def handleStateEvent(e: StateEvent): Unit = e match
     case StateEvent.ScoreEvent(player) =>
       scheduler.runSequence(
-        UIAction(0) {
+        UIAction.delayed(0) {
           showGoalScoredDialog(player, autoHide = true)
         },
-        UIAction(4000) {
+        UIAction.delayed(4000) {
           updateDisplay()
         }
       )
@@ -161,7 +162,7 @@ class PlayingFieldScene(
 
     case StateEvent.GameOver(winner) =>
       scheduler.runSequence(
-        UIAction(4000) {
+        UIAction.delayed(4000) {
           showGameOverPopup(winner, autoHide = false)
         }
       )
@@ -174,15 +175,20 @@ class PlayingFieldScene(
 
   override def update(e: ObservableEvent): Unit = {
     e match {
+      case _: StateEvent =>
+        // Safe: always on JavaFX thread
+        Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
+
       case TurnEvent.NextTurnEvent =>
         pendingAITurn = true
 
-      case _ => comparisonHandler.handleComparisonEvent(e)
-
+      case gameAction: GameActionEvent =>
+        handleGameAction(gameAction)
     }
 
     super.update(e)
   }
+
 
 
   private def delayedUpdate(ms: Int): Unit = delayed(ms)(updateDisplay())
@@ -227,11 +233,11 @@ class PlayingFieldScene(
           attacker match {
             case ai: Player if ai.isAI =>
               scheduler.runSequence(
-                UIAction(3000) {
+                UIAction.delayed(3000) {
                   handleAITurn()
                 }
               )
-            case _ => // do nothing if human attacker
+            case _ => 
           }
         }
 

@@ -25,21 +25,21 @@ object GameButtonFactory {
       .map(_.toExternalForm)
       .getOrElse {
         println(s"Error: Image not found at $imagePath")
-        "" 
+        ""
       }
 
     button.style =
       s"""-fx-background-image: url('$imageUrl');
-         |-fx-background-size: 200% 200%; /* Ensures image fully covers button */
-         |-fx-background-repeat: no-repeat; /* Prevents repeating */
-         |-fx-background-position: center; /* Centers image */
-         |-fx-background-color: transparent; /*  Removes white background */
+         |-fx-background-size: 200% 200%;
+         |-fx-background-repeat: no-repeat;
+         |-fx-background-position: center;
+         |-fx-background-color: transparent; 
          |
          |-fx-text-fill: white;
          |-fx-font-size: 16px;
          |-fx-font-weight: bold;
          |-fx-text-alignment: center;
-         |-fx-padding: 0; /*  Ensures no extra padding that might cause white border */
+         |-fx-padding: 0;
          |""".stripMargin
 
 

@@ -25,11 +25,11 @@ class MainMenuScene(controller: IController) extends GameScene {
       new GameLabel("Soccer Card Clash", 1.5) {
         styleClass.add("title-label")
       },
+      GameButtonFactory.createGameButton("Singleplayer", 200, 80) {
+        () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
+      },
       GameButtonFactory.createGameButton("Multiplayer", 200, 80) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
-      },
-      GameButtonFactory.createGameButton("Play with AI", 200, 80) {
-        () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
       },
       GameButtonFactory.createGameButton("Load Game", 200, 80) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)

@@ -11,7 +11,7 @@ import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.TextField
+import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
 
@@ -33,14 +33,12 @@ class CreatePlayerScene @Inject()(
     this.getStylesheets.add(Styles.createPlayerCss)
     styleClass.add("create-player-panel")
 
-    val createPlayersTitle = new Text {
-      text = "Create Players"
-      styleClass.add("title")
+    val createPlayersTitle: Label = new Label("Create Players") {
+      styleClass += "title"
     }
 
-    val nameTitle = new Text {
-      text = "Enter Player Names"
-      styleClass.add("subtitle")
+    val nameTitle: Label = new Label("Enter Player Names") {
+      styleClass += ("subtitle")
     }
 
     children.addAll(createPlayersTitle, nameTitle)
