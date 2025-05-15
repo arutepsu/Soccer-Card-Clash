@@ -16,8 +16,9 @@ import scalafx.scene.text.*
 import scalafx.stage.{Modality, Stage}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.utils.{CardImageLoader, Styles}
-import scalafx.animation._
+import scalafx.animation.*
 import scalafx.util.Duration
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.scene.paint.Color
@@ -25,6 +26,8 @@ import scalafx.scene.shape.Rectangle
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.text.Text
+
+import java.util.concurrent.{Executors, TimeUnit}
 
 object ComparisonDialogGenerator {
   def showSingleComparison(
@@ -82,6 +85,13 @@ object ComparisonDialogGenerator {
                              ): Node = {
     showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
+  private val scheduler = Executors.newSingleThreadScheduledExecutor()
+  private def runLater(delayMillis: Long)(block: => Unit): Unit = {
+    scheduler.schedule(new Runnable {
+      override def run(): Unit = Platform.runLater(block)
+    }, delayMillis, TimeUnit.MILLISECONDS)
+  }
+
   private def showComparisonUI(
                                 player1: IPlayer,
                                 player2: IPlayer,
@@ -164,9 +174,9 @@ object ComparisonDialogGenerator {
       val frame = new StackPane {
         children = Seq(image, borderEffect)
       }
-      
+
       slideInNode(frame, fromX = if (highlightGreen) -200 else 200, durationMillis = 700)
-      
+
       Future {
         Thread.sleep(1000)
         Platform.runLater {
@@ -181,7 +191,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, 
+        highlightGreen = attackSuccess,
         highlightRed = false
       )
     }
@@ -190,7 +200,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, 
+        highlightGreen = attackSuccess,
         highlightRed = false
       )
     }
@@ -199,7 +209,7 @@ object ComparisonDialogGenerator {
       createCardFrame(
         CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
         Some(card),
-        highlightGreen = attackSuccess, 
+        highlightGreen = attackSuccess,
         highlightRed = false
       )
     }
@@ -219,7 +229,7 @@ object ComparisonDialogGenerator {
         highlightRed = !attackSuccess
       )
     }
-    
+
     val winnerName = if (attackSuccess) attacker.name else defender.name
     val highlightLeftGreen = winnerName == player1.name
     val highlightRightRed = winnerName == player2.name
@@ -230,7 +240,7 @@ object ComparisonDialogGenerator {
       style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: $winnerColor;"
       opacity = 0.0
     }
-    
+
     def showWinnerText(): Unit = {
       val fadeIn = new FadeTransition(Duration(500), winnerText)
       fadeIn.fromValue = 0.0
@@ -238,18 +248,9 @@ object ComparisonDialogGenerator {
       fadeIn.play()
     }
 
-    Future {
-      Thread.sleep(1500)
-      Platform.runLater {
-        showWinnerText()
-      }
-    }
-    Future {
-      Thread.sleep(1500)
-      Platform.runLater {
-        showResultText()
-      }
-    }
+    runLater(1500) { showWinnerText() }
+    runLater(1500) { showResultText() }
+
 
     val player1CardsBox = new HBox(10) {
       alignment = scalafx.geometry.Pos.Center
@@ -301,13 +302,13 @@ object ComparisonDialogGenerator {
       children ++= rightCardFrames.map(_.delegate)
     }
 
-    
+
     val tiebreakerCardsBox = new HBox(10) {
       alignment = scalafx.geometry.Pos.Center
     }
     extraAttackingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
     extraDefendingCardFrame.foreach(frame => tiebreakerCardsBox.children += frame)
-    
+
     val cardImagesHBox = new HBox(20) {
       alignment = scalafx.geometry.Pos.Center
       children ++= Seq(leftCardsBox, rightCardsBox)

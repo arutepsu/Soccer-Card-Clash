@@ -15,7 +15,7 @@ object ImageUtils {
   def importImage(imageUrl: String): Image = {
     val resource = getClass.getResourceAsStream(imageUrl)
     if (resource == null) {
-      throw new IllegalArgumentException(s"⚠️ Image not found: $imageUrl. Check that it exists in src/main/resources/")
+      throw new IllegalArgumentException(s"Image not found: $imageUrl. Check that it exists in src/main/resources/")
     }
     new Image(resource)
   }
@@ -40,7 +40,7 @@ object ImageUtils {
   private def importImageBoost(imageUrl: String): Image = {
     val resource = getClass.getResourceAsStream(imageUrl)
     if (resource == null) {
-      throw new IllegalArgumentException(s"⚠️ Boost image not found: $imageUrl. Check that it exists in src/main/resources/")
+      throw new IllegalArgumentException(s"Boost image not found: $imageUrl. Check that it exists in src/main/resources/")
     }
     new Image(resource)
   }

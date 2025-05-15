@@ -106,9 +106,9 @@ class GameInitializer @Inject()(
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
     val dataManager = dataManagerFactory.createFromData(
-      player1 = aiPlayer,       // AI goes first (attacker)
+      player1 = humanPlayer,
       player1Hand = hand1,
-      player2 = humanPlayer,
+      player2 = aiPlayer,
       player2Hand = hand2,
       player1Defenders = List.empty,
       player2Defenders = List.empty,
@@ -116,8 +116,8 @@ class GameInitializer @Inject()(
       player2Goalkeeper = None
     )
 
-    val roles = rolesFactory.create(aiPlayer, humanPlayer) // Ensure AI is attacker
-    val scores = scoresFactory.create(aiPlayer, humanPlayer)
+    val roles = rolesFactory.create(humanPlayer, aiPlayer) // Ensure AI is attacker
+    val scores = scoresFactory.create(humanPlayer, aiPlayer)
 
     GameState(dataManager, roles, scores)
   }

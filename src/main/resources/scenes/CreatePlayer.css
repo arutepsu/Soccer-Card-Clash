@@ -14,7 +14,7 @@
     -fx-font-size: 50px; /* ✅ Bigger and bolder */
     -fx-font-weight: bold;
     -fx-text-fill: #FFD700; /* ✅ Gold color */
-    -fx-font-family: "Arial White";
+    -fx-font-family: "Segoe UI";
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
 

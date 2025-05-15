@@ -13,7 +13,6 @@ import scala.concurrent.Future
 import scalafx.scene.Scene
 import scalafx.animation.*
 import scalafx.util.Duration
-import scalafx.scene.Node
 import scalafx.scene.layout.StackPane
 import scalafx.application.Platform
 import scalafx.scene.effect.GaussianBlur

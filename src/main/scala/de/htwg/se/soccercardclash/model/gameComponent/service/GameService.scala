@@ -4,11 +4,11 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.playerComponent.strategy.SimpleAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.strategy.{MetaAIStrategy, SimpleAIStrategy, SmartAIStrategy}
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
-import scala.util.Try
+import scala.util.{Random, Try}
 
 class GameService @Inject()(
                              initializer: IGameInitializer,
@@ -18,8 +18,10 @@ class GameService @Inject()(
     initializer.createGameState(player1, player2)
 
   def createNewGameWithAI(humanPlayerName: String): IGameState =
-    initializer.createGameStateWithAI(humanPlayerName, new SimpleAIStrategy)
-    
+    val seed = 42L
+    val seededRandom = new Random(seed)
+    initializer.createGameStateWithAI(humanPlayerName, new MetaAIStrategy(seededRandom))
+//    initializer.createGameStateWithAI(humanPlayerName, new SmartAIStrategy)
   def loadGame(file: String): Try[IGameState] = {
     persistence.loadGame(file)
       .map(initializer.initializeFromState)

@@ -10,7 +10,7 @@ import de.htwg.se.soccercardclash.view.gui.components.dialog.{ComparisonDialogHa
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.{SceneManager, UIAction, UIActionScheduler}
 import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
 import scalafx.animation.FadeTransition
 import scalafx.application.Platform
@@ -125,30 +125,47 @@ class PlayingFieldScene(
   }
 
   root = mainLayout
-
+  private var pendingAITurn = false
   controller.add(this)
   updateDisplay()
 
+
+  private val scheduler = UIActionScheduler() // using given ExecutionContext
   override def handleGameAction(e: GameActionEvent): Unit = e match
     case GameActionEvent.RegularAttack | GameActionEvent.DoubleAttack =>
-      delayedUpdate(3000)
+      scheduler.runSequence(
+        UIAction(3000) { updateDisplay() }
+      )
+
     case GameActionEvent.Undo | GameActionEvent.Redo |
          GameActionEvent.BoostDefender | GameActionEvent.BoostGoalkeeper |
          GameActionEvent.RegularSwap | GameActionEvent.ReverseSwap =>
-      delayedUpdate(100)
+      scheduler.runSequence(
+        UIAction(100) { updateDisplay() }
+      )
+
     case _ =>
+
 
   override def handleStateEvent(e: StateEvent): Unit = e match
     case StateEvent.ScoreEvent(player) =>
-      delayed(4000) {
-        showGoalScoredDialog(player, autoHide = true)
-        updateDisplay()
-      }
+      scheduler.runSequence(
+        UIAction(0) {
+          showGoalScoredDialog(player, autoHide = true)
+        },
+        UIAction(4000) {
+          updateDisplay()
+        }
+      )
+
 
     case StateEvent.GameOver(winner) =>
-      delayed(4000) {
-        showGameOverPopup(winner, autoHide = false)
-      }
+      scheduler.runSequence(
+        UIAction(4000) {
+          showGameOverPopup(winner, autoHide = false)
+        }
+      )
+
 
     case StateEvent.NoDoubleAttacksEvent(player) =>
       overlay.show(createDoubleAttackAlert(player), true)
@@ -158,17 +175,10 @@ class PlayingFieldScene(
   override def update(e: ObservableEvent): Unit = {
     e match {
       case TurnEvent.NextTurnEvent =>
-        Future {
-          Thread.sleep(5000)
-          Platform.runLater(() => handleAITurn())
-        }
+        pendingAITurn = true
 
-      case _ =>
-        // Comparison handler logic
-        Future {
-          Thread.sleep(100)
-          Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
-        }
+      case _ => comparisonHandler.handleComparisonEvent(e)
+
     }
 
     super.update(e)
@@ -209,6 +219,22 @@ class PlayingFieldScene(
         updateHands(viewCtx)
         updateAvatars()
         updateScores(viewCtx)
+
+        if (pendingAITurn) {
+          val attacker = contextHolder.get.state.getRoles.attacker
+          pendingAITurn = false // consume it
+
+          attacker match {
+            case ai: Player if ai.isAI =>
+              scheduler.runSequence(
+                UIAction(3000) {
+                  handleAITurn()
+                }
+              )
+            case _ => // do nothing if human attacker
+          }
+        }
+
       case _ =>
     }
   }
@@ -270,17 +296,12 @@ class PlayingFieldScene(
     ctx.state.getRoles.attacker match {
       case player: Player if player.isAI =>
         val strategy = player.playerType.asInstanceOf[AI].strategy
-        Future {
-          Thread.sleep(1000)
-          Platform.runLater(() => {
-            val currentCtx = contextHolder.get
-            val action = strategy.decideAction(currentCtx, player)
-            val (newCtx, _) = controller.executePlayerAction(action, currentCtx)
-            contextHolder.set(newCtx)
-          })
-        }
+        val currentCtx = contextHolder.get
+        val action = strategy.decideAction(currentCtx, player)
+        val (newCtx, _) = controller.executePlayerAction(action, currentCtx)
+        contextHolder.set(newCtx)
 
-      case _ => // Human turn — no action
+      case _ =>
     }
   }
 

@@ -14,7 +14,7 @@
     -fx-font-size: 50px;
     -fx-font-weight: bold;
     -fx-text-fill: #FFD700;
-    -fx-font-family: "Arial Black";
+    -fx-font-family: "Segoe UI";
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
 
