@@ -111,9 +111,11 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
     val hand = gameState.getDataManager.getPlayerHand(player)
 
     val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
+      val isLastCard = index == hand.toList.size - 1
       HandCardFactory.createSelectableHandCard(
         card = card,
         index = index,
+        flipped = !isLastCard,
         selectedIndex = selectedCardIndex,
         onSelected = handleCardSelected
       )
@@ -132,9 +134,13 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
 object DefaultHandCardRenderer extends HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox = {
     val hand = gameState.getDataManager.getPlayerHand(player)
-
     val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
-      val handCard = new HandCard(flipped = false, card = card)
+      val isLastCard = index == hand.toList.size - 1
+      val handCard = HandCard(
+        flipped = !isLastCard, // ✅ Flip all except the last one
+        card = card,
+        isLastCard = isLastCard
+      )
       handCard.effect = new DropShadow(10, Color.BLACK)
       
       handCard.onMouseEntered = _ => {

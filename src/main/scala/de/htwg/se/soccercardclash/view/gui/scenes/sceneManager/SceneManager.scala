@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 import de.htwg.se.soccercardclash.view.gui.scenes.*
-import de.htwg.se.soccercardclash.view.gui.utils.CardImageLoader
+import de.htwg.se.soccercardclash.view.gui.utils.CardImageRegistry
 import scalafx.Includes.*
 import scalafx.animation.{FadeTransition, Interpolator}
 import scalafx.application.Platform
@@ -85,7 +85,6 @@ class SceneManager(
         case Some(fadeOut) =>
           fadeOut.play()
           fadeOut.setOnFinished(_ => {
-            CardImageLoader.clearCache()
             newScene.activate()
             applySceneSize()
             stage.scene = newScene
@@ -93,7 +92,6 @@ class SceneManager(
           })
 
         case None =>
-          CardImageLoader.clearCache()
           newScene.activate()
           applySceneSize()
           stage.scene = newScene

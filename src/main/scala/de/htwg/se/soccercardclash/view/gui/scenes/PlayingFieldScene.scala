@@ -4,6 +4,7 @@ import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ComparisonDialogHandler, DialogFactory, WinnerDialog}
@@ -22,8 +23,6 @@ import scalafx.scene.text.Text
 import scalafx.scene.{Node, Scene}
 import scalafx.stage.Stage
 import scalafx.util.Duration
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
-import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -94,35 +93,64 @@ class PlayingFieldScene(
     styleClass += "scores-bar"
   }
 
-  val buttonBar = new ButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
+  val actionButtonBar = ActionButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
+  val navButtonBar = NavButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
   val playersBar = new PlayersBar(controller, this)
 
   val playerFields = new HBox {
-    alignment = Pos.Center; spacing = 150
+    alignment = Pos.Center;
+    spacing = 150
   }
   val playerHands = new HBox {
-    alignment = Pos.Center; spacing = 300
+    alignment = Pos.Center;
+    spacing = 300
+  }
+  val scoreBar = new HBox {
+    spacing = 50
+    alignment = Pos.Center
+    children = Seq(scoresBar)
+  }
+  val palyersBar = new HBox {
+    spacing = 50
+    alignment = Pos.TOP_RIGHT
+    children = Seq(playersBar)
   }
 
   private val mainLayout = new StackPane {
     children = Seq(
-      new BorderPane {
-        top = new BorderPane {
-          center = playersBar
-        }
-        center = new BorderPane {
-          left = buttonBar
-          center = new VBox {
-            spacing = 10; alignment = Pos.Center; children = Seq(gameStatusBar, playerFields)
+      new VBox {
+
+        children = Seq(
+          new BorderPane {
+            top = new BorderPane {
+              center = scoreBar // Scores centered
+              right = playersBar // PlayersBar aligned right
+            }
+          },
+          new BorderPane {
+            center = new HBox {
+              spacing = 5
+              alignment = Pos.Center
+              children = Seq(
+                //                gameStatusBar,   // 1. Game status info
+                navButtonBar,
+                playerFields, // 2. Defender's field
+                actionButtonBar // 3. Buttons
+              )
+            }
+            bottom = new BorderPane {
+              center = new HBox {
+                alignment = Pos.Center
+                children = Seq(playerHands) // 4. Player hands
+              }
+            }
           }
-        }
-        bottom = new BorderPane {
-          center = playerHands
-        }
+        )
       },
       overlay.getPane
     )
   }
+
 
   root = mainLayout
   private var pendingAITurn = false
@@ -176,11 +204,12 @@ class PlayingFieldScene(
   override def update(e: ObservableEvent): Unit = {
     e match {
       case _: StateEvent =>
-        // Safe: always on JavaFX thread
         Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
 
       case TurnEvent.NextTurnEvent =>
         pendingAITurn = true
+
+      case event: SceneSwitchEvent =>
 
       case gameAction: GameActionEvent =>
         handleGameAction(gameAction)
@@ -297,7 +326,7 @@ class PlayingFieldScene(
     GameAlertFactory.createAlert(s"${player.name} has no Double Attacks Left!", overlay, autoHide = true)
   }
   def handleAITurn(): Unit = {
-    println("!!!!!!!!!!!!!ai moves!")
+    if (overlay.getPane.isVisible) return
     val ctx = contextHolder.get
     ctx.state.getRoles.attacker match {
       case player: Player if player.isAI =>

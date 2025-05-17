@@ -6,6 +6,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
+import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages, PlayersHandBar, SelectableHandCardRenderer}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -43,19 +44,28 @@ class AttackerHandScene(
   private val circularSwapButton: Button = ActionButtonFactory.createReverseSwapButton(
     ReverseSwapButton(), "Reverse Swap", 180, 50, this, controller
   )
+  private val infoButton: Button = GameButtonFactory.createGameButton("Info", 180, 50) {
+    () => DialogFactory.showHandInfoDialog("Title", "Message", overlay)
+  }
 
-  private val buttonLayout = new HBox {
+  private val actionButtonLayout = new HBox {
     styleClass.add("button-layout")
     alignment = Pos.Center
     spacing = 15
-    children = Seq(regularSwapButton, circularSwapButton, backButton)
+    children = Seq(regularSwapButton, circularSwapButton)
+  }
+  private val navButtonLayout = new HBox {
+    styleClass.add("button-layout")
+    alignment = Pos.Center
+    spacing = 15
+    children = Seq(backButton, infoButton)
   }
 
   private val layout = new VBox {
     alignment = Pos.Center
-    spacing = 20
-    padding = Insets(20)
-    children = Seq(attackerHandBar, buttonLayout)
+    spacing = 30
+    padding = Insets(30)
+    children = Seq(navButtonLayout, attackerHandBar, actionButtonLayout)
   }
 
   root = new StackPane {
@@ -79,10 +89,12 @@ class AttackerHandScene(
   def updateDisplay(): Unit = {
     val gameState = contextHolder.get.state
     attackerHandBar.updateBar(gameState)
+    
   }
 
   override def handleStateEvent(e: StateEvent): Unit = e match
     case StateEvent.NoSwapsEvent(player) =>
+      println("now swaps!")
       overlay.show(createSwapAlert(player), true)
     case _ =>
 

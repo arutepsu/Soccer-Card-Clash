@@ -27,10 +27,11 @@ object HandCardFactory {
   def createSelectableHandCard(
                                 card: ICard,
                                 index: Int,
+                                flipped: Boolean,
                                 selectedIndex: => Option[Int],
                                 onSelected: Int => Unit
                               ): HandCard = {
-    val handCard = new HandCard(flipped = false, card = card)
+    val handCard = HandCard(flipped = flipped, card = card)
     handCard.effect = new DropShadow(10, Color.BLACK)
 
     handCard.onMouseEntered = _ =>

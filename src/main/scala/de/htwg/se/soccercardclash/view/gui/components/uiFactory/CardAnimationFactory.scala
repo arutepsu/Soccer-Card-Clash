@@ -30,46 +30,7 @@ import de.htwg.se.soccercardclash.view.gui.components.cardView.GameCard
 
 object CardAnimationFactory {
   private val boostEffectPath = "/images/data/cards/effects/boost.png"
-
-  /**
-   * Adds a boost effect overlay if the card has an additional value (>0).
-   */
-
-
-//  def applyBoostEffect(card: FieldCard): Unit = {
-//    if (card.card.additionalValue > 0) {
-//      val scaleFactor = 0.2f // Adjust scale factor for the boost effect
-//      val boostView = ImageUtils.importImageAsViewBoost(boostEffectPath, scaleFactor, 30, 50) // Max 100x100 size
-//
-//      // Positioning the boost effect relative to the card
-//      boostView.translateX = card.width.value * 0.4 // Move slightly to the right
-//      boostView.translateY = -card.height.value * 0.4 // Move above the card
-//
-//      Platform.runLater {
-//        card.parent.value match {
-//          case javafxParent: javafx.scene.layout.Pane =>
-//            val parentChildren = javafxParent.getChildren
-//
-//            if (parentChildren.contains(card)) {
-//              parentChildren.remove(card)
-//
-//              val cardStack = new StackPane {
-//                children = Seq(card, boostView) // ✅ Directly overlay the boost on the original card
-//                prefWidth = card.width.value
-//                prefHeight = card.height.value
-//              }
-//
-//              parentChildren.add(cardStack)
-//            } else {
-//              println("⚠️ [ERROR] Card was not found in parent container!")
-//            }
-//
-//          case _ =>
-//            println("⚠️ [ERROR] Card has no valid parent container!")
-//        }
-//      }
-//    }
-//  }
+  
   def applyBoostEffect(card: FieldCard): Unit = {
 //    if (card.card.additionalValue > 0) {
       val scaleFactor = 0.2f // Adjust scale factor for the boost effect

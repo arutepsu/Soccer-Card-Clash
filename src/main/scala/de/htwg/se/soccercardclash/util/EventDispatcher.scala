@@ -5,6 +5,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 object EventDispatcher {
 
   def dispatch(controller: IController, events: List[ObservableEvent]): Unit =
+    println(s"To be dispatched: ${events.mkString(", ")}")
     events.foreach(controller.notifyObservers)
 
   def dispatchSingle(controller: IController, event: ObservableEvent): Unit = event match {

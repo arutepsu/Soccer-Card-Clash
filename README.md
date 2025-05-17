@@ -12,3 +12,5 @@
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 
 Software Engineering game project in Konstanz University of Applied Sciences
+![Logo](images/data/logo.png)
+

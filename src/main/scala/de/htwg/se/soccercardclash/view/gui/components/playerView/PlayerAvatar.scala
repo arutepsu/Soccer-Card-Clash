@@ -19,7 +19,7 @@ class PlayerAvatar(
   val avatar: ImageView = Try {
     ImageUtils.importImageAsView(profilePicturePath, scaleAvatar)
   }.recover { case e: Exception =>
-    ImageUtils.importImageAsView("/images/data/players/player2.jpeg", scaleAvatar)
+    ImageUtils.importImageAsView("/images/data/players/player2.jpg", scaleAvatar)
   }.get
 
   alignment = Pos.TOP_CENTER

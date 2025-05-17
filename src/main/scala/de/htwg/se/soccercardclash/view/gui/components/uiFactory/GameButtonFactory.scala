@@ -30,17 +30,20 @@ object GameButtonFactory {
 
     button.style =
       s"""-fx-background-image: url('$imageUrl');
-         |-fx-background-size: 200% 200%;
+         |-fx-background-size: 100% 200%;
          |-fx-background-repeat: no-repeat;
-         |-fx-background-position: center;
-         |-fx-background-color: transparent; 
+         |-fx-background-position: center center;
+         |-fx-background-color: transparent;
          |
          |-fx-text-fill: white;
          |-fx-font-size: 16px;
          |-fx-font-weight: bold;
          |-fx-text-alignment: center;
+         |-fx-alignment: center;
+         |-fx-content-display: center;
          |-fx-padding: 0;
          |""".stripMargin
+
 
 
     val translateDownAnimation: TranslateTransition = ButtonAnimationFactory.createButtonAnimation(button, 1, 10)

@@ -42,9 +42,9 @@ class GoalScoredDialog(
   }
   
   private val avatarPath = if (player == game.getPlayer1) {
-    "/images/data/players/player1.jpeg"
+    "/images/data/players/player1.jpg"
   } else {
-    "/images/data/players/player2.jpeg"
+    "/images/data/players/player2.jpg"
   }
 
   private val avatarImage = new ImageView(new Image(avatarPath)) {

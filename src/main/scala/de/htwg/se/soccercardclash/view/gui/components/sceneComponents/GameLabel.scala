@@ -9,7 +9,4 @@ class GameLabel(initialText: String, scalingFactor: Double = 1.0)
   val inititalFontSize = 20
   text = initialText
   style = s"-fx-font-size: ${inititalFontSize * scalingFactor};"
-  styleClass.add(
-    "game-label"
-  )
 }

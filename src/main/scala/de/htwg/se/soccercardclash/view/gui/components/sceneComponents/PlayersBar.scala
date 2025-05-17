@@ -58,19 +58,21 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
 
     players.foreach { p =>
       var profilePicturePath = if (p eq player1) {
-        "/images/data/players/player1.jpeg"
+        "/images/data/players/player1.jpg"
       } else {
-        "/images/data/players/player2.jpeg"
+        "/images/data/players/player2.jpg"
       }
 
-      val dynamicScale = (scene.width.value / 1000).toFloat
+      val scale = 0.07f // or 0.08f if you want it even smaller
+
       val playerAvatar = PlayerAvatar(
         player = p,
         playerIndex = if (p eq player1) 0 else 1,
-        scaleAvatar = dynamicScale * 2,
-        scaleFont = (dynamicScale / 2).toFloat,
+        scaleAvatar = scale,
+        scaleFont = 0.9f, // optional font adjustment
         profilePicturePath = profilePicturePath,
       )
+
 
       val playerName = new GameLabel(p.name, scalingFactor = 0.5)
 
@@ -91,8 +93,8 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
 
       val playerAvatarBox = new VBox {
         styleClass.add("player-avatar-box")
-        spacing = 5
-        padding = Insets(3)
+        spacing = 2  // tighter layout inside the box
+        padding = Insets(1)
         children = Seq(playerAvatar, playerName, scoreLabel, actionsLabel)
       }
 

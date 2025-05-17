@@ -16,7 +16,7 @@ import scalafx.scene.text.*
 import scalafx.stage.{Modality, Stage}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.{UIAction, UIActionScheduler}
-import de.htwg.se.soccercardclash.view.gui.utils.{CardImageLoader, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{CardImageRegistry, Styles}
 import scalafx.animation.*
 import scalafx.util.Duration
 
@@ -92,6 +92,14 @@ object ComparisonDialogGenerator {
       override def run(): Unit = Platform.runLater(block)
     }, delayMillis, TimeUnit.MILLISECONDS)
   }
+  def createCardImageView(card: ICard, scale: Float): ImageView = {
+    new ImageView(CardImageRegistry.getImage(card.fileName)) {
+      fitWidth = 475 * scale
+      fitHeight = 275 * scale
+      preserveRatio = true
+      smooth = true
+    }
+  }
 
   private def showComparisonUI(
                                 player1: IPlayer,
@@ -126,8 +134,8 @@ object ComparisonDialogGenerator {
     val leftPlayer = player1
     val rightPlayer = player2
 
-    val player1AvatarPath = "/images/data/players/player1.jpeg"
-    val player2AvatarPath = "/images/data/players/player2.jpeg"
+    val player1AvatarPath = "/images/data/players/player1.jpg"
+    val player2AvatarPath = "/images/data/players/player2.jpg"
 
     val leftAvatarImagePath = player1AvatarPath
     val rightAvatarImagePath = player2AvatarPath
@@ -150,17 +158,18 @@ object ComparisonDialogGenerator {
 
 
 
-    val attackingCardImage1 = attackingCard1.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat))
-    val attackingCardImage2 = attackingCard2.map(card => CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat))
-    val defendingCardImage = CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.6f)
+    val attackingCardImage1 = attackingCard1.map(createCardImageView(_, (0.7 * scaleFactor).toFloat))
+    val attackingCardImage2 = attackingCard2.map(createCardImageView(_, (0.7 * scaleFactor).toFloat))
+    val defendingCardImage = createCardImageView(defendingCard, 0.6f)
 
     val extraAttackerCardImage = extraAttackerCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat)
+      createCardImageView(card, (0.7 * scaleFactor).toFloat)
     }
 
     val extraDefenderCardImage = extraDefenderCard.map { card =>
-      CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = (0.7 * scaleFactor).toFloat)
+      createCardImageView(card, (0.7 * scaleFactor).toFloat)
     }
+
 
 
     def createCardFrame(image: ImageView, card: Option[ICard], highlightGreen: Boolean, highlightRed: Boolean): StackPane = {
@@ -191,10 +200,9 @@ object ComparisonDialogGenerator {
 
       frame
     }
-
     val attackingCardFrame1 = attackingCard1.map { card =>
       createCardFrame(
-        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        createCardImageView(card, 0.7f),
         Some(card),
         highlightGreen = attackSuccess,
         highlightRed = false
@@ -203,7 +211,7 @@ object ComparisonDialogGenerator {
 
     val attackingCardFrame2 = attackingCard2.map { card =>
       createCardFrame(
-        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        createCardImageView(card, 0.7f),
         Some(card),
         highlightGreen = attackSuccess,
         highlightRed = false
@@ -212,7 +220,7 @@ object ComparisonDialogGenerator {
 
     val extraAttackingCardFrame = extraAttackerCard.map { card =>
       createCardFrame(
-        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        createCardImageView(card, 0.7f),
         Some(card),
         highlightGreen = attackSuccess,
         highlightRed = false
@@ -220,7 +228,7 @@ object ComparisonDialogGenerator {
     }
 
     val defendingCardFrame = createCardFrame(
-      CardImageLoader.loadCardImage(defendingCard, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+      createCardImageView(defendingCard, 0.7f),
       Some(defendingCard),
       highlightGreen = false,
       highlightRed = !attackSuccess
@@ -228,7 +236,7 @@ object ComparisonDialogGenerator {
 
     val extraDefendingCardFrame = extraDefenderCard.map { card =>
       createCardFrame(
-        CardImageLoader.loadCardImage(card, flipped = false, isLastCard = false, scaleFactor = 0.7f),
+        createCardImageView(card, 0.7f),
         Some(card),
         highlightGreen = false,
         highlightRed = !attackSuccess

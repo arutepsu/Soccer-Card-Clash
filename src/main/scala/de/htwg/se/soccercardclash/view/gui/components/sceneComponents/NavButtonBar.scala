@@ -14,24 +14,8 @@ import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, DoubleButton, SingleButton}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 
-case class ButtonBar(controller: IController, playingField: IGameState, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
 
-
-  val singleAttackButton: Button = ActionButtonFactory.createAttackButton(
-    SingleButton(),
-    "Attack",
-    150,
-    50,
-    playingFieldScene,
-    controller
-  )
-  val doubleAttackButton: Button = ActionButtonFactory.createDoubleAttackButton(
-    DoubleButton(),
-    "Double Attack",
-    150,
-    50,
-    playingFieldScene,
-    controller)
+case class NavButtonBar(controller: IController, playingField: IGameState, playingFieldScene: PlayingFieldScene, gameStatusBar: GameStatusBar) extends VBox {
 
   alignment = Pos.CENTER_LEFT
   spacing = 10
@@ -51,7 +35,7 @@ case class ButtonBar(controller: IController, playingField: IGameState, playingF
     width = 180,
     height = 50
   ) { () =>
-    val menuOverlay = new PauseDialog(controller, playingFieldScene, playingFieldScene.overlay) // ✅ Create menu overlay
+    val menuOverlay = new PauseDialog(controller, playingFieldScene, playingFieldScene.overlay)
     menuOverlay.show()
   }
 
@@ -66,8 +50,6 @@ case class ButtonBar(controller: IController, playingField: IGameState, playingF
 
   children = Seq(
     pause,
-    singleAttackButton,
-    doubleAttackButton,
     showDefendersButton,
     makeSwapButton)
 }

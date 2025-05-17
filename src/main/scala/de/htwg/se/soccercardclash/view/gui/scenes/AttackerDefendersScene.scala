@@ -5,6 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.*
+import de.htwg.se.soccercardclash.util.StateEvent.NoBoostsEvent
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{BoostBar, GameStatusBar, PlayersFieldBar, SelectableFieldCardRenderer}
@@ -79,7 +80,7 @@ class AttackerDefendersScene(
 
 
   root = new StackPane {
-    styleClass.add("attacker-defenders-scene")
+    style = "-fx-background-color: black;"
     children = Seq(backgroundView, layout, overlay.getPane)
   }
 
@@ -91,5 +92,5 @@ class AttackerDefendersScene(
   private def createBoostAlert(player: IPlayer): Node = {
     GameAlertFactory.createAlert(s"${player.name} has no Boosts Left!", overlay, autoHide = true)
   }
-}
 
+}

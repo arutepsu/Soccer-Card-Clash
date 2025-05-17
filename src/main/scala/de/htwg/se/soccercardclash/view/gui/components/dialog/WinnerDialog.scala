@@ -34,9 +34,9 @@ class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, c
   }
   
   val winnerAvatarPath = if (winner == contextHolder.get.state.getPlayer1) {
-    "/images/data/players/player1.jpeg"
+    "/images/data/players/player1.jpg"
   } else {
-    "/images/data/players/player2.jpeg"
+    "/images/data/players/player2.jpg"
   }
   
   val avatarImage = new ImageView(new Image(winnerAvatarPath)) {
