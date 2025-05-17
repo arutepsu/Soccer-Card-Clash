@@ -1,3 +1,4 @@
+![Logo](src/main/resources/images/data/logo.png)
 # Soccer-Card-Clash
 [![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main&cachebust=1)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c8252a455c9a41f881a18a2e319642b1)](https://app.codacy.com/gh/arutepsu/Soccer-Card-Clash/dashboard)
@@ -12,5 +13,5 @@
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 
 Software Engineering game project in Konstanz University of Applied Sciences
-![Logo](images/data/logo.png)
+
 
