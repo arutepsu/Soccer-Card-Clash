@@ -21,7 +21,7 @@ class InfoDialog(
                   autoHide: Boolean = false
                 ) {
 
-  private val backgroundImagePath = "/images/data/frames/pause (1).png"
+  private val backgroundImagePath = "/images/data/frames/overlay.png"
   private val imageUrl = Option(getClass.getResource(backgroundImagePath))
     .map(_.toExternalForm)
     .getOrElse {

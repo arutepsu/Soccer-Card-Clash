@@ -10,7 +10,7 @@ import de.htwg.se.soccercardclash.view.gui.components.uiFactory.{ButtonAnimation
 import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
 object GameButtonFactory {
 
-  private val defaultImagePath = "/images/data/buttons/button (1).png" 
+  private val defaultImagePath = "/images/data/buttons/button.png" 
   def createGameButton(
                         text: String,
                         width: Double,

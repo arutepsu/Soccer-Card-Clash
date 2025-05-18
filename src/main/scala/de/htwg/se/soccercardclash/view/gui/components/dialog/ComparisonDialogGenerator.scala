@@ -342,7 +342,7 @@ object ComparisonDialogGenerator {
     }
 
 
-    val backgroundImagePath = "/images/data/frames/pause (1).png"
+    val backgroundImagePath = "/images/data/frames/overlay.png"
     val imageUrl = Option(getClass.getResource(backgroundImagePath))
       .map(_.toExternalForm)
       .getOrElse {

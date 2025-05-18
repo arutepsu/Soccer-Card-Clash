@@ -18,7 +18,7 @@ import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactor
 
 class WinnerDialog(winner: IPlayer, overlay: Overlay, controller: IController, contextHolder: IGameContextHolder, autoHide: Boolean) {
 
-  val backgroundImagePath = "/images/data/frames/pause (1).png"
+  val backgroundImagePath = "/images/data/frames/overlay.png"
   val imageUrl = Option(getClass.getResource(backgroundImagePath))
     .map(_.toExternalForm)
     .getOrElse {

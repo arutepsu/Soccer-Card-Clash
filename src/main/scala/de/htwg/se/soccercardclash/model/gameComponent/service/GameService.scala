@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.playerComponent.strategy.{MetaAIStrategy, SimpleAIStrategy, SmartAIStrategy}
+import de.htwg.se.soccercardclash.model.playerComponent.strategyAI.{MetaAIStrategy, SimpleAIStrategy, SmartAIStrategy}
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}

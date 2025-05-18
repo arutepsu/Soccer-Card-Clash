@@ -21,13 +21,13 @@ class Gui(
   override def start(): Unit = {
     val primary = new PrimaryStage {
       title = "Soccer Card Clash"
-      icons.add(new Image(getClass.getResource("/images/data/logo.png").toExternalForm))
+      icons.add(new Image(getClass.getResource("/images/data/logo/logoCut.png").toExternalForm))
       width = 1000
       height = 600
     }
 
     val sceneInjector = parentInjector.createChildInjector(new SceneModule(primary))
-    
+
     CardImageRegistry.preloadAll()
     PlayerAvatarRegistry.preloadAvatars()
 

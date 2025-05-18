@@ -6,7 +6,7 @@ import play.api.libs.json.*
 import de.htwg.se.soccercardclash.model.playerComponent.base.PlayerType
 import scala.collection.mutable
 import scala.xml.*
-
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
 trait IPlayer extends Serializable {
   def name: String
 
@@ -19,11 +19,19 @@ trait IPlayer extends Serializable {
   def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer
 
   def getActionStates: Map[PlayerActionPolicies, PlayerActionState]
-  
+
   def playerType: PlayerType
-  
+
   def toXml: Elem =
-    <Player name={name}>
+    <Player name={name}
+            type={playerType match {
+              case Human   => "Human"
+              case AI(_)   => "AI"
+            }}
+            strategy={playerType match {
+              case AI(strategy) => strategy.getClass.getSimpleName.replace("$", "")
+              case _            => ""
+            }}>
       <ActionStates>
         {actionStates.map { case (policy, state) =>
         <ActionState policy={policy.toString}>
@@ -32,11 +40,27 @@ trait IPlayer extends Serializable {
       }}
       </ActionStates>
     </Player>
+  
+  def toJson: JsObject = {
+    val base = Json.obj(
+      "name" -> name,
+      "type" -> (playerType match {
+        case Human   => "Human"
+        case AI(_)   => "AI"
+      }),
+      "actionStates" -> actionStates.map {
+        case (policy, state) => policy.toString -> JsString(state.toString)
+      }
+    )
 
-  def toJson: JsObject = Json.obj(
-    "name" -> name,
-    "actionStates" -> actionStates.map { case (policy, state) => policy.toString -> state.toString }
-  )
+    playerType match {
+      case AI(strategy) =>
+        base + ("strategy" -> JsString(strategy.getClass.getSimpleName.replace("$", "")))
+      case _ =>
+        base
+    }
+  }
+
 
   def equals(obj: Any): Boolean
 

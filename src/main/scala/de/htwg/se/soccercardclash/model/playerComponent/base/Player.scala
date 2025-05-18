@@ -1,5 +1,5 @@
 package de.htwg.se.soccercardclash.model.playerComponent.base
-import de.htwg.se.soccercardclash.util.PlayerAction
+import de.htwg.se.soccercardclash.util.aIAction
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -40,7 +40,7 @@ case class Player(
     case AI(_) => true
     case _ => false
   }
-  def decideAction(ctx: GameContext): Option[PlayerAction] = playerType match {
+  def decideAction(ctx: GameContext): Option[aIAction] = playerType match {
     case AI(strategy) => Some(strategy.decideAction(ctx, this))
     case _ => None
   }

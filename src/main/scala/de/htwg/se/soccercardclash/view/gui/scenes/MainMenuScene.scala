@@ -27,7 +27,7 @@ class MainMenuScene(controller: IController) extends GameScene {
     spacing = 10
     alignment = Pos.Center
     children = Seq(
-      new ImageView(new Image(getClass.getResource("/images/data/logo.png").toExternalForm)) {
+      new ImageView(new Image(getClass.getResource("/images/data/logo/logo1k.png").toExternalForm)) {
         fitWidth = 300
         preserveRatio = true
         smooth = true

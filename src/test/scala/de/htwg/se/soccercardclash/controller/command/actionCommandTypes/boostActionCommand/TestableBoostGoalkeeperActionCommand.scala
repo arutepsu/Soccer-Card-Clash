@@ -39,7 +39,7 @@ private class TestableBoostGoalkeeperActionCommand(game: IGame, factory: IMement
   def testExecuteAction(): Boolean = executeAction()
 }
 
-class BoostGoalkeeperActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class BoostGoalkeeperAIActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private class TestableBoostGoalkeeperActionCommand(
                                                       game: IGame,

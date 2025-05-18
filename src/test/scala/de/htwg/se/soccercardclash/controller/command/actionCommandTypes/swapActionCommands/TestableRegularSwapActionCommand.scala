@@ -29,7 +29,7 @@ private class TestableRegularSwapActionCommand(cardIndex: Int, game: IGame, fact
   def testExecuteAction(): Boolean = executeAction()
 }
 
-class RegularSwapActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class RegularSwapAIActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "RegularSwapActionCommand" should {
 

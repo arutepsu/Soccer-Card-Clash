@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
-import de.htwg.se.soccercardclash.model.playerComponent.strategy.IPlayerStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.strategyAI.IAIStrategy
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
@@ -26,7 +26,7 @@ import scala.xml.*
 trait IGameInitializer {
   def createGameState(playerName1: String, playerName2: String): IGameState
   def initializeFromState(state: IGameState): IGameState
-  def createGameStateWithAI(humanName: String, strategy: IPlayerStrategy): IGameState
+  def createGameStateWithAI(humanName: String, strategy: IAIStrategy): IGameState
 }
 class GameInitializer @Inject()(
                                  playerFactory: IPlayerFactory,
@@ -94,7 +94,7 @@ class GameInitializer @Inject()(
     GameState(dataManager, roles, scores)
   }
 
-  override def createGameStateWithAI(humanName: String, strategy: IPlayerStrategy): IGameState = {
+  override def createGameStateWithAI(humanName: String, strategy: IAIStrategy): IGameState = {
     val aiName = "AI"
     val aiPlayer = playerFactory.createAIPlayer(aiName, strategy)
     val humanPlayer = playerFactory.createPlayer(humanName)

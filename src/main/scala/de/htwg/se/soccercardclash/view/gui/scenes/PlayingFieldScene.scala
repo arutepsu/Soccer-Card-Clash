@@ -333,7 +333,7 @@ class PlayingFieldScene(
         val strategy = player.playerType.asInstanceOf[AI].strategy
         val currentCtx = contextHolder.get
         val action = strategy.decideAction(currentCtx, player)
-        val (newCtx, _) = controller.executePlayerAction(action, currentCtx)
+        val (newCtx, _) = controller.executeAIAction(action, currentCtx)
         contextHolder.set(newCtx)
 
       case _ =>

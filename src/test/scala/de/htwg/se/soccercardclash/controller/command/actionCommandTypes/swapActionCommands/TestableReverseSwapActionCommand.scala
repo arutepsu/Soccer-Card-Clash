@@ -26,7 +26,7 @@ private class TestableReverseSwapActionCommand(game: IGame, factory: IMementoMan
   def testExecuteAction(): Boolean = executeAction()
 }
 
-class ReverseSwapActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class ReverseSwapAIActionCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "ReverseSwapActionCommand" should {
 

@@ -115,25 +115,25 @@ class Controller @Inject()(
 
   override def quit(): Unit = System.exit(0)
 
-  override def executePlayerAction(action: PlayerAction, ctx: GameContext): (GameContext, Boolean) = {
+  override def executeAIAction(action: aIAction, ctx: GameContext): (GameContext, Boolean) = {
     action match {
-      case SingleAttackAction(defenderIndex) =>
+      case SingleAttackAIAction(defenderIndex) =>
         singleAttack(defenderIndex, ctx)
-      case DoubleAttackAction(defenderIndex) =>
+      case DoubleAttackAIAction(defenderIndex) =>
         doubleAttack(defenderIndex, ctx)
-      case RegularSwapAction(index) =>
+      case RegularSwapAIAction(index) =>
         regularSwap(index, ctx)
-      case ReverseSwapAction =>
+      case ReverseSwapAIAction =>
         reverseSwap(ctx)
-      case BoostDefenderAction(defenderIndex) =>
+      case BoostDefenderAIAction(defenderIndex) =>
         boostDefender(defenderIndex, ctx)
-      case BoostGoalkeeperAction =>
+      case BoostGoalkeeperAIAction =>
         boostGoalkeeper(ctx)
-      case UndoAction =>
+      case UndoAIAction =>
         (undo(ctx), true)
-      case RedoAction =>
+      case RedoAIAction =>
         (redo(ctx), true)
-      case NoOpAction =>
+      case NoOpAIAction =>
         (ctx, true)
     }
   }

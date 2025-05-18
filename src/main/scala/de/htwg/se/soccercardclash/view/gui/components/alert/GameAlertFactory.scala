@@ -15,7 +15,7 @@ import scala.concurrent.Future
 
 object GameAlertFactory {
 
-  private val backgroundImage = new ImageView(new Image("/images/data/frames/pause (1).png")) {
+  private val backgroundImage = new ImageView(new Image("/images/data/frames/overlay.png")) {
     fitWidth = 800
     fitHeight = 600
     smooth = true

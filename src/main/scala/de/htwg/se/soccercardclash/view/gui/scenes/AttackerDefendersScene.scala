@@ -41,17 +41,9 @@ class AttackerDefendersScene(
     })
   }
   private val backgroundView = new Region {
-    val image = new Image(getClass.getResource("/images/data/images/field.jpg").toExternalForm)
-    background = new Background(Array(
-      new BackgroundImage(
-        image,
-        BackgroundRepeat.NO_REPEAT,
-        BackgroundRepeat.NO_REPEAT,
-        BackgroundPosition.CENTER,
-        new BackgroundSize(1.0, 1.0, true, true, true, false)
-      )
-    ))
+    style = "-fx-background-color: black;"
   }
+  
   private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 180, 50) {
     () =>
       GlobalObservable.notifyObservers(SceneSwitchEvent.PlayingField)

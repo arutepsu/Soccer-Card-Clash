@@ -17,7 +17,7 @@ import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController) {
   
-  private val backgroundImagePath = "/images/data/frames/pause (1).png"
+  private val backgroundImagePath = "/images/data/frames/overlay.png"
   private val backgroundImage = new ImageView(new Image(backgroundImagePath)) {
     fitWidth = 800
     fitHeight = 600
