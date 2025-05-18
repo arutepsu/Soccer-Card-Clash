@@ -68,7 +68,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
       val updatedField = state
         .withDataManager(finalManager)
-        .withRolesManager(updatedRoles)
+        .withRoles(updatedRoles)
         .withScores(updatedScores)
 
       (true, updatedField, comparisonEvent :: additionalEvents)

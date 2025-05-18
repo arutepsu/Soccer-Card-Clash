@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -14,7 +15,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
-
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 class CreatePlayerScene @Inject()(
                                    controller: IController,
                                    contextHolder: IGameContextHolder
@@ -87,6 +88,15 @@ class CreatePlayerScene @Inject()(
     }
 
     controller.createGame(playerNames.head, playerNames(1))
+
+    val players = Seq(
+      contextHolder.get.state.getRoles.attacker,
+      contextHolder.get.state.getRoles.defender
+    )
+
+    PlayerAvatarRegistry.assignAvatarsInOrder(players)
+
+    EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)
   }
 
   private def getPlayerNames(): Seq[String] =

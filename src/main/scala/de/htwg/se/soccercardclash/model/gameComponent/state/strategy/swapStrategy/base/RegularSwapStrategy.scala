@@ -43,7 +43,7 @@ class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager)
 
         val updatedField = playingField
           .withDataManager(updatedDataManager)
-          .withRolesManager(updatedRoles)
+          .withRoles(updatedRoles)
 
         (true, updatedField, List(GameActionEvent.RegularSwap))
 

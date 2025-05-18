@@ -5,7 +5,7 @@ import scalafx.geometry.{Insets, Pos}
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.scene.control.Label
 import scalafx.scene.control.Label
@@ -57,22 +57,7 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
     val players = List(player1, player2)
 
     players.foreach { p =>
-      var profilePicturePath = if (p eq player1) {
-        "/images/data/players/player1.jpg"
-      } else {
-        "/images/data/players/player2.jpg"
-      }
-
-      val scale = 0.07f // or 0.08f if you want it even smaller
-
-      val playerAvatar = PlayerAvatar(
-        player = p,
-        playerIndex = if (p eq player1) 0 else 1,
-        scaleAvatar = scale,
-        scaleFont = 0.9f, // optional font adjustment
-        profilePicturePath = profilePicturePath,
-      )
-
+      val avatarView = PlayerAvatarRegistry.getAvatarView(p, scale = 0.07f)
 
       val playerName = new GameLabel(p.name, scalingFactor = 0.5)
 
@@ -93,9 +78,10 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
 
       val playerAvatarBox = new VBox {
         styleClass.add("player-avatar-box")
-        spacing = 2  // tighter layout inside the box
+        spacing = 2
         padding = Insets(1)
-        children = Seq(playerAvatar, playerName, scoreLabel, actionsLabel)
+        alignment = Pos.TOP_CENTER
+        children = Seq(avatarView, playerName, scoreLabel, actionsLabel)
       }
 
       children.add(playerAvatarBox)

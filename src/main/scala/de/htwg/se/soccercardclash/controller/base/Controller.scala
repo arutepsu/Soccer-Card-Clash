@@ -72,13 +72,11 @@ class Controller @Inject()(
   override def createGame(player1: String, player2: String): Unit = {
     val ctx = GameContext(gameService.createNewGame(player1, player2), new UndoManager)
     contextHolder.set(ctx)
-    EventDispatcher.dispatchSingle(this, SceneSwitchEvent.PlayingField)
   }
 
   override def createGameWithAI(humanPlayerName: String): Unit = {
     val ctx = GameContext(gameService.createNewGameWithAI(humanPlayerName), new UndoManager)
     contextHolder.set(ctx)
-    EventDispatcher.dispatchSingle(this, SceneSwitchEvent.PlayingField)
     EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
   }
 

@@ -36,7 +36,7 @@ case class GameState(
   override def withDataManager(newDataManager: IDataManager): IGameState =
     copy(dataManager = newDataManager)
 
-  override def withRolesManager(newRoles: IRoles): IGameState =
+  override def withRoles(newRoles: IRoles): IGameState =
     copy(roles = newRoles)
 
   override def withScores(newScores: IScores): IGameState =

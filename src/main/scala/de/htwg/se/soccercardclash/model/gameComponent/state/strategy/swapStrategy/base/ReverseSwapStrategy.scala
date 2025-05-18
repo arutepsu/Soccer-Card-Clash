@@ -37,7 +37,7 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
       val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
       val updatedRoles = Roles(updatedAttacker, defender)
 
-      val updatedField2 = updatedField1.withRolesManager(updatedRoles)
+      val updatedField2 = updatedField1.withRoles(updatedRoles)
 
       (true, updatedField2, List(GameActionEvent.ReverseSwap))
     } else {

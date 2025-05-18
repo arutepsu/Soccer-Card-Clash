@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.dialog
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.scene.control.Button

@@ -10,5 +10,6 @@ object Styles {
   val attackerHandSceneCss: String = getClass.getResource("/scenes/AttackerHandScene.css").toExternalForm
   val pauseMenuCss: String = getClass.getResource("/components/menu.css").toExternalForm
   val comparisonCSS: String = getClass.getResource("/components/Comparison.css").toExternalForm
+  val loadGameCss: String = getClass.getResource("/scenes/LoadGameScene.css").toExternalForm
 
 }

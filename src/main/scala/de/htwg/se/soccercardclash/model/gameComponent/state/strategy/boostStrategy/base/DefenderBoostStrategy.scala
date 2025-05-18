@@ -37,7 +37,7 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
 
     val updatedField = playingField
       .withDataManager(updatedDataManager)
-      .withRolesManager(updatedRoles)
+      .withRoles(updatedRoles)
 
     (true, updatedField, List(GameActionEvent.BoostDefender))
   }

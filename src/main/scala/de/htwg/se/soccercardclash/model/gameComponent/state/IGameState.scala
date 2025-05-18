@@ -21,7 +21,7 @@ trait IGameState extends Observable with Serializable {
 
   def withDataManager(newDataManager: IDataManager): IGameState
 
-  def withRolesManager(newRoles: IRoles): IGameState
+  def withRoles(newRoles: IRoles): IGameState
 
   def withScores(newScores: IScores): IGameState
 

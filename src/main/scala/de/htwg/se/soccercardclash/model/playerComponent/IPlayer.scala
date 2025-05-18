@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.playerComponent
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
 import play.api.libs.json.*
-
+import de.htwg.se.soccercardclash.model.playerComponent.base.PlayerType
 import scala.collection.mutable
 import scala.xml.*
 
@@ -19,7 +19,9 @@ trait IPlayer extends Serializable {
   def setActionStates(newActionStates: Map[PlayerActionPolicies, PlayerActionState]): IPlayer
 
   def getActionStates: Map[PlayerActionPolicies, PlayerActionState]
-
+  
+  def playerType: PlayerType
+  
   def toXml: Elem =
     <Player name={name}>
       <ActionStates>

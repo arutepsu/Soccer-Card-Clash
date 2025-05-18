@@ -7,6 +7,7 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
@@ -21,6 +22,7 @@ class LoadGameScene(controller: IController) extends GameScene {
 
   private val gamesFolder = new File("games")
   private val savedGames = ObservableBuffer[String]()
+  this.getStylesheets.add(Styles.loadGameCss)
 
   private def loadSavedGames(): Unit = {
     savedGames.clear()
@@ -37,6 +39,7 @@ class LoadGameScene(controller: IController) extends GameScene {
   private val overlay = new Overlay(this)
 
   private val listView = new ListView(savedGames) {
+    styleClass += "custom-list-view"
     onMouseClicked = _ => {
       val selectedGame = selectionModel().getSelectedItem
       if (selectedGame != null) {
@@ -61,6 +64,7 @@ class LoadGameScene(controller: IController) extends GameScene {
 
   this.root = new StackPane {
     children = Seq(rootVBox, overlay.getPane)
+    styleClass += "root"
   }
 
   overlay.getPane.prefWidth = 800

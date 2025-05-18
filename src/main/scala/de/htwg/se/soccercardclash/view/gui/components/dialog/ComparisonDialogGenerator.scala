@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import scalafx.animation.FadeTransition
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.geometry.Pos
@@ -14,7 +15,6 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
 import scalafx.scene.text.*
 import scalafx.stage.{Modality, Stage}
-import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatar
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.{UIAction, UIActionScheduler}
 import de.htwg.se.soccercardclash.view.gui.utils.{CardImageRegistry, Styles}
 import scalafx.animation.*
@@ -140,23 +140,15 @@ object ComparisonDialogGenerator {
     val leftAvatarImagePath = player1AvatarPath
     val rightAvatarImagePath = player2AvatarPath
 
-
-
-    val leftAvatar = new PlayerAvatar(
-      leftPlayer, 1,
-      scaleAvatar = (0.1 * scaleFactor).toFloat,
-      scaleFont = (0.3 * scaleFactor).toFloat,
-      profilePicturePath = leftAvatarImagePath
+    val leftAvatar: ImageView = PlayerAvatarRegistry.getAvatarView(
+      player = leftPlayer,
+      scale = (0.1 * scaleFactor).toFloat
     )
 
-    val rightAvatar = new PlayerAvatar(
-      rightPlayer, 2,
-      scaleAvatar = (0.1 * scaleFactor).toFloat,
-      scaleFont = (0.3 * scaleFactor).toFloat,
-      profilePicturePath = rightAvatarImagePath
+    val rightAvatar: ImageView = PlayerAvatarRegistry.getAvatarView(
+      player = rightPlayer,
+      scale = (0.1 * scaleFactor).toFloat
     )
-
-
 
     val attackingCardImage1 = attackingCard1.map(createCardImageView(_, (0.7 * scaleFactor).toFloat))
     val attackingCardImage2 = attackingCard2.map(createCardImageView(_, (0.7 * scaleFactor).toFloat))
@@ -306,15 +298,19 @@ object ComparisonDialogGenerator {
     }
 
 
-    val leftCardsBox = new HBox(10) {
+    val leftSpacing = if (leftCardFrames.size >= 2) 5 else 10
+    val rightSpacing = if (rightCardFrames.size >= 2) 5 else 10
+
+    val leftCardsBox = new HBox(leftSpacing) {
       alignment = scalafx.geometry.Pos.Center
       children ++= leftCardFrames.map(_.delegate)
     }
 
-    val rightCardsBox = new HBox(10) {
+    val rightCardsBox = new HBox(rightSpacing) {
       alignment = scalafx.geometry.Pos.Center
       children ++= rightCardFrames.map(_.delegate)
     }
+
 
 
     val tiebreakerCardsBox = new HBox(10) {

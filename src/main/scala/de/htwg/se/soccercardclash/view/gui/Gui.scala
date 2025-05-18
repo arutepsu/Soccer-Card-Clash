@@ -3,13 +3,14 @@ package de.htwg.se.soccercardclash.view.gui
 import com.google.inject.Injector
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.module.SceneModule
+import de.htwg.se.soccercardclash.util.*
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
+import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
+import de.htwg.se.soccercardclash.view.gui.utils.CardImageRegistry
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image
 import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.util.*
-import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.CardImageRegistry
 
 class Gui(
            controller: IController,
@@ -26,7 +27,10 @@ class Gui(
     }
 
     val sceneInjector = parentInjector.createChildInjector(new SceneModule(primary))
+    
     CardImageRegistry.preloadAll()
+    PlayerAvatarRegistry.preloadAvatars()
+
     val sceneManager = sceneInjector.getInstance(classOf[SceneManager])
     GlobalObservable.add(sceneManager)
     Platform.runLater {

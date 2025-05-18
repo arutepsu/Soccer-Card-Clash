@@ -34,7 +34,7 @@ class GoalkeeperBoostStrategy(
 
         val updatedField = playingField
           .withDataManager(updatedDataManager)
-          .withRolesManager(updatedRoles)
+          .withRoles(updatedRoles)
 
         (true, updatedField, List(GameActionEvent.BoostGoalkeeper))
 

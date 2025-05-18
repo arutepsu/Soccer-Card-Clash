@@ -30,11 +30,12 @@ class PlayersHandBar(
                     ) extends HBox {
   
   alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
-  
-  spacing = Math.max(
-    -30 + (playingField.getDataManager.getPlayerHand(player).getHandSize * -2),
-    -50
-  )
+
+  val handSize = playingField.getDataManager.getPlayerHand(player).getHandSize
+  spacing = -Math.min(80, handSize * 55) // more cards → higher negative spacing
+
+
+
   private var selectedCard: Option[HandCard] = None
 
   def selectedCardIndex: Option[Int] = renderer match {
@@ -82,14 +83,16 @@ class PlayersHandBar(
       Platform.runLater(() => {
         children.set(1, newHandRow)
         currentHandRow = newHandRow
-        
+        val handSize = newGameState.getDataManager.getPlayerHand(player).getHandSize
+        spacing = -Math.min(80, handSize * 15)
+
         newHandRow.getChildren.forEach { node =>
           val fadeTransition = new FadeTransition(Duration(500), node)
           fadeTransition.fromValue = 0.0
           fadeTransition.toValue = 1.0
           fadeTransition.play()
         }
-        
+
         selectedCard = CardAnimationFactory.highlightLastHandCard(player, newGameState)
       })
     }
@@ -121,9 +124,10 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
       )
     }
 
+    val handSize = hand.toList.size
     new HBox {
       alignment = Pos.CENTER
-      spacing = -25
+      spacing = -Math.min(40, handSize * 6) // ✅ cleaner and increased spacing
       children = handCards
     }
   }
@@ -137,7 +141,7 @@ object DefaultHandCardRenderer extends HandCardRenderer {
     val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
       val isLastCard = index == hand.toList.size - 1
       val handCard = HandCard(
-        flipped = !isLastCard, // ✅ Flip all except the last one
+        flipped = !isLastCard,
         card = card,
         isLastCard = isLastCard
       )
@@ -159,9 +163,10 @@ object DefaultHandCardRenderer extends HandCardRenderer {
       handCard
     }
 
+    val handSize = hand.toList.size
     new HBox {
       alignment = Pos.CENTER
-      spacing = -25
+      spacing = -Math.min(40, handSize * 6) // ✅ cleaner and increased spacing
       children = handCards
     }
   }

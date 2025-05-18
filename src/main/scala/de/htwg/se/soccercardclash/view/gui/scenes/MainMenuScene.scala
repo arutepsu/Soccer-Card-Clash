@@ -14,21 +14,30 @@ import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.Scene
 import scalafx.scene.control.ListView
-import scalafx.scene.layout.{StackPane, VBox}
+import scalafx.scene.layout.{BorderPane, HBox, StackPane, VBox}
 import scalafx.scene.text.Font
 import scalafx.scene.control.Label
+import scalafx.scene.image.{Image, ImageView}
 class MainMenuScene(controller: IController) extends GameScene {
 
   this.getStylesheets.add(Styles.mainMenuCss)
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-SemiBold.ttf"), 10)
   val overlay = new Overlay(this)
+  private val logoBox = new VBox {
+    spacing = 10
+    alignment = Pos.Center
+    children = Seq(
+      new ImageView(new Image(getClass.getResource("/images/data/logo.png").toExternalForm)) {
+        fitWidth = 300
+        preserveRatio = true
+        smooth = true
+      }
+    )
+  }
   private val rootBox = new VBox {
     spacing = 10
     alignment = Pos.Center
     children = Seq(
-      new Label("Soccer Card Clash") {
-        styleClass += "title-label"
-      },
       GameButtonFactory.createGameButton("Singleplayer", 200, 200) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
       },
@@ -48,6 +57,19 @@ class MainMenuScene(controller: IController) extends GameScene {
     )
   }
   this.root = new StackPane {
-    children = Seq(rootBox, overlay.getPane)
+    children = Seq(
+      new VBox {
+        spacing = 30
+        alignment = Pos.Center
+        children = Seq(
+          logoBox,
+          rootBox
+        )
+      },
+
+      overlay.getPane
+    )
+    styleClass += "logo-image"
   }
+
 }
