@@ -239,15 +239,13 @@ object CardAnimationFactory {
     selectedIndex match {
       case Some(_) =>
         // Deselect goalkeeper
-        println(s"❌ Deselected goalkeeper: ${goalkeeperCard.card}")
         goalkeeperCard.effect = null
         None
 
       case None =>
-        // Select goalkeeper
-        println(s"🛡️ Selected goalkeeper: ${goalkeeperCard.card}")
-        goalkeeperCard.effect = new DropShadow(20, Color.GOLD) // Apply gold shadow
-        Some(0) // Since only one goalkeeper exists, we use index 0
+
+        goalkeeperCard.effect = new DropShadow(20, Color.GOLD)
+        Some(0)
     }
   }
 

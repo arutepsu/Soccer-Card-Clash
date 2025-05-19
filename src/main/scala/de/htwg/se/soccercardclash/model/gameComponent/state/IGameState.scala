@@ -40,10 +40,10 @@ trait IGameState extends Observable with Serializable {
         {getDataManager.getPlayerHand(getPlayer2).toList.map(_.toXml)}
       </player2Hand>
       <player1Field>
-        {getDataManager.getPlayerDefenders(getPlayer1).map(_.toXml)}
+        {getDataManager.getPlayerDefenders(getPlayer1).flatMap(_.map(_.toXml))}
       </player1Field>
       <player2Field>
-        {getDataManager.getPlayerDefenders(getPlayer2).map(_.toXml)}
+        {getDataManager.getPlayerDefenders(getPlayer2).flatMap(_.map(_.toXml))}
       </player2Field>
       <player1Goalkeeper>
         {getDataManager.getPlayerGoalkeeper(getPlayer1).map(_.toXml).getOrElse(<empty/>)}
@@ -66,8 +66,14 @@ trait IGameState extends Observable with Serializable {
     "defender" -> getRoles.defender.toJson,
     "player1Hand" -> getDataManager.getPlayerHand(getPlayer1).toList.map(_.toJson),
     "player2Hand" -> getDataManager.getPlayerHand(getPlayer2).toList.map(_.toJson),
-    "player1Field" -> getDataManager.getPlayerDefenders(getPlayer1).map(_.toJson),
-    "player2Field" -> getDataManager.getPlayerDefenders(getPlayer2).map(_.toJson),
+    "player1Field" -> getDataManager.getPlayerDefenders(getPlayer1).map {
+      case Some(card) => card.toJson
+      case None => JsNull
+    },
+    "player2Field" -> getDataManager.getPlayerDefenders(getPlayer2).map {
+      case Some(card) => card.toJson
+      case None => JsNull
+    },
     "player1Goalkeeper" -> getDataManager.getPlayerGoalkeeper(getPlayer1).map(_.toJson).getOrElse(Json.obj()),
     "player2Goalkeeper" -> getDataManager.getPlayerGoalkeeper(getPlayer2).map(_.toJson).getOrElse(Json.obj()),
     "player1Score" -> getScores.getScorePlayer1,

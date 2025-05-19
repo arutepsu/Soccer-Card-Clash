@@ -37,19 +37,6 @@ class PlayingFieldScene(
   val comparisonHandler = new ComparisonDialogHandler(controller, contextHolder, overlay)
   val gameStatusBar = new GameStatusBar
 
-  val player1HandBar = new PlayersHandBar(
-    contextHolder.get.state.getPlayer1,
-    contextHolder.get.state,
-    isLeftSide = true,
-    renderer = DefaultHandCardRenderer
-  )
-
-  val player2HandBar = new PlayersHandBar(
-    contextHolder.get.state.getPlayer2,
-    contextHolder.get.state,
-    isLeftSide = false,
-    renderer = DefaultHandCardRenderer
-  )
   val renderer = new SelectableFieldCardRenderer(() => contextHolder.get.state)
 
   var currentDefenderFieldBar: Option[PlayersFieldBar] = None
@@ -60,36 +47,23 @@ class PlayingFieldScene(
     styleClass += "player-score"
   }
 
-  val player1ScoreBox = new VBox {
+  private def createScoreBox(player: IPlayer, scoreText: Label): VBox = new VBox {
     styleClass += "score-box"
     children = Seq(
       new Label("⚽") {
         styleClass += "score-icon"
       },
-      new Label(contextHolder.get.state.getPlayer1.name) {
+      new Label(player.name) {
         styleClass += "player-name"
       },
-      player1ScoreText
+      scoreText
     )
   }
 
-  val player2ScoreBox = new VBox {
-    styleClass += "score-box"
-    children = Seq(
-      new Label("⚽") {
-        styleClass += "score-icon"
-      },
-      new Label(contextHolder.get.state.getPlayer2.name) {
-        styleClass += "player-name"
-      },
-      player2ScoreText
-    )
-  }
-
-  val scoresBar = new HBox {
+  private val scoresBar = new HBox {
     spacing = 50
     alignment = Pos.Center
-    children = Seq(player1ScoreBox, player2ScoreBox)
+    children = Seq(createScoreBox(contextHolder.get.state.getPlayer1, player1ScoreText), createScoreBox(contextHolder.get.state.getPlayer2, player2ScoreText))
     styleClass += "scores-bar"
   }
 
@@ -105,43 +79,42 @@ class PlayingFieldScene(
     alignment = Pos.Center;
     spacing = 300
   }
-  val scoreBar = new HBox {
-    spacing = 50
-    alignment = Pos.Center
-    children = Seq(scoresBar)
-  }
+
   val palyersBar = new HBox {
     spacing = 50
     alignment = Pos.TOP_RIGHT
     children = Seq(playersBar)
   }
 
+
   private val mainLayout = new StackPane {
     children = Seq(
       new VBox {
-
         children = Seq(
           new BorderPane {
             top = new BorderPane {
-              center = scoreBar // Scores centered
-              right = playersBar // PlayersBar aligned right
+              center = new HBox {
+                spacing = 50
+                alignment = Pos.Center
+                children = Seq(scoresBar)
+              }
+              right = new HBox {
+                spacing = 50
+                alignment = Pos.TOP_RIGHT
+                children = Seq(playersBar)
+              }
             }
           },
           new BorderPane {
             center = new HBox {
               spacing = 5
               alignment = Pos.Center
-              children = Seq(
-                //                gameStatusBar,   // 1. Game status info
-                navButtonBar,
-                playerFields, // 2. Defender's field
-                actionButtonBar // 3. Buttons
-              )
+              children = Seq(navButtonBar, playerFields, actionButtonBar)
             }
             bottom = new BorderPane {
               center = new HBox {
                 alignment = Pos.Center
-                children = Seq(playerHands) // 4. Player hands
+                children = Seq(playerHands)
               }
             }
           }
@@ -149,16 +122,15 @@ class PlayingFieldScene(
       },
       overlay.getPane
     )
+    styleClass += "root"
   }
-
-
   root = mainLayout
   private var pendingAITurn = false
   controller.add(this)
   updateDisplay()
 
 
-  private val scheduler = UIActionScheduler() // using given ExecutionContext
+  private val scheduler = UIActionScheduler()
 
   override def handleGameAction(e: GameActionEvent): Unit = {
     val overlayAction = comparisonHandler.createOverlayAction(e)
@@ -293,14 +265,16 @@ class PlayingFieldScene(
   }
 
   private def updateHands(ctx: PlayingFieldViewContext): Unit = {
-    val newAttackerHandBar =
+    val newHandBar =
       new PlayersHandBar(
         ctx.attacker,
-        ctx.state, isLeftSide = ctx.attacker == ctx.player1,
-        renderer = DefaultHandCardRenderer)
-    playerHands.children.clear()
-    playerHands.children.add(newAttackerHandBar)
-    newAttackerHandBar.updateBar(ctx.state)
+        ctx.state,
+        renderer = DefaultHandCardRenderer
+      )
+    newHandBar.alignmentInParent = Pos.Center
+
+    playerHands.children.setAll(newHandBar)
+    newHandBar.updateBar(ctx.state)
   }
 
 

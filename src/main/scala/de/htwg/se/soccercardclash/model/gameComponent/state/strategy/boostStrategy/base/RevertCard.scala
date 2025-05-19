@@ -8,23 +8,30 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActio
 import de.htwg.se.soccercardclash.util.{GameActionEvent, StateEvent}
 
 class RevertCard {
-  def revertCard(playingField: IGameState, card: ICard): ICard = {
+  def revertCard(playingField: IGameState, card: Option[ICard]): Option[ICard] = {
     val roles = playingField.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
 
     var dataManager = playingField.getDataManager
 
-    val revertedCard = card match {
+    val revertedCard: Option[ICard] = card.map {
       case boosted: BoostedCard => boosted.revertBoost()
-      case regular => regular
+      case other                => other
     }
 
     val attackerField = dataManager.getPlayerDefenders(attacker)
     val defenderField = dataManager.getPlayerDefenders(defender)
 
-    val updatedAttackerField = attackerField.map(c => if (c == card) revertedCard else c)
-    val updatedDefenderField = defenderField.map(c => if (c == card) revertedCard else c)
+    val updatedAttackerField = attackerField.map {
+      case c if c == card => revertedCard
+      case other          => other
+    }
+
+    val updatedDefenderField = defenderField.map {
+      case c if c == card => revertedCard
+      case other          => other
+    }
 
     dataManager = dataManager
       .setPlayerDefenders(attacker, updatedAttackerField)

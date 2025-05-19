@@ -15,10 +15,12 @@ trait ITuiCommandFactory {
   def createRegularSwapTuiCommand(): ITuiCommand
   def createReverseSwapTuiCommand(): ITuiCommand
   def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand
+  def createStartGameWithAITuiCommand(player1: String): ITuiCommand
   def createSaveGameTuiCommand(): ITuiCommand
   def createLoadGameTuiCommand(fileName: String): ITuiCommand
   def createLoadSelectedGameTuiCommand(index: Int): ITuiCommand
   def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand
+  def createCreatePlayersNameWithAITuiCommand(): CreatePlayersNameWithAITuiCommand
   def createShowGamesTuiCommand() :ITuiCommand
   def createUndoTuiCommand(): ITuiCommand
   def createRedoTuiCommand(): ITuiCommand
@@ -35,10 +37,15 @@ class TuiCommandFactory(controller: IController, contextHolder: IGameContextHold
   override def createRegularSwapTuiCommand(): ITuiCommand = new RegularSwapTuiCommand(controller, contextHolder)
   override def createReverseSwapTuiCommand(): ITuiCommand = new ReverseSwapTuiCommand(controller, contextHolder)
   override def createCreatePlayersNameTuiCommand(): CreatePlayersNameTuiCommand =
-    new CreatePlayersNameTuiCommand(controller)
+    new CreatePlayersNameTuiCommand(controller, contextHolder)
+  override def createCreatePlayersNameWithAITuiCommand(): CreatePlayersNameWithAITuiCommand =
+    new CreatePlayersNameWithAITuiCommand(controller, contextHolder)
 
   override def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand =
-    new StartGameTuiCommand(controller, player1, player2)
+    new StartGameTuiCommand(controller,contextHolder, player1, player2)
+
+  override def createStartGameWithAITuiCommand(player1: String): ITuiCommand =
+    new StartGameTuiCommandWithAI(controller, contextHolder, player1)
 
   override def createSaveGameTuiCommand(): ITuiCommand =
     new SaveGameTuiCommand(controller, contextHolder)

@@ -8,6 +8,7 @@ object Styles {
   val playersFieldBarCss: String = getClass.getResource("/components/PlayersFieldBar.css").toExternalForm
   val playersBarCss: String = getClass.getResource("/components/PlayersBar.css").toExternalForm
   val attackerHandSceneCss: String = getClass.getResource("/scenes/AttackerHandScene.css").toExternalForm
+  val attackerFieldSceneCss: String = getClass.getResource("/scenes/AttackerFieldScene.css").toExternalForm
   val pauseMenuCss: String = getClass.getResource("/components/menu.css").toExternalForm
   val comparisonCSS: String = getClass.getResource("/components/Comparison.css").toExternalForm
   val loadGameCss: String = getClass.getResource("/scenes/LoadGameScene.css").toExternalForm

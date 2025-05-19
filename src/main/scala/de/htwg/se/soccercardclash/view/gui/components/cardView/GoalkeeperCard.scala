@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.view.gui.components.cardView.GameCard
 
 case class GoalkeeperCard(
-                           card: ICard,
+                           card: Option[ICard],
                            flipped: Boolean = true,
                            isSelectable: Boolean = false,
                            scaleFactor: Float = mainCardScaleFactor

@@ -17,16 +17,21 @@ abstract class GameCard(
                          flipped: Boolean = true,
                          isLastCard: Boolean = false,
                          isSelectable: Boolean = false,
-                         card: ICard,
+                         card: Option[ICard],
                          scaleFactor: Float = mainCardScaleFactor
                        ) extends HBox {
 
   var isSelected: Boolean = false
 
   val image: Image = {
-    val fileName = if (flipped && !isLastCard) "card_black.png" else card.fileName
+    val fileName = if (flipped && !isLastCard)
+      "images/data/cards/defeated.png"
+    else
+      card.map(_.fileName).getOrElse("king_of_clubs2.png")
+
     CardImageRegistry.getImage(fileName)
   }
+
 
   val cardImage = new ImageView(image) {
     fitWidth = 475 * scaleFactor

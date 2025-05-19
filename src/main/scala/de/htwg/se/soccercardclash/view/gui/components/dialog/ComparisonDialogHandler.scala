@@ -143,12 +143,12 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
   }
   def handleComparisonEvent(e: ObservableEvent): Unit = {
     e match {
-      case StateEvent.ComparedCardsEvent(attackingCard, defendingCard) =>
+      case StateEvent.ComparedCardsEvent(Some(attackingCard), Some(defendingCard)) =>
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
         println(f"${lastAttackingCard} and ${lastDefendingCard}")
 
-      case StateEvent.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defendingCard) =>
+      case StateEvent.DoubleComparedCardsEvent(Some(attackingCard1), Some(attackingCard2), Some(defendingCard)) =>
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)
@@ -156,13 +156,13 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
       case StateEvent.AttackResultEvent(attacker, defender, attackSuccess) =>
         lastAttackSuccess = Some(attackSuccess)
         println(f"${lastAttackSuccess}")
-      case StateEvent.TieComparisonEvent(attackingCard, defendingCard, extraAttackerCard, extraDefenderCard) =>
+      case StateEvent.TieComparisonEvent(Some(attackingCard), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
         lastAttackingCard = Some(attackingCard)
         lastDefendingCard = Some(defendingCard)
         lastExtraAttackerCard = Some(extraAttackerCard)
         lastExtraDefenderCard = Some(extraDefenderCard)
 
-      case StateEvent.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defendingCard, extraAttackerCard, extraDefenderCard) =>
+      case StateEvent.DoubleTieComparisonEvent(Some(attackingCard1), Some(attackingCard2), Some(defendingCard), Some(extraAttackerCard), Some(extraDefenderCard)) =>
         lastAttackingCard1 = Some(attackingCard1)
         lastAttackingCard2 = Some(attackingCard2)
         lastDefendingCard = Some(defendingCard)

@@ -84,7 +84,6 @@ class Controller @Inject()(
     gameService.loadGame(fileName).toOption match {
       case Some(state) =>
         contextHolder.set(GameContext(state, new UndoManager))
-        EventDispatcher.dispatchSingle(this, SceneSwitchEvent.PlayingField)
         true
       case None =>
         false

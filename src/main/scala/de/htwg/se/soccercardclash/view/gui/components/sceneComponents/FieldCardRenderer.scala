@@ -5,16 +5,16 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.Includes.*
 import scalafx.animation.*
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Label
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.input.MouseEvent
-import scalafx.scene.layout.{HBox, VBox}
+import scalafx.scene.layout.{GridPane, HBox, Region, VBox}
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
 import de.htwg.se.soccercardclash.view.gui.components.cardView.{FieldCardFactory, HandCard}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.{CardImageRegistry, Styles}
 
 trait FieldCardRenderer {
   def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox
@@ -88,9 +88,15 @@ object DefaultFieldCardRenderer extends FieldCardRenderer {
   }
 
   override def createGoalkeeperRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player).get
+    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player)
     val fieldCard = FieldCardFactory.createDefaultFieldCard(goalkeeper)
-    new HBox { alignment = Pos.CENTER; spacing = 10; children = Seq(fieldCard) }
+
+    new HBox {
+      alignment = Pos.CENTER
+      spacing = 10
+      padding = Insets(0, 0, 0, 0)
+      children = Seq(fieldCard)
+    }
   }
 }
 
@@ -114,17 +120,29 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
   def getSelectedDefenderIndex: Option[Int] = selectedDefenderIndex
   def isGoalkeeperSelected: Boolean = _isGoalkeeperSelected
 
-  override def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val defenderCards = getGameState().getDataManager.getPlayerDefenders(player)
 
-    val nodes = defenderCards.zipWithIndex.map { case (card, index) =>
-      FieldCardFactory.createSelectableFieldCard(
-        card = card,
-        index = index,
-        selectedIndex = selectedDefenderIndex,
-        isGoalkeeper = false,
-        onSelected = handleCardSelected
-      )
+  override def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox = {
+    val defenderCards = getGameState().getDataManager
+      .getPlayerDefenders(player)
+      .padTo(3, None)
+
+    val nodes = defenderCards.zipWithIndex.map { case (cardOpt, index) =>
+      val desc = cardOpt.map(_.toString).getOrElse("Defeated")
+      cardOpt match {
+        case Some(card) =>
+          FieldCardFactory.createSelectableFieldCard(
+            card = Some(card),
+            index = index,
+            selectedIndex = selectedDefenderIndex,
+            isGoalkeeper = false,
+            onSelected = handleCardSelected
+          )
+        case None =>
+          FieldCardFactory.createStaticImageCard(
+            CardImageRegistry.getDefeatedImage(),
+            index
+          )
+      }
     }
 
     new HBox {
@@ -134,9 +152,10 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
     }
   }
 
-  override def createGoalkeeperRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player).get
 
+
+  override def createGoalkeeperRow(player: IPlayer, getGameState: () => IGameState): HBox = {
+    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player)
     val fieldCard = FieldCardFactory.createSelectableFieldCard(
       card = goalkeeper,
       index = -1,
@@ -148,9 +167,11 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
     new HBox {
       alignment = Pos.CENTER
       spacing = 10
+      padding = Insets(0, 0, 0, 0)
       children = Seq(fieldCard)
     }
   }
+
 
   def resetSelection(): Unit = {
     selectedDefenderIndex = None

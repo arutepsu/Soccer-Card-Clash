@@ -102,7 +102,8 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     println("      Welcome to Soccer Card Clash!      ")
     println("=========================================")
     println("\nMain Menu:")
-    println(":start - Create New Game")
+    println(":startAI - SinglePlayer")
+    println(":startM - MultiPlayer")
     println(":load - Load Game")
     println(":exit - Exit")
 

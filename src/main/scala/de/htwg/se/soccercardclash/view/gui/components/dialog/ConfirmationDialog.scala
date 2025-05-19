@@ -14,8 +14,10 @@ import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
-
-class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController) {
+import de.htwg.se.soccercardclash.controller.IGameContextHolder
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
+import de.htwg.se.soccercardclash.util.EventDispatcher
+class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController, contextHolder: IGameContextHolder) {
   
   private val backgroundImagePath = "/images/data/frames/overlay.png"
   private val backgroundImage = new ImageView(new Image(backgroundImagePath)) {
@@ -40,6 +42,14 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
       Thread.sleep(300)
       Platform.runLater {
         onConfirm()
+        val players = Seq(
+          contextHolder.get.state.getRoles.attacker,
+          contextHolder.get.state.getRoles.defender
+        )
+
+        PlayerAvatarRegistry.assignAvatarsInOrder(players)
+
+        EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)
       }
     }
   }

@@ -49,8 +49,12 @@ class GameDeserializer @Inject() (
       .collect { case e: Elem => cardDeserializer.fromXml(e) }
       .toList
 
-    val player1Defenders = (xml \ "player1Field" \ "Card").collect { case e: Elem => cardDeserializer.fromXml(e) }.toList
-    val player2Defenders = (xml \ "player2Field" \ "Card").collect { case e: Elem => cardDeserializer.fromXml(e) }.toList
+    val player1Defenders: List[Option[ICard]] =
+      (xml \ "player1Field" \ "Card").collect { case e: Elem => Some(cardDeserializer.fromXml(e)) }.toList.padTo(3, None)
+
+    val player2Defenders: List[Option[ICard]] =
+      (xml \ "player2Field" \ "Card").collect { case e: Elem => Some(cardDeserializer.fromXml(e)) }.toList.padTo(3, None)
+
 
     val player1Goalkeeper = (xml \ "player1Goalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
     val player2Goalkeeper = (xml \ "player2Goalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
@@ -89,8 +93,15 @@ class GameDeserializer @Inject() (
     val player1HandCards = (json \ "player1Hand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
     val player2HandCards = (json \ "player2Hand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
 
-    val player1Defenders = (json \ "player1Field").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
-    val player2Defenders = (json \ "player2Field").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+    val player1Defenders: List[Option[ICard]] =
+      (json \ "player1Field").asOpt[List[JsObject]].getOrElse(Nil)
+        .map(obj => Some(cardDeserializer.fromJson(obj)))
+        .padTo(3, None)
+
+    val player2Defenders: List[Option[ICard]] =
+      (json \ "player2Field").asOpt[List[JsObject]].getOrElse(Nil)
+        .map(obj => Some(cardDeserializer.fromJson(obj)))
+        .padTo(3, None)
 
     val player1Goalkeeper = (json \ "player1Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
     val player2Goalkeeper = (json \ "player2Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)

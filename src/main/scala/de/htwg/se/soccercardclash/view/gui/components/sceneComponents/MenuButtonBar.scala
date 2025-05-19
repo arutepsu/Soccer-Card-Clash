@@ -4,6 +4,7 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.{GameActionEvent, GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import scalafx.scene.control.Button
 import scalafx.scene.layout.VBox
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
@@ -64,6 +65,7 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
       Thread.sleep(300)
       Platform.runLater {
         playingFieldScene.contextHolder.clear()
+        PlayerAvatarRegistry.clear()
         GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
       }
     }

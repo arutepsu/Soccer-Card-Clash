@@ -29,7 +29,6 @@ class AttackerHandScene(
   val attackerHandBar = new PlayersHandBar(
     player = contextHolder.get.state.getRoles.attacker,
     playingField = contextHolder.get.state,
-    isLeftSide = true,
     renderer = new SelectableHandCardRenderer(() => contextHolder.get.state)
   )
   private val overlay = new Overlay(this)
@@ -72,7 +71,7 @@ class AttackerHandScene(
     styleClass.add("attacker-hand-scene")
     children = Seq(
       new Region {
-        style = "-fx-background-color: black;"
+//        style = "-fx-background-color: black;"
       },
       layout,
       overlay.getPane

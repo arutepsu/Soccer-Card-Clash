@@ -23,13 +23,15 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
       return (false, playingField, Nil)
     }
 
-    if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Boost)) {
+    val cardOpt = defenders(index)
+
+    if (cardOpt.isEmpty || !playerActionService.canPerform(attacker, PlayerActionPolicies.Boost)) {
       return (false, playingField, List(StateEvent.NoBoostsEvent(attacker)))
     }
 
-    val originalCard = defenders(index)
+    val originalCard = cardOpt.get
     val boostedCard = originalCard.boost()
-    val updatedDefenders = defenders.updated(index, boostedCard)
+    val updatedDefenders = defenders.updated(index, Some(boostedCard))
 
     val updatedDataManager = dataManager.setPlayerDefenders(attacker, updatedDefenders)
     val attackerAfterAction = playerActionService.performAction(attacker, PlayerActionPolicies.Boost)
@@ -38,8 +40,7 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
     val updatedField = playingField
       .withDataManager(updatedDataManager)
       .withRoles(updatedRoles)
-
+    
     (true, updatedField, List(GameActionEvent.BoostDefender))
   }
-
 }

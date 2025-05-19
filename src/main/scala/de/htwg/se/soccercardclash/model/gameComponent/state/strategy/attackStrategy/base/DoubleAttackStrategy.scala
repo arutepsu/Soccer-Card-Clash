@@ -47,15 +47,16 @@ class DoubleAttackStrategy(
       val dataManagerAfterDraw = dataManager.setPlayerHand(attackerAfterAction, updatedAttackerHand)
 
       val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
-      val defenderCard =
+      val defenderCard: Option[ICard] =
         if (dataManagerAfterDraw.allDefendersBeaten(defender))
-          dataManagerAfterDraw.getPlayerGoalkeeper(defender).getOrElse(
-            throw new NoSuchElementException("Goalkeeper not found.")
-          )
+          dataManagerAfterDraw.getPlayerGoalkeeper(defender)
         else
           dataManagerAfterDraw.getDefenderCard(defender, defenderIndex)
 
-      val comparisonEvent = StateEvent.DoubleComparedCardsEvent(attackingCard1, attackingCard2, defenderCard)
+      val comparisonEvent =
+        StateEvent.DoubleComparedCardsEvent(Some(attackingCard1), Some(attackingCard2), defenderCard)
+
+
 
       val (finalManager, updatedRoles, updatedScores, additionalEvents) =
         if (dataManagerAfterDraw.allDefendersBeaten(defender))
@@ -78,8 +79,8 @@ class DoubleAttackStrategy(
             updatedAttackerHand,
             dataManagerAfterDraw.getPlayerHand(defender),
             dataManagerAfterDraw,
-            attackingCard1,
-            attackingCard2,
+            Some(attackingCard1),
+            Some(attackingCard2),
             defenderCard,
             attackValue,
             revertStrategy,
@@ -113,12 +114,11 @@ class DoubleAttackStrategy(
                                        roles: IRoles
                                      ): (IDataManager, IRoles, IScores, List[ObservableEvent]) = {
 
-    val goalkeeper = dataManager.getPlayerGoalkeeper(defender).getOrElse(
+    val goalkeeperOpt = dataManager.getPlayerGoalkeeper(defender)
+    val revertedGoalkeeper = revertStrategy.revertCard(goalkeeperOpt)
+    val goalkeeperValue = goalkeeperOpt.map(_.valueToInt).getOrElse(
       throw new NoSuchElementException("Goalkeeper not found.")
     )
-
-    val revertedGoalkeeper = revertStrategy.revertCard(goalkeeper)
-    val goalkeeperValue = goalkeeper.valueToInt
 
     if (attackValue > goalkeeperValue) {
       val (updatedManager0, resultEvent) = attackerWins(
@@ -126,8 +126,7 @@ class DoubleAttackStrategy(
         dataManager,
         attacker,
         defender,
-        attackingCard1,
-        attackingCard2,
+        Some(attackingCard1), Some(attackingCard2),
         revertedGoalkeeper
       )
 
@@ -153,8 +152,7 @@ class DoubleAttackStrategy(
         dataManager,
         attacker,
         defender,
-        attackingCard1,
-        attackingCard2,
+        Some(attackingCard1), Some(attackingCard2),
         revertedGoalkeeper
       )
 
@@ -178,27 +176,29 @@ class DoubleAttackStrategy(
                             dataManager: IDataManager,
                             attacker: IPlayer,
                             defender: IPlayer,
-                            cards: ICard*
+                            cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
-    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(attacker, updatedHand)
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
 
     (updatedManager, event)
   }
 
+
   private def defenderWins(
                             hand: IHandCardsQueue,
                             dataManager: IDataManager,
                             attacker: IPlayer,
                             defender: IPlayer,
-                            cards: ICard*
+                            cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
-    val updatedHand = cards.foldLeft(hand)((h, card) => h.addCard(card))
+    val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedManager = dataManager.setPlayerHand(defender, updatedHand)
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
     (updatedManager, event)
   }
+
 
   private def processDefenderAttack(
                                      attacker: IPlayer,
@@ -206,16 +206,18 @@ class DoubleAttackStrategy(
                                      attackerHand: IHandCardsQueue,
                                      defenderHand: IHandCardsQueue,
                                      dataManager: IDataManager,
-                                     attackingCard1: ICard,
-                                     attackingCard2: ICard,
-                                     defenderCard: ICard,
+                                     attackingCard1: Option[ICard],
+                                     attackingCard2: Option[ICard],
+                                     defenderCard: Option[ICard],
                                      attackValue: Int,
                                      revertStrategy: IRevertStrategy,
                                      roles: IRoles
                                    ): (IDataManager, IRoles, List[ObservableEvent]) = {
 
     val revertedDefenderCard = revertStrategy.revertCard(defenderCard)
-    val defenderValue = defenderCard.valueToInt
+    val defenderValue = defenderCard.map(_.valueToInt).getOrElse(
+      throw new NoSuchElementException("Defender card not found.")
+    )
 
     if (attackValue > defenderValue) {
       val (updatedManager0, resultEvent) = attackerWins(
@@ -274,21 +276,22 @@ class DoubleAttackStrategy(
                          defender: IPlayer,
                          attackerHand: IHandCardsQueue,
                          defenderHand: IHandCardsQueue,
-                         attackingCard1: ICard,
-                         attackingCard2: ICard,
+                         attackingCard1: Option[ICard],
+                         attackingCard2: Option[ICard],
                          dataManager: IDataManager,
                          revertStrategy: IRevertStrategy,
                          roles: IRoles
                        ): (IDataManager, IRoles, List[ObservableEvent]) = {
 
     if (attackerHand.getHandSize > 0 && defenderHand.getHandSize > 0) {
-
+      
       (attackerHand.removeLastCard(), defenderHand.removeLastCard()) match {
         case (Success((extraAttackerCard, updatedAttackerHand)),
         Success((extraDefenderCard, updatedDefenderHand))) =>
 
-          val revertedExtraAttackerCard = revertStrategy.revertCard(extraAttackerCard)
-          val revertedExtraDefenderCard = revertStrategy.revertCard(extraDefenderCard)
+          // Wrap ICard values in Some(...) when needed
+          val revertedExtraAttackerCard = revertStrategy.revertCard(Some(extraAttackerCard))
+          val revertedExtraDefenderCard = revertStrategy.revertCard(Some(extraDefenderCard))
 
           val defenderCard = dataManager.getDefenderCard(defender, defenderIndex)
           val revertedDefenderCard = revertStrategy.revertCard(defenderCard)
@@ -296,9 +299,13 @@ class DoubleAttackStrategy(
           val tiebreakerResult = extraAttackerCard.compare(extraDefenderCard)
 
           val events = List(
-            StateEvent.DoubleTieComparisonEvent(attackingCard1, attackingCard2, defenderCard, extraAttackerCard, extraDefenderCard)
+            StateEvent.DoubleTieComparisonEvent(
+              attackingCard1, attackingCard2,
+              defenderCard,
+              Some(extraAttackerCard),
+              Some(extraDefenderCard)
+            )
           )
-
           if (tiebreakerResult > 0) {
             val (updatedManager0, resultEvent) = attackerWins(
               updatedAttackerHand,

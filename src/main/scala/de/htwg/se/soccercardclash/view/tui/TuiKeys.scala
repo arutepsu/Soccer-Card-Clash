@@ -1,7 +1,8 @@
 package de.htwg.se.soccercardclash.view.tui
 
 enum TuiKeys(val key: String) {
-  case StartGame extends TuiKeys(":start")
+  case StartGameWithAI extends TuiKeys(":startAI")
+  case StartGameMultiplayer extends TuiKeys(":startM")
   case Quit extends TuiKeys(":quit")
   case Undo extends TuiKeys(":undo")
   case Redo extends TuiKeys(":redo")
@@ -9,6 +10,7 @@ enum TuiKeys(val key: String) {
   case Attack extends TuiKeys(":attack")
   case DoubleAttack extends TuiKeys(":doubleattack")
   case CreatePlayers extends TuiKeys(":create players")
+  case CreatePlayersAI extends TuiKeys(":create playersAI")
   case RegularSwap extends TuiKeys(":regularswap")
   case ReverseSwap extends TuiKeys(":reverseswap")
   case BoostDefender extends TuiKeys(":boostdefender")

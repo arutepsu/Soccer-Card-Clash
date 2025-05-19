@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
-import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.StartGameTuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 
 import java.lang.invoke.SwitchPoint
 
-class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
+class CreatePlayersNameTuiCommand(controller: IController, contextHolder: IGameContextHolder) extends ITuiCommand {
   private var waitingForNames: Boolean = false
 
   override def execute(input: Option[String] = None): Unit = {
@@ -26,7 +26,7 @@ class CreatePlayersNameTuiCommand(controller: IController) extends ITuiCommand {
       println(s"Players set: $player1 & $player2")
       controller.notifyObservers(SceneSwitchEvent.CreatePlayer)
 
-      val startGameCommand = new StartGameTuiCommand(controller, player1, player2)
+      val startGameCommand = new StartGameTuiCommand(controller, contextHolder, player1, player2)
       startGameCommand.execute()
 
       waitingForNames = false

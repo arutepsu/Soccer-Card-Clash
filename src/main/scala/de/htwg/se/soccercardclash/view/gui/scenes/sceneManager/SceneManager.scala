@@ -26,6 +26,8 @@ class SceneManager(
   private var currentScene: Option[GameScene] = None
   private var lastSceneWidth: Double = windowWidth
   private var lastSceneHeight: Double = windowHeight
+  stage.minWidth = windowWidth
+  stage.minHeight = windowHeight
 
   override def update(e: ObservableEvent): Unit = {
     e match {
@@ -40,7 +42,7 @@ class SceneManager(
       case SceneSwitchEvent.MainMenu            => new MainMenuScene(controller)
       case SceneSwitchEvent.CreatePlayer        => new CreatePlayerScene(controller, contextHolder)
       case SceneSwitchEvent.CreatePlayerWithAI  => new CreatePlayerWithAIScene(controller, contextHolder)
-      case SceneSwitchEvent.LoadGame            => new LoadGameScene(controller)
+      case SceneSwitchEvent.LoadGame            => new LoadGameScene(controller, contextHolder)
       case SceneSwitchEvent.PlayingField        => new PlayingFieldScene(controller, contextHolder)
       case SceneSwitchEvent.AttackerHandCards   => new AttackerHandScene(controller, contextHolder)
       case SceneSwitchEvent.AttackerDefenderCards => new AttackerDefendersScene(controller, contextHolder)

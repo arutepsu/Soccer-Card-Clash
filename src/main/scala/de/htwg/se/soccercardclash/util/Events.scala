@@ -35,22 +35,22 @@ object GameActionEvent:
 
 sealed trait StateEvent extends ObservableEvent
 object StateEvent:
-  case class CardReverted(card: ICard, owner: IPlayer) extends StateEvent
-  case class CardBoosted(card: ICard, owner: IPlayer) extends StateEvent
+  case class CardReverted(card: Option[ICard], owner: IPlayer) extends StateEvent
+  case class CardBoosted(card: Option[ICard], owner: IPlayer) extends StateEvent
   case class GameOver(winner: IPlayer) extends StateEvent
 
-  case class ComparedCardsEvent(attackingCard: ICard, defendingCard: ICard) extends StateEvent
-  case class DoubleComparedCardsEvent(attackingCard1: ICard, attackingCard2: ICard, defendingCard: ICard) extends StateEvent
+  case class ComparedCardsEvent(attackingCard: Option[ICard], defendingCard: Option[ICard]) extends StateEvent
+  case class DoubleComparedCardsEvent(attackingCard1: Option[ICard], attackingCard2:Option[ICard], defendingCard: Option[ICard]) extends StateEvent
   case class AttackResultEvent(attacker: IPlayer, defender: IPlayer, attackSuccess: Boolean) extends StateEvent
 
   case class TieComparisonEvent(
-                                 attackingCard: ICard, defenderCard: ICard,
-                                 extraAttackerCard: ICard, extraDefenderCard: ICard
+                                 attackingCard: Option[ICard], defenderCard: Option[ICard],
+                                 extraAttackerCard: Option[ICard], extraDefenderCard: Option[ICard]
                                ) extends StateEvent
 
   case class DoubleTieComparisonEvent(
-                                       attackingCard1: ICard, attackingCard2: ICard, defendingCard: ICard,
-                                       extraAttackerCard: ICard, extraDefenderCard: ICard
+                                       attackingCard1: Option[ICard], attackingCard2: Option[ICard], defendingCard: Option[ICard],
+                                       extraAttackerCard: Option[ICard], extraDefenderCard: Option[ICard]
                                      ) extends StateEvent
 
   case class NoBoostsEvent(player: IPlayer) extends StateEvent

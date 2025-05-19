@@ -1,6 +1,9 @@
 /* 🔹 Scene Background */
 .attacker-hand-scene {
-    -fx-background-color: black;
+    -fx-background-image: url("/images/data/frames/background7.jpg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
 /* 🔹 Button Styling */

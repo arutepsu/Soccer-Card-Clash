@@ -10,12 +10,12 @@ class RefillDefenderField {
 
   def refill(fieldState: IDataManager, defender: IPlayer): IDataManager = {
     val defenderHand = fieldState.getPlayerHand(defender)
-    val defenders = fieldState.getPlayerDefenders(defender)
+    val defenders = fieldState.getPlayerDefenders(defender) // List[Option[ICard]]
     val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
 
-    if (defenders.isEmpty && goalkeeper.isEmpty) {
+    if (defenders.forall(_.isEmpty) && goalkeeper.isEmpty) {
       refillCompletely(fieldState, defender, defenderHand)
-    } else if (defenders.size < 3) {
+    } else if (defenders.count(_.isDefined) < 3) {
       refillPartial(fieldState, defender, defenderHand, defenders, goalkeeper)
     } else {
       fieldState
@@ -28,7 +28,10 @@ class RefillDefenderField {
                                 defenderHand: IHandCardsQueue
                               ): IDataManager = {
     val (newFieldCards, updatedHand) = defenderHand.splitAtEnd(4)
-    val (goalkeeper, defenders) = extractGoalkeeper(newFieldCards)
+    val (goalkeeper, defendersFlat) = extractGoalkeeper(newFieldCards)
+
+    val defenders: List[Option[ICard]] =
+      defendersFlat.map(Some(_)).padTo(3, None)
 
     fieldState
       .setPlayerGoalkeeper(defender, Some(goalkeeper))
@@ -40,23 +43,36 @@ class RefillDefenderField {
                              fieldState: IDataManager,
                              defender: IPlayer,
                              defenderHand: IHandCardsQueue,
-                             defenderField: List[ICard],
+                             defenderField: List[Option[ICard]],
                              goalkeeperOpt: Option[ICard]
                            ): IDataManager = {
-    val neededDefenders = 3 - defenderField.size
+    val neededSlots = defenderField.count(_.isEmpty)
 
-    val (additionalCards, updatedHand) =
-      if (neededDefenders > 0)
-        defenderHand.splitAtEnd(neededDefenders)
-      else
-        (Nil, defenderHand)
+    val (newCards, updatedHand) =
+      if (neededSlots > 0) defenderHand.splitAtEnd(neededSlots)
+      else (Nil, defenderHand)
 
-    val updatedDefenders = defenderField ++ additionalCards
-    val (goalkeeper, defenders) = adjustGoalkeeper(updatedDefenders, goalkeeperOpt)
+    // Fill only empty slots
+    val cardIterator = newCards.iterator
+    val updatedDefenders: List[Option[ICard]] = defenderField.map {
+      case None => if (cardIterator.hasNext) Some(cardIterator.next()) else None
+      case some => some
+    }
+
+    // Extract goalkeeper if needed
+    val (goalkeeper, updatedDefendersWithGoalieBack): (ICard, List[ICard]) =
+      adjustGoalkeeper(updatedDefenders, goalkeeperOpt)
+
+    // Map flattened defenders back into original slots
+    val replacedCards = updatedDefendersWithGoalieBack.iterator
+    val adjustedDefenders: List[Option[ICard]] = updatedDefenders.map {
+      case Some(_) => if (replacedCards.hasNext) Some(replacedCards.next()) else None
+      case None    => if (replacedCards.hasNext) Some(replacedCards.next()) else None
+    }
 
     fieldState
       .setPlayerGoalkeeper(defender, Some(goalkeeper))
-      .setPlayerDefenders(defender, defenders)
+      .setPlayerDefenders(defender, adjustedDefenders)
       .setPlayerHand(defender, updatedHand)
   }
 
@@ -65,17 +81,22 @@ class RefillDefenderField {
     (highestCard, cards.filterNot(_ == highestCard))
   }
 
-  private def adjustGoalkeeper(updatedDefenders: List[ICard], goalkeeperOpt: Option[ICard]): (ICard, List[ICard]) = {
+  private def adjustGoalkeeper(
+                                defenders: List[Option[ICard]],
+                                goalkeeperOpt: Option[ICard]
+                              ): (ICard, List[ICard]) = {
+    val defenderCards = defenders.flatten
+
     goalkeeperOpt match {
       case Some(goalkeeper) =>
-        val highestDefender = updatedDefenders.maxBy(_.valueToInt)
+        val highestDefender = defenderCards.maxBy(_.valueToInt)
         if (highestDefender.valueToInt > goalkeeper.valueToInt) {
-          (highestDefender, updatedDefenders.filterNot(_ == highestDefender) :+ goalkeeper)
+          (highestDefender, defenderCards.filterNot(_ == highestDefender) :+ goalkeeper)
         } else {
-          (goalkeeper, updatedDefenders)
+          (goalkeeper, defenderCards)
         }
       case None =>
-        extractGoalkeeper(updatedDefenders)
+        extractGoalkeeper(defenderCards)
     }
   }
 }

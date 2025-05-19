@@ -16,7 +16,7 @@ import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
 import de.htwg.se.soccercardclash.controller.IController
 
-class StartGameTuiCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class StartGameWithAITuiCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "StartGameTuiCommand" should {
     "call controller.createGame with the given player names and print message" in {

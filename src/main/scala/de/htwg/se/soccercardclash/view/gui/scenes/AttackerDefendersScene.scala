@@ -27,7 +27,7 @@ class AttackerDefendersScene(
                               controller: IController,
                               val contextHolder: IGameContextHolder,
                             ) extends GameScene {
-
+  this.getStylesheets.add(Styles.attackerFieldSceneCss)
   val gameStatusBar = new GameStatusBar
   val overlay = new Overlay(this)
   val attackerDefenderField: Option[PlayersFieldBar] = {
@@ -36,12 +36,10 @@ class AttackerDefendersScene(
       player = pf.getRoles.attacker,
       getGameState = () => pf,
       renderer = new SelectableFieldCardRenderer(() => pf)
-    ) {
-      styleClass.add("selectable-field-bar")
-    })
+    ))
   }
   private val backgroundView = new Region {
-    style = "-fx-background-color: black;"
+    styleClass += "attacker-field-scene"
   }
   
   private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 180, 50) {
@@ -53,11 +51,7 @@ class AttackerDefendersScene(
     BoostButton(), "Boost Card", 180, 50, this, controller
   )
 
-  backButton.styleClass.add("button")
-  boostButton.styleClass.add("button")
-
   private val buttonLayout = new HBox {
-    styleClass.add("button-layout")
     alignment = Pos.Center
     spacing = 15
     children = Seq(boostButton, backButton)
@@ -72,7 +66,6 @@ class AttackerDefendersScene(
 
 
   root = new StackPane {
-    style = "-fx-background-color: black;"
     children = Seq(backgroundView, layout, overlay.getPane)
   }
 

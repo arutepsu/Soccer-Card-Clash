@@ -10,29 +10,29 @@ import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
 class FieldCardsFactory extends IFieldCardsFactory {
   override def create(
-                       playerFields: Map[IPlayer, List[ICard]],
+                       playerFields: Map[IPlayer, List[Option[ICard]]],
                        goalkeepers: Map[IPlayer, Option[ICard]],
-                       defenders: Map[IPlayer, List[ICard]]
+                       defenders: Map[IPlayer, List[Option[ICard]]]
                      ): IFieldCards = FieldCards(playerFields, goalkeepers, defenders)
 }
 
 trait IFieldCardsFactory {
   def create(
-              playerFields: Map[IPlayer, List[ICard]],
+              playerFields: Map[IPlayer, List[Option[ICard]]],
               goalkeepers: Map[IPlayer, Option[ICard]],
-              defenders: Map[IPlayer, List[ICard]]
+              defenders: Map[IPlayer, List[Option[ICard]]]
             ): IFieldCards
 }
 
 case class FieldCards(
-                               playerFields: Map[IPlayer, List[ICard]] = Map().withDefaultValue(List()),
+                               playerFields: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List()),
                                goalkeepers: Map[IPlayer, Option[ICard]] = Map().withDefaultValue(None),
-                               defenders: Map[IPlayer, List[ICard]] = Map().withDefaultValue(List())
+                               defenders: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List())
                              ) extends IFieldCards {
 
-  override def getPlayerField(player: IPlayer): List[ICard] = playerFields(player)
+  override def getPlayerField(player: IPlayer): List[Option[ICard]] = playerFields(player)
 
-  override def setPlayerField(player: IPlayer, newField: List[ICard]): FieldCards = {
+  override def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
     copy(defenders = defenders.updated(player, newField))
   }
 
@@ -46,10 +46,16 @@ case class FieldCards(
   override def setGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards =
     copy(goalkeepers = goalkeepers.updated(attacker, Some(card)))
 
-  override def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): FieldCards = {
-    val updatedList = defenders(currentDefender).filterNot(_ == defenderCard)
-    copy(defenders = defenders.updated(currentDefender, updatedList))
+  override def removeDefenderCard(currentDefender: IPlayer, defenderCardOpt: Option[ICard]): FieldCards = {
+    val original = defenders(currentDefender)
+    
+    val updated = original.zipWithIndex.map {
+      case (Some(c), i) if defenderCardOpt.contains(c) => None
+      case (other, _) => other
+    }
+    copy(defenders = defenders.updated(currentDefender, updated))
   }
+
 
   override def removeDefenderGoalkeeper(currentDefender: IPlayer): FieldCards = {
     copy(goalkeepers = goalkeepers.updated(currentDefender, None))
@@ -58,35 +64,37 @@ case class FieldCards(
   override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
     getPlayerDefenders(currentDefender).isEmpty
 
-  override def getPlayerDefenders(player: IPlayer): List[ICard] = defenders(player)
+  override def getPlayerDefenders(player: IPlayer): List[Option[ICard]] = defenders(player)
 
-  override def getDefenderCard(player: IPlayer, index: Int): ICard = {
+  def getDefenderCard(player: IPlayer, index: Int): Option[ICard] = {
     val playerDefenders = defenders(player)
     if (index < 0 || index >= playerDefenders.size)
-      throw new IndexOutOfBoundsException("Invalid defender index")
-    playerDefenders(index)
+      None
+    else
+      playerDefenders(index)
   }
+
 
 }
 
 trait IFieldCards {
-  def getPlayerField(player: IPlayer): List[ICard]
+  def getPlayerField(player: IPlayer): List[Option[ICard]]
 
-  def setPlayerField(player: IPlayer, newField: List[ICard]): IFieldCards
+  def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): IFieldCards
 
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
 
   def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IFieldCards
 
-  def getPlayerDefenders(player: IPlayer): List[ICard]
+  def getPlayerDefenders(player: IPlayer): List[Option[ICard]]
 
   def setGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards
 
-  def removeDefenderCard(currentDefender: IPlayer, defenderCard: ICard): IFieldCards
+  def removeDefenderCard(currentDefender: IPlayer, defenderCard: Option[ICard]): IFieldCards
 
   def removeDefenderGoalkeeper(currentDefender: IPlayer): IFieldCards
 
   def allDefendersBeaten(currentDefender: IPlayer): Boolean
 
-  def getDefenderCard(player: IPlayer, index: Int): ICard
+  def getDefenderCard(player: IPlayer, index: Int): Option[ICard]
 }

@@ -4,11 +4,16 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import de.htwg.se.soccercardclash.view.gui.components.cardView.GameCard
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
+import scalafx.scene.control.Tooltip
 import scalafx.scene.effect.DropShadow
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.StackPane
 import scalafx.scene.paint.Color
+import scalafx.scene.image.Image
+import scalafx.scene.Node
 
 case class FieldCard(
-                      card: ICard,
+                      card: Option[ICard],
                       flipped: Boolean = true,
                       isSelectable: Boolean = false,
                       scaleFactor: Float = mainCardScaleFactor
@@ -21,20 +26,21 @@ case class FieldCard(
   def getHeight: Double = this.prefHeight.value
 }
 object FieldCardFactory {
-  def createDefaultFieldCard(card: ICard): FieldCard = {
+  def createDefaultFieldCard(card: Option[ICard]): FieldCard = {
     val fieldCard = FieldCard(flipped = false, card = card)
     fieldCard.styleClass.add("field-card")
     fieldCard.effect = new DropShadow(10, Color.BLACK)
-    
+
     card match
-      case boosted: BoostedCard => CardAnimationFactory.applyBoostEffect(fieldCard)
-      case _ =>
+      case Some(boosted: BoostedCard) =>
+        CardAnimationFactory.applyBoostEffect(fieldCard)
+      case _ => ()
 
     fieldCard
   }
 
   def createSelectableFieldCard(
-                                 card: ICard,
+                                 card: Option[ICard],
                                  index: Int,
                                  selectedIndex: => Option[Int],
                                  isGoalkeeper: Boolean = false,
@@ -43,14 +49,21 @@ object FieldCardFactory {
     val fieldCard = FieldCard(flipped = false, card = card)
     fieldCard.styleClass.add("field-card")
     fieldCard.effect = new DropShadow(10, Color.BLACK)
+
+    card match {
+      case Some(boosted: BoostedCard) =>
+        CardAnimationFactory.applyBoostEffect(fieldCard)
+      case Some(card) =>
+      case None =>
+      case _ => ()
+    }
     
-    card match
-      case boosted: BoostedCard => CardAnimationFactory.applyBoostEffect(fieldCard)
-      case _ =>
-    
-    fieldCard.onMouseEntered = _ => CardAnimationFactory.applyHoverEffect(fieldCard, selectedIndex, index)
-    fieldCard.onMouseExited = _ => CardAnimationFactory.removeHoverEffect(fieldCard, selectedIndex, index)
-    
+    fieldCard.onMouseEntered = _ =>
+      CardAnimationFactory.applyHoverEffect(fieldCard, selectedIndex, index)
+
+    fieldCard.onMouseExited = _ =>
+      CardAnimationFactory.removeHoverEffect(fieldCard, selectedIndex, index)
+
     fieldCard.onMouseClicked = _ => {
       if (selectedIndex.contains(index)) {
         fieldCard.effect = null
@@ -63,5 +76,16 @@ object FieldCardFactory {
 
     fieldCard
   }
+
+  def createStaticImageCard(image: Image, index: Int): Node = {
+    new StackPane {
+      children = new ImageView(image) {
+        fitWidth = 135
+        fitHeight = 125
+        preserveRatio = true
+      }
+    }
+  }
+
 
 }

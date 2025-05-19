@@ -20,21 +20,22 @@ import scalafx.util.Duration
 
 trait HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox
+
+  def calcHandSpacing(handSize: Int): Double =
+    -Math.min(40, handSize * 6)
 }
 
 class PlayersHandBar(
                       player: IPlayer,
                       playingField: IGameState,
-                      isLeftSide: Boolean,
                       renderer: HandCardRenderer
                     ) extends HBox {
   
-  alignment = if (isLeftSide) Pos.CENTER_LEFT else Pos.CENTER_RIGHT
+  alignment = Pos.Center
 
   val handSize = playingField.getDataManager.getPlayerHand(player).getHandSize
   spacing = -Math.min(80, handSize * 55) // more cards → higher negative spacing
-
-
+  
 
   private var selectedCard: Option[HandCard] = None
 
@@ -104,30 +105,23 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
 
   def getSelectedIndex: Option[Int] = selectedCardIndex
 
-  private def handleCardSelected(clickedIndex: Int): Unit = {
-    if (clickedIndex == -1) selectedCardIndex = None
-    else selectedCardIndex = Some(clickedIndex)
-  }
-
+  private def handleCardSelected(clickedIndex: Int): Unit =
+    selectedCardIndex = if (clickedIndex == -1) None else Some(clickedIndex)
   override def createHandCardRow(player: IPlayer, dummyState: IGameState): HBox = {
-    val gameState = getGameState()
-    val hand = gameState.getDataManager.getPlayerHand(player)
-
-    val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
-      val isLastCard = index == hand.toList.size - 1
+    val handList = getGameState().getDataManager.getPlayerHand(player).toList
+    val handCards = handList.zipWithIndex.map { case (card, index) =>
       HandCardFactory.createSelectableHandCard(
         card = card,
         index = index,
-        flipped = !isLastCard,
+        flipped = index != handList.size - 1,
         selectedIndex = selectedCardIndex,
         onSelected = handleCardSelected
       )
     }
 
-    val handSize = hand.toList.size
     new HBox {
       alignment = Pos.CENTER
-      spacing = -Math.min(40, handSize * 6) // ✅ cleaner and increased spacing
+      spacing = calcHandSpacing(handList.size)
       children = handCards
     }
   }
@@ -135,38 +129,39 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
 
 
 
+
 object DefaultHandCardRenderer extends HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox = {
-    val hand = gameState.getDataManager.getPlayerHand(player)
-    val handCards = hand.toList.zipWithIndex.map { case (card, index) =>
-      val isLastCard = index == hand.toList.size - 1
+    val handList = gameState.getDataManager.getPlayerHand(player).toList
+
+    val handCards = handList.zipWithIndex.map { case (card, index) =>
+      val isLast = index == handList.size - 1
       val handCard = HandCard(
-        flipped = !isLastCard,
+        flipped = !isLast,
         card = card,
-        isLastCard = isLastCard
+        isLastCard = isLast
       )
       handCard.effect = new DropShadow(10, Color.BLACK)
-      
+
       handCard.onMouseEntered = _ => {
-        val hoverEffect = new ScaleTransition(Duration(200), handCard)
-        hoverEffect.toX = 1.15
-        hoverEffect.toY = 1.15
-        hoverEffect.play()
+        val hover = new ScaleTransition(Duration(200), handCard)
+        hover.toX = 1.15
+        hover.toY = 1.15
+        hover.play()
       }
       handCard.onMouseExited = _ => {
-        val exitEffect = new ScaleTransition(Duration(200), handCard)
-        exitEffect.toX = 1.0
-        exitEffect.toY = 1.0
-        exitEffect.play()
+        val exit = new ScaleTransition(Duration(200), handCard)
+        exit.toX = 1.0
+        exit.toY = 1.0
+        exit.play()
       }
 
       handCard
     }
 
-    val handSize = hand.toList.size
     new HBox {
       alignment = Pos.CENTER
-      spacing = -Math.min(40, handSize * 6) // ✅ cleaner and increased spacing
+      spacing = calcHandSpacing(handList.size)
       children = handCards
     }
   }

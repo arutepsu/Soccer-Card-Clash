@@ -11,13 +11,13 @@ import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
-import scalafx.scene.control.ListView
-import scalafx.scene.layout.{BorderPane, HBox, StackPane, VBox}
-import scalafx.scene.text.Font
-import scalafx.scene.control.Label
+import scalafx.scene.control.{Label, ListView}
 import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.layout.{BorderPane, HBox, StackPane, VBox}
+import scalafx.scene.paint.Color
+import scalafx.scene.text.Font
 class MainMenuScene(controller: IController) extends GameScene {
 
   this.getStylesheets.add(Styles.mainMenuCss)
@@ -56,6 +56,27 @@ class MainMenuScene(controller: IController) extends GameScene {
       overlay.getPane
     )
   }
+
+  val bottomSpacer = new HBox {
+    minHeight = 70
+    visible = false
+  }
+  StackPane.setAlignment(bottomSpacer, Pos.BottomCenter)
+
+  // Load font properly
+  val fontStream = getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Medium.ttf")
+  val loadedFont = Font.loadFont(fontStream, 12)
+
+  // Get the actual font name safely
+  val actualFontName = Option(loadedFont).map(_.getName).getOrElse("System")
+
+  val infoLabel = new Label("Developed by Arutepsu") {
+    font = Font.font(actualFontName, 32)
+    textFill = Color.web("#39ff14")
+    padding = Insets(0, 10, 10, 0)
+  }
+  StackPane.setAlignment(infoLabel, Pos.BottomRight)
+
   this.root = new StackPane {
     children = Seq(
       new VBox {
@@ -63,11 +84,12 @@ class MainMenuScene(controller: IController) extends GameScene {
         alignment = Pos.Center
         children = Seq(
           logoBox,
-          rootBox
+          rootBox,
+          bottomSpacer,
         )
       },
-
-      overlay.getPane
+      overlay.getPane,
+      infoLabel
     )
     styleClass += "logo-image"
   }

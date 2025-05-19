@@ -14,21 +14,26 @@ class RefillField {
     val defenders = fieldState.getPlayerDefenders(player)
     val goalkeeper = fieldState.getPlayerGoalkeeper(player)
 
-    val (defenderCount, goalkeeperCount) = (defenders.size, if (goalkeeper.isDefined) 1 else 0)
-    val (newField, updatedHand) = determineFieldCards(hand, defenderCount, goalkeeperCount)
+    val emptySlots = defenders.count(_.isEmpty)
+    val needsFullRefill = defenders.forall(_.isEmpty) && goalkeeper.isEmpty
 
-    if (newField.isEmpty || defenders.nonEmpty) {
-      fieldState
-    } else {
-      val newGoalkeeper = goalkeeper.orElse(newField.maxByOption(_.valueToInt))
-      val newDefenders = newField.filterNot(_ == newGoalkeeper.getOrElse(newField.head))
+    if (!needsFullRefill) return fieldState
 
-      fieldState
-        .setPlayerField(player, newField)
-        .setPlayerGoalkeeper(player, newGoalkeeper)
-        .setPlayerDefenders(player, newDefenders)
-        .setPlayerHand(player, updatedHand)
-    }
+    val (drawnCards, updatedHand) = hand.splitAtEnd(4)
+
+    val newGoalkeeper: Option[ICard] =
+      goalkeeper.orElse(drawnCards.maxByOption(_.valueToInt))
+
+    val defendersWithoutGK: List[ICard] =
+      drawnCards.filterNot(_ == newGoalkeeper.getOrElse(drawnCards.head))
+
+    val paddedDefenders: List[Option[ICard]] =
+      defendersWithoutGK.map(Some(_)).padTo(3, None)
+
+    fieldState
+      .setPlayerDefenders(player, paddedDefenders)
+      .setPlayerGoalkeeper(player, newGoalkeeper)
+      .setPlayerHand(player, updatedHand)
   }
 
   private def determineFieldCards(hand: IHandCardsQueue, defenderCount: Int, goalkeeperCount: Int): (List[ICard], IHandCardsQueue) = {

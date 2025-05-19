@@ -18,7 +18,7 @@ case class HandCard(
                      isLastCard: Boolean = false,
                      isSelectable: Boolean = false,
                      scaleFactor: Float = mainCardScaleFactor
-                   ) extends GameCard(flipped, isLastCard, isSelectable, card, scaleFactor) {
+                   ) extends GameCard(flipped, isLastCard, isSelectable, Some(card), scaleFactor) {
 
   override def flip(): GameCard = this.copy(flipped = !flipped)
   

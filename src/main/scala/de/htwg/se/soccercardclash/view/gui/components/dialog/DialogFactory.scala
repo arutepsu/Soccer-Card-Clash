@@ -35,12 +35,16 @@ object DialogFactory {
                          overlay: Overlay):
   Unit = { new InfoDialog(title, message, overlay) }
 
-  def showLoadGameConfirmation(gameFile: String, overlay: Overlay, controller: IController): Unit = {
+  def showLoadGameConfirmation(gameFile: String,
+                               overlay: Overlay,
+                               controller: IController,
+                               gameContextHolder: IGameContextHolder): Unit = {
     new ConfirmationDialog(
       overlay,
       s"Load game: $gameFile?\nDo you want to proceed?",
       () => controller.loadGame(gameFile),
-      controller
+      controller,
+      gameContextHolder
     ).show()
   }
 

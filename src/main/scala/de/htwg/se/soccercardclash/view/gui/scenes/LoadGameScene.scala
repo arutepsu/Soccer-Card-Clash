@@ -17,8 +17,8 @@ import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.text.Text
 
 import java.io.File
-
-class LoadGameScene(controller: IController) extends GameScene {
+import de.htwg.se.soccercardclash.controller.IGameContextHolder
+class LoadGameScene(controller: IController, gameContextHolder: IGameContextHolder) extends GameScene {
 
   private val gamesFolder = new File("games")
   private val savedGames = ObservableBuffer[String]()
@@ -78,7 +78,7 @@ class LoadGameScene(controller: IController) extends GameScene {
 
   private def showLoadConfirmation(gameFile: String): Unit = {
     Platform.runLater {
-      DialogFactory.showLoadGameConfirmation(gameFile, overlay, controller)
+      DialogFactory.showLoadGameConfirmation(gameFile, overlay, controller, gameContextHolder)
     }
   }
 }

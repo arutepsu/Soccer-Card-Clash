@@ -2,12 +2,12 @@ package de.htwg.se.soccercardclash.view.tui
 
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import scalafx.application.Platform
-import de.htwg.se.soccercardclash.util.{GameActionEvent, Observable, ObservableEvent, Observer, GlobalObservable, SceneSwitchEvent}
+import de.htwg.se.soccercardclash.util.{GameActionEvent, GlobalObservable, Observable, ObservableEvent, Observer, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.tui
 import de.htwg.se.soccercardclash.view.tui.PromptState
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.{ITuiCommandFactory, TuiCommandFactory}
-import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.CreatePlayersNameTuiCommand
+import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.{CreatePlayersNameTuiCommand, CreatePlayersNameWithAITuiCommand}
 
 import java.io.File
 import scala.io.StdIn
@@ -42,10 +42,13 @@ class Tui(
   protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
   protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
   private var promptState: PromptState = PromptState.None
-  private val createPlayersNameTuiCommand: CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
-
+  private val createPlayersNameTuiCommand:
+    CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
+  private val createPlayersNameWitAITuiCommand:
+    CreatePlayersNameWithAITuiCommand = tuiCommandFactory.createCreatePlayersNameWithAITuiCommand()
   private val commands: Map[String, ITuiCommand] = Map(
     TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
+    TuiKeys.CreatePlayersAI.key -> createPlayersNameWitAITuiCommand,
     TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
     TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
     TuiKeys.Save.key -> tuiCommandFactory.createSaveGameTuiCommand(),
@@ -84,7 +87,12 @@ class Tui(
     val commandKey = parts.head
     val commandArg = if (parts.length > 1) Some(parts(1)) else None
 
-    if (commandKey == TuiKeys.StartGame.key) {
+    if (commandKey == TuiKeys.StartGameWithAI.key) {
+      createPlayersNameWitAITuiCommand.execute()
+      return
+    }
+
+    if (commandKey == TuiKeys.StartGameMultiplayer.key) {
       createPlayersNameTuiCommand.execute()
       return
     }
@@ -120,6 +128,9 @@ class Tui(
 
       case TuiKeys.CreatePlayers.key =>
         GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
+
+      case TuiKeys.CreatePlayersAI.key =>
+        GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
 
       case TuiKeys.Save.key =>
         commands(TuiKeys.Save.key).execute()

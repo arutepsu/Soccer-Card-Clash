@@ -10,11 +10,20 @@ object CardImageRegistry {
   private val cardsPath = "/images/data/cards/"
   private val images: mutable.Map[String, Image] = mutable.Map.empty
 
-  lazy val fallbackImage: Image = {
-    val stream = getClass.getResourceAsStream(cardsPath + "card_black.png")
-    if (stream == null) throw new RuntimeException("Fallback card_black.png not found.")
-    new Image(stream)
+  private def loadImage(fileName: String): Option[Image] = {
+    val stream = getClass.getResourceAsStream(cardsPath + fileName)
+    Option(stream).map(new Image(_))
   }
+
+  lazy val fallbackImage: Image =
+    loadImage("flippedCard.png").getOrElse {
+      throw new RuntimeException("Fallback card not found.")
+    }
+
+  lazy val defeatedCardImage: Image =
+    loadImage("defeated.png").getOrElse {
+      throw new RuntimeException("Defeated card image not found.")
+    }
 
   def preloadAll(): Unit = {
     val suits = Seq("hearts", "diamonds", "clubs", "spades")
@@ -35,12 +44,16 @@ object CardImageRegistry {
       } else {
       }
     }
+    if (!images.contains("flippedCard.png")) {
+      images.put("flippedCard.png", fallbackImage)
+    }
 
-    if (!images.contains("card_black.png")) {
-      images.put("card_black.png", fallbackImage)
+    if (!images.contains("defeated.png")) {
+      images.put("defeated.png", defeatedCardImage) // ensure it's accessible via getImage
     }
   }
-  
+
+
   def getImage(fileName: String): Image =
     images.getOrElse(fileName, {
       fallbackImage
@@ -49,6 +62,8 @@ object CardImageRegistry {
   def getImageForCard(cardFileName: String): Image =
     getImage(cardFileName)
 
+  def getDefeatedImage(): Image =
+    images.getOrElse("defeated.png", defeatedCardImage)
   def getAllFileNames: Seq[String] = images.keys.toSeq
 
   def clear(): Unit = {

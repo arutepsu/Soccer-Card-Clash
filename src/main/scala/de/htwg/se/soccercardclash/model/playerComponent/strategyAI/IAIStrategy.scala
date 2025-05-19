@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{ActionManager, PlayerActionManager}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import scala.util.Random
 
 trait IAIStrategy {
@@ -55,7 +55,10 @@ class SmartAIStrategy extends IAIStrategy {
     val attackValue = attackCard.value
 
     val defenderField = dataManager.getPlayerDefenders(defender)
-    val defendersIndexed = defenderField.zipWithIndex
+    
+    val defendersIndexed: List[(ICard, Int)] = defenderField.zipWithIndex.collect {
+      case (Some(card), idx) => (card, idx)
+    }
 
     val beatable = defendersIndexed.filter { case (defCard, _) =>
       defCard.value < attackValue
@@ -66,8 +69,8 @@ class SmartAIStrategy extends IAIStrategy {
       SingleAttackAIAction(defenderIndex = chosenDefenderIndex)
 
     } else {
-      val fallbackIndexOpt =
-        if (defenderField.nonEmpty)
+      val fallbackIndexOpt: Option[Int] =
+        if (defendersIndexed.nonEmpty)
           Some(defendersIndexed.maxBy(_._1.value)._2)
         else if (dataManager.getPlayerGoalkeeper(defender).isDefined)
           Some(-1)
@@ -88,6 +91,7 @@ class SmartAIStrategy extends IAIStrategy {
     }
   }
 }
+
 
 
 class RandomAIStrategy(random: Random = new Random()) extends IAIStrategy {

@@ -20,8 +20,8 @@ trait IDataManagerFactory {
                       player1Hand: List[ICard],
                       player2: IPlayer,
                       player2Hand: List[ICard],
-                      player1Defenders: List[ICard],
-                      player2Defenders: List[ICard],
+                      player1Defenders: List[Option[ICard]],
+                      player2Defenders: List[Option[ICard]],
                       player1Goalkeeper: Option[ICard],
                       player2Goalkeeper: Option[ICard]
                     ): IDataManager
@@ -47,8 +47,8 @@ class DataManagerFactory @Inject()(
                                player1Hand: List[ICard],
                                player2: IPlayer,
                                player2Hand: List[ICard],
-                               player1Defenders: List[ICard],
-                               player2Defenders: List[ICard],
+                               player1Defenders: List[Option[ICard]],
+                               player2Defenders: List[Option[ICard]],
                                player1Goalkeeper: Option[ICard],
                                player2Goalkeeper: Option[ICard]
                              ): IDataManager = {
@@ -108,7 +108,7 @@ case class DataManager(
   override def getAttackingCard(attacker: IPlayer): ICard =
     handCards.getAttackingCard(attacker)
 
-  override def getDefenderCard(defender: IPlayer, index: Int): ICard =
+  override def getDefenderCard(defender: IPlayer, index: Int): Option[ICard] =
     fieldCards.getDefenderCard(defender, index)
 
   override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] =
@@ -117,13 +117,13 @@ case class DataManager(
   override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IDataManager =
     copy(fieldCards = fieldCards.setPlayerGoalkeeper(player, goalkeeper))
 
-  override def getPlayerDefenders(player: IPlayer): List[ICard] =
+  override def getPlayerDefenders(player: IPlayer): List[Option[ICard]] =
     fieldCards.getPlayerDefenders(player)
 
-  override def setPlayerDefenders(player: IPlayer, defenders: List[ICard]): IDataManager =
+  override def setPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IDataManager =
     copy(fieldCards = fieldCards.setPlayerField(player, defenders))
 
-  override def removeDefenderCard(defender: IPlayer, card: ICard): IDataManager =
+  override def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IDataManager =
     copy(fieldCards = fieldCards.removeDefenderCard(defender, card))
 
   override def removeDefenderGoalkeeper(defender: IPlayer): IDataManager =
@@ -132,13 +132,10 @@ case class DataManager(
   override def allDefendersBeaten(defender: IPlayer): Boolean =
     fieldCards.allDefendersBeaten(defender)
 
-  override def getDefenderCardAt(defender: IPlayer, index: Int): ICard =
+  override def getDefenderCardAt(defender: IPlayer, index: Int): Option[ICard] =
     fieldCards.getDefenderCard(defender, index)
-
-  override def getPlayerField(player: IPlayer): List[ICard] =
-    fieldCards.getPlayerField(player)
-
-  override def setPlayerField(player: IPlayer, newField: List[ICard]): IDataManager =
+  
+  override def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): IDataManager =
     copy(fieldCards = fieldCards.setPlayerField(player, newField))
 
   override def refillDefenderField(defender: IPlayer): IDataManager =
@@ -161,27 +158,25 @@ trait IDataManager {
 
   def getAttackingCard(attacker: IPlayer): ICard
 
-  def getDefenderCard(defender: IPlayer, index: Int): ICard
+  def getDefenderCard(defender: IPlayer, index: Int): Option[ICard]
 
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
 
   def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IDataManager
 
-  def getPlayerDefenders(player: IPlayer): List[ICard]
+  def getPlayerDefenders(player: IPlayer): List[Option[ICard]]
 
-  def setPlayerDefenders(player: IPlayer, defenders: List[ICard]): IDataManager
+  def setPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IDataManager
 
-  def removeDefenderCard(defender: IPlayer, card: ICard): IDataManager
+  def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IDataManager
 
   def removeDefenderGoalkeeper(defender: IPlayer): IDataManager
 
   def allDefendersBeaten(defender: IPlayer): Boolean
 
-  def getDefenderCardAt(defender: IPlayer, index: Int): ICard
+  def getDefenderCardAt(defender: IPlayer, index: Int): Option[ICard]
 
-  def getPlayerField(player: IPlayer): List[ICard]
-
-  def setPlayerField(player: IPlayer, newField: List[ICard]): IDataManager
+  def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): IDataManager
 
   def initializeFields(player1: IPlayer, player2: IPlayer): IDataManager
 

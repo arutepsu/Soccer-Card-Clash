@@ -21,7 +21,7 @@ class GameService @Inject()(
     val seed = 42L
     val seededRandom = new Random(seed)
     initializer.createGameStateWithAI(humanPlayerName, new MetaAIStrategy(seededRandom))
-//    initializer.createGameStateWithAI(humanPlayerName, new SmartAIStrategy)
+
   def loadGame(file: String): Try[IGameState] = {
     persistence.loadGame(file)
       .map(initializer.initializeFromState)
