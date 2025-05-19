@@ -80,8 +80,8 @@ object FieldCardFactory {
   def createStaticImageCard(image: Image, index: Int): Node = {
     new StackPane {
       children = new ImageView(image) {
-        fitWidth = 135
-        fitHeight = 125
+        fitWidth = 160
+        fitHeight = 150
         preserveRatio = true
       }
     }

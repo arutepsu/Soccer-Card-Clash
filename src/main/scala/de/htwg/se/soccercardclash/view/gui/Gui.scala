@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.module.SceneModule
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.CardImageRegistry
+import de.htwg.se.soccercardclash.view.gui.utils.{Assets, CardImageRegistry}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image
@@ -30,7 +30,7 @@ class Gui(
 
     CardImageRegistry.preloadAll()
     PlayerAvatarRegistry.preloadAvatars()
-
+    
     val sceneManager = sceneInjector.getInstance(classOf[SceneManager])
     GlobalObservable.add(sceneManager)
     Platform.runLater {

@@ -11,26 +11,30 @@
 
 /* Title Styling */
 .title {
-    -fx-font-size: 48px;
+    -fx-font-size: 68px;
+    -fx-font-family: "Rajdhani";
     -fx-font-weight: bold;
     -fx-text-fill: #FFD700;
-    -fx-font-family: "Segoe UI";
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
 
 /* Subtitle (Enter Player Names) */
 .subtitle {
-    -fx-font-size: 28px;
+    -fx-font-size: 22px;
+    -fx-font-family: "Rajdhani";
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: #FFD700;
     -fx-font-family: "Segoe UI";
 }
 
 /* Player Input Fields */
 .player-text-input {
     -fx-font-size: 20px;
-    -fx-background-color: rgba(255, 255, 255, 0.8);
-    -fx-border-color: #FFD700;
+    -fx-font-family: "Rajdhani";
+    -fx-text-fill: #f0e9fa;
+    -fx-font-weight: regular;
+    -fx-background-color: rgba(15,0,48,255);
+    -fx-border-color: rgba(95,63,252,255);
     -fx-border-width: 2px;
     -fx-padding: 10px;
     -fx-background-radius: 5px;

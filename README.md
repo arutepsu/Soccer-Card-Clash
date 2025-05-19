@@ -8,6 +8,8 @@
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
 ![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
-Software Engineering game project in Konstanz University of Applied Sciences
+
+# Software Engineering game project in Konstanz University of Applied Sciences
 
 
+_Developed by [Arutepsu](https://github.com/arutepsu)_

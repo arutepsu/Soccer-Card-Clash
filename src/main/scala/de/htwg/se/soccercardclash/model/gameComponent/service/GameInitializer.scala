@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
-import de.htwg.se.soccercardclash.model.playerComponent.strategyAI.IAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.ai.IAIStrategy
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}

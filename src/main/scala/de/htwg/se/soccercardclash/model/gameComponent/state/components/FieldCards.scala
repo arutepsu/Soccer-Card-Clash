@@ -62,7 +62,7 @@ case class FieldCards(
   }
 
   override def allDefendersBeaten(currentDefender: IPlayer): Boolean =
-    getPlayerDefenders(currentDefender).isEmpty
+    getPlayerDefenders(currentDefender).forall(_.isEmpty)
 
   override def getPlayerDefenders(player: IPlayer): List[Option[ICard]] = defenders(player)
 

@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Human}
-import de.htwg.se.soccercardclash.model.playerComponent.strategyAI.IAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.ai.IAIStrategy
 import play.api.libs.json.*
 
 @Singleton

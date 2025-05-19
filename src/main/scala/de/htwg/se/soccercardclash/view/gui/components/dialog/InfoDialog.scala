@@ -3,9 +3,10 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.util.SceneSwitchEvent
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.scene.control.Button
 import scalafx.scene.layout.{StackPane, VBox}
-import scalafx.scene.text.{Text, TextAlignment}
+import scalafx.scene.text.{Font, Text, TextAlignment}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.geometry.Pos
 import scalafx.scene.Node
@@ -20,6 +21,9 @@ class InfoDialog(
                   overlay: Overlay,
                   autoHide: Boolean = false
                 ) {
+  val regularFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 18)
+  val boldFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 28)
+
 
   private val backgroundImagePath = "/images/data/frames/overlay.png"
   private val imageUrl = Option(getClass.getResource(backgroundImagePath))
@@ -36,13 +40,13 @@ class InfoDialog(
   }
 
   private val titleText = new Text(title) {
-    style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: gold;"
+    styleClass += "dialog-title"
     wrappingWidth = 600
     textAlignment = TextAlignment.Center
   }
 
   private val messageText = new Text(message) {
-    style = "-fx-font-size: 18px; -fx-fill: white;"
+    styleClass += "dialog-message"
     wrappingWidth = 600
     textAlignment = TextAlignment.Center
   }
@@ -67,4 +71,6 @@ class InfoDialog(
   }
 
   overlay.show(dialogPane, autoHide)
+  dialogPane.getStylesheets.add(Styles.infoDialogCss)
+
 }

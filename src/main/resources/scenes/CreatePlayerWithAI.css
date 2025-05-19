@@ -1,5 +1,4 @@
-
-.create-player-ai-panel {
+.create-player-panel {
     -fx-background-image: url("/images/data/frames/background2.jpg");
     -fx-background-size: cover;
     -fx-background-repeat: no-repeat;
@@ -9,41 +8,34 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 10, 0, 5, 5);
 }
 
+/* Title Styling */
 .title {
-    -fx-font-size: 50px;
+    -fx-font-size: 68px;
+    -fx-font-family: "Rajdhani";
     -fx-font-weight: bold;
     -fx-text-fill: #FFD700;
-    -fx-font-family: "Segoe UI";
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
 
+/* Subtitle (Enter Player Names) */
 .subtitle {
-    -fx-font-size: 28px;
+    -fx-font-size: 22px;
+    -fx-font-family: "Rajdhani";
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: #FFD700;
     -fx-font-family: "Segoe UI";
 }
 
+/* Player Input Fields */
 .player-text-input {
     -fx-font-size: 20px;
-    -fx-background-color: rgba(255, 255, 255, 0.8);
-    -fx-border-color: #FFD700;
+    -fx-font-family: "Rajdhani";
+    -fx-text-fill: #f0e9fa;
+    -fx-font-weight: regular;
+    -fx-background-color: rgba(15,0,48,255);
+    -fx-border-color: rgba(95,63,252,255);
     -fx-border-width: 2px;
     -fx-padding: 10px;
     -fx-background-radius: 5px;
 }
 
-.start-button, .back-button {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-background-color: #FFD700;
-    -fx-text-fill: black;
-    -fx-background-radius: 10px;
-    -fx-padding: 10 20 10 20;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.1, 2, 2);
-}
-
-.start-button:hover, .back-button:hover {
-    -fx-background-color: #ffcc00;
-    -fx-cursor: hand;
-}

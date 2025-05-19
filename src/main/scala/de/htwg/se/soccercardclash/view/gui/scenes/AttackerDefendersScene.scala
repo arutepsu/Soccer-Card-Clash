@@ -42,13 +42,13 @@ class AttackerDefendersScene(
     styleClass += "attacker-field-scene"
   }
   
-  private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 180, 50) {
+  private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 200, 100) {
     () =>
       GlobalObservable.notifyObservers(SceneSwitchEvent.PlayingField)
   }
 
   private val boostButton: Button = ActionButtonFactory.createBoostButton(
-    BoostButton(), "Boost Card", 180, 50, this, controller
+    BoostButton(), "Boost Card", 200, 100, this, controller
   )
 
   private val buttonLayout = new HBox {

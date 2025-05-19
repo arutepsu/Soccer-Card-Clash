@@ -12,7 +12,7 @@ import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 import scala.xml.Elem
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
-import de.htwg.se.soccercardclash.model.playerComponent.strategyAI.*
+import de.htwg.se.soccercardclash.model.playerComponent.ai.*
 @Singleton
 class PlayerDeserializer @Inject()(
                                     playerFactory: IPlayerFactory,
@@ -101,9 +101,9 @@ class PlayerDeserializer @Inject()(
   }
 
   private def createAIStrategy(name: String): Option[IAIStrategy] = name match {
-    case "SimpleAIStrategy" => Some(new SimpleAIStrategy)
-    case "SmartAIStrategy" => Some(new SmartAIStrategy)
-    case "RandomAIStrategy" => Some(new RandomAIStrategy())
+    case "SimpleAIStrategy" => Some(new SimpleAttackAIStrategy)
+    case "SmartAIStrategy" => Some(new SmartAttackAIStrategy)
+    case "RandomAIStrategy" => Some(new RandomAttackAIStrategy())
     case "MetaAIStrategy" => Some(new MetaAIStrategy(new Random()))
     case _ => None
   }

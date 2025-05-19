@@ -1,15 +1,24 @@
-/* Scene background */
+
 .root {
     -fx-background-image: url("/images/data/frames/background4.jpg");
-    -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
-/* ListView styling */
+.title {
+    -fx-font-size: 68px;
+    -fx-font-family: "Rajdhani";
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
+}
+
 .custom-list-view {
     -fx-background-color: #9a6cb2;
+    -fx-font-size: 20px;
+    -fx-font-family: "Rajdhani";
     -fx-control-inner-background: #4c0074;
-    -fx-cell-hover-color: #d0e0ff;
+    -fx-cell-hover-color: #f0e9fa;
     -fx-text-fill: black;
 }

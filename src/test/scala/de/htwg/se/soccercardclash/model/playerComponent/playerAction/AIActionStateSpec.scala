@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-class aIActionStateSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class AIActionStateSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   "CanPerformAction" should {
 

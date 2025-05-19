@@ -49,7 +49,7 @@ object CardImageRegistry {
     }
 
     if (!images.contains("defeated.png")) {
-      images.put("defeated.png", defeatedCardImage) // ensure it's accessible via getImage
+      images.put("defeated.png", defeatedCardImage)
     }
   }
 

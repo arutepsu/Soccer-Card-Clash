@@ -24,16 +24,14 @@ case class NavButtonBar(controller: IController, playingField: IGameState, playi
 
   val showDefendersButton: Button = GameButtonFactory.createGameButton(
     text = "Show Defenders",
-    width = 180,
-    height = 50
+    180, 80
   ) { () =>
     GlobalObservable.notifyObservers(SceneSwitchEvent.AttackerDefenderCards)
 
   }
   val pause: Button = GameButtonFactory.createGameButton(
     text = "Pause",
-    width = 180,
-    height = 50
+    180, 80,
   ) { () =>
     val menuOverlay = new PauseDialog(controller, playingFieldScene, playingFieldScene.overlay)
     menuOverlay.show()
@@ -42,8 +40,7 @@ case class NavButtonBar(controller: IController, playingField: IGameState, playi
 
   val makeSwapButton: Button = GameButtonFactory.createGameButton(
     text = "Make Swap",
-    width = 180,
-    height = 50
+    180, 80,
   ) { () =>
     GlobalObservable.notifyObservers(SceneSwitchEvent.AttackerHandCards)
   }

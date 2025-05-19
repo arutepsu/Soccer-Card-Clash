@@ -19,7 +19,7 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.*
-import scalafx.scene.text.Text
+import scalafx.scene.text.{Font, Text}
 import scalafx.scene.{Node, Scene}
 import scalafx.stage.Stage
 import scalafx.util.Duration
@@ -32,7 +32,7 @@ class PlayingFieldScene(
                        ) extends GameScene {
   this.getStylesheets.add(Styles.generalCss)
 
-
+  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
   val overlay = new Overlay(this)
   val comparisonHandler = new ComparisonDialogHandler(controller, contextHolder, overlay)
   val gameStatusBar = new GameStatusBar
@@ -47,27 +47,27 @@ class PlayingFieldScene(
     styleClass += "player-score"
   }
 
-  private def createScoreBox(player: IPlayer, scoreText: Label): VBox = new VBox {
-    styleClass += "score-box"
-    children = Seq(
-      new Label("⚽") {
-        styleClass += "score-icon"
-      },
-      new Label(player.name) {
-        styleClass += "player-name"
-      },
-      scoreText
-    )
-  }
+//  private def createScoreBox(player: IPlayer, scoreText: Label): VBox = new VBox {
+//    styleClass += "score-box"
+//    children = Seq(
+//      new Label("⚽") {
+//        styleClass += "score-icon"
+//      },
+//      new Label(player.name) {
+//        styleClass += "player-name"
+//      },
+//      scoreText
+//    )
+//  }
+//
+//  private val scoresBar = new HBox {
+//    spacing = 50
+//    alignment = Pos.Center
+//    children = Seq(createScoreBox(contextHolder.get.state.getPlayer1, player1ScoreText), createScoreBox(contextHolder.get.state.getPlayer2, player2ScoreText))
+//    styleClass += "scores-bar"
+//  }
 
-  private val scoresBar = new HBox {
-    spacing = 50
-    alignment = Pos.Center
-    children = Seq(createScoreBox(contextHolder.get.state.getPlayer1, player1ScoreText), createScoreBox(contextHolder.get.state.getPlayer2, player2ScoreText))
-    styleClass += "scores-bar"
-  }
-
-  val actionButtonBar = ActionButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
+  val actionButtonBar = ActionButtonBar(controller, contextHolder.get.state, this, gameStatusBar, overlay)
   val navButtonBar = NavButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
   val playersBar = new PlayersBar(controller, this)
 
@@ -82,7 +82,7 @@ class PlayingFieldScene(
 
   val palyersBar = new HBox {
     spacing = 50
-    alignment = Pos.TOP_RIGHT
+    alignment = Pos.TOP_CENTER
     children = Seq(playersBar)
   }
 
@@ -90,35 +90,40 @@ class PlayingFieldScene(
   private val mainLayout = new StackPane {
     children = Seq(
       new VBox {
+        spacing = 30
         children = Seq(
           new BorderPane {
             top = new BorderPane {
-              center = new HBox {
-                spacing = 50
-                alignment = Pos.Center
-                children = Seq(scoresBar)
-              }
-              right = new HBox {
-                spacing = 50
-                alignment = Pos.TOP_RIGHT
-                children = Seq(playersBar)
+              center = new VBox {
+                padding = Insets(40, 0, 0, 0)
+                alignment = Pos.CENTER
+                children = Seq(new HBox {
+                  alignment = Pos.CENTER
+                  children = Seq(playersBar)
+                })
               }
             }
+
+
           },
           new BorderPane {
-            center = new HBox {
-              spacing = 5
-              alignment = Pos.Center
-              children = Seq(navButtonBar, playerFields, actionButtonBar)
-            }
-            bottom = new BorderPane {
-              center = new HBox {
-                alignment = Pos.Center
-                children = Seq(playerHands)
-              }
+            center = new VBox {
+              spacing = 10
+              alignment = Pos.CENTER
+              children = Seq(
+                new HBox {
+                  spacing = 5
+                  alignment = Pos.Center
+                  children = Seq(navButtonBar, playerFields, actionButtonBar)
+                },
+                new HBox {
+                  alignment = Pos.Center
+                  children = Seq(playerHands)
+                }
+              )
             }
           }
-        )
+            )
       },
       overlay.getPane
     )
@@ -151,11 +156,8 @@ class PlayingFieldScene(
   override def handleStateEvent(e: StateEvent): Unit = e match
     case StateEvent.ScoreEvent(player) =>
       scheduler.runSequence(
-        UIAction.delayed(0) {
-          showGoalScoredDialog(player, autoHide = true)
-        },
         UIAction.delayed(4000) {
-          updateDisplay()
+          showGoalScoredDialog(player, autoHide = true)
         }
       )
 
@@ -234,7 +236,7 @@ class PlayingFieldScene(
           attacker match {
             case ai: Player if ai.isAI =>
               scheduler.runSequence(
-                UIAction.delayed(3000) {
+                UIAction.delayed(4000) {
                   handleAITurn()
                 }
               )
@@ -261,7 +263,7 @@ class PlayingFieldScene(
     playerFields.children.add(newDefenderFieldBar)
 
     currentDefenderFieldBar = Some(newDefenderFieldBar)
-    newDefenderFieldBar.updateGameStatus()
+//    newDefenderFieldBar.updateGameStatus()
   }
 
   private def updateHands(ctx: PlayingFieldViewContext): Unit = {

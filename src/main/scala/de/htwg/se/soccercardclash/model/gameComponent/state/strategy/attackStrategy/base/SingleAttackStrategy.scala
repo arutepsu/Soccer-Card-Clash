@@ -90,6 +90,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                                      ): (IDataManager, IRoles, IScores, List[ObservableEvent]) = {
 
     val goalkeeperOpt = dataManager.getPlayerGoalkeeper(defender)
+    println("!!!!!!!!!!!!!!!!!!!!!!!!Entered processGoalkeeperAttack!")
 
     val goalkeeper = goalkeeperOpt.getOrElse(
       throw new NoSuchElementException("Goalkeeper not found")

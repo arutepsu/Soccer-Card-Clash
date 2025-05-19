@@ -1,56 +1,40 @@
-/* 🔹 Players Field Bar Styling */
-.players-field-bar {
-    -fx-background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black */
-    -fx-padding: 15px;
+.card-bar-frame {
+    -fx-background-color: rgba(0, 0, 0, 0.1); 
+    -fx-padding: 5px;
     -fx-border-color: white;
     -fx-border-width: 2px;
-    -fx-border-radius: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 10, 0, 5, 5);
+    -fx-border-radius: 2px;
 }
 
-/* 🔹 Game Status Label */
-.status-label {
-    -fx-font-size: 22px;
-    -fx-text-fill: #FFD700; /* Gold */
-    -fx-font-weight: bold;
-    -fx-font-family: "Arial Black";
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 5, 0.5, 1, 1);
-}
-
-/* 🔹 Player Label */
 .player-label {
-    -fx-font-size: 18px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 26px;
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
 }
 
-/* 🔹 Defender Row Styling */
 .defender-row {
     -fx-spacing: 10px;
     -fx-alignment: center;
     -fx-padding: 5px;
 }
 
-/* 🔹 Goalkeeper Row Styling */
 .goalkeeper-row {
     -fx-alignment: center;
     -fx-padding: 10px;
 }
 
-/* 🔹 Field Cards - No Borders */
 .field-card {
-    -fx-border-width: 0px; /* ❌ No Border */
+    -fx-border-width: 0px;
     -fx-border-radius: 0px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 5, 5);
 }
 
-/* 🔹 Hover Effect on Cards (No Frame) */
 .field-card:hover {
-    -fx-border-width: 0px; /* ❌ No Border */
+    -fx-border-width: 0px;
 }
 
-/* 🔹 Selected Card Effect (No Frame, Only Glow) */
 .selected-card {
     -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.8), 20, 0, 5, 5); /* Glowing Effect */
 }

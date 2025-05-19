@@ -59,14 +59,17 @@ object StateEvent:
   case class ScoreEvent(player: IPlayer) extends StateEvent
 
 
-sealed trait aIAction
+sealed trait AIAction
 
-case class SingleAttackAIAction(defenderIndex: Int) extends aIAction
-case class DoubleAttackAIAction(defenderIndex: Int) extends aIAction
-case class RegularSwapAIAction(index: Int) extends aIAction
-case object ReverseSwapAIAction extends aIAction
-case class BoostDefenderAIAction(defenderIndex: Int) extends aIAction
-case object BoostGoalkeeperAIAction extends aIAction
-case object UndoAIAction extends aIAction
-case object RedoAIAction extends aIAction
-case object NoOpAIAction extends aIAction
+case class SingleAttackAIAction(defenderIndex: Int) extends AIAction
+case class DoubleAttackAIAction(defenderIndex: Int) extends AIAction
+case class RegularSwapAIAction(index: Int) extends AIAction
+case object ReverseSwapAIAction extends AIAction
+case object UndoAIAction extends AIAction
+case object RedoAIAction extends AIAction
+case object NoOpAIAction extends AIAction
+
+sealed trait Zone
+case object DefenderZone extends Zone
+case object GoalkeeperZone extends Zone
+case class BoostAIAction(cardIndex: Int, zone: Zone) extends AIAction

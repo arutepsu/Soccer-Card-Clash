@@ -31,11 +31,6 @@ class PlayersFieldBar(
   this.getStylesheets.add(Styles.playersFieldBarCss)
   styleClass.add("players-field-bar")
 
-  private val statusLabel = new Label {
-    text = s"${getGameState().getRoles.attacker.name} attacks ${getGameState().getRoles.defender.name}!"
-    styleClass.add("status-label")
-  }
-
   private val playerLabel = new Label {
     text = s"${player.name}'s Field"
     styleClass.add("player-label")
@@ -44,7 +39,7 @@ class PlayersFieldBar(
   private var currentDefenderRow: HBox = renderer.createDefenderRow(player, getGameState)
   private var currentGoalkeeperRow: HBox = renderer.createGoalkeeperRow(player, getGameState)
 
-  children = Seq(statusLabel, playerLabel, currentDefenderRow, currentGoalkeeperRow)
+  children = Seq(playerLabel, currentDefenderRow, currentGoalkeeperRow)
 
   def selectedDefenderIndex: Option[Int] = renderer match {
     case selectable: SelectableFieldCardRenderer => selectable.getSelectedDefenderIndex
@@ -62,16 +57,12 @@ class PlayersFieldBar(
     val newGoalkeeperRow = renderer.createGoalkeeperRow(player, () => gameState)
 
     children.clear()
-    children.addAll(statusLabel, playerLabel, newDefenderRow, newGoalkeeperRow)
+    children.addAll(playerLabel, newDefenderRow, newGoalkeeperRow)
 
     currentDefenderRow = newDefenderRow
     currentGoalkeeperRow = newGoalkeeperRow
   }
-
-  def updateGameStatus(): Unit = {
-    statusLabel.text = s"${getGameState().getRoles.attacker.name} attacks ${getGameState().getRoles.defender.name}!"
-  }
-
+  
   def resetSelectedDefender(): Unit = renderer match {
     case selectable: SelectableFieldCardRenderer => selectable.resetSelection()
     case _ => ()

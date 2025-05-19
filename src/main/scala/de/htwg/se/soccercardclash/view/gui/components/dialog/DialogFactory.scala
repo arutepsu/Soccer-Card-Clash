@@ -22,6 +22,7 @@ object DialogFactory {
     new WinnerDialog(winner, overlay, controller, contextHolder, autoHide)
   }
 
+
   def showGameInfoDialog(overlay: Overlay): Unit = {
     new InfoDialog(
       title = "About the Game",

@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.{Assets, Styles}
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.{Insets, Pos}
@@ -21,36 +21,28 @@ import scalafx.scene.text.Font
 class MainMenuScene(controller: IController) extends GameScene {
 
   this.getStylesheets.add(Styles.mainMenuCss)
-  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-SemiBold.ttf"), 10)
   val overlay = new Overlay(this)
   private val logoBox = new VBox {
-    spacing = 10
-    alignment = Pos.Center
-    children = Seq(
-      new ImageView(new Image(getClass.getResource("/images/data/logo/logo1k.png").toExternalForm)) {
-        fitWidth = 300
-        preserveRatio = true
-        smooth = true
-      }
-    )
+    alignment = Pos.TOP_CENTER
+    children = Seq(Assets.createLogoImageView())
   }
   private val rootBox = new VBox {
     spacing = 10
     alignment = Pos.Center
     children = Seq(
-      GameButtonFactory.createGameButton("Singleplayer", 200, 200) {
+      GameButtonFactory.createGameButton("Singleplayer", 200, 150) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
       },
-      GameButtonFactory.createGameButton("Multiplayer", 200, 200) {
+      GameButtonFactory.createGameButton("Multiplayer", 200, 150) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
       },
-      GameButtonFactory.createGameButton("Load Game", 200, 200) {
+      GameButtonFactory.createGameButton("Load Game", 200, 150) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)
       },
-      GameButtonFactory.createGameButton("About", 200, 200) {
+      GameButtonFactory.createGameButton("About", 200, 150) {
         () => DialogFactory.showGameInfoDialog(overlay)
       },
-      GameButtonFactory.createGameButton("Quit", 200, 200) {
+      GameButtonFactory.createGameButton("Quit", 200, 150) {
         () => controller.quit()
       },
       overlay.getPane
@@ -58,23 +50,15 @@ class MainMenuScene(controller: IController) extends GameScene {
   }
 
   val bottomSpacer = new HBox {
-    minHeight = 70
+    minHeight = 40
     visible = false
   }
   StackPane.setAlignment(bottomSpacer, Pos.BottomCenter)
 
-  // Load font properly
-  val fontStream = getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Medium.ttf")
-  val loadedFont = Font.loadFont(fontStream, 12)
-
-  // Get the actual font name safely
-  val actualFontName = Option(loadedFont).map(_.getName).getOrElse("System")
-
   val infoLabel = new Label("Developed by Arutepsu") {
-    font = Font.font(actualFontName, 32)
-    textFill = Color.web("#39ff14")
-    padding = Insets(0, 10, 10, 0)
+    styleClass += "info-label"
   }
+
   StackPane.setAlignment(infoLabel, Pos.BottomRight)
 
   this.root = new StackPane {

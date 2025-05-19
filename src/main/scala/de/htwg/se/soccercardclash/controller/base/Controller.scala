@@ -114,7 +114,7 @@ class Controller @Inject()(
 
   override def quit(): Unit = System.exit(0)
 
-  override def executeAIAction(action: aIAction, ctx: GameContext): (GameContext, Boolean) = {
+  override def executeAIAction(action: AIAction, ctx: GameContext): (GameContext, Boolean) = {
     action match {
       case SingleAttackAIAction(defenderIndex) =>
         singleAttack(defenderIndex, ctx)
@@ -123,10 +123,10 @@ class Controller @Inject()(
       case RegularSwapAIAction(index) =>
         regularSwap(index, ctx)
       case ReverseSwapAIAction =>
-        reverseSwap(ctx)
-      case BoostDefenderAIAction(defenderIndex) =>
+        reverseSwap(ctx) 
+      case BoostAIAction(defenderIndex, DefenderZone) =>
         boostDefender(defenderIndex, ctx)
-      case BoostGoalkeeperAIAction =>
+      case BoostAIAction(defenderIndex, GoalkeeperZone) =>
         boostGoalkeeper(ctx)
       case UndoAIAction =>
         (undo(ctx), true)

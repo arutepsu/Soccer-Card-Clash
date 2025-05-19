@@ -1,5 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.utils
 
+import de.htwg.se.soccercardclash.view.gui.utils.Styles.getClass
+
 object Styles {
   val generalCss: String = getClass.getResource("/scenes/Styles.css").toExternalForm
   val mainMenuCss: String = getClass.getResource("/scenes/MainMenuScene.css").toExternalForm
@@ -12,5 +14,5 @@ object Styles {
   val pauseMenuCss: String = getClass.getResource("/components/menu.css").toExternalForm
   val comparisonCSS: String = getClass.getResource("/components/Comparison.css").toExternalForm
   val loadGameCss: String = getClass.getResource("/scenes/LoadGameScene.css").toExternalForm
-
-}
+  val infoDialogCss: String = getClass.getResource("/scenes/InfoDialog.css").toExternalForm
+}  

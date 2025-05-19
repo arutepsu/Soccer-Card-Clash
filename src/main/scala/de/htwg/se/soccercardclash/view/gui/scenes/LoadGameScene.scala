@@ -10,20 +10,22 @@ import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.application.Platform
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.{Button, ListView}
 import scalafx.scene.layout.{HBox, StackPane, VBox}
-import scalafx.scene.text.Text
+import scalafx.scene.text.{Font, Text}
+import scalafx.scene.control.Label
 
 import java.io.File
 import de.htwg.se.soccercardclash.controller.IGameContextHolder
 class LoadGameScene(controller: IController, gameContextHolder: IGameContextHolder) extends GameScene {
 
+  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
+  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 20)
   private val gamesFolder = new File("games")
   private val savedGames = ObservableBuffer[String]()
   this.getStylesheets.add(Styles.loadGameCss)
-
   private def loadSavedGames(): Unit = {
     savedGames.clear()
     if (gamesFolder.exists() && gamesFolder.isDirectory) {
@@ -39,6 +41,8 @@ class LoadGameScene(controller: IController, gameContextHolder: IGameContextHold
   private val overlay = new Overlay(this)
 
   private val listView = new ListView(savedGames) {
+    prefWidth = 50
+    prefHeight = 400
     styleClass += "custom-list-view"
     onMouseClicked = _ => {
       val selectedGame = selectionModel().getSelectedItem
@@ -48,24 +52,39 @@ class LoadGameScene(controller: IController, gameContextHolder: IGameContextHold
     }
   }
 
-  private val backButton = GameButtonFactory.createGameButton("Back", 150, 50) {
+
+  private val backButton = GameButtonFactory.createGameButton("Back", 200, 100) {
     () => GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
+  }
+  val label = new VBox {
+    spacing = 20
+    alignment = Pos.CENTER
+    padding = Insets(20)
+
+    val titleLabel = new Label("Select a Saved Game") {
+      styleClass += "title"
+    }
+
+    children = Seq(titleLabel)
   }
 
   private val rootVBox = new VBox {
-    spacing = 10
-    alignment = Pos.Center
+    spacing = 20
+    alignment = Pos.CENTER
+    padding = Insets(20)
     children = Seq(
-      new GameLabel("Select a Saved Game"),
+      label,
       listView,
       backButton
     )
   }
 
+
   this.root = new StackPane {
     children = Seq(rootVBox, overlay.getPane)
     styleClass += "root"
   }
+
 
   overlay.getPane.prefWidth = 800
   overlay.getPane.prefHeight = 600

@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.{Observable, aIAction}
+import de.htwg.se.soccercardclash.util.{Observable, AIAction}
 
 import scala.collection.mutable
 trait IController extends Observable {
@@ -23,5 +23,5 @@ trait IController extends Observable {
   def undo(ctx: GameContext): GameContext
   def redo(ctx: GameContext): GameContext
   def quit(): Unit
-  def executeAIAction(action: aIAction, ctx: GameContext): (GameContext, Boolean)
+  def executeAIAction(action: AIAction, ctx: GameContext): (GameContext, Boolean)
 }

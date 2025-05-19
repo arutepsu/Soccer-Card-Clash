@@ -7,50 +7,66 @@ import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarReg
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.{Assets, Styles}
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
-import scalafx.scene.text.Text
+import scalafx.scene.text.{Font, Text}
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
 class CreatePlayerWithAIScene @Inject()(
-                                    controller: IController,
-                                    contextHolder: IGameContextHolder
-                                  ) extends GameScene {
+                                         controller: IController,
+                                         contextHolder: IGameContextHolder
+                                       ) extends GameScene {
+
+  // Load stylesheet and fonts
+  this.getStylesheets.add(Styles.createPlayerWitAICss)
+  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
+  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 20)
 
   private val overlay = new Overlay(this)
-  val playerTextInput: TextField = new TextField()
 
+  val playerTextInput: TextField = new TextField {
+    prefWidth = 300
+    prefHeight = 40
+    styleClass += "player-text-input"
+  }
 
   private val rootVBox: VBox = new VBox {
+    spacing = 20
     prefHeight = 600
     prefWidth = 500
     fillWidth = false
-    padding = Insets(20)
-    alignment = Pos.Center
-    this.getStylesheets.add(Styles.createPlayerWitAICss)
-    styleClass.add("create-player-ai-panel")
+    padding = Insets(10)
+    alignment = Pos.TOP_CENTER
+    styleClass.add("create-player-panel")
 
+    // --- Logo ---
+    val logo = Assets.createLogoImageView()
+
+    // --- Title aSection ---
     val createPlayersTitle: Label = new Label("Create Player") {
       styleClass += "title"
-    }
-
-    val nameTitle: Label = new Label("Enter Player's Name") {
-      styleClass += ("subtitle")
-    }
-
-    children.addAll(createPlayersTitle, nameTitle)
-
-    val playerTextInputFieldVBox = new VBox(10) {
-      children = Seq(playerTextInput)
       padding = Insets(10)
     }
 
+    val nameTitle: Label = new Label("Enter Player's Name") {
+      styleClass += "subtitle"
+    }
 
-    children.add(playerTextInputFieldVBox)
+    val titleSection = new VBox(5) {
+      alignment = Pos.CENTER
+      children.addAll(createPlayersTitle, nameTitle)
+    }
 
+    // --- Input Field ---
+    val inputFieldBox = new VBox(10) {
+      alignment = Pos.CENTER
+      children = Seq(playerTextInput)
+    }
+
+    // --- Buttons ---
     val startButton = GameButtonFactory.createGameButton("Start", 250, 60) {
       () => startGame()
     }
@@ -61,14 +77,18 @@ class CreatePlayerWithAIScene @Inject()(
         GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
     }
 
-    startButton.styleClass.add("start-button")
-
     val startButtonBox = new VBox(10) {
-      alignment = Pos.TOP_CENTER
+      alignment = Pos.CENTER
       children = Seq(startButton, mainMenuButton)
     }
 
-    children.add(startButtonBox)
+    // --- Final layout ---
+    children.addAll(
+      logo,
+      titleSection,
+      inputFieldBox,
+      startButtonBox
+    )
   }
 
   root = new StackPane {
@@ -92,6 +112,7 @@ class CreatePlayerWithAIScene @Inject()(
         PlayerAvatarRegistry.assignAvatarsInOrder(players)
 
         EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)
+
       case None =>
         showAlert("Please enter the player's name.")
     }
@@ -99,7 +120,6 @@ class CreatePlayerWithAIScene @Inject()(
 
   private def getPlayerName: Option[String] =
     Option(playerTextInput.text.value.trim).filter(_.nonEmpty)
-
 
   private def showAlert(content: String): Unit = {
     val alert = GameAlertFactory.createAlert(content, overlay, autoHide = false)

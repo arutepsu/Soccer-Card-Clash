@@ -12,7 +12,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 
-class aIActionManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
+class AIActionManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   val manager = new PlayerActionManager
 

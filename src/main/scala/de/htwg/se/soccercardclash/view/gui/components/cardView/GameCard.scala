@@ -34,8 +34,8 @@ abstract class GameCard(
 
 
   val cardImage = new ImageView(image) {
-    fitWidth = 475 * scaleFactor
-    fitHeight = 275 * scaleFactor
+    fitWidth = 525 * scaleFactor
+    fitHeight = 325 * scaleFactor
     preserveRatio = true
     smooth = true
   }

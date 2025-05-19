@@ -15,3 +15,10 @@
 .logo-image {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0.3, 0, 4);
 }
+.info-label {
+    -fx-font-size: 32px;
+    -fx-text-fill: #39FF14;
+    -fx-font-family: "Rajdhani-Medium";
+    -fx-effect: dropshadow(gaussian, #39FF14, 0.0, 0.8, 0, 0);
+    -fx-padding: 0 10 10 0;
+}

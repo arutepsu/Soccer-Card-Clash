@@ -32,18 +32,18 @@ class AttackerHandScene(
     renderer = new SelectableHandCardRenderer(() => contextHolder.get.state)
   )
   private val overlay = new Overlay(this)
-  private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 180, 50) {
+  private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 200, 100) {
     () => GlobalObservable.notifyObservers(SceneSwitchEvent.PlayingField)
   }
 
   private val regularSwapButton: Button = ActionButtonFactory.createRegularSwapButton(
-    RegularSwapButton(), "Regular Swap", 180, 50, this, controller
+    RegularSwapButton(), "Regular Swap", 200, 100, this, controller
   )
 
   private val circularSwapButton: Button = ActionButtonFactory.createReverseSwapButton(
-    ReverseSwapButton(), "Reverse Swap", 180, 50, this, controller
+    ReverseSwapButton(), "Reverse Swap", 200, 100, this, controller
   )
-  private val infoButton: Button = GameButtonFactory.createGameButton("Info", 180, 50) {
+  private val infoButton: Button = GameButtonFactory.createGameButton("Info", 200, 100) {
     () => DialogFactory.showHandInfoDialog("Title", "Message", overlay)
   }
 

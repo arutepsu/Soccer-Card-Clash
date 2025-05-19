@@ -12,8 +12,10 @@ import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color
 import de.htwg.se.soccercardclash.view.gui.components.cardView.HandCard
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.animation.{FadeTransition, Interpolator, RotateTransition, ScaleTransition, TranslateTransition}
 import scalafx.scene.control.Label
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.util.Duration
@@ -21,8 +23,15 @@ import scalafx.util.Duration
 trait HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox
 
-  def calcHandSpacing(handSize: Int): Double =
-    -Math.min(40, handSize * 6)
+  def calcHandSpacing(handSize: Int): Double = {
+    val baseSpacing = -16.0
+    val spacingPerCard = 2.0
+    val spacing = baseSpacing - (handSize * spacingPerCard)
+    spacing
+  }
+
+
+
 }
 
 class PlayersHandBar(
@@ -30,12 +39,12 @@ class PlayersHandBar(
                       playingField: IGameState,
                       renderer: HandCardRenderer
                     ) extends HBox {
-  
-  alignment = Pos.Center
 
+  alignment = Pos.Center
+  this.getStylesheets.add(Styles.playersFieldBarCss)
+  styleClass.add("players-field-bar")
   val handSize = playingField.getDataManager.getPlayerHand(player).getHandSize
-  spacing = -Math.min(80, handSize * 55) // more cards → higher negative spacing
-  
+  spacing = renderer.calcHandSpacing(handSize)
 
   private var selectedCard: Option[HandCard] = None
 
@@ -44,18 +53,12 @@ class PlayersHandBar(
     case _ => None
   }
   
-  private val playerLabel = new Label {
-    text = s"${player.name}'s Hand"
-    style =
-      "-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: rgba(0,0,0,0.5); -fx-padding: 5px; -fx-background-radius: 10px;"
-  }
-  
   private var currentHandRow: HBox = renderer.createHandCardRow(player, playingField)
   
-  children = Seq(playerLabel, currentHandRow)
+  children = Seq(currentHandRow)
   
   def updateBar(newGameState: IGameState): Unit = {
-
+    styleClass.add("attacker-hand-bar")
     val newHandRow = renderer.createHandCardRow(player, newGameState)
 
     val oldRow = currentHandRow
@@ -82,10 +85,10 @@ class PlayersHandBar(
     Future {
       Thread.sleep(500)
       Platform.runLater(() => {
-        children.set(1, newHandRow)
+        children.setAll(newHandRow)
         currentHandRow = newHandRow
         val handSize = newGameState.getDataManager.getPlayerHand(player).getHandSize
-        spacing = -Math.min(80, handSize * 15)
+        spacing = renderer.calcHandSpacing(handSize)
 
         newHandRow.getChildren.forEach { node =>
           val fadeTransition = new FadeTransition(Duration(500), node)
