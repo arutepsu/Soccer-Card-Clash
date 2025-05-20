@@ -26,6 +26,7 @@ import scalafx.util.Duration
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 class PlayingFieldScene(
                          controller: IController,
                          val contextHolder: IGameContextHolder,
@@ -132,13 +133,14 @@ class PlayingFieldScene(
   root = mainLayout
   private var pendingAITurn = false
   controller.add(this)
-  updateDisplay()
+  updateDisplay(contextHolder.get)
 
 
   private val scheduler = UIActionScheduler()
 
   override def handleGameAction(e: GameActionEvent): Unit = {
     val overlayAction = comparisonHandler.createOverlayAction(e)
+    println(f"from GUI  Event recieved: ${e.getClass.toString}")
     val delay = e match {
       case GameActionEvent.RegularAttack | GameActionEvent.DoubleAttack => 3000
       case GameActionEvent.Undo | GameActionEvent.Redo |
@@ -147,7 +149,7 @@ class PlayingFieldScene(
       case _ => 0
     }
 
-    val updateAction = UIAction.delayed(delay) { updateDisplay() }
+    val updateAction = UIAction.delayed(delay) { updateDisplay(contextHolder.get) }
     scheduler.runSequence((overlayAction.toSeq :+ updateAction)*)
     comparisonHandler.resetLastCards()
   }
@@ -191,10 +193,7 @@ class PlayingFieldScene(
 
     super.update(e)
   }
-
-
-
-  private def delayedUpdate(ms: Int): Unit = delayed(ms)(updateDisplay())
+  private def delayedUpdate(ms: Int): Unit = delayed(ms)(updateDisplay(contextHolder.get))
 
   private def delayed(ms: Int)(action: => Unit): Unit = {
     Future {
@@ -202,21 +201,7 @@ class PlayingFieldScene(
       Platform.runLater(action)
     }
   }
-
-  private def buildViewContext(state: IGameState): Option[PlayingFieldViewContext] = {
-    if (state == null) return None
-
-    val players = Seq(state.getRoles.attacker, state.getRoles.defender)
-
-    Some(PlayingFieldViewContext(
-      state = state,
-    ))
-  }
-
-
-  def updateDisplay(): Unit = {
-    buildViewContext(contextHolder.get.state) match {
-      case Some(viewCtx)  =>
+  def updateDisplay(viewCtx: GameContext): Unit = {
         updateFieldBars(viewCtx)
         updateHands(viewCtx)
         updateAvatars()
@@ -224,7 +209,7 @@ class PlayingFieldScene(
 
         if (pendingAITurn) {
           val attacker = contextHolder.get.state.getRoles.attacker
-          pendingAITurn = false // consume it
+          pendingAITurn = false
 
           attacker match {
             case ai: Player if ai.isAI =>
@@ -236,12 +221,9 @@ class PlayingFieldScene(
             case _ => 
           }
         }
-
-      case _ =>
-    }
   }
 
-  private def updateFieldBars(ctx: PlayingFieldViewContext): Unit = {
+  private def updateFieldBars(ctx: GameContext): Unit = {
     val defender = ctx.state.getRoles.defender
 
     val defenderRenderer = new SelectableFieldCardRenderer(() => ctx.state)
@@ -259,21 +241,21 @@ class PlayingFieldScene(
 //    newDefenderFieldBar.updateGameStatus()
   }
 
-  private def updateHands(ctx: PlayingFieldViewContext): Unit = {
+  private def updateHands(contextHolder: GameContext): Unit = {
     val newHandBar =
       new PlayersHandBar(
-        ctx.state.getRoles.attacker,
-        ctx.state,
+        contextHolder.state.getRoles.attacker,
+        contextHolder.state,
         renderer = DefaultHandCardRenderer
       )
     newHandBar.alignmentInParent = Pos.Center
 
     playerHands.children.setAll(newHandBar)
-    newHandBar.updateBar(ctx.state)
+    newHandBar.updateBar(contextHolder.state)
   }
 
 
-  private def updateScores(ctx: PlayingFieldViewContext): Unit = {
+  private def updateScores(ctx: GameContext): Unit = {
     player1ScoreText.text = s"${ctx.state.getScores.getScore(ctx.state.getRoles.attacker)}"
     player2ScoreText.text = s"${ctx.state.getScores.getScore(ctx.state.getRoles.defender)}"
   }

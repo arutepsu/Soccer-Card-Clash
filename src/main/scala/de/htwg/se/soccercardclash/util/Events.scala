@@ -11,6 +11,7 @@ object SceneSwitchEvent:
   case object MainMenu extends SceneSwitchEvent
   case object CreatePlayer extends SceneSwitchEvent
   case object CreatePlayerWithAI extends SceneSwitchEvent
+  case object AISelection extends SceneSwitchEvent
   case object LoadGame extends SceneSwitchEvent
   case object Exit extends SceneSwitchEvent
   case object StartGame extends SceneSwitchEvent

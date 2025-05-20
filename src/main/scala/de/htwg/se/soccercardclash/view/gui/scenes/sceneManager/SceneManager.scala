@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import de.htwg.se.soccercardclash.view.gui.scenes.*
 import de.htwg.se.soccercardclash.view.gui.utils.CardImageRegistry
 import scalafx.Includes.*
@@ -17,6 +18,7 @@ import scalafx.util.Duration
 class SceneManager(
                     controller: IController,
                     contextHolder: IGameContextHolder,
+                    startupDataHolder: GameStartupDataHolder,
                     stage: scalafx.stage.Stage,
                     windowWidth: Double = 1000,
                     windowHeight: Double = 600
@@ -41,7 +43,8 @@ class SceneManager(
     val newScene: GameScene = e match {
       case SceneSwitchEvent.MainMenu            => new MainMenuScene(controller)
       case SceneSwitchEvent.CreatePlayer        => new CreatePlayerScene(controller, contextHolder)
-      case SceneSwitchEvent.CreatePlayerWithAI  => new CreatePlayerWithAIScene(controller, contextHolder)
+      case SceneSwitchEvent.CreatePlayerWithAI  => new CreatePlayerWithAIScene(controller, contextHolder, startupDataHolder)
+      case SceneSwitchEvent.AISelection         => new AISelectionScene(controller, contextHolder, startupDataHolder)
       case SceneSwitchEvent.LoadGame            => new LoadGameScene(controller, contextHolder)
       case SceneSwitchEvent.PlayingField        => new PlayingFieldScene(controller, contextHolder)
       case SceneSwitchEvent.AttackerHandCards   => new AttackerHandScene(controller, contextHolder)

@@ -18,7 +18,6 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
           println("Boosting Goalkeeper!")
           val (newCtx, success) = controller.boostGoalkeeper(ctx)
           if (success) {
-            contextHolder.set(newCtx)
 //            attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
           }
         } else field.selectedDefenderIndex match {
@@ -26,7 +25,6 @@ case class BoostButton() extends ActionButton[AttackerDefendersScene] {
             println(s"Boosting defender at index: $index")
             val (newCtx, success) = controller.boostDefender(index, ctx)
             if (success) {
-              contextHolder.set(newCtx)
 //              attackerDefendersScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.BOOST_PERFORMED)
             }
           case None =>

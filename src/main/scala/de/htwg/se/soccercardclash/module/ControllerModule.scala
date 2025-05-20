@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.module
 
-import com.google.inject.{AbstractModule, Singleton}
+import com.google.inject.{AbstractModule, Provides, Singleton}
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.base.Controller
 import de.htwg.se.soccercardclash.controller.command.{CommandFactory, ICommandFactory}
@@ -8,6 +8,9 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.util.Observable
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.ai.AIPresetRegistry
+import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
 class ControllerModule extends AbstractModule {
 
@@ -17,13 +20,20 @@ class ControllerModule extends AbstractModule {
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
 
     bind(classOf[IGameService])
-      .toConstructor(classOf[GameService].getConstructor(
-        classOf[IGameInitializer],
-        classOf[IGamePersistence]
-      ))
-      .in(classOf[Singleton])
+    .toConstructor(classOf[GameService].getConstructor(
+      classOf[IGameInitializer],
+      classOf[IGamePersistence],
+      classOf[Map[String, IPlayer]]
+    ))
+    .in(classOf[Singleton])
+
 
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
     bind(classOf[IActionManager]).to(classOf[ActionManager])
+  }
+  @Provides
+  @Singleton
+  def provideAiRoster(playerFactory: IPlayerFactory): Map[String, IPlayer] = {
+    AIPresetRegistry.registerCoreAIs(playerFactory)
   }
 }

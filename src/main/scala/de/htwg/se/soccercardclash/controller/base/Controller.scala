@@ -32,9 +32,12 @@ class Controller @Inject()(
     EventDispatcher.dispatch(this, allEvents)
 
     if (result.success) {
-      EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+      contextHolder.set(updatedCtx)
     }
 
+    if (result.success) {
+      EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+    }
 
     (updatedCtx, result.success)
   }
@@ -74,8 +77,11 @@ class Controller @Inject()(
     contextHolder.set(ctx)
   }
 
-  override def createGameWithAI(humanPlayerName: String): Unit = {
-    val ctx = GameContext(gameService.createNewGameWithAI(humanPlayerName), new UndoManager)
+  override def createGameWithAI(humanPlayerName: String, aiName: String): Unit = {
+    val ctx = GameContext(
+      gameService.createNewGameWithAI(humanPlayerName, aiName),
+      new UndoManager
+    )
     contextHolder.set(ctx)
     EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
   }

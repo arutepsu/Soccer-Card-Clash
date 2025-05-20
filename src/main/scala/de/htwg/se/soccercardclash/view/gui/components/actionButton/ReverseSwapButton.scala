@@ -10,7 +10,6 @@ class ReverseSwapButton extends ActionButton[AttackerHandScene] {
 
     val (newCtx, success) = controller.reverseSwap(ctx)
     if (success) {
-      contextHolder.set(newCtx)
 //      attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REVERSE_SWAP_PERFORMED)
       attackerHandScene.attackerHandBar.updateBar(newCtx.state)
     }

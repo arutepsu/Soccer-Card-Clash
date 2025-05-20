@@ -15,9 +15,12 @@ import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.{Font, Text}
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
+
 class CreatePlayerWithAIScene @Inject()(
                                          controller: IController,
-                                         contextHolder: IGameContextHolder
+                                         contextHolder: IGameContextHolder,
+                                         startupDataHolder: GameStartupDataHolder
                                        ) extends GameScene {
 
   // Load stylesheet and fonts
@@ -67,8 +70,8 @@ class CreatePlayerWithAIScene @Inject()(
     }
 
     // --- Buttons ---
-    val startButton = GameButtonFactory.createGameButton("Start", 250, 60) {
-      () => startGame()
+    val startButton = GameButtonFactory.createGameButton("Ok", 250, 60) {
+      () => proceedToAISelection()
     }
 
     val mainMenuButton = GameButtonFactory.createGameButton("Back", 250, 60) {
@@ -99,24 +102,17 @@ class CreatePlayerWithAIScene @Inject()(
   overlay.getPane.prefHeight = 600
   overlay.getPane.visible = false
 
-  private def startGame(): Unit = {
+  private def proceedToAISelection(): Unit = {
     getPlayerName match {
       case Some(humanName) =>
-        controller.createGameWithAI(humanName)
-
-        val players = Seq(
-          contextHolder.get.state.getRoles.attacker,
-          contextHolder.get.state.getRoles.defender
-        )
-
-        PlayerAvatarRegistry.assignAvatarsInOrder(players)
-
-        EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)
+        startupDataHolder.data.humanPlayerName = Some(humanName)
+        EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.AISelection)
 
       case None =>
         showAlert("Please enter the player's name.")
     }
   }
+
 
   private def getPlayerName: Option[String] =
     Option(playerTextInput.text.value.trim).filter(_.nonEmpty)

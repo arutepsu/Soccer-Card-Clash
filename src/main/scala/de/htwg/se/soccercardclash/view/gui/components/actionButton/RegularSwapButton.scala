@@ -12,7 +12,6 @@ case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
       case Some(index) =>
         val (newCtx, success) = controller.regularSwap(index, ctx)
         if (success) {
-          contextHolder.set(newCtx)
 //          attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REGULAR_SWAP_PERFORMED)
           attackerHandScene.attackerHandBar.updateBar(newCtx.state)
         }

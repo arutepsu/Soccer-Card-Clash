@@ -17,7 +17,7 @@ trait IController extends Observable {
   def boostDefender(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean)
   def boostGoalkeeper(ctx: GameContext): (GameContext, Boolean)
   def createGame(player1: String, player2: String): Unit
-  def createGameWithAI(humanPlayerName: String): Unit
+  def createGameWithAI(humanPlayerName: String, aiName: String): Unit
   def loadGame(fileName: String): Boolean
   def saveGame(ctx: GameContext): Boolean
   def undo(ctx: GameContext): GameContext

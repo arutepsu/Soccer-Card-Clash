@@ -15,4 +15,5 @@ object Styles {
   val comparisonCSS: String = getClass.getResource("/components/Comparison.css").toExternalForm
   val loadGameCss: String = getClass.getResource("/scenes/LoadGameScene.css").toExternalForm
   val infoDialogCss: String = getClass.getResource("/scenes/InfoDialog.css").toExternalForm
+  val aiSelection: String = getClass.getResource("/scenes/AISelectionScene.css").toExternalForm
 }  

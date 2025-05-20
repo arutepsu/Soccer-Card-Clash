@@ -15,9 +15,9 @@ object PlayerAvatarRegistry {
   val avatarsPath = "/images/data/players/"
   private val images: mutable.Map[String, Image] = mutable.Map.empty
   private val playerImageMap: mutable.Map[IPlayer, Image] = mutable.Map.empty
-
+  def getImages: Map[String, Image] = images.toMap
   def preloadAvatars(): Unit = {
-    val fileNames = Seq("player1.jpg", "player2.jpg", "ai.jpg")
+    val fileNames = Seq("player1.jpg", "player2.jpg", "ai.jpg", "taka.jpg", "defendra.jpg", "bitstrom.jpg", "meta.jpg")
 
     fileNames.foreach { fileName =>
       val stream = getClass.getResourceAsStream(avatarsPath + fileName)
@@ -46,8 +46,15 @@ object PlayerAvatarRegistry {
 
     players.foreach { player =>
       player.playerType match {
-        case AI(_) =>
-          assignAvatar(player, "ai.jpg")
+        case AI(strategy) =>
+          val fileName = strategy.getClass.getSimpleName match {
+            case "TakaStrategy" => "taka.jpg"
+            case "BitstormStrategy" => "bitstrom.jpg"
+            case "DefendraStrategy" => "defendra.jpg"
+            case "MetaAIStrategy" => "meta.jpg"
+            case _ => "ai.jpg" // fallback
+          }
+          assignAvatar(player, fileName)
         case Human =>
           val fileName = s"player$humanCounter.jpg"
           assignAvatar(player, fileName)
@@ -71,8 +78,8 @@ object PlayerAvatarRegistry {
     }
   }
 
-  def clear(): Unit = {
-    images.clear()
-    playerImageMap.clear()
-  }
+//  def clear(): Unit = {
+//    images.clear()
+//    playerImageMap.clear()
+//  }
 }

@@ -21,14 +21,14 @@ class CreatePlayersNameWithAITuiCommand(
   def handlePlayerNames(input: String): Boolean = {
     if (!waitingForName) return false
 
-    val trimmed = input.trim
-    if (trimmed.nonEmpty && !trimmed.contains(" ")) {
-      val player1 = trimmed
+    val playerName = input.split(" ").map(_.trim).filter(_.nonEmpty)
+    if (playerName.length == 1) {
+      val player1 = playerName(0)
       println(s"Players set: $player1 vs AI")
 
-      // Start the game
-      new StartGameTuiCommandWithAI(controller, contextHolder, player1).execute()
+      val command = new StartGameTuiCommandWithAI(controller, contextHolder, player1)
 
+      command.execute()
       waitingForName = false
       true
     } else {

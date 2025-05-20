@@ -1,5 +1,6 @@
 package de.htwg.se.soccercardclash.model.playerComponent.base
-import de.htwg.se.soccercardclash.model.playerComponent.ai.IAIStrategy
+
+import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
 
 sealed trait PlayerType
 case object Human extends PlayerType

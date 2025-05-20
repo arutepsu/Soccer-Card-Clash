@@ -46,3 +46,24 @@ case class Player(
   }
 
 }
+
+object Player {
+  def withDefaultActions(name: String, playerType: PlayerType): Player =
+    Player(
+      name = name,
+      playerType = playerType,
+      actionStates = PlayerActionPolicies.values.map { policy =>
+        policy -> CanPerformAction(policy.maxUses)
+      }.toMap
+    )
+  
+  def withCustomActions(name: String, playerType: PlayerType, limits: Map[PlayerActionPolicies, Int]): Player =
+    Player(
+      name = name,
+      playerType = playerType,
+      actionStates = PlayerActionPolicies.values.map { policy =>
+        val uses = limits.getOrElse(policy, policy.maxUses)
+        policy -> (if (uses > 0) CanPerformAction(uses) else OutOfActions)
+      }.toMap
+    )
+}

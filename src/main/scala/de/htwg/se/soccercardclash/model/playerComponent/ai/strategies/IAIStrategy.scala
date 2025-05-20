@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.playerComponent.ai
+package de.htwg.se.soccercardclash.model.playerComponent.ai.strategies
 
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer

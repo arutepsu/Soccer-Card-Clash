@@ -27,7 +27,6 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
       case Some(defenderIndex) =>
         val (newCtx, success) = controller.doubleAttack(defenderIndex, ctx)
         if (success) {
-          contextHolder.set(newCtx)
           playingFieldScene.gameStatusBar.updateStatus(
             GameStatusMessages.ATTACK_INITIATED,
             newCtx.state.getRoles.attacker.name,

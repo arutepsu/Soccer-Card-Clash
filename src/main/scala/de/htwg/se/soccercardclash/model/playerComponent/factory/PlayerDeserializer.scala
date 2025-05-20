@@ -4,15 +4,18 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{PlayerActionPolicies, PlayerActionState}
+import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies, PlayerActionState}
 import de.htwg.se.soccercardclash.util.Deserializer
 import play.api.libs.json.*
+
 import scala.util.Random
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 import scala.xml.Elem
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.model.playerComponent.ai.*
+import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.ai.types.{BitstormStrategy, DefendraStrategy, MetaAIStrategy, TakaStrategy}
 @Singleton
 class PlayerDeserializer @Inject()(
                                     playerFactory: IPlayerFactory,
@@ -29,34 +32,34 @@ class PlayerDeserializer @Inject()(
 
       val strategyAttr = xml.attribute("strategy").map(_.text.trim).getOrElse("")
 
+      val actionStates: Map[PlayerActionPolicies, PlayerActionState] =
+        (xml \ "ActionStates" \ "ActionState").map { node =>
+          val policyStr = (node \ "@policy").text.trim
+          val policy = PlayerActionPolicies.values.find(_.toString == policyStr)
+            .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $policyStr"))
 
-      val playerType: PlayerType = typeAttr match {
-        case "Human" => Human
+          val state = PlayerActionState.fromString(node.text.trim)
+          policy -> state
+        }.toMap
+
+      typeAttr match {
+        case "Human" =>
+          playerFactory.createPlayer(name).setActionStates(actionStates)
+
         case "AI" =>
-          createAIStrategy(strategyAttr).map(AI(_))
-            .getOrElse(throw new IllegalArgumentException(s"Unknown AI strategy: $strategyAttr"))
+          val strategy = createAIStrategy(strategyAttr)
+            .getOrElse(throw new IllegalArgumentException(s"Unsupported AI strategy: $strategyAttr"))
+
+          val customLimits: Map[PlayerActionPolicies, Int] = actionStates.map {
+            case (policy, CanPerformAction(uses)) => policy -> uses
+            case (policy, OutOfActions) => policy -> 0
+          }
+
+          playerFactory.createAIPlayer(name, strategy, customLimits)
+
         case other =>
           throw new IllegalArgumentException(s"Unknown player type: $other")
       }
-
-      val actionStates = (xml \ "ActionStates" \ "ActionState").map { node =>
-        val policyStr = (node \ "@policy").text.trim
-        val policy = PlayerActionPolicies.values.find(_.toString == policyStr)
-          .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $policyStr"))
-
-        val state = PlayerActionState.fromString(node.text.trim)
-
-        policy -> state
-      }.toMap
-
-      val player = playerType match {
-        case Human =>
-          playerFactory.createPlayer(name)
-        case AI(strategy) =>
-          playerFactory.createAIPlayer(name, strategy)
-      }
-
-      player.setActionStates(actionStates)
 
     } match {
       case Success(player) => player
@@ -65,38 +68,41 @@ class PlayerDeserializer @Inject()(
     }
   }
 
+
   override def fromJson(json: JsObject): IPlayer = {
     Try {
       val name = (json \ "name").as[String].trim
       val typeStr = (json \ "type").asOpt[String].getOrElse("Human")
       val strategyStr = (json \ "strategy").asOpt[String].getOrElse("")
 
-      val playerType: PlayerType = typeStr match {
-        case "Human" => Human
+      val actionStates: Map[PlayerActionPolicies, PlayerActionState] =
+        (json \ "actionStates").asOpt[Map[String, String]].getOrElse(Map()).map {
+          case (key, value) =>
+            val policy = PlayerActionPolicies.values.find(_.toString == key)
+              .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $key"))
+
+            val state = PlayerActionState.fromString(value)
+            policy -> state
+        }
+
+      typeStr match {
+        case "Human" =>
+          playerFactory.createPlayer(name).setActionStates(actionStates)
+
         case "AI" =>
-          createAIStrategy(strategyStr).map(AI(_))
-            .getOrElse(throw new IllegalArgumentException(s"Unknown AI strategy: $strategyStr"))
+          val strategy = createAIStrategy(strategyStr)
+            .getOrElse(throw new IllegalArgumentException(s"Unsupported AI strategy: $strategyStr"))
+
+          val customLimits: Map[PlayerActionPolicies, Int] = actionStates.map {
+            case (policy, CanPerformAction(uses)) => policy -> uses
+            case (policy, OutOfActions) => policy -> 0
+          }
+
+          playerFactory.createAIPlayer(name, strategy, customLimits)
+
         case other =>
           throw new IllegalArgumentException(s"Unknown player type: $other")
       }
-
-      val actionStates = (json \ "actionStates").asOpt[Map[String, String]].getOrElse(Map()).map {
-        case (key, value) =>
-          val policy = PlayerActionPolicies.values.find(_.toString == key)
-            .getOrElse(throw new IllegalArgumentException(s"Unknown policy: $key"))
-
-          val state = PlayerActionState.fromString(value)
-          policy -> state
-      }
-
-      val player = playerType match {
-        case Human =>
-          playerFactory.createPlayer(name)
-        case AI(strategy) =>
-          playerFactory.createAIPlayer(name, strategy)
-      }
-
-      player.setActionStates(actionStates)
 
     } match {
       case Success(player) => player
@@ -106,11 +112,12 @@ class PlayerDeserializer @Inject()(
   }
 
   private def createAIStrategy(name: String): Option[IAIStrategy] = name match {
-    case "SimpleAIStrategy" => Some(new SimpleAttackAIStrategy)
-    case "SmartAIStrategy" => Some(new SmartAttackAIStrategy)
-    case "RandomAIStrategy" => Some(new RandomAttackAIStrategy())
-    case "MetaAIStrategy" => Some(new MetaAIStrategy(new Random()))
-    case _ => None
+    case "TakaStrategy"                => Some(new TakaStrategy(new Random()))
+    case "BitstormStrategy"            => Some(new BitstormStrategy(new Random()))
+    case "DefendraStrategy"            => Some(new DefendraStrategy(new Random()))
+    case "MetaAIStrategy"              => Some(new MetaAIStrategy(new Random()))
+    case _                             => None
   }
+
   
 }

@@ -27,7 +27,6 @@ case class SingleButton() extends ActionButton[PlayingFieldScene] {
         println(s"⚡ Performing Single Attack on index: $index")
         val (newCtx, success) = controller.singleAttack(index, ctx)
         if (success) {
-          contextHolder.set(newCtx)
           playingFieldScene.gameStatusBar.updateStatus(
             GameStatusMessages.ATTACK_INITIATED,
             newCtx.state.getRoles.attacker.name,
