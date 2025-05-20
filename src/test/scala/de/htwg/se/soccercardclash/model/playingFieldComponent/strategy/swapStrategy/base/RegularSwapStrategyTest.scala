@@ -62,12 +62,12 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     val handCaptor = ArgumentCaptor.forClass(classOf[IHandCardsQueue])
 
-    verify(mockData).setPlayerHand(ArgumentMatchers.eq(mockAttacker), handCaptor.capture())
+    verify(mockData).updatePlayerHand(ArgumentMatchers.eq(mockAttacker), handCaptor.capture())
 
     val swappedList = handCaptor.getValue.toList
     swappedList should contain inOrder (card2, card1)
 
-    verify(mockRoles).setRoles(updatedPlayer, mockDefender)
+    verify(mockRoles).updateRoles(updatedPlayer, mockDefender)
   }
 
 

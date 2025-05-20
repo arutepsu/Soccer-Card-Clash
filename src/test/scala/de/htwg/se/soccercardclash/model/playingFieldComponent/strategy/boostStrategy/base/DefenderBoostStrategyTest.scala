@@ -62,8 +62,8 @@ class DefenderBoostStrategyTest extends AnyFlatSpec with Matchers with MockitoSu
     val result = strategy.boost(field)
 
     result shouldBe true
-    verify(mockData).setPlayerDefenders(mockAttacker, List(boostedCard))
-    verify(mockRoles).setRoles(mockAttacker, mockDefender)
+    verify(mockData).updatePlayerDefenders(mockAttacker, List(boostedCard))
+    verify(mockRoles).updateRoles(mockAttacker, mockDefender)
   }
 
 

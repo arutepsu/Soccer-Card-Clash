@@ -12,82 +12,60 @@ import play.api.libs.json.{JsObject, Json}
 import scala.xml.Elem
 
 trait IScoresFactory {
-  def create(player1: IPlayer, player2: IPlayer): IScores
+  def create(players: Seq[IPlayer]): IScores
+  def createWithScores(playerScores: Map[IPlayer, Int]): IScores
 }
+
 class ScoresFactory extends IScoresFactory {
-  override def create(player1: IPlayer, player2: IPlayer): IScores =
-    Scores(player1, player2)
+  override def create(players: Seq[IPlayer]): IScores = {
+    val initialScores = players.map(p => p -> 0).toMap
+    Scores(initialScores)
+  }
+
+  override def createWithScores(playerScores: Map[IPlayer, Int]): IScores = {
+    Scores(playerScores)
+  }
 }
+
 
 case class Scores(
-                         player1: IPlayer,
-                         player2: IPlayer,
-                         player1Score: Int = 0,
-                         player2Score: Int = 0,
-                         scoringStrategy: IScoringStrategy = new StandardScoring()
-                       ) extends IScores {
+                   playerToScore: Map[IPlayer, Int],
+                   scoringStrategy: IScoringStrategy = new StandardScoring()
+                 ) extends IScores {
 
-  override def getScorePlayer1: Int = player1Score
-  override def getScorePlayer2: Int = player2Score
+  override def getScore(player: IPlayer): Int =
+    playerToScore.getOrElse(player, 0)
 
   override def scoreGoal(player: IPlayer): (IScores, List[StateEvent]) = {
-    val (newScore1, newScore2) =
-      if (player == player1)
-        (scoringStrategy.calculatePoints(player1Score), player2Score)
-      else
-        (player1Score, scoringStrategy.calculatePoints(player2Score))
+    val current = playerToScore.getOrElse(player, 0)
+    val updatedScore = scoringStrategy.calculatePoints(current)
+    val updatedMap = playerToScore.updated(player, updatedScore)
+    val updated = this.copy(playerToScore = updatedMap)
 
-    val updated = this.copy(player1Score = newScore1, player2Score = newScore2)
     val events = List(StateEvent.ScoreEvent(player)) ++ updated.checkForWinner()
     (updated, events)
   }
 
-  override def setScoringStrategy(strategy: IScoringStrategy): IScores =
+  override def updateScoringStrategy(strategy: IScoringStrategy): IScores =
     this.copy(scoringStrategy = strategy)
 
-  override def setScorePlayer1(score: Int): IScores =
-    this.copy(player1Score = score)
-
-  override def setScorePlayer2(score: Int): IScores =
-    this.copy(player2Score = score)
-
-  override def reset(): IScores =
-    this.copy(player1Score = 0, player2Score = 0)
-
+  override def updateScore(player: IPlayer, score: Int): IScores =
+    this.copy(playerToScore = playerToScore.updated(player, score))
+  
   private def checkForWinner(): List[StateEvent] = {
-    if (player1Score >= 3) List(StateEvent.GameOver(player1))
-    else if (player2Score >= 3) List(StateEvent.GameOver(player2))
-    else Nil
+    playerToScore.collectFirst {
+      case (player, score) if score >= 3 => StateEvent.GameOver(player)
+    }.toList
   }
 }
+
 trait IScores {
-  def getScorePlayer1: Int
+  def getScore(player: IPlayer): Int
 
-  def getScorePlayer2: Int
-
-  def setScoringStrategy(strategy: IScoringStrategy): IScores
+  def updateScoringStrategy(strategy: IScoringStrategy): IScores
 
   def scoreGoal(player: IPlayer): (IScores, List[StateEvent])
 
-  def setScorePlayer1(score: Int): IScores
-
-  def setScorePlayer2(score: Int): IScores
-
-  def reset(): IScores
-
-  def toXml: Elem = {
-    <PlayerScores>
-      <ScorePlayer1>
-        {getScorePlayer1}
-      </ScorePlayer1>
-      <ScorePlayer2>
-        {getScorePlayer2}
-      </ScorePlayer2>
-    </PlayerScores>
-  }
-
-  def toJson: JsObject = Json.obj(
-    "scorePlayer1" -> getScorePlayer1,
-    "scorePlayer2" -> getScorePlayer2
-  )
+  def updateScore(player: IPlayer, score: Int): IScores
+  
 }

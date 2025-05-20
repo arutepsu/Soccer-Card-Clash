@@ -101,8 +101,8 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreBoosts(memento, 1)
 
       // Assert
-      verify(dataManager).setPlayerDefenders(attacker, updatedDefenders)
-      verify(rolesManager).setRoles(attacker, defender)
+      verify(dataManager).updatePlayerDefenders(attacker, updatedDefenders)
+      verify(rolesManager).updateRoles(attacker, defender)
       playingField.lastObservedEvent shouldBe Some(Events.Reverted)
     }
     "restore goalkeeper boost from memento and update roles and observers" in {
@@ -151,8 +151,8 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreGoalkeeperBoost(memento)
 
       // Assert
-      verify(dataManager).setPlayerGoalkeeper(attacker, Some(revertedGK))
-      verify(rolesManager).setRoles(attacker, defender)
+      verify(dataManager).updatePlayerGoalkeeper(attacker, Some(revertedGK))
+      verify(rolesManager).updateRoles(attacker, defender)
       playingField.lastObservedEvent shouldBe Some(Events.Reverted)
     }
     "restore full game state from memento" in {
@@ -220,15 +220,15 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreGameState(memento)
 
       // Assert
-      verify(dataManager).setPlayerDefenders(attacker, List(defCard1))
-      verify(dataManager).setPlayerDefenders(defender, List(defCard2))
-      verify(dataManager).setPlayerGoalkeeper(attacker, Some(gk1))
-      verify(dataManager).setPlayerGoalkeeper(defender, Some(gk2))
+      verify(dataManager).updatePlayerDefenders(attacker, List(defCard1))
+      verify(dataManager).updatePlayerDefenders(defender, List(defCard2))
+      verify(dataManager).updatePlayerGoalkeeper(attacker, Some(gk1))
+      verify(dataManager).updatePlayerGoalkeeper(defender, Some(gk2))
       hand1.toList should contain theSameElementsAs List(h1) // ✅ updated check
       hand2.toList should contain theSameElementsAs List(h2)
       verify(scores).setScorePlayer1(1)
       verify(scores).setScorePlayer2(2)
-      verify(rolesManager).setRoles(restoredP1, restoredP2)
+      verify(rolesManager).updateRoles(restoredP1, restoredP2)
       playingField.lastObservedEvent.isDefined shouldBe true
     }
   }

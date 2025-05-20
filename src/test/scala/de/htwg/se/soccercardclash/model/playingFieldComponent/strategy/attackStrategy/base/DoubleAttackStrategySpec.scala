@@ -67,7 +67,7 @@ class DoubleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       when(rolesManager.defender).thenReturn(defender)
 
       // ✅ This one is critical — because strategy updates the roles!
-      doNothing().when(rolesManager).setRoles(updatedAttacker, defender)
+      doNothing().when(rolesManager).updateRoles(updatedAttacker, defender)
 
       when(attacker.actionStates).thenReturn(Map(PlayerActionPolicies.DoubleAttack -> CanPerformAction(1)))
       when(mockPlayerActionManager.canPerform(attacker, PlayerActionPolicies.DoubleAttack))

@@ -46,7 +46,6 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
           contextHolder.get.state.getRoles.attacker,
           contextHolder.get.state.getRoles.defender
         )
-
         PlayerAvatarRegistry.assignAvatarsInOrder(players)
 
         EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)

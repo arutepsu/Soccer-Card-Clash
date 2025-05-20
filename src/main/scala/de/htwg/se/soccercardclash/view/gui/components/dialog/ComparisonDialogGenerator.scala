@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import scalafx.animation.FadeTransition
 import scalafx.application.{JFXApp3, Platform}
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.*
@@ -30,10 +30,9 @@ import scalafx.scene.text.Text
 
 import java.util.concurrent.{Executors, TimeUnit}
 
+// TODO: Fix - The tie comparison isn't shown. Positions of cards should be changed when attack fails
 object ComparisonDialogGenerator {
   def showSingleComparison(
-                            player1: IPlayer,
-                            player2: IPlayer,
                             attacker: IPlayer,
                             defender: IPlayer,
                             attackingCard: ICard,
@@ -41,12 +40,10 @@ object ComparisonDialogGenerator {
                             attackSuccess: Boolean,
                             sceneWidth: Double
                           ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess, None, None, sceneWidth)
+    showComparisonUI(attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess, None, None, sceneWidth)
   }
 
   def showDoubleComparison(
-                            player1: IPlayer,
-                            player2: IPlayer,
                             attacker: IPlayer,
                             defender: IPlayer,
                             attackingCard1: ICard,
@@ -55,12 +52,10 @@ object ComparisonDialogGenerator {
                             attackSuccess: Boolean,
                             sceneWidth: Double
                           ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess, None, None, sceneWidth)
+    showComparisonUI(attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess, None, None, sceneWidth)
   }
 
   def showTieComparison(
-                         player1: IPlayer,
-                         player2: IPlayer,
                          attacker: IPlayer,
                          defender: IPlayer,
                          attackingCard: ICard,
@@ -69,12 +64,10 @@ object ComparisonDialogGenerator {
                          extraDefenderCard: ICard,
                          sceneWidth: Double
                        ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
+    showComparisonUI(attacker, defender, Some(attackingCard), None, defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
 
   def showDoubleTieComparison(
-                               player1: IPlayer,
-                               player2: IPlayer,
                                attacker: IPlayer,
                                defender: IPlayer,
                                attackingCard1: ICard,
@@ -84,7 +77,7 @@ object ComparisonDialogGenerator {
                                extraDefenderCard: ICard,
                                sceneWidth: Double
                              ): Node = {
-    showComparisonUI(player1, player2, attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
+    showComparisonUI(attacker, defender, Some(attackingCard1), Some(attackingCard2), defendingCard, attackSuccess = false, Some(extraAttackerCard), Some(extraDefenderCard), sceneWidth)
   }
   private val scheduler = Executors.newSingleThreadScheduledExecutor()
   private def runLater(delayMillis: Long)(block: => Unit): Unit = {
@@ -94,7 +87,7 @@ object ComparisonDialogGenerator {
   }
   def createCardImageView(card: ICard, scale: Float): ImageView = {
     new ImageView(CardImageRegistry.getImage(card.fileName)) {
-      fitWidth = 475 * scale
+      fitWidth = 325 * scale
       fitHeight = 275 * scale
       preserveRatio = true
       smooth = true
@@ -102,8 +95,6 @@ object ComparisonDialogGenerator {
   }
 
   private def showComparisonUI(
-                                player1: IPlayer,
-                                player2: IPlayer,
                                 attacker: IPlayer,
                                 defender: IPlayer,
                                 attackingCard1: Option[ICard],
@@ -116,11 +107,15 @@ object ComparisonDialogGenerator {
                               ): Node = {
     val baseWidth = 1200.0
     val scaleFactor = Math.max(0.7, Math.min(1.5, sceneWidth / baseWidth))
-
+    Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 20)
+    Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
     val resultMessage = if (attackSuccess) "Attack Successful!" else "Attack Failed!"
 
     val resultText = new Text(resultMessage) {
-      style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: white;"
+      style = s"-fx-font-size: ${16 * scaleFactor}px;" +
+        s"-fx-font-weight: bold;" +
+        s"-fx-fill: white;" +
+        s"-fx-font-family: Rajdhani;"
       opacity = 0.0
     }
 
@@ -131,14 +126,9 @@ object ComparisonDialogGenerator {
       fadeIn.play()
     }
 
-    val leftPlayer = player1
-    val rightPlayer = player2
+    val leftPlayer = attacker
+    val rightPlayer = defender
 
-    val player1AvatarPath = "/images/data/players/player1.jpg"
-    val player2AvatarPath = "/images/data/players/player2.jpg"
-
-    val leftAvatarImagePath = player1AvatarPath
-    val rightAvatarImagePath = player2AvatarPath
 
     val leftAvatar: ImageView = PlayerAvatarRegistry.getAvatarView(
       player = leftPlayer,
@@ -166,18 +156,19 @@ object ComparisonDialogGenerator {
 
     def createCardFrame(image: ImageView, card: Option[ICard], highlightGreen: Boolean, highlightRed: Boolean): StackPane = {
       val borderEffect = new Rectangle {
-        width = image.fitWidth.value + 10
-        height = image.fitHeight.value + 10
-        stroke = Color.Transparent // Initially no color
+        width = image.fitWidth.value
+        height = image.fitHeight.value
+        stroke = Color.Transparent
         strokeWidth = 3
         fill = Color.Transparent
+
       }
 
       val frame = new StackPane {
         children = Seq(image, borderEffect)
       }
 
-      slideInNode(frame, fromX = if (highlightGreen) -200 else 200, durationMillis = 700)
+      slideInNode(frame, fromX = if (highlightGreen) -100 else 100, durationMillis = 700)
 
       val pause = new PauseTransition(Duration(1000))
       pause.setOnFinished(_ => borderEffect.stroke =
@@ -234,15 +225,19 @@ object ComparisonDialogGenerator {
         highlightRed = !attackSuccess
       )
     }
+    val isDefenderWinner = !attackSuccess
 
-    val winnerName = if (attackSuccess) attacker.name else defender.name
-    val highlightLeftGreen = winnerName == player1.name
-    val highlightRightRed = winnerName == player2.name
+    val winnerTextContent =
+      if (isDefenderWinner) s"🏆 Winner: ${attacker.name}" //roles changed and defender is now attacker
+      else s"🏆 Winner: ${attacker.name}"
 
-    val winnerColor = if (winnerName == player1.name) "green" else "red"
+    val winnerColor = if (isDefenderWinner) "red" else "green"
 
-    val winnerText = new Text(s"🏆 Winner: $winnerName") {
-      style = s"-fx-font-size: ${16 * scaleFactor}px; -fx-font-weight: bold; -fx-fill: $winnerColor;"
+    val winnerText = new Text(winnerTextContent) {
+      style = s"-fx-font-size: ${30 * scaleFactor}px;" +
+        s"-fx-font-weight: bold;" +
+        s"-fx-fill: $winnerColor;" +
+        s"-fx-font-family: Rajdhani;"
       opacity = 0.0
     }
 
@@ -255,9 +250,6 @@ object ComparisonDialogGenerator {
       }
     }
 
-
-
-
     val player1CardsBox = new HBox(10) {
       alignment = scalafx.geometry.Pos.Center
     }
@@ -268,15 +260,9 @@ object ComparisonDialogGenerator {
     val leftCardFrames: Seq[StackPane] = {
       val frames = scala.collection.mutable.ListBuffer[StackPane]()
 
-      if (attacker.name == player1.name) {
-        frames ++= attackingCardFrame1
-        frames ++= attackingCardFrame2
-        frames ++= extraAttackingCardFrame
-      }
-      if (defender.name == player1.name) {
-        frames += defendingCardFrame
-        extraDefendingCardFrame.foreach(frames += _)
-      }
+      frames ++= attackingCardFrame1
+      frames ++= attackingCardFrame2
+      frames ++= extraAttackingCardFrame
 
       frames.toSeq
     }
@@ -284,15 +270,8 @@ object ComparisonDialogGenerator {
     val rightCardFrames: Seq[StackPane] = {
       val frames = scala.collection.mutable.ListBuffer[StackPane]()
 
-      if (attacker.name == player2.name) {
-        frames ++= attackingCardFrame1
-        frames ++= attackingCardFrame2
-        frames ++= extraAttackingCardFrame
-      }
-      if (defender.name == player2.name) {
-        frames += defendingCardFrame
-        extraDefendingCardFrame.foreach(frames += _)
-      }
+      frames += defendingCardFrame
+      extraDefendingCardFrame.foreach(frames += _)
 
       frames.toSeq
     }
@@ -332,10 +311,13 @@ object ComparisonDialogGenerator {
       cardImagesBox.children.add(tiebreakerCardsBox)
     }
 
+    val cardImagesBoxPadded = new VBox(20, cardImagesBox) {
+      padding = Insets(0, 80, 0, 80) // top, right, bottom, left
+    }
 
     val playerInfoBox = new HBox(10,
       new VBox(5, leftAvatar),
-      new VBox(10, cardImagesBox),
+      cardImagesBoxPadded,
       new VBox(5, rightAvatar)
     ) {
       alignment = scalafx.geometry.Pos.Center

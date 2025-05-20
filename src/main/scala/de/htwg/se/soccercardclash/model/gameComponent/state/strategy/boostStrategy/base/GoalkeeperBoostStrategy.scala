@@ -28,13 +28,13 @@ class GoalkeeperBoostStrategy(
         }
 
         val boostedGoalkeeper = goalkeeper.boost()
-        val updatedDataManager = dataManager.setGoalkeeperForAttacker(attacker, boostedGoalkeeper)
+        val updatedDataManager = dataManager.updateGoalkeeperForAttacker(attacker, boostedGoalkeeper)
         val attackerAfterAction = playerActionService.performAction(attacker, PlayerActionPolicies.Boost)
         val updatedRoles = Roles(attackerAfterAction, defender)
 
         val updatedField = playingField
-          .withDataManager(updatedDataManager)
-          .withRoles(updatedRoles)
+          .updateDataManager(updatedDataManager)
+          .updateRoles(updatedRoles)
 
         (true, updatedField, List(GameActionEvent.BoostGoalkeeper))
 

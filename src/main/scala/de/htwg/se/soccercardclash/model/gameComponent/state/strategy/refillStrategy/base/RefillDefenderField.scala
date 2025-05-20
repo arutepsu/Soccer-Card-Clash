@@ -34,9 +34,9 @@ class RefillDefenderField {
       defendersFlat.map(Some(_)).padTo(3, None)
 
     fieldState
-      .setPlayerGoalkeeper(defender, Some(goalkeeper))
-      .setPlayerDefenders(defender, defenders)
-      .setPlayerHand(defender, updatedHand)
+      .updatePlayerGoalkeeper(defender, Some(goalkeeper))
+      .updatePlayerDefenders(defender, defenders)
+      .updatePlayerHand(defender, updatedHand)
   }
 
   private def refillPartial(
@@ -71,9 +71,9 @@ class RefillDefenderField {
     }
 
     fieldState
-      .setPlayerGoalkeeper(defender, Some(goalkeeper))
-      .setPlayerDefenders(defender, adjustedDefenders)
-      .setPlayerHand(defender, updatedHand)
+      .updatePlayerGoalkeeper(defender, Some(goalkeeper))
+      .updatePlayerDefenders(defender, adjustedDefenders)
+      .updatePlayerHand(defender, updatedHand)
   }
 
   private def extractGoalkeeper(cards: List[ICard]): (ICard, List[ICard]) = {

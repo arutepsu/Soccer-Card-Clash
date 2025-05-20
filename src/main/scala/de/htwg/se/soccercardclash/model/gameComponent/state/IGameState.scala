@@ -9,21 +9,17 @@ import play.api.libs.json.*
 import scala.xml.*
 
 trait IGameState extends Observable with Serializable {
-  def getPlayer1: IPlayer
-
-  def getPlayer2: IPlayer
-
   def getDataManager: IDataManager
 
   def getRoles: IRoles
 
   def getScores: IScores
 
-  def withDataManager(newDataManager: IDataManager): IGameState
+  def updateDataManager(newDataManager: IDataManager): IGameState
 
-  def withRoles(newRoles: IRoles): IGameState
+  def updateRoles(newRoles: IRoles): IGameState
 
-  def withScores(newScores: IScores): IGameState
+  def updateScores(newScores: IScores): IGameState
 
   def toXml: Elem = {
     <gameState>
@@ -33,30 +29,42 @@ trait IGameState extends Observable with Serializable {
       <defender>
         {getRoles.defender.toXml}
       </defender>
-      <player1Hand>
-        {getDataManager.getPlayerHand(getPlayer1).toList.map(_.toXml)}
-      </player1Hand>
-      <player2Hand>
-        {getDataManager.getPlayerHand(getPlayer2).toList.map(_.toXml)}
-      </player2Hand>
-      <player1Field>
-        {getDataManager.getPlayerDefenders(getPlayer1).flatMap(_.map(_.toXml))}
-      </player1Field>
-      <player2Field>
-        {getDataManager.getPlayerDefenders(getPlayer2).flatMap(_.map(_.toXml))}
-      </player2Field>
-      <player1Goalkeeper>
-        {getDataManager.getPlayerGoalkeeper(getPlayer1).map(_.toXml).getOrElse(<empty/>)}
-      </player1Goalkeeper>
-      <player2Goalkeeper>
-        {getDataManager.getPlayerGoalkeeper(getPlayer2).map(_.toXml).getOrElse(<empty/>)}
-      </player2Goalkeeper>
-      <player1Score>
-        {getScores.getScorePlayer1}
-      </player1Score>
-      <player2Score>
-        {getScores.getScorePlayer2}
-      </player2Score>
+      <attackerHand>
+        {getDataManager.getPlayerHand(getRoles.attacker).toList.map(_.toXml)}
+      </attackerHand>
+      <defenderHand>
+        {getDataManager.getPlayerHand(getRoles.defender).toList.map(_.toXml)}
+      </defenderHand>
+      <attackerField>
+        {
+        getDataManager.getPlayerDefenders(getRoles.attacker).map {
+          case Some(card) => card.toXml
+          case None => <Card xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+        }
+        }
+      </attackerField>
+
+      <defenderField>
+        {
+        getDataManager.getPlayerDefenders(getRoles.defender).map {
+          case Some(card) => card.toXml
+          case None => <Card xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+        }
+        }
+      </defenderField>
+
+      <attackerGoalkeeper>
+        {getDataManager.getPlayerGoalkeeper(getRoles.attacker).map(_.toXml).getOrElse(<empty/>)}
+      </attackerGoalkeeper>
+      <defenderGoalkeeper>
+        {getDataManager.getPlayerGoalkeeper(getRoles.defender).map(_.toXml).getOrElse(<empty/>)}
+      </defenderGoalkeeper>
+      <attackerScore>
+        {getScores.getScore(getRoles.attacker)}
+      </attackerScore>
+      <defenderScore>
+        {getScores.getScore(getRoles.defender)}
+      </defenderScore>
     </gameState>
   }
 
@@ -64,19 +72,19 @@ trait IGameState extends Observable with Serializable {
   def toJson: JsObject = Json.obj(
     "attacker" -> getRoles.attacker.toJson,
     "defender" -> getRoles.defender.toJson,
-    "player1Hand" -> getDataManager.getPlayerHand(getPlayer1).toList.map(_.toJson),
-    "player2Hand" -> getDataManager.getPlayerHand(getPlayer2).toList.map(_.toJson),
-    "player1Field" -> getDataManager.getPlayerDefenders(getPlayer1).map {
+    "attackerHand" -> getDataManager.getPlayerHand(getRoles.attacker).toList.map(_.toJson),
+    "defenderHand" -> getDataManager.getPlayerHand(getRoles.defender).toList.map(_.toJson),
+    "attackerField" -> getDataManager.getPlayerDefenders(getRoles.attacker).map {
       case Some(card) => card.toJson
       case None => JsNull
     },
-    "player2Field" -> getDataManager.getPlayerDefenders(getPlayer2).map {
+    "defenderField" -> getDataManager.getPlayerDefenders(getRoles.defender).map {
       case Some(card) => card.toJson
       case None => JsNull
     },
-    "player1Goalkeeper" -> getDataManager.getPlayerGoalkeeper(getPlayer1).map(_.toJson).getOrElse(Json.obj()),
-    "player2Goalkeeper" -> getDataManager.getPlayerGoalkeeper(getPlayer2).map(_.toJson).getOrElse(Json.obj()),
-    "player1Score" -> getScores.getScorePlayer1,
-    "player2Score" -> getScores.getScorePlayer2
+    "attackerGoalkeeper" -> getDataManager.getPlayerGoalkeeper(getRoles.attacker).map(_.toJson).getOrElse(Json.obj()),
+    "defenderGoalkeeper" -> getDataManager.getPlayerGoalkeeper(getRoles.defender).map(_.toJson).getOrElse(Json.obj()),
+    "attackerScore" -> getScores.getScore(getRoles.attacker),
+    "defenderScore" -> getScores.getScore(getRoles.defender)
   )
 }

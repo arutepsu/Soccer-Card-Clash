@@ -31,13 +31,13 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
     if (cards.size >= 2) {
       val reversedHand = HandCardsQueue(cards.reverse)
 
-      dataManager = dataManager.setPlayerHand(attacker, reversedHand)
-      val updatedField1 = playingField.withDataManager(dataManager)
+      dataManager = dataManager.updatePlayerHand(attacker, reversedHand)
+      val updatedField1 = playingField.updateDataManager(dataManager)
 
       val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
       val updatedRoles = Roles(updatedAttacker, defender)
 
-      val updatedField2 = updatedField1.withRoles(updatedRoles)
+      val updatedField2 = updatedField1.updateRoles(updatedRoles)
 
       (true, updatedField2, List(GameActionEvent.ReverseSwap))
     } else {

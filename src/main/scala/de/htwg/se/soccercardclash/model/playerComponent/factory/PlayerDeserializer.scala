@@ -21,9 +21,14 @@ class PlayerDeserializer @Inject()(
 
   override def fromXml(xml: Elem): IPlayer = {
     Try {
-      val name = (xml \ "@name").text.trim
-      val typeAttr = (xml \ "@type").text.trim
-      val strategyAttr = (xml \ "@strategy").text.trim
+      val name = xml.attribute("name").map(_.text.trim)
+        .getOrElse(throw new IllegalArgumentException("Missing player 'name' attribute"))
+
+      val typeAttr = xml.attribute("type").map(_.text.trim)
+        .getOrElse(throw new IllegalArgumentException("Missing player 'type' attribute"))
+
+      val strategyAttr = xml.attribute("strategy").map(_.text.trim).getOrElse("")
+
 
       val playerType: PlayerType = typeAttr match {
         case "Human" => Human

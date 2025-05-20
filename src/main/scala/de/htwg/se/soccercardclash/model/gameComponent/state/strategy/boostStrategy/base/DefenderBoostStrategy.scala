@@ -33,13 +33,13 @@ class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManage
     val boostedCard = originalCard.boost()
     val updatedDefenders = defenders.updated(index, Some(boostedCard))
 
-    val updatedDataManager = dataManager.setPlayerDefenders(attacker, updatedDefenders)
+    val updatedDataManager = dataManager.updatePlayerDefenders(attacker, updatedDefenders)
     val attackerAfterAction = playerActionService.performAction(attacker, PlayerActionPolicies.Boost)
     val updatedRoles = Roles(attackerAfterAction, defender)
 
     val updatedField = playingField
-      .withDataManager(updatedDataManager)
-      .withRoles(updatedRoles)
+      .updateDataManager(updatedDataManager)
+      .updateRoles(updatedRoles)
     
     (true, updatedField, List(GameActionEvent.BoostDefender))
   }

@@ -29,21 +29,19 @@ case class FieldCards(
                                goalkeepers: Map[IPlayer, Option[ICard]] = Map().withDefaultValue(None),
                                defenders: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List())
                              ) extends IFieldCards {
-
-  override def getPlayerField(player: IPlayer): List[Option[ICard]] = playerFields(player)
-
-  override def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
+  
+  override def updatePlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
     copy(defenders = defenders.updated(player, newField))
   }
 
   override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] =
     goalkeepers.getOrElse(player, None)
 
-  override def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): FieldCards = {
+  override def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): FieldCards = {
     copy(goalkeepers = goalkeepers.updated(player, goalkeeper))
   }
 
-  override def setGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards =
+  override def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards =
     copy(goalkeepers = goalkeepers.updated(attacker, Some(card)))
 
   override def removeDefenderCard(currentDefender: IPlayer, defenderCardOpt: Option[ICard]): FieldCards = {
@@ -78,17 +76,16 @@ case class FieldCards(
 }
 
 trait IFieldCards {
-  def getPlayerField(player: IPlayer): List[Option[ICard]]
 
-  def setPlayerField(player: IPlayer, newField: List[Option[ICard]]): IFieldCards
+  def updatePlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): IFieldCards
 
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
 
-  def setPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IFieldCards
+  def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IFieldCards
 
   def getPlayerDefenders(player: IPlayer): List[Option[ICard]]
 
-  def setGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards
+  def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards
 
   def removeDefenderCard(currentDefender: IPlayer, defenderCard: Option[ICard]): IFieldCards
 

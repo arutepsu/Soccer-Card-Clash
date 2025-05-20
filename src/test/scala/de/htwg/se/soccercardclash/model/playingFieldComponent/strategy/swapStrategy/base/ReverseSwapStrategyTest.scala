@@ -63,13 +63,13 @@ class ReverseSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     // Capture the reversed hand set by the strategy
     val handCaptor = ArgumentCaptor.forClass(classOf[HandCardsQueue])
-    verify(mockData).setPlayerHand(eqTo(mockAttacker), handCaptor.capture())
+    verify(mockData).updatePlayerHand(eqTo(mockAttacker), handCaptor.capture())
 
 
 
     handCaptor.getValue.toList shouldBe List(card3, card2, card1)
 
-    verify(mockRoles).setRoles(updatedPlayer, mockDefender)
+    verify(mockRoles).updateRoles(updatedPlayer, mockDefender)
   }
 
 

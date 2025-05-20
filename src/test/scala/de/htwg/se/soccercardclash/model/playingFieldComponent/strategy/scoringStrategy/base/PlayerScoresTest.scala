@@ -43,7 +43,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     when(strategy.calculatePoints(0)).thenReturn(5)
 
     val scores = new Scores(field, player1, player2)
-    scores.setScoringStrategy(strategy)
+    scores.updateScoringStrategy(strategy)
 
     scores.scoreGoal(player1)
     scores.getScorePlayer1 shouldBe 5
@@ -93,7 +93,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     }
 
     val scores = new Scores(field, player1, player2)
-    scores.setScoringStrategy(strategy)
+    scores.updateScoringStrategy(strategy)
     scores.scoreGoal(player1) // triggers GameOver
 
     captured match {
@@ -121,7 +121,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     }
 
     val scores = new Scores(field, player1, player2)
-    scores.setScoringStrategy(strategy)
+    scores.updateScoringStrategy(strategy)
     scores.scoreGoal(player2) // triggers GameOver
 
     captured match {
@@ -151,7 +151,7 @@ class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
     }
 
     val scores = new Scores(field, player1, player2)
-    scores.setScoringStrategy(strategy)
+    scores.updateScoringStrategy(strategy)
     scores.scoreGoal(player1)
 
     goalEventTriggered shouldBe true

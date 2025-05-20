@@ -53,8 +53,8 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val result = new RevertCard().revertCard(field, boostedCard)
 
     result shouldBe revertedCard
-    verify(mockData).setPlayerDefenders(mockAttacker, List(revertedCard))
-    verify(mockData).setPlayerDefenders(mockDefender, List(revertedCard))
+    verify(mockData).updatePlayerDefenders(mockAttacker, List(revertedCard))
+    verify(mockData).updatePlayerDefenders(mockDefender, List(revertedCard))
     notified.isDefined shouldBe true
   }
 
@@ -81,8 +81,8 @@ class RevertCardTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val result = new RevertCard().revertCard(field, regularCard)
 
     result shouldBe regularCard
-    verify(mockData).setPlayerDefenders(mockAttacker, List(regularCard))
-    verify(mockData).setPlayerDefenders(mockDefender, List(regularCard))
+    verify(mockData).updatePlayerDefenders(mockAttacker, List(regularCard))
+    verify(mockData).updatePlayerDefenders(mockDefender, List(regularCard))
     notified.isDefined shouldBe true
   }
 }

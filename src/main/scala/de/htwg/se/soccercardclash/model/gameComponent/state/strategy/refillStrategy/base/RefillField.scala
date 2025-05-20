@@ -31,9 +31,9 @@ class RefillField {
       defendersWithoutGK.map(Some(_)).padTo(3, None)
 
     fieldState
-      .setPlayerDefenders(player, paddedDefenders)
-      .setPlayerGoalkeeper(player, newGoalkeeper)
-      .setPlayerHand(player, updatedHand)
+      .updatePlayerDefenders(player, paddedDefenders)
+      .updatePlayerGoalkeeper(player, newGoalkeeper)
+      .updatePlayerHand(player, updatedHand)
   }
 
   private def determineFieldCards(hand: IHandCardsQueue, defenderCount: Int, goalkeeperCount: Int): (List[ICard], IHandCardsQueue) = {

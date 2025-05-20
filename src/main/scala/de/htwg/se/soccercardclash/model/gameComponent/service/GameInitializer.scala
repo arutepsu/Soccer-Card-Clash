@@ -46,18 +46,18 @@ class GameInitializer @Inject()(
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
     val dataManager = dataManagerFactory.createFromData(
-      player1 = p1,
-      player1Hand = hand1,
-      player2 = p2,
-      player2Hand = hand2,
-      player1Defenders = List.empty,
-      player2Defenders = List.empty,
-      player1Goalkeeper = None,
-      player2Goalkeeper = None
+      attacker = p1,
+      attackerHand = hand1,
+      defender = p2,
+      defenderHand = hand2,
+      attackerDefenders = List.empty,
+      defenderDefenders = List.empty,
+      attackerGoalkeeper = None,
+      defenderGoalkeeper = None
     )
 
     val roles = rolesFactory.create(p1, p2)
-    val scores = scoresFactory.create(p1, p2)
+    val scores = scoresFactory.create(Seq(p1, p2))
 
     GameState(
       dataManager = dataManager,
@@ -68,18 +68,18 @@ class GameInitializer @Inject()(
 
 
   override def initializeFromState(state: IGameState): IGameState = {
-    val p1 = state.getPlayer1
-    val p2 = state.getPlayer2
+    val p1 = state.getRoles.attacker
+    val p2 = state.getRoles.defender
 
     val dataManager = dataManagerFactory.createFromData(
-      player1 = p1,
-      player1Hand = state.getDataManager.getPlayerHand(p1).toList,
-      player2 = p2,
-      player2Hand = state.getDataManager.getPlayerHand(p2).toList,
-      player1Defenders = state.getDataManager.getPlayerDefenders(p1),
-      player2Defenders = state.getDataManager.getPlayerDefenders(p2),
-      player1Goalkeeper = state.getDataManager.getPlayerGoalkeeper(p1),
-      player2Goalkeeper = state.getDataManager.getPlayerGoalkeeper(p2)
+      attacker = p1,
+      attackerHand = state.getDataManager.getPlayerHand(p1).toList,
+      defender = p2,
+      defenderHand = state.getDataManager.getPlayerHand(p2).toList,
+      attackerDefenders = state.getDataManager.getPlayerDefenders(p1),
+      defenderDefenders = state.getDataManager.getPlayerDefenders(p2),
+      attackerGoalkeeper = state.getDataManager.getPlayerGoalkeeper(p1),
+      defenderGoalkeeper = state.getDataManager.getPlayerGoalkeeper(p2)
     )
 
     val roles = rolesFactory.create(
@@ -87,9 +87,10 @@ class GameInitializer @Inject()(
       state.getRoles.defender
     )
 
-    val scores = scoresFactory.create(p1, p2)
-      .setScorePlayer1(state.getScores.getScorePlayer1)
-      .setScorePlayer2(state.getScores.getScorePlayer2)
+    val scores = scoresFactory.createWithScores(Map(
+      p1 -> state.getScores.getScore(p1),
+      p2 -> state.getScores.getScore(p2)
+    ))
 
     GameState(dataManager, roles, scores)
   }
@@ -106,18 +107,18 @@ class GameInitializer @Inject()(
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
     val dataManager = dataManagerFactory.createFromData(
-      player1 = humanPlayer,
-      player1Hand = hand1,
-      player2 = aiPlayer,
-      player2Hand = hand2,
-      player1Defenders = List.empty,
-      player2Defenders = List.empty,
-      player1Goalkeeper = None,
-      player2Goalkeeper = None
+      attacker = humanPlayer,
+      attackerHand = hand1,
+      defender = aiPlayer,
+      defenderHand = hand2,
+      attackerDefenders = List.empty,
+      defenderDefenders = List.empty,
+      attackerGoalkeeper = None,
+      defenderGoalkeeper = None
     )
 
-    val roles = rolesFactory.create(humanPlayer, aiPlayer) // Ensure AI is attacker
-    val scores = scoresFactory.create(humanPlayer, aiPlayer)
+    val roles = rolesFactory.create(humanPlayer, aiPlayer)
+    val scores = scoresFactory.create(Seq(humanPlayer, aiPlayer))
 
     GameState(dataManager, roles, scores)
   }

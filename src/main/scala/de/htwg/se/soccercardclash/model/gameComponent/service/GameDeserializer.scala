@@ -31,51 +31,69 @@ class GameDeserializer @Inject() (
   override def fromXml(xml: Elem): IGameState = {
     def extractInner(tag: String): Elem =
       (xml \ tag).headOption
-        .flatMap(_.child.collectFirst { case e: Elem => e })
+        .flatMap(_.child.collect { case e: Elem => e }.headOption)
         .getOrElse(throw new IllegalArgumentException(s"Missing <$tag> inner element"))
 
     val attacker = playerDeserializer.fromXml(extractInner("attacker"))
     val defender = playerDeserializer.fromXml(extractInner("defender"))
 
-    val player1HandCards = (xml \ "player1Hand").headOption
+    val player1HandCards = (xml \ "attackerHand").headOption
       .map(_ \ "Card")
       .getOrElse(NodeSeq.Empty)
       .collect { case e: Elem => cardDeserializer.fromXml(e) }
       .toList
 
-    val player2HandCards = (xml \ "player2Hand").headOption
+    val player2HandCards = (xml \ "defenderHand").headOption
       .map(_ \ "Card")
       .getOrElse(NodeSeq.Empty)
       .collect { case e: Elem => cardDeserializer.fromXml(e) }
       .toList
 
     val player1Defenders: List[Option[ICard]] =
-      (xml \ "player1Field" \ "Card").collect { case e: Elem => Some(cardDeserializer.fromXml(e)) }.toList.padTo(3, None)
+      (xml \ "attackerField" \ "Card").map {
+        case e: Elem =>
+          val isNil = e.attributes.asAttrMap.get("xsi:nil").contains("true")
+          if (isNil || e.child.isEmpty) {
+            None
+          } else {
+            Some(cardDeserializer.fromXml(e))
+          }
+        case _ => None
+      }.toList.padTo(3, None)
 
     val player2Defenders: List[Option[ICard]] =
-      (xml \ "player2Field" \ "Card").collect { case e: Elem => Some(cardDeserializer.fromXml(e)) }.toList.padTo(3, None)
+      (xml \ "defenderField" \ "Card").map {
+        case e: Elem =>
+          val isNil = e.attributes.asAttrMap.get("xsi:nil").contains("true")
+          if (isNil || e.child.isEmpty) {
+            None
+          } else {
+            Some(cardDeserializer.fromXml(e))
+          }
+        case _ => None
+      }.toList.padTo(3, None)
 
+    val player1Goalkeeper = (xml \ "attackerGoalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
+    val player2Goalkeeper = (xml \ "defenderGoalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
 
-    val player1Goalkeeper = (xml \ "player1Goalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
-    val player2Goalkeeper = (xml \ "player2Goalkeeper" \ "Card").headOption.collect { case e: Elem => cardDeserializer.fromXml(e) }
-
-    val player1Score = (xml \ "player1Score").headOption.map(_.text.trim.toInt).getOrElse(0)
-    val player2Score = (xml \ "player2Score").headOption.map(_.text.trim.toInt).getOrElse(0)
+    val player1Score = (xml \ "attackerScore").headOption.map(_.text.trim.toInt).getOrElse(0)
+    val player2Score = (xml \ "defenderScore").headOption.map(_.text.trim.toInt).getOrElse(0)
 
     val dataManager = dataManagerFactory.createFromData(
-      player1 = attacker,
-      player1Hand = player1HandCards,
-      player2 = defender,
-      player2Hand = player2HandCards,
-      player1Defenders = player1Defenders,
-      player2Defenders = player2Defenders,
-      player1Goalkeeper = player1Goalkeeper,
-      player2Goalkeeper = player2Goalkeeper
+      attacker = attacker,
+      attackerHand = player1HandCards,
+      defender = defender,
+      defenderHand = player2HandCards,
+      attackerDefenders = player1Defenders,
+      defenderDefenders = player2Defenders,
+      attackerGoalkeeper = player1Goalkeeper,
+      defenderGoalkeeper = player2Goalkeeper
     )
 
-    val scores = scoresFactory.create(attacker, defender)
-      .setScorePlayer1(player1Score)
-      .setScorePlayer2(player2Score)
+    val scores = scoresFactory.createWithScores(Map(
+      attacker -> player1Score,
+      defender -> player2Score
+    ))
 
     val roles = rolesFactory.create(attacker, defender)
 
@@ -90,24 +108,33 @@ class GameDeserializer @Inject() (
     val attacker = playerDeserializer.fromJson(attackerJson)
     val defender = playerDeserializer.fromJson(defenderJson)
 
-    val player1HandCards = (json \ "player1Hand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
-    val player2HandCards = (json \ "player2Hand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+    val player1HandCards = (json \ "attackerHand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
+    val player2HandCards = (json \ "defenderHand").asOpt[List[JsObject]].getOrElse(Nil).map(cardDeserializer.fromJson)
 
     val player1Defenders: List[Option[ICard]] =
-      (json \ "player1Field").asOpt[List[JsObject]].getOrElse(Nil)
-        .map(obj => Some(cardDeserializer.fromJson(obj)))
+      (json \ "attackerField").asOpt[List[JsValue]].getOrElse(Nil)
+        .map {
+          case JsNull        => None
+          case obj: JsObject => Some(cardDeserializer.fromJson(obj))
+          case other         => throw new IllegalArgumentException(s"Invalid card JSON: $other")
+        }
         .padTo(3, None)
 
     val player2Defenders: List[Option[ICard]] =
-      (json \ "player2Field").asOpt[List[JsObject]].getOrElse(Nil)
-        .map(obj => Some(cardDeserializer.fromJson(obj)))
+      (json \ "defenderField").asOpt[List[JsValue]].getOrElse(Nil)
+        .map {
+          case JsNull        => None
+          case obj: JsObject => Some(cardDeserializer.fromJson(obj))
+          case other         => throw new IllegalArgumentException(s"Invalid card JSON: $other")
+        }
         .padTo(3, None)
 
-    val player1Goalkeeper = (json \ "player1Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
-    val player2Goalkeeper = (json \ "player2Goalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
 
-    val player1Score = (json \ "player1Score").asOpt[Int].getOrElse(0)
-    val player2Score = (json \ "player2Score").asOpt[Int].getOrElse(0)
+    val player1Goalkeeper = (json \ "attackerGoalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
+    val player2Goalkeeper = (json \ "defenderGoalkeeper").asOpt[JsObject].map(cardDeserializer.fromJson)
+
+    val player1Score = (json \ "attackerScore").asOpt[Int].getOrElse(0)
+    val player2Score = (json \ "defenderScore").asOpt[Int].getOrElse(0)
 
     val dataManager = dataManagerFactory.createFromData(
       attacker,
@@ -120,9 +147,10 @@ class GameDeserializer @Inject() (
       player2Goalkeeper
     )
 
-    val scores = scoresFactory.create(attacker, defender)
-      .setScorePlayer1(player1Score)
-      .setScorePlayer2(player2Score)
+    val scores = scoresFactory.createWithScores(Map(
+      attacker -> player1Score,
+      defender -> player2Score
+    ))
 
     val roles = rolesFactory.create(attacker, defender)
 

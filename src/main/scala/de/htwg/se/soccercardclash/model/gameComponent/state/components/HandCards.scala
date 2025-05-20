@@ -62,7 +62,7 @@ case class HandCards(
     )
   }
 
-  override def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): IHandCards = {
+  override def updatePlayerHand(player: IPlayer, newHand: IHandCardsQueue): IHandCards = {
     HandCards(playerHands + (player.name -> newHand), handCardsQueueFactory)
   }
 
@@ -83,7 +83,7 @@ trait IHandCards {
 
   def getPlayerHand(player: IPlayer): IHandCardsQueue
 
-  def setPlayerHand(player: IPlayer, newHand: IHandCardsQueue): IHandCards
+  def updatePlayerHand(player: IPlayer, newHand: IHandCardsQueue): IHandCards
 
   def getAttackingCard(attacker: IPlayer): ICard
 

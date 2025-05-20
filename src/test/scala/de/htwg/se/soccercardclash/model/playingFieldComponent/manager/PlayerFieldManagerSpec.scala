@@ -41,7 +41,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val manager = new FieldCards
       val player = mock[IPlayer]
       val cards = List(mock[ICard], mock[ICard])
-      manager.setPlayerField(player, cards)
+      manager.updatePlayerDefenders(player, cards)
       manager.getPlayerDefenders(player) shouldBe cards
     }
 
@@ -49,7 +49,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val manager = new FieldCards
       val player = mock[IPlayer]
       val gk = Some(mock[ICard])
-      manager.setPlayerGoalkeeper(player, gk)
+      manager.updatePlayerGoalkeeper(player, gk)
       manager.getPlayerGoalkeeper(player) shouldBe gk
     }
 
@@ -61,7 +61,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
 
       when(field.getRoles.attacker).thenReturn(attacker)
 
-      manager.setGoalkeeperForAttacker(field, card)
+      manager.updateGoalkeeperForAttacker(field, card)
       manager.getPlayerGoalkeeper(attacker) shouldBe Some(card)
       verify(field).notifyObservers()
     }
@@ -70,7 +70,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val manager = new FieldCards
       val player = mock[IPlayer]
       val defenders = List(mock[ICard], mock[ICard])
-      manager.setPlayerField(player, defenders)
+      manager.updatePlayerDefenders(player, defenders)
       manager.getPlayerDefenders(player) shouldBe defenders
     }
 
@@ -79,7 +79,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val player = mock[IPlayer]
       val card1 = mock[ICard]
       val card2 = mock[ICard]
-      manager.setPlayerField(player, List(card1, card2))
+      manager.updatePlayerDefenders(player, List(card1, card2))
       manager.removeDefenderCard(player, card1)
       manager.getPlayerDefenders(player) shouldBe List(card2)
     }
@@ -87,7 +87,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
     "remove goalkeeper correctly" in {
       val manager = new FieldCards
       val player = mock[IPlayer]
-      manager.setPlayerGoalkeeper(player, Some(mock[ICard]))
+      manager.updatePlayerGoalkeeper(player, Some(mock[ICard]))
       manager.removeDefenderGoalkeeper(player)
       manager.getPlayerGoalkeeper(player) shouldBe None
     }
@@ -95,7 +95,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
     "determine all defenders beaten" in {
       val manager = new FieldCards
       val player = mock[IPlayer]
-      manager.setPlayerField(player, List())
+      manager.updatePlayerDefenders(player, List())
       manager.allDefendersBeaten(player) shouldBe true
     }
 
@@ -103,7 +103,7 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val manager = new FieldCards
       val player = mock[IPlayer]
       val card = mock[ICard]
-      manager.setPlayerField(player, List(card))
+      manager.updatePlayerDefenders(player, List(card))
       manager.getDefenderCard(player, 0) shouldBe card
     }
 
@@ -117,8 +117,8 @@ class PlayerFieldManagerSpec extends AnyWordSpec with Matchers with MockitoSugar
       val manager = new FieldCards
       val player = mock[IPlayer]
       val card = mock[ICard]
-      manager.setPlayerField(player, List(card))
-      manager.setPlayerGoalkeeper(player, Some(card))
+      manager.updatePlayerDefenders(player, List(card))
+      manager.updatePlayerGoalkeeper(player, Some(card))
       manager.clearAll()
       manager.getPlayerDefenders(player) shouldBe empty
       manager.getPlayerGoalkeeper(player) shouldBe None

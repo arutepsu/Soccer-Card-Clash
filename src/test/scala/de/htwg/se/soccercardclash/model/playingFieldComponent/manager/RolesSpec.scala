@@ -53,7 +53,7 @@ class RolesSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       val manager = new Roles(mockField, attacker, defender)
 
-      manager.setRoles(newAttacker, newDefender)
+      manager.updateRoles(newAttacker, newDefender)
 
       manager.attacker shouldBe newAttacker
       manager.defender shouldBe newDefender

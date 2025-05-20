@@ -27,7 +27,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     Try {
       val attackerHand = dataManager.getPlayerHand(attacker)
       val (attackingCard, updatedAttackerHand) = attackerHand.removeLastCard().get
-      val updatedDataManager = dataManager.setPlayerHand(attacker, updatedAttackerHand)
+      val updatedDataManager = dataManager.updatePlayerHand(attacker, updatedAttackerHand)
 
       val defenderCard: Option[ICard] =
         if (updatedDataManager.allDefendersBeaten(defender))
@@ -66,9 +66,9 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
         }
 
       val updatedField = state
-        .withDataManager(finalManager)
-        .withRoles(updatedRoles)
-        .withScores(updatedScores)
+        .updateDataManager(finalManager)
+        .updateRoles(updatedRoles)
+        .updateScores(updatedScores)
 
       (true, updatedField, comparisonEvent :: additionalEvents)
     } match {
@@ -111,8 +111,8 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
       val updatedManager = updatedManager0
         .removeDefenderGoalkeeper(defender)
-        .setPlayerGoalkeeper(defender, None)
-        .setPlayerDefenders(defender, List.fill(3)(None)) // keep empty slots
+        .updatePlayerGoalkeeper(defender, None)
+        .updatePlayerDefenders(defender, List.fill(3)(None)) // keep empty slots
         .refillDefenderField(defender)
 
       val (updatedScores, scoreEvents) = scores.scoreGoal(attacker)
@@ -159,7 +159,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                             cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.setPlayerHand(attacker, updatedHand)
+    val updatedManager = dataManager.updatePlayerHand(attacker, updatedHand)
 
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
     (updatedManager, event)
@@ -174,7 +174,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                             cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.setPlayerHand(defender, updatedHand)
+    val updatedManager = dataManager.updatePlayerHand(defender, updatedHand)
 
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
     (updatedManager, event)

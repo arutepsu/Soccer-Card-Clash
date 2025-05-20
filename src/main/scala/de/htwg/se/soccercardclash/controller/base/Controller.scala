@@ -82,6 +82,7 @@ class Controller @Inject()(
 
   override def loadGame(fileName: String): Boolean = {
     gameService.loadGame(fileName).toOption match {
+
       case Some(state) =>
         contextHolder.set(GameContext(state, new UndoManager))
         true

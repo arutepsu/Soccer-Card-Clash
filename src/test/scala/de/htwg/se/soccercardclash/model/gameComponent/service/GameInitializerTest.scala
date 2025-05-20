@@ -63,7 +63,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     initializer.getActionManager shouldBe actionManager
 
     verify(deckFactory).shuffleDeck(deck)
-    verify(rolesManager).setRoles(player1, player2)
+    verify(rolesManager).updateRoles(player1, player2)
     verify(playingField).setPlayingField()
 
     verify(dataManager).initializePlayerHands(
@@ -111,10 +111,10 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     initializer.initializeFromState(state)
 
     verify(dataManager).initializePlayerHands(List(player1Card), List(player2Card))
-    verify(dataManager).setPlayerDefenders(player1, player1Defenders)
-    verify(dataManager).setPlayerDefenders(player2, player2Defenders)
-    verify(dataManager).setPlayerGoalkeeper(player1, player1GK)
-    verify(dataManager).setPlayerGoalkeeper(player2, player2GK)
+    verify(dataManager).updatePlayerDefenders(player1, player1Defenders)
+    verify(dataManager).updatePlayerDefenders(player2, player2Defenders)
+    verify(dataManager).updatePlayerGoalkeeper(player1, player1GK)
+    verify(dataManager).updatePlayerGoalkeeper(player2, player2GK)
     verify(playingField).setPlayingField()
 
     initializer.getPlayer1 shouldBe player1

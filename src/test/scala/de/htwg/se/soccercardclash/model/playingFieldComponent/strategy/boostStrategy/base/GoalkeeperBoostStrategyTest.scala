@@ -56,8 +56,8 @@ class GoalkeeperBoostStrategyTest extends AnyFlatSpec with Matchers with Mockito
     val result = strategy.boost(field)
 
     result shouldBe true
-    verify(mockData).setGoalkeeperForAttacker(boostedGoalkeeper)
-    verify(mockRoles).setRoles(updatedPlayer, mockDefender)
+    verify(mockData).updateGoalkeeperForAttacker(boostedGoalkeeper)
+    verify(mockRoles).updateRoles(updatedPlayer, mockDefender)
   }
 
   it should "fail if no goalkeeper is available" in {

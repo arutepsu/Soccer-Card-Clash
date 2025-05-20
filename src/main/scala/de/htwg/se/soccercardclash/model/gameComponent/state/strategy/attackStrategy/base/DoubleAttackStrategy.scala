@@ -35,7 +35,7 @@ class DoubleAttackStrategy(
     }
 
     val attackerAfterAction = playerActionService.performAction(attackerBeforeAction, PlayerActionPolicies.DoubleAttack)
-    val updatedRolesInit = roles.setRoles(attackerAfterAction, defender)
+    val updatedRolesInit = roles.updateRoles(attackerAfterAction, defender)
 
     Try {
       val attackerHand = dataManager.getPlayerHand(attackerAfterAction)
@@ -44,7 +44,7 @@ class DoubleAttackStrategy(
 
       val (attackingCard1, handAfterFirst) = attackerHand.removeLastCard().get
       val (attackingCard2, updatedAttackerHand) = handAfterFirst.removeLastCard().get
-      val dataManagerAfterDraw = dataManager.setPlayerHand(attackerAfterAction, updatedAttackerHand)
+      val dataManagerAfterDraw = dataManager.updatePlayerHand(attackerAfterAction, updatedAttackerHand)
 
       val attackValue = attackingCard1.valueToInt + attackingCard2.valueToInt
       val defenderCard: Option[ICard] =
@@ -90,9 +90,9 @@ class DoubleAttackStrategy(
         }
 
       val updatedField = state
-        .withDataManager(finalManager)
-        .withRoles(updatedRoles)
-        .withScores(updatedScores)
+        .updateDataManager(finalManager)
+        .updateRoles(updatedRoles)
+        .updateScores(updatedScores)
 
       (true, updatedField, comparisonEvent :: additionalEvents)
     } match {
@@ -132,8 +132,8 @@ class DoubleAttackStrategy(
 
       val updatedManager = updatedManager0
         .removeDefenderGoalkeeper(defender)
-        .setPlayerGoalkeeper(defender, None)
-        .setPlayerDefenders(defender, List.empty)
+        .updatePlayerGoalkeeper(defender, None)
+        .updatePlayerDefenders(defender, List.empty)
         .refillDefenderField(defender)
 
       val (updatedScores, scoreEvents) = scores.scoreGoal(attacker)
@@ -179,7 +179,7 @@ class DoubleAttackStrategy(
                             cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.setPlayerHand(attacker, updatedHand)
+    val updatedManager = dataManager.updatePlayerHand(attacker, updatedHand)
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
 
     (updatedManager, event)
@@ -194,7 +194,7 @@ class DoubleAttackStrategy(
                             cards: Option[ICard]*
                           ): (IDataManager, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.setPlayerHand(defender, updatedHand)
+    val updatedManager = dataManager.updatePlayerHand(defender, updatedHand)
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
     (updatedManager, event)
   }

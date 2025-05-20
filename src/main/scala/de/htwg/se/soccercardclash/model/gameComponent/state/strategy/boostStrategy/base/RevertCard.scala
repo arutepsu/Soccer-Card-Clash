@@ -34,10 +34,10 @@ class RevertCard {
     }
 
     dataManager = dataManager
-      .setPlayerDefenders(attacker, updatedAttackerField)
-      .setPlayerDefenders(defender, updatedDefenderField)
+      .updatePlayerDefenders(attacker, updatedAttackerField)
+      .updatePlayerDefenders(defender, updatedDefenderField)
 
-    val updatedState = playingField.withDataManager(dataManager)
+    val updatedState = playingField.updateDataManager(dataManager)
     updatedState.notifyObservers(StateEvent.CardReverted(revertedCard, attacker))
 
     revertedCard

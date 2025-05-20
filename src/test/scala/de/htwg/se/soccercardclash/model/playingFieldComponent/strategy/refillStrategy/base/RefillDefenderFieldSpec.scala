@@ -39,8 +39,8 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
 
       updatedHand.getHandSize shouldBe 0
 
-      verify(fieldState).setPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
-      verify(fieldState).setPlayerDefenders(defender, expectedDefenders)
+      verify(fieldState).updatePlayerGoalkeeper(defender, Some(expectedGoalkeeper))
+      verify(fieldState).updatePlayerDefenders(defender, expectedDefenders)
     }
 
 
@@ -76,8 +76,8 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       // ✅ updated hand should now be empty
       updatedHand.getHandSize shouldBe 0
 
-      verify(fieldState).setPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
-      verify(fieldState).setPlayerDefenders(defender, expectedDefenders)
+      verify(fieldState).updatePlayerGoalkeeper(defender, Some(expectedGoalkeeper))
+      verify(fieldState).updatePlayerDefenders(defender, expectedDefenders)
     }
 
 
@@ -103,8 +103,8 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       strategy.refill(fieldState, defender)
 
       // Verifications: these should NOT be called if the field is full
-      verify(fieldState, never()).setPlayerDefenders(any(), any())
-      verify(fieldState, never()).setPlayerGoalkeeper(any(), any())
+      verify(fieldState, never()).updatePlayerDefenders(any(), any())
+      verify(fieldState, never()).updatePlayerGoalkeeper(any(), any())
     }
 
   }

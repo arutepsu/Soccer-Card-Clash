@@ -38,8 +38,8 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       updatedHand.getHandSize shouldBe 0
       verify(fieldState).setPlayerField(player, cards)
-      verify(fieldState).setPlayerGoalkeeper(player, Some(expectedGoalkeeper))
-      verify(fieldState).setPlayerDefenders(player, expectedDefenders)
+      verify(fieldState).updatePlayerGoalkeeper(player, Some(expectedGoalkeeper))
+      verify(fieldState).updatePlayerDefenders(player, expectedDefenders)
     }
 
 
@@ -62,8 +62,8 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val expectedDefenders = List(card1)
 
       verify(fieldState).setPlayerField(player, List(card1, card2))
-      verify(fieldState).setPlayerGoalkeeper(player, expectedGoalkeeper)
-      verify(fieldState).setPlayerDefenders(player, expectedDefenders)
+      verify(fieldState).updatePlayerGoalkeeper(player, expectedGoalkeeper)
+      verify(fieldState).updatePlayerDefenders(player, expectedDefenders)
     }
 
 
@@ -86,8 +86,8 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       strategy.refill(fieldState, player, hand)
 
       verify(fieldState, never()).setPlayerField(any(), any())
-      verify(fieldState, never()).setPlayerGoalkeeper(any(), any())
-      verify(fieldState, never()).setPlayerDefenders(any(), any())
+      verify(fieldState, never()).updatePlayerGoalkeeper(any(), any())
+      verify(fieldState, never()).updatePlayerDefenders(any(), any())
     }
 
     "not refill if no cards are needed" in {

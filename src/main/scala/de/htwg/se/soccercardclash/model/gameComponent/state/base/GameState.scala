@@ -22,24 +22,19 @@ case class GameState(
                       roles: IRoles,
                       scores: IScores
                     ) extends IGameState {
-
-  override def getPlayer1: IPlayer = roles.attacker
-
-  override def getPlayer2: IPlayer = roles.defender
-
   override def getDataManager: IDataManager = dataManager
 
   override def getRoles: IRoles = roles
 
   override def getScores: IScores = scores
 
-  override def withDataManager(newDataManager: IDataManager): IGameState =
+  override def updateDataManager(newDataManager: IDataManager): IGameState =
     copy(dataManager = newDataManager)
 
-  override def withRoles(newRoles: IRoles): IGameState =
+  override def updateRoles(newRoles: IRoles): IGameState =
     copy(roles = newRoles)
 
-  override def withScores(newScores: IScores): IGameState =
+  override def updateScores(newScores: IScores): IGameState =
     copy(scores = newScores)
 
 }

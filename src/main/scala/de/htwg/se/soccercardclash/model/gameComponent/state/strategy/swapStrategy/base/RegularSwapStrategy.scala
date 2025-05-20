@@ -37,13 +37,13 @@ class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager)
 
     hand.swap(index, hand.getHandSize - 1) match {
       case Success(updatedHand) =>
-        val updatedDataManager = dataManager.setPlayerHand(attacker, updatedHand)
+        val updatedDataManager = dataManager.updatePlayerHand(attacker, updatedHand)
         val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
         val updatedRoles = Roles(updatedAttacker, defender)
 
         val updatedField = playingField
-          .withDataManager(updatedDataManager)
-          .withRoles(updatedRoles)
+          .updateDataManager(updatedDataManager)
+          .updateRoles(updatedRoles)
 
         (true, updatedField, List(GameActionEvent.RegularSwap))
 

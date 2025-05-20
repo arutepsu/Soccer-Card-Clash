@@ -23,7 +23,7 @@ import scalafx.scene.text.{Font, Text}
 import scalafx.scene.{Node, Scene}
 import scalafx.stage.Stage
 import scalafx.util.Duration
-
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 class PlayingFieldScene(
@@ -202,28 +202,21 @@ class PlayingFieldScene(
       Platform.runLater(action)
     }
   }
+
   private def buildViewContext(state: IGameState): Option[PlayingFieldViewContext] = {
     if (state == null) return None
-    val player1 = state.getPlayer1
-    val player2 = state.getPlayer2
-    val dataManager = state.getDataManager
-    val hasGoalkeeper1 = dataManager.getPlayerGoalkeeper(player1).nonEmpty
+
+    val players = Seq(state.getRoles.attacker, state.getRoles.defender)
+
     Some(PlayingFieldViewContext(
-      state,
-      player1,
-      player2,
-      state.getRoles.attacker,
-      state.getRoles.defender,
-      dataManager,
-      state.getScores.getScorePlayer1,
-      state.getScores.getScorePlayer2,
-      hasGoalkeeper1
+      state = state,
     ))
   }
 
+
   def updateDisplay(): Unit = {
     buildViewContext(contextHolder.get.state) match {
-      case Some(viewCtx) if viewCtx.hasGoalkeeper1 =>
+      case Some(viewCtx)  =>
         updateFieldBars(viewCtx)
         updateHands(viewCtx)
         updateAvatars()
@@ -269,7 +262,7 @@ class PlayingFieldScene(
   private def updateHands(ctx: PlayingFieldViewContext): Unit = {
     val newHandBar =
       new PlayersHandBar(
-        ctx.attacker,
+        ctx.state.getRoles.attacker,
         ctx.state,
         renderer = DefaultHandCardRenderer
       )
@@ -281,8 +274,8 @@ class PlayingFieldScene(
 
 
   private def updateScores(ctx: PlayingFieldViewContext): Unit = {
-    player1ScoreText.text = s"${ctx.score1}"
-    player2ScoreText.text = s"${ctx.score2}"
+    player1ScoreText.text = s"${ctx.state.getScores.getScore(ctx.state.getRoles.attacker)}"
+    player2ScoreText.text = s"${ctx.state.getScores.getScore(ctx.state.getRoles.defender)}"
   }
 
   private def updateAvatars(): Unit = {

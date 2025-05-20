@@ -81,7 +81,6 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         } yield UIAction.delayed(0) {
           overlay.show(
             ComparisonDialogGenerator.showSingleComparison(
-              state.getPlayer1, state.getPlayer2,
               attacker, defender,
               card, defCard, success, width
             ),
@@ -98,7 +97,6 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         } yield UIAction.delayed(0) {
           overlay.show(
             ComparisonDialogGenerator.showDoubleComparison(
-              state.getPlayer1, state.getPlayer2,
               attacker, defender, c1, c2, defCard, success, width
             ),
             true
@@ -114,7 +112,6 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         } yield UIAction.delayed(0) {
           overlay.show(
             ComparisonDialogGenerator.showTieComparison(
-              state.getPlayer1, state.getPlayer2,
               attacker, defender, c1, c2, c3, c4, width
             ),
             true
@@ -131,7 +128,6 @@ class ComparisonDialogHandler(controller: IController, contextHolder: IGameConte
         } yield UIAction.delayed(0) {
           overlay.show(
             ComparisonDialogGenerator.showDoubleTieComparison(
-              state.getPlayer1, state.getPlayer2,
               attacker, defender, c1, c2, c3, c4, c5, width
             ),
             true

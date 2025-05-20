@@ -9,6 +9,14 @@
     -fx-scale-x: 0.9;
     -fx-scale-y: 0.9;
 }
+.scores-title {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
 .player-name {
     -fx-font-size: 40px;
     -fx-font-family: "Rajdhani";

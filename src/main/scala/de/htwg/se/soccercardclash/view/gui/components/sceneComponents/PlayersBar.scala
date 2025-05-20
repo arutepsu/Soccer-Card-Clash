@@ -45,41 +45,38 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
     playerBoxes = Seq.empty
 
     val playingField = scene.contextHolder.get.state
-    val player1 = playingField.getRoles.attacker
-    val player2 = playingField.getRoles.defender
+    val attacker = playingField.getRoles.attacker
+    val defender = playingField.getRoles.defender
 
-    val avatar1 = PlayerAvatarRegistry.getAvatarView(player1, scale = 0.07f)
-    val avatar2 = PlayerAvatarRegistry.getAvatarView(player2, scale = 0.07f)
+    val avatar1 = PlayerAvatarRegistry.getAvatarView(attacker, scale = 0.07f)
+    val avatar2 = PlayerAvatarRegistry.getAvatarView(defender, scale = 0.07f)
 
-    // Score labels
-    val scoreLabel1 = new Label(s"${playingField.getScores.getScorePlayer1}") {
+    val scoreLabel1 = new Label(s"${playingField.getScores.getScore(attacker)}") {
       styleClass += "player-score"
     }
-    val scoreLabel2 = new Label(s"${playingField.getScores.getScorePlayer2}") {
+    val scoreLabel2 = new Label(s"${playingField.getScores.getScore(defender)}") {
       styleClass += "player-score"
     }
-    playerScoreLabels += (player1 -> scoreLabel1)
-    playerScoreLabels += (player2 -> scoreLabel2)
 
-    // Action labels
+    playerScoreLabels += (attacker -> scoreLabel1)
+    playerScoreLabels += (defender -> scoreLabel2)
+
     val actionLabel1 = new Label("") {
       styleClass += "player-actions"
     }
     val actionLabel2 = new Label("") {
       styleClass += "player-actions"
     }
-    actionsLabels += (player1 -> actionLabel1)
-    actionsLabels += (player2 -> actionLabel2)
+    actionsLabels += (attacker -> actionLabel1)
+    actionsLabels += (defender -> actionLabel2)
 
-    // Player name labels
-    val nameLabel1 = new Label(player1.name) {
+    val nameLabel1 = new Label(attacker.name) {
       styleClass += "player-name"
     }
-    val nameLabel2 = new Label(player2.name) {
+    val nameLabel2 = new Label(defender.name) {
       styleClass += "player-name"
     }
 
-    // Avatar boxes
     val avatarBox1 = new VBox {
       styleClass += "player-avatar-box"
       spacing = 5
@@ -94,7 +91,6 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
       children = Seq(avatar2)
     }
 
-    // Action + name boxes
     val actionBox1 = new VBox {
       alignment = Pos.CENTER
       spacing = 5
@@ -106,13 +102,12 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
       children = Seq(nameLabel2, actionLabel2)
     }
 
-    // Score-only box (centered between players)
     val scoreBox = new VBox {
       alignment = Pos.CENTER
       spacing = 5
 
       val scoresTitle = new Label("Scores") {
-        styleClass += "scores-title" // Optional: for styling
+        styleClass += "scores-title"
       }
 
       val spacer = new Region {
@@ -128,9 +123,6 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
       children = Seq(scoresTitle, scoreRow)
     }
 
-
-
-    // Add to layout
     children.addAll(
       avatarBox1,
       actionBox1,
@@ -139,7 +131,6 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
       avatarBox2
     )
 
-    // Track for highlighting
     playerBoxes = Seq(avatarBox1, avatarBox2)
 
     refreshActionStates()
@@ -162,11 +153,10 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
 
   def refreshScores(): Unit = {
     val scores = scene.contextHolder.get.state.getScores
-    val roles = scene.contextHolder.get.state.getRoles
-    playerScoreLabels.get(roles.attacker).foreach(_.text = s"${scores.getScorePlayer1}")
-    playerScoreLabels.get(roles.defender).foreach(_.text = s"${scores.getScorePlayer2}")
+    playerScoreLabels.foreach { case (player, label) =>
+      label.text = s"${scores.getScore(player)}"
+    }
   }
-
   def refreshOnRoleSwitch(): Unit = {
 //    updateAttackerHighlight()
     refreshActionStates()
