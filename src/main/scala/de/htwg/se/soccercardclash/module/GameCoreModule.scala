@@ -7,7 +7,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.gameComponent.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 class GameCoreModule extends AbstractModule {
@@ -18,7 +18,7 @@ class GameCoreModule extends AbstractModule {
         .getConstructor(
           classOf[IPlayerFactory],
           classOf[IDeckFactory],
-          classOf[IDataManagerFactory],
+          classOf[IGameCardsFactory],
           classOf[IRolesFactory],
           classOf[IScoresFactory]
         ))

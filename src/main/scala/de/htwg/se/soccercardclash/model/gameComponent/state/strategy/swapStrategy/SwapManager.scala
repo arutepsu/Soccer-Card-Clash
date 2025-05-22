@@ -12,9 +12,9 @@ class SwapManager @Inject()() extends ISwapManager {
 
   override def swapAttacker(
                              strategy: ISwapStrategy,
-                             playingField: IGameState
+                             state: IGameState
                            ): (Boolean, IGameState, List[ObservableEvent]) = {
-    strategy.swap(playingField)
+    strategy.swap(state)
   }
 }
 
@@ -22,6 +22,6 @@ class SwapManager @Inject()() extends ISwapManager {
 trait ISwapManager {
   def swapAttacker(
                     strategy: ISwapStrategy,
-                    playingField: IGameState
+                    state: IGameState
                   ): (Boolean, IGameState, List[ObservableEvent])
 }

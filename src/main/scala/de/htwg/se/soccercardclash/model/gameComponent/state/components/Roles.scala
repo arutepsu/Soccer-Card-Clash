@@ -25,7 +25,7 @@ case class Roles(
   override def switchRoles(): Roles =
     Roles(defender, attacker)
 
-  override def updateRoles(newAttacker: IPlayer, newDefender: IPlayer): Roles =
+  override def newRoles(newAttacker: IPlayer, newDefender: IPlayer): Roles =
     Roles(newAttacker, newDefender)
 
 }
@@ -37,5 +37,5 @@ trait IRoles {
 
   def switchRoles(): IRoles
 
-  def updateRoles(newAttacker: IPlayer, newDefender: IPlayer): IRoles
+  def newRoles(newAttacker: IPlayer, newDefender: IPlayer): IRoles
 }

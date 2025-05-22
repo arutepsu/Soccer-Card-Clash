@@ -12,8 +12,8 @@ import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
 import scala.collection.mutable
 
-trait IDataManagerFactory {
-  def create(attacker: IPlayer, defender: IPlayer): IDataManager
+trait IGameCardsFactory {
+  def create(attacker: IPlayer, defender: IPlayer): IGameCards
 
   def createFromData(
                       attacker: IPlayer,
@@ -24,22 +24,22 @@ trait IDataManagerFactory {
                       defenderDefenders: List[Option[ICard]],
                       attackerGoalkeeper: Option[ICard],
                       defenderGoalkeeper: Option[ICard]
-                    ): IDataManager
+                    ): IGameCards
 }
 
-class DataManagerFactory @Inject()(
-                                    handManagerFactory: IHandCardsFactory,
-                                    fieldManagerFactory: IFieldCardsFactory
-                                  ) extends IDataManagerFactory {
+class GameCardsFactory @Inject()(
+                                  handCardsFactory: IHandCardsFactory,
+                                  fieldCardsFactory: IFieldCardsFactory
+                                  ) extends IGameCardsFactory {
 
-  override def create(attacker: IPlayer, defender: IPlayer): IDataManager = {
-    val handManager = handManagerFactory.empty
-    val fieldManager = fieldManagerFactory.create(
+  override def create(attacker: IPlayer, defender: IPlayer): IGameCards = {
+    val handManager = handCardsFactory.empty
+    val fieldManager = fieldCardsFactory.create(
       Map(attacker -> List.empty, defender -> List.empty).withDefaultValue(List.empty),
       Map(attacker -> None, defender -> None).withDefaultValue(None),
       Map(attacker -> List.empty, defender -> List.empty).withDefaultValue(List.empty)
     )
-    DataManager(handManager, fieldManager)
+    GameCards(handManager, fieldManager)
   }
 
   override def createFromData(
@@ -51,17 +51,17 @@ class DataManagerFactory @Inject()(
                                defenderDefenders: List[Option[ICard]],
                                attackerGoalkeeper: Option[ICard],
                                defenderGoalkeeper: Option[ICard]
-                             ): IDataManager = {
+                             ): IGameCards = {
 
-    val handManager = handManagerFactory.create(
+    val hand = handCardsFactory.create(
       attacker,
       attackerHand,
       defender,
       defenderHand
     )
 
-    val fieldManager = fieldManagerFactory.create(
-      playerFields = Map.empty, // If not used
+    val field = fieldCardsFactory.create(
+      playerFields = Map.empty,
       goalkeepers = Map(
         attacker -> attackerGoalkeeper,
         defender -> defenderGoalkeeper
@@ -72,21 +72,21 @@ class DataManagerFactory @Inject()(
       )
     )
 
-    val rawDataManager = DataManager(handManager, fieldManager)
-    rawDataManager.initializeFields(attacker, defender)
+    val rawGameCards = GameCards(hand, field)
+    rawGameCards.initializeFields(attacker, defender)
   }
 }
 
-case class DataManager(
+case class GameCards(
                         handCards: IHandCards,
                         fieldCards: IFieldCards,
                         refillStrategy: IRefillStrategy = new StandardRefillStrategy()
-                      ) extends IDataManager {
+                      ) extends IGameCards {
   override def getPlayerHand(player: IPlayer): IHandCardsQueue =
     handCards.getPlayerHand(player)
 
-  override def updatePlayerHand(player: IPlayer, newHand: IHandCardsQueue): IDataManager =
-    copy(handCards = handCards.updatePlayerHand(player, newHand))
+  override def newPlayerHand(player: IPlayer, newHand: IHandCardsQueue): IGameCards =
+    copy(handCards = handCards.newPlayerHand(player, newHand))
 
   override def getAttackingCard(attacker: IPlayer): ICard =
     handCards.getAttackingCard(attacker)
@@ -97,19 +97,19 @@ case class DataManager(
   override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] =
     fieldCards.getPlayerGoalkeeper(player)
 
-  override def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IDataManager =
-    copy(fieldCards = fieldCards.updatePlayerGoalkeeper(player, goalkeeper))
+  override def newPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IGameCards =
+    copy(fieldCards = fieldCards.newPlayerGoalkeeper(player, goalkeeper))
 
   override def getPlayerDefenders(player: IPlayer): List[Option[ICard]] =
     fieldCards.getPlayerDefenders(player)
 
-  override def updatePlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IDataManager =
-    copy(fieldCards = fieldCards.updatePlayerDefenders(player, defenders))
+  override def newPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IGameCards =
+    copy(fieldCards = fieldCards.newPlayerDefenders(player, defenders))
 
-  override def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IDataManager =
+  override def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IGameCards =
     copy(fieldCards = fieldCards.removeDefenderCard(defender, card))
 
-  override def removeDefenderGoalkeeper(defender: IPlayer): IDataManager =
+  override def removeDefenderGoalkeeper(defender: IPlayer): IGameCards =
     copy(fieldCards = fieldCards.removeDefenderGoalkeeper(defender))
 
   override def allDefendersBeaten(defender: IPlayer): Boolean =
@@ -118,26 +118,26 @@ case class DataManager(
   override def getDefenderCardAt(defender: IPlayer, index: Int): Option[ICard] =
     fieldCards.getDefenderCard(defender, index)
 
-  override def initializeFields(attacker: IPlayer, defender: IPlayer): IDataManager = {
+  override def initializeFields(attacker: IPlayer, defender: IPlayer): IGameCards = {
     val updated1 = refillStrategy.refillField(this, attacker, handCards.getPlayerHand(attacker))
     val updated2 = refillStrategy.refillField(updated1, defender, handCards.getPlayerHand(defender))
     updated2
   }
-  override def refillDefenderField(defender: IPlayer): IDataManager =
+  override def refillDefenderField(defender: IPlayer): IGameCards =
     refillStrategy.refillDefenderField(this, defender)
 
-  override def updateRefillStrategy(strategy: IRefillStrategy): IDataManager =
+  override def newRefillStrategy(strategy: IRefillStrategy): IGameCards =
     copy(refillStrategy = strategy)
 
-  override def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IDataManager =
-    copy(fieldCards = fieldCards.updateGoalkeeperForAttacker(attacker, card))
+  override def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IGameCards =
+    copy(fieldCards = fieldCards.newGoalkeeperForAttacker(attacker, card))
 
 }
 
-trait IDataManager {
+trait IGameCards {
   def getPlayerHand(player: IPlayer): IHandCardsQueue
 
-  def updatePlayerHand(player: IPlayer, newHand: IHandCardsQueue): IDataManager
+  def newPlayerHand(player: IPlayer, newHand: IHandCardsQueue): IGameCards
 
   def getAttackingCard(attacker: IPlayer): ICard
 
@@ -145,26 +145,26 @@ trait IDataManager {
 
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
 
-  def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IDataManager
+  def newPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IGameCards
 
   def getPlayerDefenders(player: IPlayer): List[Option[ICard]]
 
-  def updatePlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IDataManager
+  def newPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IGameCards
 
-  def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IDataManager
+  def removeDefenderCard(defender: IPlayer, card: Option[ICard]): IGameCards
 
-  def removeDefenderGoalkeeper(defender: IPlayer): IDataManager
+  def removeDefenderGoalkeeper(defender: IPlayer): IGameCards
 
   def allDefendersBeaten(defender: IPlayer): Boolean
 
   def getDefenderCardAt(defender: IPlayer, index: Int): Option[ICard]
 
-  def initializeFields(attacker: IPlayer, defender: IPlayer): IDataManager
+  def initializeFields(attacker: IPlayer, defender: IPlayer): IGameCards
 
-  def refillDefenderField(defender: IPlayer): IDataManager
+  def refillDefenderField(defender: IPlayer): IGameCards
 
-  def updateRefillStrategy(strategy: IRefillStrategy): IDataManager
+  def newRefillStrategy(strategy: IRefillStrategy): IGameCards
 
-  def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IDataManager
+  def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IGameCards
 
 }

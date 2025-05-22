@@ -11,36 +11,36 @@ import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, Observ
 
 class DefenderBoostStrategy(index: Int, playerActionService: IPlayerActionManager) extends IBoostStrategy {
 
-  override def boost(playingField: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
-    val roles = playingField.getRoles
+  override def boost(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+    val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
 
-    val dataManager = playingField.getDataManager
-    val defenders = dataManager.getPlayerDefenders(attacker)
+    val gameCards = state.getGameCards
+    val defenders = gameCards.getPlayerDefenders(attacker)
 
     if (index < 0 || index >= defenders.size) {
-      return (false, playingField, Nil)
+      return (false, state, Nil)
     }
 
     val cardOpt = defenders(index)
 
     if (cardOpt.isEmpty || !playerActionService.canPerform(attacker, PlayerActionPolicies.Boost)) {
-      return (false, playingField, List(StateEvent.NoBoostsEvent(attacker)))
+      return (false, state, List(StateEvent.NoBoostsEvent(attacker)))
     }
 
     val originalCard = cardOpt.get
     val boostedCard = originalCard.boost()
     val updatedDefenders = defenders.updated(index, Some(boostedCard))
 
-    val updatedDataManager = dataManager.updatePlayerDefenders(attacker, updatedDefenders)
+    val updatedGameCards = gameCards.newPlayerDefenders(attacker, updatedDefenders)
     val attackerAfterAction = playerActionService.performAction(attacker, PlayerActionPolicies.Boost)
     val updatedRoles = Roles(attackerAfterAction, defender)
 
-    val updatedField = playingField
-      .updateDataManager(updatedDataManager)
-      .updateRoles(updatedRoles)
+    val newState = state
+      .newGameCards(updatedGameCards)
+      .newRoles(updatedRoles)
     
-    (true, updatedField, List(GameActionEvent.BoostDefender))
+    (true, newState, List(GameActionEvent.BoostDefender))
   }
 }

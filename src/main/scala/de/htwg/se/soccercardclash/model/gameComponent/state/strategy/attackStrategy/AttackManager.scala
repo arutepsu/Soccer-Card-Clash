@@ -9,11 +9,11 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class AttackManager @Inject()() extends IAttackManager {
-  override def executeAttack(strategy: IAttackStrategy, playingField: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
-    strategy.execute(playingField)
+  override def executeAttack(strategy: IAttackStrategy, state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+    strategy.execute(state)
   }
 }
 
 trait IAttackManager {
-  def executeAttack(strategy: IAttackStrategy, playingField: IGameState): (Boolean, IGameState, List[ObservableEvent])
+  def executeAttack(strategy: IAttackStrategy, state: IGameState): (Boolean, IGameState, List[ObservableEvent])
 }

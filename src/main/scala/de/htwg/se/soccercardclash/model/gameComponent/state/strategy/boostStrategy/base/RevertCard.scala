@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrat
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 import de.htwg.se.soccercardclash.util.{GameActionEvent, StateEvent}
 
@@ -13,7 +13,7 @@ class RevertCard {
     val attacker = roles.attacker
     val defender = roles.defender
 
-    var dataManager = playingField.getDataManager
+    var dataManager = playingField.getGameCards
 
     val revertedCard: Option[ICard] = card.map {
       case boosted: BoostedCard => boosted.revertBoost()
@@ -34,11 +34,11 @@ class RevertCard {
     }
 
     dataManager = dataManager
-      .updatePlayerDefenders(attacker, updatedAttackerField)
-      .updatePlayerDefenders(defender, updatedDefenderField)
+      .newPlayerDefenders(attacker, updatedAttackerField)
+      .newPlayerDefenders(defender, updatedDefenderField)
 
-    val updatedState = playingField.updateDataManager(dataManager)
-    updatedState.notifyObservers(StateEvent.CardReverted(revertedCard, attacker))
+    val updatedState = playingField.newGameCards(dataManager)
+//    updatedState.notifyObservers(StateEvent.CardReverted(revertedCard, attacker))
 
     revertedCard
   }

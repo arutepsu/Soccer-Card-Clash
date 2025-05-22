@@ -9,7 +9,7 @@ object Assets {
   lazy val logoImage: Image = new Image(
     getClass.getResource("/images/data/logo/logo1k.png").toExternalForm
   )
-
+  val appLogo: Image =new Image(getClass.getResource("/images/data/logo/logoCut.png").toExternalForm)
   def createLogoImageView(): ImageView = new ImageView(logoImage) {
     fitWidth = 300
     preserveRatio = true

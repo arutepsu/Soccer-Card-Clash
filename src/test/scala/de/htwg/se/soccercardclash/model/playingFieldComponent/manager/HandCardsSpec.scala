@@ -61,7 +61,7 @@ class HandCardsSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val player = mock[IPlayer]
       val newHand = mock[IHandCardsQueue]
 
-      manager.updatePlayerHand(player, newHand)
+      manager.newPlayerHand(player, newHand)
       manager.getPlayerHand(player) shouldBe newHand
     }
 
@@ -78,7 +78,7 @@ class HandCardsSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(queue.getHandSize).thenReturn(1)
       when(queue.removeLastCard()).thenReturn(Success((card, queue)))
 
-      manager.updatePlayerHand(player, queue)
+      manager.newPlayerHand(player, queue)
 
       manager.getAttackingCard(player) shouldBe card
       manager.getDefenderCard(player) shouldBe card
@@ -90,7 +90,7 @@ class HandCardsSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       val player = mock[IPlayer]
       val queue = mock[IHandCardsQueue]
-      manager.updatePlayerHand(player, queue)
+      manager.newPlayerHand(player, queue)
 
       manager.clearAll()
       val newHand = mock[IHandCardsQueue]

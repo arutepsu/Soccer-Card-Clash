@@ -1,13 +1,11 @@
 package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
-import scalafx.application.Platform
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.duration.*
-import scala.concurrent.Future
-
 import scalafx.animation.PauseTransition
 import scalafx.application.Platform
 import scalafx.util.Duration
+
+import scala.concurrent.duration.*
+import scala.concurrent.{ExecutionContext, Future}
 
 case class UIAction(delay: Int, block: () => Unit)
 
@@ -26,7 +24,9 @@ class UIActionScheduler {
       val UIAction(delay, block) = actions(index)
       val pause = new PauseTransition(Duration(delay))
       pause.setOnFinished(_ => {
-        Platform.runLater { block() }
+        Platform.runLater {
+          block()
+        }
         run(index + 1)
       })
       Platform.runLater {

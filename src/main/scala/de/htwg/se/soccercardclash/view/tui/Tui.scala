@@ -42,13 +42,13 @@ class Tui(
   protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
   protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
   private var promptState: PromptState = PromptState.None
-//  private val createPlayersNameTuiCommand:
-//    CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
-//  private val createPlayersNameWitAITuiCommand:
-//    CreatePlayersNameWithAITuiCommand = tuiCommandFactory.createCreatePlayersNameWithAITuiCommand()
+  private val createPlayersNameTuiCommand:
+    CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
+  private val createPlayersNameWitAITuiCommand:
+    CreatePlayersNameWithAITuiCommand = tuiCommandFactory.createCreatePlayersNameWithAITuiCommand()
   private val commands: Map[String, ITuiCommand] = Map(
-//    TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
-//    TuiKeys.CreatePlayersAI.key -> createPlayersNameWitAITuiCommand,
+    TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
+    TuiKeys.CreatePlayersAI.key -> createPlayersNameWitAITuiCommand,
     TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
     TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
     TuiKeys.Save.key -> tuiCommandFactory.createSaveGameTuiCommand(),
@@ -69,8 +69,8 @@ class Tui(
   def processInputLine(input: String): Unit = {
     println(s"\uD83D\uDEE0 Received input: '$input'")
 
-//    if (createPlayersNameWitAITuiCommand.handlePlayerNames(input)) return
-//    if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
+    if (createPlayersNameWitAITuiCommand.handlePlayerNames(input)) return
+    if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
 
       promptHandlers.get(promptState) match {
         case Some(handler) => handler(input)
@@ -88,15 +88,15 @@ class Tui(
     val commandKey = parts.head
     val commandArg = if (parts.length > 1) Some(parts(1)) else None
 
-//    if (commandKey == TuiKeys.StartGameWithAI.key) {
-//      createPlayersNameWitAITuiCommand.execute()
-//      return
-//    }
-//
-//    if (commandKey == TuiKeys.StartGameMultiplayer.key) {
-//      createPlayersNameTuiCommand.execute()
-//      return
-//    }
+    if (commandKey == TuiKeys.StartGameWithAI.key) {
+      createPlayersNameWitAITuiCommand.execute()
+      return
+    }
+
+    if (commandKey == TuiKeys.StartGameMultiplayer.key) {
+      createPlayersNameTuiCommand.execute()
+      return
+    }
 
     commandKey match {
       case TuiKeys.Attack.key =>

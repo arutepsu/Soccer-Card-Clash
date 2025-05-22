@@ -4,7 +4,7 @@ import com.google.inject.{AbstractModule, Guice}
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{DataManager, IDataManager, IFieldCards, IHandCards}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{GameCards, IGameCards, IFieldCards, IHandCards}
 import de.htwg.se.soccercardclash.model.gameComponent.state.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.base.*
@@ -38,7 +38,7 @@ class GameStateModuleSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       // Test a few key bindings
       injector.getInstance(classOf[IGameState]) shouldBe a[GameState]
-      injector.getInstance(classOf[IDataManager]) shouldBe a[DataManager]
+      injector.getInstance(classOf[IGameCards]) shouldBe a[GameCards]
       injector.getInstance(classOf[PlayingFieldDeserializer]) should not be null
     }
   }

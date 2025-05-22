@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.manager
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.util.Observable
@@ -14,12 +14,12 @@ import org.scalatestplus.mockito.MockitoSugar
 
 class ObservableGameState extends Observable with IGameState {
 
-  private val dummyDataManager = mock(classOf[IDataManager])
+  private val dummyDataManager = mock(classOf[IGameCards])
   private val dummyActionManager = mock(classOf[IActionManager])
   private val dummyRolesManager = mock(classOf[IRoles])
   private val dummyPlayerScores = mock(classOf[IPlayerScores])
 
-  override def getDataManager: IDataManager = dummyDataManager
+  override def getGameCards: IGameCards = dummyDataManager
   override def getActionManager: IActionManager = dummyActionManager
   override def getRoles: IRoles = dummyRolesManager
   override def getScores: IPlayerScores = dummyPlayerScores
@@ -53,7 +53,7 @@ class RolesSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       val manager = new Roles(mockField, attacker, defender)
 
-      manager.updateRoles(newAttacker, newDefender)
+      manager.newRoles(newAttacker, newDefender)
 
       manager.attacker shouldBe newAttacker
       manager.defender shouldBe newDefender

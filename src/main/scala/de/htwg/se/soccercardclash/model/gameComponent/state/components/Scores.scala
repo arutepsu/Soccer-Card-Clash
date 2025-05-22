@@ -49,7 +49,7 @@ case class Scores(
   override def updateScoringStrategy(strategy: IScoringStrategy): IScores =
     this.copy(scoringStrategy = strategy)
 
-  override def updateScore(player: IPlayer, score: Int): IScores =
+  override def newScore(player: IPlayer, score: Int): IScores =
     this.copy(playerToScore = playerToScore.updated(player, score))
   
   private def checkForWinner(): List[StateEvent] = {
@@ -66,6 +66,6 @@ trait IScores {
 
   def scoreGoal(player: IPlayer): (IScores, List[StateEvent])
 
-  def updateScore(player: IPlayer, score: Int): IScores
+  def newScore(player: IPlayer, score: Int): IScores
   
 }

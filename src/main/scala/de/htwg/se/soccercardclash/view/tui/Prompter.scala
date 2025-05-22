@@ -39,7 +39,7 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
   def promptShowAttackersHand(): Unit = {
     val playingField = gameContextHolder.get.state
     val attacker = playingField.getRoles.attacker
-    val hand = playingField.getDataManager.getPlayerHand(attacker).toList
+    val hand = playingField.getGameCards.getPlayerHand(attacker).toList
 
     println("\n===================================")
     println(s"${attacker.name}'s hand cards: ")
@@ -53,7 +53,7 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     val field = gameContextHolder.get.state
     println("\n===================================")
     println(f"${player.name}'s defender cards: ")
-    println(f"${field.getDataManager.getPlayerDefenders(player)}")
+    println(f"${field.getGameCards.getPlayerDefenders(player)}")
     println("===================================")
 
   }
@@ -63,7 +63,7 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     val field = gameContextHolder.get.state
     println("\n===================================")
     println(f"${player.name}'s goalkeeper Card: ")
-    println(f"${field.getDataManager.getPlayerGoalkeeper(player)}")
+    println(f"${field.getGameCards.getPlayerGoalkeeper(player)}")
     println("===================================")
 
   }
@@ -81,12 +81,12 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     println(s"Defender: ${defender.name}")
     println("-----------------------------------")
 
-    val attackerHand = playingField.getDataManager.getPlayerHand(attacker).toList
+    val attackerHand = playingField.getGameCards.getPlayerHand(attacker).toList
     println(s"${attacker.name}'s Hand: " +
       (if (attackerHand.nonEmpty) attackerHand.mkString(", ") else "No cards left!")
     )
 
-    val defenderField = playingField.getDataManager.getPlayerDefenders(defender)
+    val defenderField = playingField.getGameCards.getPlayerDefenders(defender)
     println(s"${defender.name}'s Defenders: " +
       (if (defenderField.nonEmpty) defenderField.mkString(", ") else "No defenders!")
     )

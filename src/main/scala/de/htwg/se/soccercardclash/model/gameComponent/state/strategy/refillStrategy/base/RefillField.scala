@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStra
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.IRefillStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
@@ -10,14 +10,14 @@ import scala.collection.mutable
 
 class RefillField {
 
-  def refill(fieldState: IDataManager, player: IPlayer, hand: IHandCardsQueue): IDataManager = {
-    val defenders = fieldState.getPlayerDefenders(player)
-    val goalkeeper = fieldState.getPlayerGoalkeeper(player)
+  def refill(gameCards: IGameCards, player: IPlayer, hand: IHandCardsQueue): IGameCards = {
+    val defenders = gameCards.getPlayerDefenders(player)
+    val goalkeeper = gameCards.getPlayerGoalkeeper(player)
 
     val emptySlots = defenders.count(_.isEmpty)
     val needsFullRefill = defenders.forall(_.isEmpty) && goalkeeper.isEmpty
 
-    if (!needsFullRefill) return fieldState
+    if (!needsFullRefill) return gameCards
 
     val (drawnCards, updatedHand) = hand.splitAtEnd(4)
 
@@ -30,10 +30,10 @@ class RefillField {
     val paddedDefenders: List[Option[ICard]] =
       defendersWithoutGK.map(Some(_)).padTo(3, None)
 
-    fieldState
-      .updatePlayerDefenders(player, paddedDefenders)
-      .updatePlayerGoalkeeper(player, newGoalkeeper)
-      .updatePlayerHand(player, updatedHand)
+    gameCards
+      .newPlayerDefenders(player, paddedDefenders)
+      .newPlayerGoalkeeper(player, newGoalkeeper)
+      .newPlayerHand(player, updatedHand)
   }
 
   private def determineFieldCards(hand: IHandCardsQueue, defenderCount: Int, goalkeeperCount: Int): (List[ICard], IHandCardsQueue) = {

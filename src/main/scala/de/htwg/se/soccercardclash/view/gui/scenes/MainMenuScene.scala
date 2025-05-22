@@ -18,14 +18,23 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{BorderPane, HBox, StackPane, VBox}
 import scalafx.scene.paint.Color
 import scalafx.scene.text.Font
+
 class MainMenuScene(controller: IController) extends GameScene {
 
   this.getStylesheets.add(Styles.mainMenuCss)
   val overlay = new Overlay(this)
+  val bottomSpacer = new HBox {
+    minHeight = 40
+    visible = false
+  }
+  val infoLabel = new Label("Developed by Arutepsu") {
+    styleClass += "info-label"
+  }
   private val logoBox = new VBox {
     alignment = Pos.TOP_CENTER
     children = Seq(Assets.createLogoImageView())
   }
+  StackPane.setAlignment(bottomSpacer, Pos.BottomCenter)
   private val rootBox = new VBox {
     spacing = 10
     alignment = Pos.Center
@@ -47,16 +56,6 @@ class MainMenuScene(controller: IController) extends GameScene {
       },
       overlay.getPane
     )
-  }
-
-  val bottomSpacer = new HBox {
-    minHeight = 40
-    visible = false
-  }
-  StackPane.setAlignment(bottomSpacer, Pos.BottomCenter)
-
-  val infoLabel = new Label("Developed by Arutepsu") {
-    styleClass += "info-label"
   }
 
   StackPane.setAlignment(infoLabel, Pos.BottomRight)

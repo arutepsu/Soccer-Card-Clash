@@ -2,7 +2,6 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import scalafx.scene.layout.VBox
 import scalafx.geometry.Pos
 import scalafx.geometry.Insets
@@ -18,7 +17,6 @@ import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 case class ActionButtonBar(controller: IController,
                            playingField: IGameState,
                            playingFieldScene: PlayingFieldScene,
-                           gameStatusBar: GameStatusBar,
                            overlay: Overlay) extends VBox {
 
 

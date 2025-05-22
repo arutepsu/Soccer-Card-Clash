@@ -24,49 +24,9 @@
     -fx-text-alignment: center;
 }
 
-.game-button {
-    -fx-background-size: 200% 200%;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-    -fx-background-color: transparent;
-
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-alignment: center;
-    -fx-padding: 0;
-}
-
-
 .label {
     -fx-font-size: 22px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-family: "Segoe UI";
-}
-
-.hbox, .vbox {
-    -fx-spacing: 10px;
-    -fx-alignment: center;
-}
-
-.game-status-bar {
-    -fx-font-size: 18px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-family: "Arial";
-}
-
-.card-bar-frame, .players-hand-bar {
-    -fx-font-size: 18px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-family: "Arial";
-}
-
-.current-player {
-    -fx-background-color: rgb(255, 215, 0);
-    -fx-opacity: 0.3;
-    -fx-background-insets: 0, 1;
-    -fx-background-radius: 10px;
 }

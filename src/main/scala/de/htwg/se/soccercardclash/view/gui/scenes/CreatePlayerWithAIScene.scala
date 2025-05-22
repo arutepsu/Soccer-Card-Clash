@@ -1,9 +1,11 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -14,16 +16,13 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.{Font, Text}
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 
 class CreatePlayerWithAIScene @Inject()(
                                          controller: IController,
                                          contextHolder: IGameContextHolder,
                                          startupDataHolder: GameStartupDataHolder
                                        ) extends GameScene {
-
-  // Load stylesheet and fonts
+  
   this.getStylesheets.add(Styles.createPlayerWitAICss)
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 20)

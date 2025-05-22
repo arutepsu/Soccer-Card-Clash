@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrate
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -13,17 +13,17 @@ import scala.collection.mutable
 
 class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISwapStrategy {
 
-  override def swap(playingField: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
-    var dataManager = playingField.getDataManager
-    val roles = playingField.getRoles
+  override def swap(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+    var gameCards = state.getGameCards
+    val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
-    val hand = dataManager.getPlayerHand(attacker)
+    val hand = gameCards.getPlayerHand(attacker)
 
     if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
       attacker.actionStates.get(PlayerActionPolicies.Swap) match {
-        case Some(OutOfActions) => return (false, playingField, List(StateEvent.NoSwapsEvent(attacker)))
-        case _ => return (false, playingField, Nil)
+        case Some(OutOfActions) => return (false, state, List(StateEvent.NoSwapsEvent(attacker)))
+        case _ => return (false, state, Nil)
       }
     }
 
@@ -31,17 +31,17 @@ class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISw
     if (cards.size >= 2) {
       val reversedHand = HandCardsQueue(cards.reverse)
 
-      dataManager = dataManager.updatePlayerHand(attacker, reversedHand)
-      val updatedField1 = playingField.updateDataManager(dataManager)
+      gameCards = gameCards.newPlayerHand(attacker, reversedHand)
+      val updatedGameCards = state.newGameCards(gameCards)
 
       val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
       val updatedRoles = Roles(updatedAttacker, defender)
 
-      val updatedField2 = updatedField1.updateRoles(updatedRoles)
+      val newState = updatedGameCards.newRoles(updatedRoles)
 
-      (true, updatedField2, List(GameActionEvent.ReverseSwap))
+      (true, newState, List(GameActionEvent.ReverseSwap))
     } else {
-      (false, playingField, Nil)
+      (false, state, Nil)
     }
   }
 }

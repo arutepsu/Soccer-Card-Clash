@@ -43,7 +43,7 @@ class PlayersHandBar(
   alignment = Pos.Center
   this.getStylesheets.add(Styles.playersFieldBarCss)
   styleClass.add("players-field-bar")
-  val handSize = playingField.getDataManager.getPlayerHand(player).getHandSize
+  val handSize = playingField.getGameCards.getPlayerHand(player).getHandSize
   spacing = renderer.calcHandSpacing(handSize)
 
   private var selectedCard: Option[HandCard] = None
@@ -87,7 +87,7 @@ class PlayersHandBar(
       Platform.runLater(() => {
         children.setAll(newHandRow)
         currentHandRow = newHandRow
-        val handSize = newGameState.getDataManager.getPlayerHand(player).getHandSize
+        val handSize = newGameState.getGameCards.getPlayerHand(player).getHandSize
         spacing = renderer.calcHandSpacing(handSize)
 
         newHandRow.getChildren.forEach { node =>
@@ -111,7 +111,7 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
   private def handleCardSelected(clickedIndex: Int): Unit =
     selectedCardIndex = if (clickedIndex == -1) None else Some(clickedIndex)
   override def createHandCardRow(player: IPlayer, dummyState: IGameState): HBox = {
-    val handList = getGameState().getDataManager.getPlayerHand(player).toList
+    val handList = getGameState().getGameCards.getPlayerHand(player).toList
     val handCards = handList.zipWithIndex.map { case (card, index) =>
       HandCardFactory.createSelectableHandCard(
         card = card,
@@ -135,7 +135,7 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
 
 object DefaultHandCardRenderer extends HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox = {
-    val handList = gameState.getDataManager.getPlayerHand(player).toList
+    val handList = gameState.getGameCards.getPlayerHand(player).toList
 
     val handCards = handList.zipWithIndex.map { case (card, index) =>
       val isLast = index == handList.size - 1

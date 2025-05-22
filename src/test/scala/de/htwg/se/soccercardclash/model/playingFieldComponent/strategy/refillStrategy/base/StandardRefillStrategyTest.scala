@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.IRefillStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.base.{RefillDefenderField, RefillField, StandardRefillStrategy}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -16,7 +16,7 @@ import scala.collection.mutable
 class StandardRefillStrategyTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   // Mocks
-  val mockFieldState: IDataManager = mock[IDataManager]
+  val mockFieldState: IGameCards = mock[IGameCards]
   val mockPlayer: IPlayer = mock[IPlayer]
   val mockCard: ICard = mock[ICard]
   val mockHand: IHandCardsQueue = new HandCardsQueue(List.fill(4)(mock[ICard]))

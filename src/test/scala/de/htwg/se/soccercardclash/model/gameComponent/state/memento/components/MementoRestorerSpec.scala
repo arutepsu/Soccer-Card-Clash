@@ -20,7 +20,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.memento.components.*
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 class ObservableMockGameState extends Observable with IGameState {
 
@@ -33,13 +33,13 @@ class ObservableMockGameState extends Observable with IGameState {
 
   // Provide mocks instead of throwing
   private val dummyRoles = mock(classOf[IRoles])
-  private val dummyDataManager = mock(classOf[IDataManager])
+  private val dummyDataManager = mock(classOf[IGameCards])
   private val dummyScores = mock(classOf[IScores])
   private val dummyActionManager = mock(classOf[IActionManager])
   private val dummyPlayer = mock(classOf[IPlayer])
 
   override def getRoles: IRoles = dummyRoles
-  override def getDataManager: IDataManager = dummyDataManager
+  override def getGameCards: IGameCards = dummyDataManager
   override def getScores: IScores = dummyScores
   override def getActionManager: IActionManager = dummyActionManager
 
@@ -54,7 +54,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "restore boosted card using revert strategy and update attacker actions and roles" in {
       // Create mocks
-      val dataManager = mock[IDataManager]
+      val dataManager = mock[IGameCards]
       val rolesManager = mock[IRoles]
       val actionManager = mock[IActionManager]
       val boostManager = mock[IBoostManager]
@@ -84,7 +84,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       // Override methods to inject mocks
       val playingField = new ObservableMockGameState {
-        override def getDataManager: IDataManager = dataManager
+        override def getGameCards: IGameCards = dataManager
 
         override def getRoles: IRoles = rolesManager
 
@@ -101,12 +101,12 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreBoosts(memento, 1)
 
       // Assert
-      verify(dataManager).updatePlayerDefenders(attacker, updatedDefenders)
-      verify(rolesManager).updateRoles(attacker, defender)
+      verify(dataManager).newPlayerDefenders(attacker, updatedDefenders)
+      verify(rolesManager).newRoles(attacker, defender)
       playingField.lastObservedEvent shouldBe Some(Events.Reverted)
     }
     "restore goalkeeper boost from memento and update roles and observers" in {
-      val dataManager = mock[IDataManager]
+      val dataManager = mock[IGameCards]
       val rolesManager = mock[IRoles]
       val actionManager = mock[IActionManager]
       val boostManager = mock[IBoostManager]
@@ -131,7 +131,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(revertStrategy.revertCard(goalkeeper)).thenReturn(revertedGK)
 
       val playingField = new ObservableMockGameState {
-        override def getDataManager: IDataManager = dataManager
+        override def getGameCards: IGameCards = dataManager
 
         override def getRoles: IRoles = rolesManager
 
@@ -151,12 +151,12 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreGoalkeeperBoost(memento)
 
       // Assert
-      verify(dataManager).updatePlayerGoalkeeper(attacker, Some(revertedGK))
-      verify(rolesManager).updateRoles(attacker, defender)
+      verify(dataManager).newPlayerGoalkeeper(attacker, Some(revertedGK))
+      verify(rolesManager).newRoles(attacker, defender)
       playingField.lastObservedEvent shouldBe Some(Events.Reverted)
     }
     "restore full game state from memento" in {
-      val dataManager = mock[IDataManager]
+      val dataManager = mock[IGameCards]
       val rolesManager = mock[IRoles]
       val scores = mock[IScores]
       val handCardsQueueFactory = mock[IHandCardsQueueFactory] // ✅ mocked factory
@@ -204,7 +204,7 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(handCardsQueueFactory.create(List(h2))).thenReturn(hand2)
 
       val playingField = new ObservableMockGameState {
-        override def getDataManager: IDataManager = dataManager
+        override def getGameCards: IGameCards = dataManager
 
         override def getRoles: IRoles = rolesManager
 
@@ -220,15 +220,15 @@ class MementoRestorerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       restorer.restoreGameState(memento)
 
       // Assert
-      verify(dataManager).updatePlayerDefenders(attacker, List(defCard1))
-      verify(dataManager).updatePlayerDefenders(defender, List(defCard2))
-      verify(dataManager).updatePlayerGoalkeeper(attacker, Some(gk1))
-      verify(dataManager).updatePlayerGoalkeeper(defender, Some(gk2))
+      verify(dataManager).newPlayerDefenders(attacker, List(defCard1))
+      verify(dataManager).newPlayerDefenders(defender, List(defCard2))
+      verify(dataManager).newPlayerGoalkeeper(attacker, Some(gk1))
+      verify(dataManager).newPlayerGoalkeeper(defender, Some(gk2))
       hand1.toList should contain theSameElementsAs List(h1) // ✅ updated check
       hand2.toList should contain theSameElementsAs List(h2)
       verify(scores).setScorePlayer1(1)
       verify(scores).setScorePlayer2(2)
-      verify(rolesManager).updateRoles(restoredP1, restoredP2)
+      verify(rolesManager).newRoles(restoredP1, restoredP2)
       playingField.lastObservedEvent.isDefined shouldBe true
     }
   }

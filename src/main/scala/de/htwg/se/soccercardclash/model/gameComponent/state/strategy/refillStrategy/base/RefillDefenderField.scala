@@ -2,78 +2,75 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStra
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.IRefillStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
 class RefillDefenderField {
 
-  def refill(fieldState: IDataManager, defender: IPlayer): IDataManager = {
-    val defenderHand = fieldState.getPlayerHand(defender)
-    val defenders = fieldState.getPlayerDefenders(defender) // List[Option[ICard]]
-    val goalkeeper = fieldState.getPlayerGoalkeeper(defender)
+  def refill(gameCards: IGameCards, defender: IPlayer): IGameCards = {
+    val defenderHand = gameCards.getPlayerHand(defender)
+    val defenders = gameCards.getPlayerDefenders(defender) // List[Option[ICard]]
+    val goalkeeper = gameCards.getPlayerGoalkeeper(defender)
 
     if (defenders.forall(_.isEmpty) && goalkeeper.isEmpty) {
-      refillCompletely(fieldState, defender, defenderHand)
+      refillCompletely(gameCards, defender, defenderHand)
     } else if (defenders.count(_.isDefined) < 3) {
-      refillPartial(fieldState, defender, defenderHand, defenders, goalkeeper)
+      refillPartial(gameCards, defender, defenderHand, defenders, goalkeeper)
     } else {
-      fieldState
+      gameCards
     }
   }
 
   private def refillCompletely(
-                                fieldState: IDataManager,
+                                gameCards: IGameCards,
                                 defender: IPlayer,
                                 defenderHand: IHandCardsQueue
-                              ): IDataManager = {
+                              ): IGameCards = {
     val (newFieldCards, updatedHand) = defenderHand.splitAtEnd(4)
     val (goalkeeper, defendersFlat) = extractGoalkeeper(newFieldCards)
 
     val defenders: List[Option[ICard]] =
       defendersFlat.map(Some(_)).padTo(3, None)
 
-    fieldState
-      .updatePlayerGoalkeeper(defender, Some(goalkeeper))
-      .updatePlayerDefenders(defender, defenders)
-      .updatePlayerHand(defender, updatedHand)
+    gameCards
+      .newPlayerGoalkeeper(defender, Some(goalkeeper))
+      .newPlayerDefenders(defender, defenders)
+      .newPlayerHand(defender, updatedHand)
   }
 
   private def refillPartial(
-                             fieldState: IDataManager,
+                             gameCards: IGameCards,
                              defender: IPlayer,
                              defenderHand: IHandCardsQueue,
                              defenderField: List[Option[ICard]],
                              goalkeeperOpt: Option[ICard]
-                           ): IDataManager = {
+                           ): IGameCards = {
     val neededSlots = defenderField.count(_.isEmpty)
 
     val (newCards, updatedHand) =
       if (neededSlots > 0) defenderHand.splitAtEnd(neededSlots)
       else (Nil, defenderHand)
-
-    // Fill only empty slots
+    
     val cardIterator = newCards.iterator
     val updatedDefenders: List[Option[ICard]] = defenderField.map {
       case None => if (cardIterator.hasNext) Some(cardIterator.next()) else None
       case some => some
     }
-
-    // Extract goalkeeper if needed
+    
     val (goalkeeper, updatedDefendersWithGoalieBack): (ICard, List[ICard]) =
       adjustGoalkeeper(updatedDefenders, goalkeeperOpt)
-
-    // Map flattened defenders back into original slots
+    
     val replacedCards = updatedDefendersWithGoalieBack.iterator
     val adjustedDefenders: List[Option[ICard]] = updatedDefenders.map {
       case Some(_) => if (replacedCards.hasNext) Some(replacedCards.next()) else None
       case None    => if (replacedCards.hasNext) Some(replacedCards.next()) else None
     }
 
-    fieldState
-      .updatePlayerGoalkeeper(defender, Some(goalkeeper))
-      .updatePlayerDefenders(defender, adjustedDefenders)
-      .updatePlayerHand(defender, updatedHand)
+    gameCards
+      .newPlayerGoalkeeper(defender, Some(goalkeeper))
+      .newPlayerDefenders(defender, adjustedDefenders)
+      .newPlayerHand(defender, updatedHand)
   }
 
   private def extractGoalkeeper(cards: List[ICard]): (ICard, List[ICard]) = {

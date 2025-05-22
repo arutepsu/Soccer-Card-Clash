@@ -2,12 +2,14 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ComparisonDialogHandler, DialogFactory, WinnerDialog}
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -23,10 +25,9 @@ import scalafx.scene.text.{Font, Text}
 import scalafx.scene.{Node, Scene}
 import scalafx.stage.Stage
 import scalafx.util.Duration
-import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 class PlayingFieldScene(
                          controller: IController,
                          val contextHolder: IGameContextHolder,
@@ -36,7 +37,6 @@ class PlayingFieldScene(
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
   val overlay = new Overlay(this)
   val comparisonHandler = new ComparisonDialogHandler(controller, contextHolder, overlay)
-  val gameStatusBar = new GameStatusBar
 
   val renderer = new SelectableFieldCardRenderer(() => contextHolder.get.state)
 
@@ -47,29 +47,8 @@ class PlayingFieldScene(
   val player2ScoreText = new Label {
     styleClass += "player-score"
   }
-
-//  private def createScoreBox(player: IPlayer, scoreText: Label): VBox = new VBox {
-//    styleClass += "score-box"
-//    children = Seq(
-//      new Label("⚽") {
-//        styleClass += "score-icon"
-//      },
-//      new Label(player.name) {
-//        styleClass += "player-name"
-//      },
-//      scoreText
-//    )
-//  }
-//
-//  private val scoresBar = new HBox {
-//    spacing = 50
-//    alignment = Pos.Center
-//    children = Seq(createScoreBox(contextHolder.get.state.getPlayer1, player1ScoreText), createScoreBox(contextHolder.get.state.getPlayer2, player2ScoreText))
-//    styleClass += "scores-bar"
-//  }
-
-  val actionButtonBar = ActionButtonBar(controller, contextHolder.get.state, this, gameStatusBar, overlay)
-  val navButtonBar = NavButtonBar(controller, contextHolder.get.state, this, gameStatusBar)
+  val actionButtonBar = ActionButtonBar(controller, contextHolder.get.state, this, overlay)
+  val navButtonBar = NavButtonBar(controller, contextHolder.get.state, this)
   val playersBar = new PlayersBar(controller, this)
 
   val playerFields = new HBox {
@@ -88,7 +67,7 @@ class PlayingFieldScene(
   }
 
   val inputBlocker = new Region {
-    style = "-fx-background-color: rgba(0,0,0,0);" // fully transparent
+    style = "-fx-background-color: rgba(0,0,0,0);"
     pickOnBounds = true
     mouseTransparent = false
     visible = false
@@ -150,7 +129,6 @@ class PlayingFieldScene(
 
   override def handleGameAction(e: GameActionEvent): Unit = {
     val overlayAction = comparisonHandler.createOverlayAction(e)
-    println(f"from GUI  Event recieved: ${e.getClass.toString}")
     val delay = e match {
       case GameActionEvent.RegularAttack | GameActionEvent.DoubleAttack => 3000
       case GameActionEvent.Undo | GameActionEvent.Redo |
@@ -271,7 +249,6 @@ class PlayingFieldScene(
     playerFields.children.add(newDefenderFieldBar)
 
     currentDefenderFieldBar = Some(newDefenderFieldBar)
-//    newDefenderFieldBar.updateGameStatus()
   }
 
   private def updateHands(contextHolder: GameContext): Unit = {

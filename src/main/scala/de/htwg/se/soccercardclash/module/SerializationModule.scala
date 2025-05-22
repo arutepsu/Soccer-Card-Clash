@@ -20,7 +20,7 @@ class SerializationModule extends AbstractModule {
         classOf[IHandCardsQueueFactory],
         classOf[IHandCardsFactory],
         classOf[IFieldCardsFactory],
-        classOf[IDataManagerFactory],
+        classOf[IGameCardsFactory],
         classOf[IRolesFactory],
         classOf[IScoresFactory]
       ))

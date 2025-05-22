@@ -71,7 +71,7 @@ class PlayersFieldBar(
 }
 object DefaultFieldCardRenderer extends FieldCardRenderer {
   override def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val defenderCards = getGameState().getDataManager.getPlayerDefenders(player)
+    val defenderCards = getGameState().getGameCards.getPlayerDefenders(player)
     val defenderCardNodes = defenderCards.map(card =>
       FieldCardFactory.createDefaultFieldCard(card)
     )
@@ -79,7 +79,7 @@ object DefaultFieldCardRenderer extends FieldCardRenderer {
   }
 
   override def createGoalkeeperRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player)
+    val goalkeeper = getGameState().getGameCards.getPlayerGoalkeeper(player)
     val fieldCard = FieldCardFactory.createDefaultFieldCard(goalkeeper)
 
     new HBox {
@@ -113,7 +113,7 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
 
 
   override def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val defenderCards = getGameState().getDataManager
+    val defenderCards = getGameState().getGameCards
       .getPlayerDefenders(player)
       .padTo(3, None)
 
@@ -146,7 +146,7 @@ class SelectableFieldCardRenderer(getGameState: () => IGameState) extends FieldC
 
 
   override def createGoalkeeperRow(player: IPlayer, getGameState: () => IGameState): HBox = {
-    val goalkeeper = getGameState().getDataManager.getPlayerGoalkeeper(player)
+    val goalkeeper = getGameState().getGameCards.getPlayerGoalkeeper(player)
     val fieldCard = FieldCardFactory.createSelectableFieldCard(
       card = goalkeeper,
       index = -1,

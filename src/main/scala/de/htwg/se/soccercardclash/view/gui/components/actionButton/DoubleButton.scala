@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.actionButton
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
 
 case class DoubleButton() extends ActionButton[PlayingFieldScene] {
@@ -15,7 +14,7 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
 
     val state = ctx.state
     val defender = state.getRoles.defender
-    val defenderCards = state.getDataManager.getPlayerDefenders(defender)
+    val defenderCards = state.getGameCards.getPlayerDefenders(defender)
 
     val maybeIndex = if (defenderCards.nonEmpty) {
       playingFieldScene.currentDefenderFieldBar.flatMap(_.selectedDefenderIndex)
@@ -27,17 +26,10 @@ case class DoubleButton() extends ActionButton[PlayingFieldScene] {
       case Some(defenderIndex) =>
         val (newCtx, success) = controller.doubleAttack(defenderIndex, ctx)
         if (success) {
-          playingFieldScene.gameStatusBar.updateStatus(
-            GameStatusMessages.ATTACK_INITIATED,
-            newCtx.state.getRoles.attacker.name,
-            newCtx.state.getRoles.defender.name
-          )
           playingFieldScene.currentDefenderFieldBar.foreach(_.resetSelectedDefender())
         }
 
       case None =>
-        println("No defender selected for double attack!")
-        playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_DEFENDER_SELECTED)
     }
   }
 }

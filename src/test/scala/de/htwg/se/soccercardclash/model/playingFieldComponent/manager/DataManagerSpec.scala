@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{DataManager, IDataManager, IFieldCards, IHandCards, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{GameCards, IGameCards, IFieldCards, IHandCards, IRoles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.IRefillStrategy
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
@@ -29,7 +29,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(mockHandManager.getPlayerHand(mockPlayer)).thenReturn(mockHand)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       // Ensure we're querying the exact mockPlayer
       dataManager.getPlayerHand(mockPlayer) shouldBe mockHand
@@ -46,7 +46,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(mockFieldManager.getPlayerDefenders(mockPlayer)).thenReturn(cards)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       dataManager.getPlayerDefenders(mockPlayer) shouldBe cards
     }
@@ -76,9 +76,9 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(mockHandManager.getPlayerHand(mockPlayer1)).thenReturn(queue1)
       when(mockHandManager.getPlayerHand(mockPlayer2)).thenReturn(queue2)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
       val mockRefillStrategy = mock[IRefillStrategy]
-      dataManager.updateRefillStrategy(mockRefillStrategy)
+      dataManager.newRefillStrategy(mockRefillStrategy)
 
       dataManager.initializeFields()
 
@@ -103,7 +103,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(mockField.getRoles).thenReturn(mockRoles)
 
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       dataManager.initializePlayerHands(cards1, cards2)
 
@@ -123,7 +123,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       // ✅ Missing piece: what getAttackingCard returns
       when(mockHandManager.getAttackingCard(attacker)).thenReturn(card)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       dataManager.getAttackingCard shouldBe card
     }
@@ -142,7 +142,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       // ✅ Missing: return card from hand manager
       when(mockHandManager.getDefenderCard(defender)).thenReturn(card)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       dataManager.getDefenderCard shouldBe card
     }
@@ -151,10 +151,10 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val player = mock[IPlayer]
       val hand = mock[IHandCardsQueue]
       val handManager = mock[IHandCards]
-      val dataManager = new DataManager(mock[IGameState], handManager, mock[IFieldCards])
+      val dataManager = new GameCards(mock[IGameState], handManager, mock[IFieldCards])
 
-      dataManager.updatePlayerHand(player, hand)
-      verify(handManager).updatePlayerHand(player, hand) // ✅ this is correct
+      dataManager.newPlayerHand(player, hand)
+      verify(handManager).newPlayerHand(player, hand) // ✅ this is correct
     }
 
     "remove defender card via fieldManager" in {
@@ -162,7 +162,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val card = mock[ICard]
 
       val fieldManager = mock[IFieldCards] // ✅ Track the mock
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
 
       dataManager.removeDefenderCard(player, card)
 
@@ -174,15 +174,15 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val fieldManager = mock[IFieldCards]
       when(fieldManager.allDefendersBeaten(player)).thenReturn(true)
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
       dataManager.allDefendersBeaten(player) shouldBe true
     }
     "refill defender field using refillStrategy" in {
       val player = mock[IPlayer]
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], mock[IFieldCards])
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], mock[IFieldCards])
       val refillStrategy = mock[IRefillStrategy]
 
-      dataManager.updateRefillStrategy(refillStrategy)
+      dataManager.newRefillStrategy(refillStrategy)
       dataManager.refillDefenderField(player)
 
       verify(refillStrategy).refillDefenderField(dataManager, player)
@@ -192,16 +192,16 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val fieldManager = mock[IFieldCards]
       val card = mock[ICard]
 
-      val dataManager = new DataManager(field, mock[IHandCards], fieldManager)
-      dataManager.updateGoalkeeperForAttacker(card)
+      val dataManager = new GameCards(field, mock[IHandCards], fieldManager)
+      dataManager.newGoalkeeperForAttacker(card)
 
-      verify(fieldManager).updateGoalkeeperForAttacker(field, card)
+      verify(fieldManager).newGoalkeeperForAttacker(field, card)
     }
     "clear all via both managers" in {
       val handManager = mock[IHandCards]
       val fieldManager = mock[IFieldCards]
 
-      val dataManager = new DataManager(mock[IGameState], handManager, fieldManager)
+      val dataManager = new GameCards(mock[IGameState], handManager, fieldManager)
       dataManager.clearAll()
 
       verify(handManager).clearAll()
@@ -216,7 +216,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(mockFieldManager.getDefenderCard(player, 1)).thenReturn(card)
 
-      val dataManager = new DataManager(mockField, mockHandManager, mockFieldManager)
+      val dataManager = new GameCards(mockField, mockHandManager, mockFieldManager)
 
       dataManager.getDefenderCard(player, 1) shouldBe card
     }
@@ -227,7 +227,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(fieldManager.getPlayerField(player)).thenReturn(field)
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
       dataManager.getPlayerField(player) shouldBe field
     }
     "set player field via fieldManager" in {
@@ -235,10 +235,10 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val player = mock[IPlayer]
       val newField = List(mock[ICard])
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
       dataManager.setPlayerField(player, newField)
 
-      verify(fieldManager).updatePlayerDefenders(player, newField)
+      verify(fieldManager).newPlayerDefenders(player, newField)
     }
     "return player goalkeeper via fieldManager" in {
       val fieldManager = mock[IFieldCards]
@@ -247,7 +247,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       when(fieldManager.getPlayerGoalkeeper(player)).thenReturn(goalkeeper)
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
       dataManager.getPlayerGoalkeeper(player) shouldBe goalkeeper
     }
     "set player goalkeeper via fieldManager" in {
@@ -255,26 +255,26 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val player = mock[IPlayer]
       val goalkeeper = Some(mock[ICard])
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
-      dataManager.updatePlayerGoalkeeper(player, goalkeeper)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
+      dataManager.newPlayerGoalkeeper(player, goalkeeper)
 
-      verify(fieldManager).updatePlayerGoalkeeper(player, goalkeeper)
+      verify(fieldManager).newPlayerGoalkeeper(player, goalkeeper)
     }
     "set player defenders via fieldManager (sets field)" in {
       val fieldManager = mock[IFieldCards]
       val player = mock[IPlayer]
       val defenders = List(mock[ICard], mock[ICard])
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
-      dataManager.updatePlayerDefenders(player, defenders)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
+      dataManager.newPlayerDefenders(player, defenders)
 
-      verify(fieldManager).updatePlayerDefenders(player, defenders)
+      verify(fieldManager).newPlayerDefenders(player, defenders)
     }
     "remove defender goalkeeper via fieldManager" in {
       val fieldManager = mock[IFieldCards]
       val player = mock[IPlayer]
 
-      val dataManager = new DataManager(mock[IGameState], mock[IHandCards], fieldManager)
+      val dataManager = new GameCards(mock[IGameState], mock[IHandCards], fieldManager)
       dataManager.removeDefenderGoalkeeper(player)
 
       verify(fieldManager).removeDefenderGoalkeeper(player)
@@ -287,7 +287,7 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(mockRoles.attacker).thenReturn(attacker)
       when(field.getRoles).thenReturn(mockRoles)
 
-      val dataManager = new DataManager(field, mock[IHandCards], mock[IFieldCards])
+      val dataManager = new GameCards(field, mock[IHandCards], mock[IFieldCards])
       dataManager.getPlayer1 shouldBe attacker
     }
 
@@ -299,12 +299,12 @@ class DataManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(mockRoles.defender).thenReturn(defender)
       when(field.getRoles).thenReturn(mockRoles)
 
-      val dataManager = new DataManager(field, mock[IHandCards], mock[IFieldCards])
+      val dataManager = new GameCards(field, mock[IHandCards], mock[IFieldCards])
       dataManager.getPlayer2 shouldBe defender
     }
     "return the playing field" in {
       val field = mock[IGameState]
-      val dataManager = new DataManager(field, mock[IHandCards], mock[IFieldCards])
+      val dataManager = new GameCards(field, mock[IHandCards], mock[IFieldCards])
       dataManager.getPlayingField shouldBe field
     }
 

@@ -3,5 +3,5 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrate
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent
 trait ISwapStrategy {
-  def swap(playingField: IGameState): (Boolean, IGameState, List[ObservableEvent])
+  def swap(state: IGameState): (Boolean, IGameState, List[ObservableEvent])
 }

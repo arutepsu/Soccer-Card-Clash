@@ -8,7 +8,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{HandCardsQueue, IHandCardsQueue}
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy.base.{RefillDefenderField, RefillField}
 
 class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
@@ -16,7 +16,7 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
   "A RefillDefenderField" should {
 
     "completely refill when goalkeeper and defender field are empty" in {
-      val fieldState = mock[IDataManager]
+      val fieldState = mock[IGameCards]
       val defender = mock[IPlayer]
 
       val cards = (1 to 4).map { i =>
@@ -39,13 +39,13 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
 
       updatedHand.getHandSize shouldBe 0
 
-      verify(fieldState).updatePlayerGoalkeeper(defender, Some(expectedGoalkeeper))
-      verify(fieldState).updatePlayerDefenders(defender, expectedDefenders)
+      verify(fieldState).newPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
+      verify(fieldState).newPlayerDefenders(defender, expectedDefenders)
     }
 
 
     "partially refill when defender field has less than 3 cards and goalkeeper exists" in {
-      val fieldState = mock[IDataManager]
+      val fieldState = mock[IGameCards]
       val defender = mock[IPlayer]
 
       val existingDefenders = (1 to 2).map { i =>
@@ -76,13 +76,13 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       // ✅ updated hand should now be empty
       updatedHand.getHandSize shouldBe 0
 
-      verify(fieldState).updatePlayerGoalkeeper(defender, Some(expectedGoalkeeper))
-      verify(fieldState).updatePlayerDefenders(defender, expectedDefenders)
+      verify(fieldState).newPlayerGoalkeeper(defender, Some(expectedGoalkeeper))
+      verify(fieldState).newPlayerDefenders(defender, expectedDefenders)
     }
 
 
     "should do nothing if defender field is full" in {
-      val fieldState = mock[IDataManager]
+      val fieldState = mock[IGameCards]
       val defender = mock[IPlayer]
 
       // Set up a full defender field (3 defenders) and a goalkeeper
@@ -103,8 +103,8 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       strategy.refill(fieldState, defender)
 
       // Verifications: these should NOT be called if the field is full
-      verify(fieldState, never()).updatePlayerDefenders(any(), any())
-      verify(fieldState, never()).updatePlayerGoalkeeper(any(), any())
+      verify(fieldState, never()).newPlayerDefenders(any(), any())
+      verify(fieldState, never()).newPlayerGoalkeeper(any(), any())
     }
 
   }

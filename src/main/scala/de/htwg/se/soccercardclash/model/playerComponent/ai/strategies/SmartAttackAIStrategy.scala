@@ -13,7 +13,7 @@ class SmartAttackAIStrategy extends IAIStrategy {
 
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
-    val dataManager = state.getDataManager
+    val dataManager = state.getGameCards
     val roles = state.getRoles
 
     if (roles.attacker != player) return NoOpAIAction

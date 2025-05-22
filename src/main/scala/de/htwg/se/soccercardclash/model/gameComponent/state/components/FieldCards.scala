@@ -30,18 +30,18 @@ case class FieldCards(
                                defenders: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List())
                              ) extends IFieldCards {
   
-  override def updatePlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
+  override def newPlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
     copy(defenders = defenders.updated(player, newField))
   }
 
   override def getPlayerGoalkeeper(player: IPlayer): Option[ICard] =
     goalkeepers.getOrElse(player, None)
 
-  override def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): FieldCards = {
+  override def newPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): FieldCards = {
     copy(goalkeepers = goalkeepers.updated(player, goalkeeper))
   }
 
-  override def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards =
+  override def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards =
     copy(goalkeepers = goalkeepers.updated(attacker, Some(card)))
 
   override def removeDefenderCard(currentDefender: IPlayer, defenderCardOpt: Option[ICard]): FieldCards = {
@@ -77,15 +77,15 @@ case class FieldCards(
 
 trait IFieldCards {
 
-  def updatePlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): IFieldCards
+  def newPlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): IFieldCards
 
   def getPlayerGoalkeeper(player: IPlayer): Option[ICard]
 
-  def updatePlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IFieldCards
+  def newPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IFieldCards
 
   def getPlayerDefenders(player: IPlayer): List[Option[ICard]]
 
-  def updateGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards
+  def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IFieldCards
 
   def removeDefenderCard(currentDefender: IPlayer, defenderCard: Option[ICard]): IFieldCards
 

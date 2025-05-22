@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.util.StateEvent.NoBoostsEvent
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{AttackerBar, BoostBar, GameStatusBar, PlayersFieldBar, SelectableFieldCardRenderer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -17,21 +17,21 @@ import javafx.scene.layout.{BackgroundPosition, BackgroundRepeat, BackgroundSize
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.Button
 import scalafx.scene.image.Image
 import scalafx.scene.layout.*
 import scalafx.scene.text.Text
+import scalafx.scene.{Node, Scene}
 
 class AttackerDefendersScene(
                               controller: IController,
                               val contextHolder: IGameContextHolder,
-                            ) extends GameScene with HasContextHolder{
-  override def getContextHolder: IGameContextHolder = contextHolder
+                            ) extends GameScene with HasContextHolder {
+  controller.add(this)
+
+  val attackerBar = new AttackerBar(controller, this)
 
   this.getStylesheets.add(Styles.attackerFieldSceneCss)
-  val attackerBar = new AttackerBar(controller, this)
-  val gameStatusBar = new GameStatusBar
   val overlay = new Overlay(this)
   val attackerDefenderField: Option[PlayersFieldBar] = {
     val pf = contextHolder.get.state
@@ -41,10 +41,14 @@ class AttackerDefendersScene(
       renderer = new SelectableFieldCardRenderer(() => pf)
     ))
   }
+  val playerBarWrapper = new BorderPane {
+    top = attackerBar
+    styleClass += "label"
+  }
   private val backgroundView = new Region {
     styleClass += "attacker-field-scene"
   }
-  
+
   private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 200, 100) {
     () =>
       GlobalObservable.notifyObservers(SceneSwitchEvent.PlayingField)
@@ -53,9 +57,6 @@ class AttackerDefendersScene(
   private val boostButton: Button = ActionButtonFactory.createBoostButton(
     BoostButton(), "Boost Card", 200, 100, this, controller
   )
-  val playerBarWrapper = new BorderPane {
-    top = attackerBar
-  }
   private val buttonLayout = new HBox {
     alignment = Pos.Center
     spacing = 15
@@ -67,12 +68,13 @@ class AttackerDefendersScene(
     padding = Insets(20)
     children = attackerDefenderField.toSeq :+ buttonLayout
   }
-
   private val fullLayout = new BorderPane {
     padding = Insets(30)
     top = playerBarWrapper
     center = layoutCenter
   }
+
+  override def getContextHolder: IGameContextHolder = contextHolder
 
   root = new StackPane {
     children = Seq(backgroundView, fullLayout, overlay.getPane)
@@ -82,6 +84,13 @@ class AttackerDefendersScene(
     case StateEvent.NoBoostsEvent(player) =>
       overlay.show(createBoostAlert(player), true)
     case _ =>
+
+  override def handleGameAction(e: GameActionEvent): Unit = {
+    e match {
+      case GameActionEvent.BoostDefender | GameActionEvent.BoostGoalkeeper => attackerBar.refreshActionStates()
+      case _ =>
+    }
+  }
 
   private def createBoostAlert(player: IPlayer): Node = {
     GameAlertFactory.createAlert(s"${player.name} has no Boosts Left!", overlay, autoHide = true)

@@ -11,7 +11,7 @@ import scala.util.Random
 class RandomAttackAIStrategy(random: Random) extends IAIStrategy {
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
-    val dataManager = state.getDataManager
+    val dataManager = state.getGameCards
     val roles = state.getRoles
 
     val defender = if (roles.attacker == player) roles.defender else roles.attacker

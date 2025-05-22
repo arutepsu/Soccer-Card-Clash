@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager, IPlayerActionManager}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.base.RegularSwapStrategy
@@ -21,7 +21,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
   class ObservableMockGameState extends Observable with IGameState with MockitoSugar {
     override def getRoles: IRoles = mock[IRoles]
-    override def getDataManager: IDataManager = mock[IDataManager]
+    override def getGameCards: IGameCards = mock[IGameCards]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
     override def reset(): Unit = {}
@@ -30,7 +30,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
   }
 
   "HandSwapStrategy" should "swap selected card with last card in hand" in {
-    val mockData = mock[IDataManager]
+    val mockData = mock[IGameCards]
     val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockDefender = mock[IPlayer]
@@ -50,7 +50,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     when(updatedPlayer.actionStates).thenReturn(Map(PlayerActionPolicies.Swap -> CanPerformAction(0)))
 
     val field = new ObservableMockGameState {
-      override def getDataManager: IDataManager = mockData
+      override def getGameCards: IGameCards = mockData
 
       override def getRoles: IRoles = mockRoles
     }
@@ -62,17 +62,17 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
 
     val handCaptor = ArgumentCaptor.forClass(classOf[IHandCardsQueue])
 
-    verify(mockData).updatePlayerHand(ArgumentMatchers.eq(mockAttacker), handCaptor.capture())
+    verify(mockData).newPlayerHand(ArgumentMatchers.eq(mockAttacker), handCaptor.capture())
 
     val swappedList = handCaptor.getValue.toList
     swappedList should contain inOrder (card2, card1)
 
-    verify(mockRoles).updateRoles(updatedPlayer, mockDefender)
+    verify(mockRoles).newRoles(updatedPlayer, mockDefender)
   }
 
 
   it should "fail and notify if swap is out of actions" in {
-    val mockData = mock[IDataManager]
+    val mockData = mock[IGameCards]
     val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
@@ -85,7 +85,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     var notified: Option[ObservableEvent] = None
 
     val field = new ObservableMockGameState {
-      override def getDataManager: IDataManager = mockData
+      override def getGameCards: IGameCards = mockData
       override def getRoles: IRoles = mockRoles
       override def notifyObservers(e: ObservableEvent): Unit = {
         notified = Some(e)
@@ -100,7 +100,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
   }
 
   it should "fail if hand has less than two cards" in {
-    val mockData = mock[IDataManager]
+    val mockData = mock[IGameCards]
     val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
@@ -113,7 +113,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
 
     val field = new ObservableMockGameState {
-      override def getDataManager: IDataManager = mockData
+      override def getGameCards: IGameCards = mockData
       override def getRoles: IRoles = mockRoles
     }
 
@@ -124,7 +124,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
   }
 
   it should "fail if index is out of bounds" in {
-    val mockData = mock[IDataManager]
+    val mockData = mock[IGameCards]
     val mockRoles = mock[IRoles]
     val mockAttacker = mock[IPlayer]
     val mockPlayerActionManager = mock[IPlayerActionManager]
@@ -138,7 +138,7 @@ class RegularSwapStrategyTest extends AnyFlatSpec with Matchers with MockitoSuga
     when(mockData.getPlayerHand(mockAttacker)).thenReturn(hand)
 
     val field = new ObservableMockGameState {
-      override def getDataManager: IDataManager = mockData
+      override def getGameCards: IGameCards = mockData
       override def getRoles: IRoles = mockRoles
     }
 

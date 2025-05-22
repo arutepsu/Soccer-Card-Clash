@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.base
 import com.google.inject.{Inject, Provider, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.{AttackManager, IAttackStrategy}
@@ -18,23 +18,23 @@ import play.api.libs.json.*
 import scala.xml.*
 
 case class GameState(
-                      dataManager: IDataManager,
+                      gameCards: IGameCards,
                       roles: IRoles,
                       scores: IScores
                     ) extends IGameState {
-  override def getDataManager: IDataManager = dataManager
+  override def getGameCards: IGameCards = gameCards
 
   override def getRoles: IRoles = roles
 
   override def getScores: IScores = scores
 
-  override def updateDataManager(newDataManager: IDataManager): IGameState =
-    copy(dataManager = newDataManager)
+  override def newGameCards(newGameCards: IGameCards): IGameState =
+    copy(gameCards = newGameCards)
 
-  override def updateRoles(newRoles: IRoles): IGameState =
+  override def newRoles(newRoles: IRoles): IGameState =
     copy(roles = newRoles)
 
-  override def updateScores(newScores: IScores): IGameState =
+  override def newScores(newScores: IScores): IGameState =
     copy(scores = newScores)
 
 }

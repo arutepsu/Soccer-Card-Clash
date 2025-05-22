@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStra
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.IAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IBoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -22,29 +22,29 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     val defender = roles.defender
     val revertStrategy = boostManager.getRevertStrategy(state)
     val scores = state.getScores
-    val dataManager = state.getDataManager
+    val gameCards = state.getGameCards
 
     Try {
-      val attackerHand = dataManager.getPlayerHand(attacker)
+      val attackerHand = gameCards.getPlayerHand(attacker)
       val (attackingCard, updatedAttackerHand) = attackerHand.removeLastCard().get
-      val updatedDataManager = dataManager.updatePlayerHand(attacker, updatedAttackerHand)
+      val updatedGameCards = gameCards.newPlayerHand(attacker, updatedAttackerHand)
 
       val defenderCard: Option[ICard] =
-        if (updatedDataManager.allDefendersBeaten(defender))
-          updatedDataManager.getPlayerGoalkeeper(defender)
+        if (updatedGameCards.allDefendersBeaten(defender))
+          updatedGameCards.getPlayerGoalkeeper(defender)
         else
-          updatedDataManager.getDefenderCard(defender, defenderIndex)
+          updatedGameCards.getDefenderCard(defender, defenderIndex)
 
       val comparisonEvent =
         StateEvent.ComparedCardsEvent(Some(attackingCard), defenderCard)
 
-      val (finalManager, updatedRoles, updatedScores, additionalEvents) =
-        if (updatedDataManager.allDefendersBeaten(defender))
+      val (newGameCards, updatedRoles, updatedScores, additionalEvents) =
+        if (updatedGameCards.allDefendersBeaten(defender))
           processGoalkeeperAttack(
             attacker,
             defender,
             updatedAttackerHand,
-            updatedDataManager,
+            updatedGameCards,
             attackingCard,
             revertStrategy,
             scores,
@@ -55,22 +55,22 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
             attacker,
             defender,
             updatedAttackerHand,
-            updatedDataManager.getPlayerHand(defender),
+            updatedGameCards.getPlayerHand(defender),
             attackingCard,
             defenderCard,
-            updatedDataManager,
+            updatedGameCards,
             revertStrategy,
             roles
           )
           (mgr, rls, scores, events)
         }
 
-      val updatedField = state
-        .updateDataManager(finalManager)
-        .updateRoles(updatedRoles)
-        .updateScores(updatedScores)
+      val newState = state
+        .newGameCards(newGameCards)
+        .newRoles(updatedRoles)
+        .newScores(updatedScores)
 
-      (true, updatedField, comparisonEvent :: additionalEvents)
+      (true, newState, comparisonEvent :: additionalEvents)
     } match {
       case Success(result) => result
       case Failure(_)      => (false, state, Nil)
@@ -82,15 +82,14 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                                        attacker: IPlayer,
                                        defender: IPlayer,
                                        attackerHand: IHandCardsQueue,
-                                       dataManager: IDataManager,
+                                       gameCards: IGameCards,
                                        attackingCard: ICard,
                                        revertStrategy: IRevertStrategy,
                                        scores: IScores,
                                        roles: IRoles
-                                     ): (IDataManager, IRoles, IScores, List[ObservableEvent]) = {
+                                     ): (IGameCards, IRoles, IScores, List[ObservableEvent]) = {
 
-    val goalkeeperOpt = dataManager.getPlayerGoalkeeper(defender)
-    println("!!!!!!!!!!!!!!!!!!!!!!!!Entered processGoalkeeperAttack!")
+    val goalkeeperOpt = gameCards.getPlayerGoalkeeper(defender)
 
     val goalkeeper = goalkeeperOpt.getOrElse(
       throw new NoSuchElementException("Goalkeeper not found")
@@ -100,49 +99,49 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     val comparisonResult = attackingCard.compare(goalkeeper)
 
     if (comparisonResult > 0) {
-      val (updatedManager0, resultEvent) = attackerWins(
+      val (updatedGameCards, resultEvent) = attackerWins(
         attackerHand,
-        dataManager,
+        gameCards,
         attacker,
         defender,
         Some(attackingCard),
         revertedGoalkeeper
       )
 
-      val updatedManager = updatedManager0
+      val newGameCards = updatedGameCards
         .removeDefenderGoalkeeper(defender)
-        .updatePlayerGoalkeeper(defender, None)
-        .updatePlayerDefenders(defender, List.fill(3)(None)) // keep empty slots
+        .newPlayerGoalkeeper(defender, None)
+        .newPlayerDefenders(defender, List.fill(3)(None)) // keep empty slots
         .refillDefenderField(defender)
 
       val (updatedScores, scoreEvents) = scores.scoreGoal(attacker)
       val updatedRoles = roles.switchRoles()
 
       (
-        updatedManager,
+        newGameCards,
         updatedRoles,
         updatedScores,
         List(resultEvent, GameActionEvent.RegularAttack) ++ scoreEvents
       )
 
     } else {
-      val (updatedManager0, resultEvent) = defenderWins(
-        dataManager.getPlayerHand(defender),
-        dataManager,
+      val (updatedGameCards, resultEvent) = defenderWins(
+        gameCards.getPlayerHand(defender),
+        gameCards,
         attacker,
         defender,
         Some(attackingCard),
         revertedGoalkeeper
       )
 
-      val updatedManager = updatedManager0
+      val newGameCards = updatedGameCards
         .removeDefenderGoalkeeper(defender)
         .refillDefenderField(defender)
 
       val updatedRoles = roles.switchRoles()
 
       (
-        updatedManager,
+        newGameCards,
         updatedRoles,
         scores,
         List(resultEvent, GameActionEvent.RegularAttack)
@@ -153,31 +152,31 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
   private def attackerWins(
                             hand: IHandCardsQueue,
-                            dataManager: IDataManager,
+                            gameCards: IGameCards,
                             attacker: IPlayer,
                             defender: IPlayer,
                             cards: Option[ICard]*
-                          ): (IDataManager, ObservableEvent) = {
+                          ): (IGameCards, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.updatePlayerHand(attacker, updatedHand)
+    val updatedGameCards = gameCards.newPlayerHand(attacker, updatedHand)
 
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = true)
-    (updatedManager, event)
+    (updatedGameCards, event)
   }
 
 
   private def defenderWins(
                             hand: IHandCardsQueue,
-                            dataManager: IDataManager,
+                            gameCards: IGameCards,
                             attacker: IPlayer,
                             defender: IPlayer,
                             cards: Option[ICard]*
-                          ): (IDataManager, ObservableEvent) = {
+                          ): (IGameCards, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
-    val updatedManager = dataManager.updatePlayerHand(defender, updatedHand)
+    val updatedGameCards = gameCards.newPlayerHand(defender, updatedHand)
 
     val event = StateEvent.AttackResultEvent(attacker, defender, attackSuccess = false)
-    (updatedManager, event)
+    (updatedGameCards, event)
   }
 
 
@@ -188,10 +187,10 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                                      defenderHand: IHandCardsQueue,
                                      attackingCard: ICard,
                                      defenderCard: Option[ICard],
-                                     dataManager: IDataManager,
+                                     gameCards: IGameCards,
                                      revertStrategy: IRevertStrategy,
                                      roles: IRoles
-                                   ): (IDataManager, IRoles, List[ObservableEvent]) = {
+                                   ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
     val revertedCard: Option[ICard] = revertStrategy.revertCard(defenderCard)
 
@@ -208,44 +207,44 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
           defenderHand,
           attackingCard,
           defenderCard,
-          dataManager,
+          gameCards,
           revertStrategy,
           roles
         )
 
       case r if r > 0 =>
-        val (updatedManager0, resultEvent) = attackerWins(
+        val (updatedGameCards, resultEvent) = attackerWins(
           attackerHand,
-          dataManager,
+          gameCards,
           attacker,
           defender,
           Some(attackingCard),
           revertedCard
         )
 
-        val updatedManager = updatedManager0
+        val newGameCards = updatedGameCards
           .removeDefenderCard(defender, defenderCard)
           .removeDefenderCard(defender, revertedCard)
 
-        (updatedManager, roles, List(resultEvent, GameActionEvent.RegularAttack))
+        (newGameCards, roles, List(resultEvent, GameActionEvent.RegularAttack))
 
       case _ =>
-        val (updatedManager0, resultEvent) = defenderWins(
+        val (updatedGameCards, resultEvent) = defenderWins(
           defenderHand,
-          dataManager,
+          gameCards,
           attacker,
           defender,
           Some(attackingCard),
           revertedCard
         )
 
-        val updatedManager = updatedManager0
+        val newGameCards = updatedGameCards
           .removeDefenderCard(defender, defenderCard)
           .removeDefenderCard(defender, revertedCard)
           .refillDefenderField(defender)
 
         val updatedRoles = roles.switchRoles()
-        (updatedManager, updatedRoles, List(resultEvent, GameActionEvent.RegularAttack))
+        (newGameCards, updatedRoles, List(resultEvent, GameActionEvent.RegularAttack))
     }
   }
 
@@ -256,10 +255,10 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
                          defenderHand: IHandCardsQueue,
                          attackingCard: ICard,
                          defenderCard: Option[ICard],
-                         dataManager: IDataManager,
+                         gameCards: IGameCards,
                          revertStrategy: IRevertStrategy,
                          roles: IRoles
-                       ): (IDataManager, IRoles, List[ObservableEvent]) = {
+                       ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
     val revertedDefenderCard: Option[ICard] = revertStrategy.revertCard(defenderCard)
 
@@ -280,9 +279,9 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
         )
 
         if (tiebreakerResult > 0) {
-          val (updatedManager, _) = attackerWins(
+          val (updatedGameCards, _) = attackerWins(
             updatedAttackerHand,
-            dataManager,
+            gameCards,
             attacker,
             defender,
             Some(attackingCard),
@@ -290,16 +289,16 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
             Some(extraAttackerCard),
             Some(extraDefenderCard)
           )
-          val resultManager = updatedManager
+          val newGameCards = updatedGameCards
             .removeDefenderCard(defender, defenderCard)
             .removeDefenderCard(defender, revertedDefenderCard)
 
-          (resultManager, roles, events)
+          (newGameCards, roles, events)
 
         } else {
-          val (updatedManager, _) = defenderWins(
+          val (updatedGameCards, _) = defenderWins(
             updatedDefenderHand,
-            dataManager,
+            gameCards,
             attacker,
             defender,
             Some(attackingCard),
@@ -307,17 +306,17 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
             Some(extraAttackerCard),
             Some(extraDefenderCard)
           )
-          val resultManager = updatedManager
+          val newGameCards = updatedGameCards
             .removeDefenderCard(defender, defenderCard)
             .removeDefenderCard(defender, revertedDefenderCard)
             .refillDefenderField(defender)
 
           val updatedRoles = roles.switchRoles()
-          (resultManager, updatedRoles, events)
+          (newGameCards, updatedRoles, events)
         }
       case _ =>
         val updatedRoles = roles.switchRoles()
-        (dataManager, updatedRoles, List(GameActionEvent.TieComparison))
+        (gameCards, updatedRoles, List(GameActionEvent.TieComparison))
     }
   }
 

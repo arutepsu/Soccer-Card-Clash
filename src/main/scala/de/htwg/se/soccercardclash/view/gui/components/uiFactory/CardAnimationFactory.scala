@@ -138,7 +138,7 @@ object CardAnimationFactory {
   }
 
   def highlightLastHandCard(player: IPlayer, playingField: IGameState): Option[HandCard] = {
-    val handCards = playingField.getDataManager.getPlayerHand(player).toList
+    val handCards = playingField.getGameCards.getPlayerHand(player).toList
 
     handCards.lastOption.map { lastCard =>
       val cardView = new HandCard(flipped = false, card = lastCard)

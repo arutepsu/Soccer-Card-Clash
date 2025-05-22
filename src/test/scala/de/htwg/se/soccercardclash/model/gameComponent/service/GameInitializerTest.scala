@@ -21,7 +21,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles}
 
 import scala.collection.mutable
 
@@ -38,7 +38,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     val playingField = mock[IGameState]
     val rolesManager = mock[IRoles]
-    val dataManager = mock[IDataManager]
+    val dataManager = mock[IGameCards]
     val actionManager = mock[IActionManager]
 
     when(deckFactory.createDeck()).thenReturn(deck)
@@ -50,7 +50,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     when(playingFieldFactory.createPlayingField(player1, player2)).thenReturn(playingField)
     when(playingField.getRoles).thenReturn(rolesManager)
-    when(playingField.getDataManager).thenReturn(dataManager)
+    when(playingField.getGameCards).thenReturn(dataManager)
     when(playingField.getActionManager).thenReturn(actionManager)
 
     val initializer = new GameInitializer(playerFactory, playingFieldFactory, deckFactory)
@@ -63,7 +63,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     initializer.getActionManager shouldBe actionManager
 
     verify(deckFactory).shuffleDeck(deck)
-    verify(rolesManager).updateRoles(player1, player2)
+    verify(rolesManager).newRoles(player1, player2)
     verify(playingField).setPlayingField()
 
     verify(dataManager).initializePlayerHands(
@@ -92,7 +92,7 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
     val state = mock[IGameState]
     val playingField = mock[IGameState]
-    val dataManager = mock[IDataManager]
+    val dataManager = mock[IGameCards]
 
     when(state.player1).thenReturn(player1)
     when(state.player2).thenReturn(player2)
@@ -104,17 +104,17 @@ class GameInitializerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     when(state.player2Goalkeeper).thenReturn(player2GK)
 
     when(playingFieldFactory.createPlayingField(player1, player2)).thenReturn(playingField)
-    when(playingField.getDataManager).thenReturn(dataManager)
+    when(playingField.getGameCards).thenReturn(dataManager)
 
     val initializer = new GameInitializer(playerFactory, playingFieldFactory, deckFactory)
 
     initializer.initializeFromState(state)
 
     verify(dataManager).initializePlayerHands(List(player1Card), List(player2Card))
-    verify(dataManager).updatePlayerDefenders(player1, player1Defenders)
-    verify(dataManager).updatePlayerDefenders(player2, player2Defenders)
-    verify(dataManager).updatePlayerGoalkeeper(player1, player1GK)
-    verify(dataManager).updatePlayerGoalkeeper(player2, player2GK)
+    verify(dataManager).newPlayerDefenders(player1, player1Defenders)
+    verify(dataManager).newPlayerDefenders(player2, player2Defenders)
+    verify(dataManager).newPlayerGoalkeeper(player1, player1GK)
+    verify(dataManager).newPlayerGoalkeeper(player2, player2GK)
     verify(playingField).setPlayingField()
 
     initializer.getPlayer1 shouldBe player1

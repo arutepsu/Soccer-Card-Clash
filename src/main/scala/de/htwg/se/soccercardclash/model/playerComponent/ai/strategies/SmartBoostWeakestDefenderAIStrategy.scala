@@ -17,7 +17,7 @@ class SmartBoostWeakestDefenderAIStrategy() extends IAIStrategy {
 
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
-    val dataManager = state.getDataManager
+    val dataManager = state.getGameCards
 
     if (!playerActionManager.canPerform(player, PlayerActionPolicies.Boost))
       return NoOpAIAction

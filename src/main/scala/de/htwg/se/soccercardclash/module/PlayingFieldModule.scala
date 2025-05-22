@@ -17,7 +17,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.factory.{IPlayerFactory,
 class PlayingFieldModule extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[IDataManagerFactory]).to(classOf[DataManagerFactory])
+    bind(classOf[IGameCardsFactory]).to(classOf[GameCardsFactory])
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
     bind(classOf[IRolesFactory]).to(classOf[RolesFactory])
     bind(classOf[IScoresFactory]).to(classOf[ScoresFactory])

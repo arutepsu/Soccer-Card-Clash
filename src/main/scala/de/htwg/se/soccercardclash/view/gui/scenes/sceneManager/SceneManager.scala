@@ -22,7 +22,7 @@ class SceneManager(
                     stage: scalafx.stage.Stage,
                     windowWidth: Double = 1000,
                     windowHeight: Double = 600
-                  ) extends Observer {
+                  ) extends Observable with Observer {
 
 
   private var currentScene: Option[GameScene] = None
@@ -41,22 +41,24 @@ class SceneManager(
     val oldSceneOpt = currentScene
 
     val newScene: GameScene = e match {
-      case SceneSwitchEvent.MainMenu            => new MainMenuScene(controller)
-      case SceneSwitchEvent.CreatePlayer        => new CreatePlayerScene(controller, contextHolder)
-      case SceneSwitchEvent.CreatePlayerWithAI  => new CreatePlayerWithAIScene(controller, contextHolder, startupDataHolder)
-      case SceneSwitchEvent.AISelection         => new AISelectionScene(controller, contextHolder, startupDataHolder)
-      case SceneSwitchEvent.LoadGame            => new LoadGameScene(controller, contextHolder)
-      case SceneSwitchEvent.PlayingField        => new PlayingFieldScene(controller, contextHolder)
-      case SceneSwitchEvent.AttackerHandCards   => new AttackerHandScene(controller, contextHolder)
+      case SceneSwitchEvent.MainMenu => new MainMenuScene(controller)
+      case SceneSwitchEvent.CreatePlayer => new CreatePlayerScene(controller, contextHolder)
+      case SceneSwitchEvent.CreatePlayerWithAI => new CreatePlayerWithAIScene(controller, contextHolder, startupDataHolder)
+      case SceneSwitchEvent.AISelection => new AISelectionScene(controller, contextHolder, startupDataHolder)
+      case SceneSwitchEvent.LoadGame => new LoadGameScene(controller, contextHolder)
+      case SceneSwitchEvent.PlayingField => new PlayingFieldScene(controller, contextHolder)
+      case SceneSwitchEvent.AttackerHandCards => new AttackerHandScene(controller, contextHolder)
       case SceneSwitchEvent.AttackerDefenderCards => new AttackerDefendersScene(controller, contextHolder)
-      case unknown                              => throw new MatchError(s"Unhandled SceneSwitchEvent: $unknown")
+      case unknown => throw new MatchError(s"Unhandled SceneSwitchEvent: $unknown")
     }
 
     oldSceneOpt.foreach(_.deactivate())
-
     currentScene = Some(newScene)
     applySceneTransition(oldSceneOpt, newScene)
+
+    notifyObservers(SceneChangedEvent(e))
   }
+
 
   private def applySceneSize(): Unit = {
     stage.width = lastSceneWidth

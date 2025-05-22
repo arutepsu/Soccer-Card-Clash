@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButton
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{AttackerBar, GameStatusBar, GameStatusMessages, PlayersBar, PlayersHandBar, SelectableHandCardRenderer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
@@ -18,7 +18,7 @@ import scalafx.geometry
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
-import scalafx.scene.layout.{BorderPane, HBox, Priority, Region, StackPane, VBox}
+import scalafx.scene.layout.*
 import scalafx.scene.text.Text
 import scalafx.scene.{Node, Scene}
 
@@ -26,6 +26,7 @@ class AttackerHandScene(
                          controller: IController,
                          val contextHolder: IGameContextHolder,
                        ) extends GameScene with HasContextHolder{
+  controller.add(this)
   override def getContextHolder: IGameContextHolder = contextHolder
 
   this.getStylesheets.add(Styles.attackerHandSceneCss)
@@ -76,30 +77,22 @@ class AttackerHandScene(
     spacing = 30
     padding = Insets(30)
     children = Seq(
-      playerBarWrapper, // <- full width now
+      playerBarWrapper,
       navButtonLayout,
       attackerHandBar,
       actionButtonLayout
     )
   }
 
-
-
-
   root = new StackPane {
     styleClass.add("attacker-hand-scene")
     children = Seq(
-      new Region {
-//        style = "-fx-background-color: black;"
-      },
       layout,
       overlay.getPane
     )
   }
 
   override def handleGameAction(e: GameActionEvent): Unit = e match
-    case GameActionEvent.Reverted =>
-      updateDisplay()
     case GameActionEvent.RegularSwap | GameActionEvent.ReverseSwap =>
       updateDisplay()
     case _ =>
@@ -108,14 +101,16 @@ class AttackerHandScene(
     val gameState = getContextHolder.get.state
     attackerHandBar.updateBar(gameState)
     attackerBar.refreshActionStates()
-    attackerBar.updateBar()
   }
 
-  override def handleStateEvent(e: StateEvent): Unit = e match
-    case StateEvent.NoSwapsEvent(player) =>
-      println("now swaps!")
-      overlay.show(createSwapAlert(player), true)
-    case _ =>
+
+  override def handleStateEvent(e: StateEvent): Unit = {
+    e match {
+      case StateEvent.NoSwapsEvent(player) =>
+        overlay.show(createSwapAlert(player), true)
+      case _ =>
+    }
+  }
 
   private def createSwapAlert(player: IPlayer): Node = {
     GameAlertFactory.createAlert(s"${player.name} has no Swaps Left!", overlay, autoHide = false)

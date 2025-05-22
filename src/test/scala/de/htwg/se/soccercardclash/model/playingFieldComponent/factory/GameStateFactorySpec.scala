@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStra
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.state.factory.{IPlayingFieldFactory, IPlayingFieldManagerFactory, PlayingFieldFactory}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -22,7 +22,7 @@ class GameStateFactorySpec extends AnyWordSpec with Matchers with MockitoSugar {
       val player2 = mock[IPlayer]
 
       val mockManager = mock[IPlayingFieldManagerFactory]
-      val mockDataManager = mock[IDataManager]
+      val mockDataManager = mock[IGameCards]
       val mockActionManager = mock[IActionManager]
       val mockRolesManager = mock[IRoles]
       val mockScores = mock[IScores]

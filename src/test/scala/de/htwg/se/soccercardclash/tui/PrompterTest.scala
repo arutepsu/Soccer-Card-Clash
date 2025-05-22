@@ -20,7 +20,7 @@ import java.io.{ByteArrayOutputStream, File, PrintStream}
 import java.nio.file.{Files, Path}
 import scala.Console
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles}
 import scala.collection.mutable
 class PrompterTest extends AnyFlatSpec with Matchers {
 
@@ -96,8 +96,8 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     when(mockField.getRoles).thenReturn(mockRoles)
     when(mockAttacker.name).thenReturn("Attacker")
 
-    val mockDataManager = mock(classOf[IDataManager])
-    when(mockField.getDataManager).thenReturn(mockDataManager)
+    val mockDataManager = mock(classOf[IGameCards])
+    when(mockField.getGameCards).thenReturn(mockDataManager)
 
     val mockHandQueue = mock(classOf[IHandCardsQueue])
     val mockCard1 = mock(classOf[ICard])
@@ -120,7 +120,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockGame = mock(classOf[IGame])
     val mockField = mock(classOf[GameState])
     val mockDefender = mock(classOf[Player])
-    val mockDataManager = mock(classOf[IDataManager])
+    val mockDataManager = mock(classOf[IGameCards])
     val mockCard1 = mock(classOf[ICard])
     val mockCard2 = mock(classOf[ICard])
 
@@ -131,7 +131,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
     when(mockDefender.name).thenReturn("Defender")
-    when(mockField.getDataManager).thenReturn(mockDataManager)
+    when(mockField.getGameCards).thenReturn(mockDataManager)
 
     // ✅ Fix here: use getPlayerDefenders
     when(mockCard1.toString).thenReturn("🛡️")
@@ -151,7 +151,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockField = mock(classOf[GameState])
     val mockAttacker = mock(classOf[Player])
     val mockDefender = mock(classOf[Player])
-    val mockDataManager = mock(classOf[IDataManager])
+    val mockDataManager = mock(classOf[IGameCards])
     val mockHandQueue = mock(classOf[IHandCardsQueue])
     val mockCard1 = mock(classOf[ICard])
     val mockCard2 = mock(classOf[ICard])
@@ -166,7 +166,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     // Game & field
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
-    when(mockField.getDataManager).thenReturn(mockDataManager)
+    when(mockField.getGameCards).thenReturn(mockDataManager)
 
     // Player names
     when(mockAttacker.name).thenReturn("Attacker")
@@ -196,7 +196,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
     val mockController = mock(classOf[IController])
     val mockGame = mock(classOf[IGame])
     val mockField = mock(classOf[IGameState])
-    val mockDataManager = mock(classOf[IDataManager])
+    val mockDataManager = mock(classOf[IGameCards])
     val mockPlayer = mock(classOf[IPlayer])
     val mockCard = mock(classOf[ICard])
 
@@ -205,7 +205,7 @@ class PrompterTest extends AnyFlatSpec with Matchers {
 
     when(mockController.getCurrentGame).thenReturn(mockGame)
     when(mockGame.getPlayingField).thenReturn(mockField)
-    when(mockField.getDataManager).thenReturn(mockDataManager)
+    when(mockField.getGameCards).thenReturn(mockDataManager)
     when(mockDataManager.getPlayerGoalkeeper(mockPlayer)).thenReturn(Some(mockCard))
 
     val prompter = new Prompter(mockController)

@@ -33,7 +33,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.undo(playingFieldScene.contextHolder.get)
     playingFieldScene.update(GameActionEvent.Undo)
-    playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.UNDO_PERFORMED)
   }
 
   val redoButton: Button = GameButtonFactory.createGameButton(
@@ -43,7 +42,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
   ) { () =>
     controller.redo(playingFieldScene.contextHolder.get)
     playingFieldScene.update(GameActionEvent.Redo)
-    playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REDO_PERFORMED)
   }
 
   val saveGameButton: Button = GameButtonFactory.createGameButton(

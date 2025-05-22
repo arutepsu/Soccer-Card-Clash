@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.actionButton
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages}
 import de.htwg.se.soccercardclash.view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
 case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
   override def execute(controller: IController, attackerHandScene: AttackerHandScene): Unit = {
@@ -12,12 +11,9 @@ case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
       case Some(index) =>
         val (newCtx, success) = controller.regularSwap(index, ctx)
         if (success) {
-//          attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.REGULAR_SWAP_PERFORMED)
           attackerHandScene.attackerHandBar.updateBar(newCtx.state)
         }
       case None =>
-        println("⚠No card selected for swap!")
-//        attackerHandScene.playingFieldScene.gameStatusBar.updateStatus(GameStatusMessages.NO_CARD_SELECTED)
     }
   }
 }

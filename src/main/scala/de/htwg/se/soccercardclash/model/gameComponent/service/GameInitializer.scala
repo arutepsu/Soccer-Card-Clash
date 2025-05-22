@@ -12,7 +12,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
 import de.htwg.se.soccercardclash.util.UndoManager
@@ -31,7 +31,7 @@ trait IGameInitializer {
 class GameInitializer @Inject()(
                                  playerFactory: IPlayerFactory,
                                  deckFactory: IDeckFactory,
-                                 dataManagerFactory: IDataManagerFactory,
+                                 dataManagerFactory: IGameCardsFactory,
                                  rolesFactory: IRolesFactory,
                                  scoresFactory: IScoresFactory
                                ) extends IGameInitializer {
@@ -60,7 +60,7 @@ class GameInitializer @Inject()(
     val scores = scoresFactory.create(Seq(p1, p2))
 
     GameState(
-      dataManager = dataManager,
+      gameCards = dataManager,
       roles = roles,
       scores = scores
     )
@@ -73,13 +73,13 @@ class GameInitializer @Inject()(
 
     val dataManager = dataManagerFactory.createFromData(
       attacker = p1,
-      attackerHand = state.getDataManager.getPlayerHand(p1).toList,
+      attackerHand = state.getGameCards.getPlayerHand(p1).toList,
       defender = p2,
-      defenderHand = state.getDataManager.getPlayerHand(p2).toList,
-      attackerDefenders = state.getDataManager.getPlayerDefenders(p1),
-      defenderDefenders = state.getDataManager.getPlayerDefenders(p2),
-      attackerGoalkeeper = state.getDataManager.getPlayerGoalkeeper(p1),
-      defenderGoalkeeper = state.getDataManager.getPlayerGoalkeeper(p2)
+      defenderHand = state.getGameCards.getPlayerHand(p2).toList,
+      attackerDefenders = state.getGameCards.getPlayerDefenders(p1),
+      defenderDefenders = state.getGameCards.getPlayerDefenders(p2),
+      attackerGoalkeeper = state.getGameCards.getPlayerGoalkeeper(p1),
+      defenderGoalkeeper = state.getGameCards.getPlayerGoalkeeper(p2)
     )
 
     val roles = rolesFactory.create(

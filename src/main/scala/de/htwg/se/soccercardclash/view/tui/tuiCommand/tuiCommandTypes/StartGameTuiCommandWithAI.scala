@@ -11,6 +11,8 @@ class StartGameTuiCommandWithAI(controller: IController,
   override def execute(input: Option[String] = None): Unit = {
     println(s"🎮 Starting game with players: $player1 & AI")
 //    controller.createGameWithAI(player1)
+
+
     val players = Seq(
       contextHolder.get.state.getRoles.attacker,
       contextHolder.get.state.getRoles.defender

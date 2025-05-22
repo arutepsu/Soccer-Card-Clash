@@ -2,8 +2,8 @@ package de.htwg.se.soccercardclash.model.playingFieldComponent.strategy.scoringS
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Scores}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Scores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.{IPlayerScores, IScoringStrategy}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.util.{GameOver, ScoreEvent, Observable, Observ
 class PlayerScoresTest extends AnyFlatSpec with Matchers with MockitoSugar {
 
   class ObservableMockGameState extends Observable with IGameState with MockitoSugar {
-    override def getDataManager: IDataManager = mock[IDataManager]
+    override def getGameCards: IGameCards = mock[IGameCards]
     override def getRoles: IRoles = mock[IRoles]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]

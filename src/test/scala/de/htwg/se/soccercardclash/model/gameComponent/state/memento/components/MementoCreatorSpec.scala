@@ -17,7 +17,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.util.{Events, Observable, ObservableEvent}
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
@@ -31,7 +31,7 @@ class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
       // Mocks
       val game = mock[IGame]
       val playingField = mock[IGameState]
-      val dataManager = mock[IDataManager]
+      val dataManager = mock[IGameCards]
       val scores = mock[IScores]
 
       val attacker = mock[IPlayer]
@@ -55,7 +55,7 @@ class MementoCreatorSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       // Stub behavior
       when(game.getPlayingField).thenReturn(playingField)
-      when(playingField.getDataManager).thenReturn(dataManager)
+      when(playingField.getGameCards).thenReturn(dataManager)
       when(playingField.getScores).thenReturn(scores)
       val mockRoles = mock[IRoles]
       when(mockRoles.attacker).thenReturn(attacker)

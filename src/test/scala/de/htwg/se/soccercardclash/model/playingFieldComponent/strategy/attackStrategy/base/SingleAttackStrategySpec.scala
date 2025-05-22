@@ -5,8 +5,8 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.{IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.{BoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
 import org.mockito.Mockito.*
@@ -23,7 +23,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
   class ObservableMockGameState extends Observable with IGameState {
     override def getRoles: IRoles = mock[IRoles]
-    override def getDataManager: IDataManager = mock[IDataManager]
+    override def getGameCards: IGameCards = mock[IGameCards]
     override def getScores: IPlayerScores = mock[IPlayerScores]
     override def getActionManager: IActionManager = mock[IActionManager]
     override def reset(): Unit = {}
@@ -38,7 +38,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
       var notifiedEvent: Option[ObservableEvent] = None
 
       // Mocks
-      val dataManager = mock[IDataManager]
+      val dataManager = mock[IGameCards]
       val rolesManager = mock[IRoles]
       val attacker = mock[IPlayer]
       val defender = mock[IPlayer]
@@ -62,7 +62,7 @@ class SingleAttackStrategySpec extends AnyWordSpec with Matchers with MockitoSug
 
         override def getActionManager: IActionManager = actionManager
         override def getRoles: IRoles = rolesManager
-        override def getDataManager: IDataManager = dataManager
+        override def getGameCards: IGameCards = dataManager
         override def getScores: IPlayerScores = scores
       }
 

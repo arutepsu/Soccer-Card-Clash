@@ -7,14 +7,24 @@ import de.htwg.se.soccercardclash.util.ObservableEvent
 object GlobalObservable extends Observable
 
 sealed trait SceneSwitchEvent extends ObservableEvent
+
+case class SceneChangedEvent(newScene: SceneSwitchEvent) extends ObservableEvent
+
 object SceneSwitchEvent:
   case object MainMenu extends SceneSwitchEvent
+
   case object CreatePlayer extends SceneSwitchEvent
+
   case object CreatePlayerWithAI extends SceneSwitchEvent
+
   case object AISelection extends SceneSwitchEvent
+
   case object LoadGame extends SceneSwitchEvent
+
   case object Exit extends SceneSwitchEvent
+
   case object StartGame extends SceneSwitchEvent
+
   case object AttackerHandCards extends SceneSwitchEvent
   case object AttackerDefenderCards extends SceneSwitchEvent
   case object PlayingField extends SceneSwitchEvent
@@ -23,25 +33,36 @@ sealed trait GameActionEvent extends ObservableEvent
 object GameActionEvent:
   case object RegularAttack extends GameActionEvent
   case object DoubleAttack extends GameActionEvent
+
   case object RegularSwap extends GameActionEvent
+
   case object ReverseSwap extends GameActionEvent
+
   case object BoostDefender extends GameActionEvent
+
   case object BoostGoalkeeper extends GameActionEvent
-  case object Reverted extends GameActionEvent
+
   case object TieComparison extends GameActionEvent
+
   case object DoubleTieComparison extends GameActionEvent
+
   case object Undo extends GameActionEvent
+
   case object Redo extends GameActionEvent
+
   case object SaveGame extends GameActionEvent
 
 sealed trait StateEvent extends ObservableEvent
+
 object StateEvent:
-  case class CardReverted(card: Option[ICard], owner: IPlayer) extends StateEvent
   case class CardBoosted(card: Option[ICard], owner: IPlayer) extends StateEvent
+
   case class GameOver(winner: IPlayer) extends StateEvent
 
   case class ComparedCardsEvent(attackingCard: Option[ICard], defendingCard: Option[ICard]) extends StateEvent
-  case class DoubleComparedCardsEvent(attackingCard1: Option[ICard], attackingCard2:Option[ICard], defendingCard: Option[ICard]) extends StateEvent
+
+  case class DoubleComparedCardsEvent(attackingCard1: Option[ICard], attackingCard2: Option[ICard], defendingCard: Option[ICard]) extends StateEvent
+
   case class AttackResultEvent(attacker: IPlayer, defender: IPlayer, attackSuccess: Boolean) extends StateEvent
 
   case class TieComparisonEvent(
@@ -58,19 +79,3 @@ object StateEvent:
   case class NoSwapsEvent(player: IPlayer) extends StateEvent
   case class NoDoubleAttacksEvent(player: IPlayer) extends StateEvent
   case class ScoreEvent(player: IPlayer) extends StateEvent
-
-
-sealed trait AIAction
-
-case class SingleAttackAIAction(defenderIndex: Int) extends AIAction
-case class DoubleAttackAIAction(defenderIndex: Int) extends AIAction
-case class RegularSwapAIAction(index: Int) extends AIAction
-case object ReverseSwapAIAction extends AIAction
-case object UndoAIAction extends AIAction
-case object RedoAIAction extends AIAction
-case object NoOpAIAction extends AIAction
-
-sealed trait Zone
-case object DefenderZone extends Zone
-case object GoalkeeperZone extends Zone
-case class BoostAIAction(cardIndex: Int, zone: Zone) extends AIAction

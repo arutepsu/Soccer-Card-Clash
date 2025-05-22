@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrat
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.RevertCard
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 

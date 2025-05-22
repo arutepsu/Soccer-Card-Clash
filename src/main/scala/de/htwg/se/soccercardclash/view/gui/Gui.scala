@@ -21,7 +21,7 @@ class Gui(
   override def start(): Unit = {
     val primary = new PrimaryStage {
       title = "Soccer Card Clash"
-      icons.add(new Image(getClass.getResource("/images/data/logo/logoCut.png").toExternalForm))
+      icons.add(Assets.appLogo)
       width = 1000
       height = 600
     }

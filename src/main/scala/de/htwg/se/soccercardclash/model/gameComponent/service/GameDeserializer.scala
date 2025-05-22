@@ -9,7 +9,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManagerFactory, IFieldCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IFieldCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 import play.api.libs.json.*
@@ -23,7 +23,7 @@ class GameDeserializer @Inject() (
                                    handCardsQueueFactory: IHandCardsQueueFactory,
                                    handManagerFactory: IHandCardsFactory,
                                    fieldManagerFactory: IFieldCardsFactory,
-                                   dataManagerFactory: IDataManagerFactory,
+                                   dataManagerFactory: IGameCardsFactory,
                                    rolesFactory: IRolesFactory,
                                    scoresFactory: IScoresFactory
                                  ) extends Deserializer[IGameState] {

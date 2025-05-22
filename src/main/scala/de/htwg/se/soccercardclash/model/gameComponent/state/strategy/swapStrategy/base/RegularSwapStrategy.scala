@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrate
 
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IRoles, Roles}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -13,13 +13,13 @@ import scala.util.{Failure, Success}
 
 class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager) extends ISwapStrategy {
 
-  override def swap(playingField: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
-    val roles = playingField.getRoles
+  override def swap(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+    val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
 
-    val dataManager = playingField.getDataManager
-    val hand = dataManager.getPlayerHand(attacker)
+    val gameCards = state.getGameCards
+    val hand = gameCards.getPlayerHand(attacker)
 
     val canSwap =
       playerActionService.canPerform(attacker, PlayerActionPolicies.Swap) &&
@@ -28,27 +28,27 @@ class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager)
         index < hand.getHandSize
 
     if (!playerActionService.canPerform(attacker, PlayerActionPolicies.Swap)) {
-      return (false, playingField, List(StateEvent.NoSwapsEvent(attacker)))
+      return (false, state, List(StateEvent.NoSwapsEvent(attacker)))
     }
 
     if (!canSwap) {
-      return (false, playingField, Nil)
+      return (false, state, Nil)
     }
 
     hand.swap(index, hand.getHandSize - 1) match {
       case Success(updatedHand) =>
-        val updatedDataManager = dataManager.updatePlayerHand(attacker, updatedHand)
+        val updatedGameCards = gameCards.newPlayerHand(attacker, updatedHand)
         val updatedAttacker = playerActionService.performAction(attacker, PlayerActionPolicies.Swap)
         val updatedRoles = Roles(updatedAttacker, defender)
 
-        val updatedField = playingField
-          .updateDataManager(updatedDataManager)
-          .updateRoles(updatedRoles)
+        val newState = state
+          .newGameCards(updatedGameCards)
+          .newRoles(updatedRoles)
 
-        (true, updatedField, List(GameActionEvent.RegularSwap))
+        (true, newState, List(GameActionEvent.RegularSwap))
 
       case Failure(_) =>
-        (false, playingField, Nil)
+        (false, state, Nil)
     }
   }
 }

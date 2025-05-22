@@ -2,14 +2,14 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStra
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IDataManager
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
 import scala.collection.mutable
 
 
 trait IRefillStrategy {
-  def refillDefenderField(fieldState: IDataManager, defender: IPlayer): IDataManager
+  def refillDefenderField(gameCards: IGameCards, defender: IPlayer): IGameCards
 
-  def refillField(fieldState: IDataManager, player: IPlayer, hand: IHandCardsQueue): IDataManager
+  def refillField(gameCards: IGameCards, player: IPlayer, hand: IHandCardsQueue): IGameCards
 }

@@ -21,7 +21,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IDataManager, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.state.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.IPlayerScores
@@ -37,7 +37,7 @@ class GameStateManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     val playingField = mock[IGameState]
     val player1 = mock[IPlayer]
     val player2 = mock[IPlayer]
-    val dataManager = mock[IDataManager]
+    val dataManager = mock[IGameCards]
     val scores = mock[IScores]
     val dummyState = mock[IGameState]
 
@@ -55,7 +55,7 @@ class GameStateManagerTest extends AnyFlatSpec with Matchers with MockitoSugar {
     when(gameInitializer.getPlayer2).thenReturn(player2)
 
     // Mock field -> data + scores
-    when(playingField.getDataManager).thenReturn(dataManager)
+    when(playingField.getGameCards).thenReturn(dataManager)
     when(playingField.getScores).thenReturn(scores)
     when(scores.getScorePlayer1).thenReturn(3)
     when(scores.getScorePlayer2).thenReturn(4)

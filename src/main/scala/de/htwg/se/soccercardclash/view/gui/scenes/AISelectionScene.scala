@@ -2,23 +2,23 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.playerView.{AIProfile, PlayerAvatarRegistry}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.{Assets, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{AIRegistry, Assets, Styles}
+import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
+import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Priority, StackPane, VBox}
 import scalafx.scene.text.{Font, Text}
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
-import scalafx.scene.image.ImageView
-import scalafx.Includes.*
 
 class AISelectionScene(
                         controller: IController,
@@ -29,12 +29,7 @@ class AISelectionScene(
   this.getStylesheets.add(Styles.aiSelection)
   private val overlay = new Overlay(this)
 
-  private val aiProfiles = Seq(
-    AIProfile("Taka", "Balanced and smart attacker.", "taka.jpg"),
-    AIProfile("Bitstorm", "Aggressive, double-hitting striker.", "bitstrom.jpg"),
-    AIProfile("Defendra", "Specialist in boosting defense.", "defendra.jpg"),
-    AIProfile("MetaAI", "Adaptive, unpredictable decision-maker.", "meta.jpg")
-  )
+  private val aiProfiles = AIRegistry.aiProfiles
 
   private var selectedAI: Option[String] = None
 
