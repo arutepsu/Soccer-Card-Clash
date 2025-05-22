@@ -11,4 +11,6 @@ object AIRegistry {
     AIProfile("MetaAI", "Adaptive, unpredictable decision-maker.", "meta.jpg")
   )
 
+  def getProfileByName(name: String): Option[AIProfile] =
+    aiProfiles.find(_.name.equalsIgnoreCase(name))
 }

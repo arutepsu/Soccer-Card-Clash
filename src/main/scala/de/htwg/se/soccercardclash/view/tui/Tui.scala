@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.view.tui
 
 import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
-import scalafx.application.Platform
-import de.htwg.se.soccercardclash.util.{GameActionEvent, GlobalObservable, Observable, ObservableEvent, Observer, SceneSwitchEvent}
+import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.tui
 import de.htwg.se.soccercardclash.view.tui.PromptState
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.{ITuiCommandFactory, TuiCommandFactory}
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.{CreatePlayersNameTuiCommand, CreatePlayersNameWithAITuiCommand}
+import scalafx.application.Platform
 
 import java.io.File
 import scala.io.StdIn
@@ -41,7 +41,6 @@ class Tui(
   controller.add(this)
   protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
   protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
-  private var promptState: PromptState = PromptState.None
   private val createPlayersNameTuiCommand:
     CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
   private val createPlayersNameWitAITuiCommand:
@@ -55,7 +54,6 @@ class Tui(
     TuiKeys.Exit.key -> tuiCommandFactory.createExitTuiCommand(),
     TuiKeys.ShowGames.key -> tuiCommandFactory.createShowGamesTuiCommand()
   )
-
   private val promptHandlers: Map[PromptState, String => Unit] = Map(
     PromptState.SingleAttack -> (input => runCommand(tuiCommandFactory.createSingleAttackTuiCommand(), input)),
     PromptState.DoubleAttack -> (input => runCommand(tuiCommandFactory.createDoubleAttackTuiCommand(), input)),
@@ -65,22 +63,18 @@ class Tui(
     PromptState.BoostGoalkeeper -> (_ => runCommand(tuiCommandFactory.createBoostGoalkeeperTuiCommand(), "")),
     PromptState.LoadGame -> handleLoadGameInput
   )
+  private var promptState: PromptState = PromptState.None
 
   def processInputLine(input: String): Unit = {
     println(s"\uD83D\uDEE0 Received input: '$input'")
 
     if (createPlayersNameWitAITuiCommand.handlePlayerNames(input)) return
-    if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
+      if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
 
-      promptHandlers.get(promptState) match {
-        case Some(handler) => handler(input)
-        case None => handlePrimaryCommand(input)
-      }
-  }
-
-  private def runCommand(command: ITuiCommand, input: String): Unit = {
-    command.execute(Some(input))
-    promptState = PromptState.None
+        promptHandlers.get(promptState) match {
+          case Some(handler) => handler(input)
+          case None => handlePrimaryCommand(input)
+        }
   }
 
   private def handlePrimaryCommand(input: String): Unit = {
@@ -144,19 +138,6 @@ class Tui(
           case Some(command) => command.execute(commandArg)
           case None => println("Unknown command. Try again.")
         }
-    }
-  }
-
-  private def handleLoadGameInput(input: String): Unit = {
-    val pattern = """(?i)select\s+(\d+)""".r
-    input match {
-      case pattern(numStr) =>
-        val index = numStr.toIntOption.getOrElse(-1)
-        if (index >= 0) {
-          tuiCommandFactory.createLoadSelectedGameTuiCommand(index).execute()
-          promptState = PromptState.None
-        } else println("Invalid number.")
-      case _ => println("Usage: select <number>")
     }
   }
 
@@ -227,6 +208,24 @@ class Tui(
         prompter.printGameState()
 
       case _ =>
+    }
+  }
+
+  private def runCommand(command: ITuiCommand, input: String): Unit = {
+    command.execute(Some(input))
+    promptState = PromptState.None
+  }
+
+  private def handleLoadGameInput(input: String): Unit = {
+    val pattern = """(?i)select\s+(\d+)""".r
+    input match {
+      case pattern(numStr) =>
+        val index = numStr.toIntOption.getOrElse(-1)
+        if (index >= 0) {
+          tuiCommandFactory.createLoadSelectedGameTuiCommand(index).execute()
+          promptState = PromptState.None
+        } else println("Invalid number.")
+      case _ => println("Usage: select <number>")
     }
   }
 }

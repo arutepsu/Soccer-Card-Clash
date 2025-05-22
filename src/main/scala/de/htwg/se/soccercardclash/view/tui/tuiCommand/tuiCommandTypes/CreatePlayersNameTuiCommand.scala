@@ -13,6 +13,7 @@ class CreatePlayersNameTuiCommand(controller: IController, contextHolder: IGameC
   override def execute(input: Option[String] = None): Unit = {
     waitingForNames = true
     GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
+    println("Please enter players names:")
   }
 
   def handlePlayerNames(input: String): Boolean = {

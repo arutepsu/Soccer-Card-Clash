@@ -15,7 +15,7 @@ trait ITuiCommandFactory {
   def createRegularSwapTuiCommand(): ITuiCommand
   def createReverseSwapTuiCommand(): ITuiCommand
   def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand
-  def createStartGameWithAITuiCommand(player1: String): ITuiCommand
+  def createStartGameWithAITuiCommand(human: String, ai: String): ITuiCommand
   def createSaveGameTuiCommand(): ITuiCommand
   def createLoadGameTuiCommand(fileName: String): ITuiCommand
   def createLoadSelectedGameTuiCommand(index: Int): ITuiCommand
@@ -44,8 +44,8 @@ class TuiCommandFactory(controller: IController, contextHolder: IGameContextHold
   override def createStartGameTuiCommand(player1: String, player2: String): ITuiCommand =
     new StartGameTuiCommand(controller,contextHolder, player1, player2)
 
-  override def createStartGameWithAITuiCommand(player1: String): ITuiCommand =
-    new StartGameTuiCommandWithAI(controller, contextHolder, player1)
+  override def createStartGameWithAITuiCommand(human: String, ai: String): ITuiCommand =
+    new StartGameTuiCommandWithAI(controller, contextHolder, human, ai)
 
   override def createSaveGameTuiCommand(): ITuiCommand =
     new SaveGameTuiCommand(controller, contextHolder)
