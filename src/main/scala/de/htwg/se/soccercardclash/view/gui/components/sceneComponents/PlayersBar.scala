@@ -23,21 +23,6 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
 
   updateBar()
 
-//  def updateAttackerHighlight(): Unit = {
-//    val currentDefender = scene.contextHolder.get.state.getRoles.defender
-//
-//    playerBoxes.foreach { vbox =>
-//      vbox.styleClass.remove("current-player")
-//
-//      vbox.children.collectFirst {
-//        case label: Label if label.text.value == currentDefender.name => label
-//      } match {
-//        case Some(_) => vbox.styleClass.add("current-player")
-//        case None    => // ignore
-//      }
-//    }
-//  }
-
   def updateBar(): Unit = {
     children.clear()
     actionsLabels = Map()

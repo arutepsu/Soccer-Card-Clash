@@ -13,12 +13,12 @@ import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
-import scalafx.scene.layout.{HBox, StackPane, VBox}
+import scalafx.scene.layout.{HBox, Priority, StackPane, VBox}
 import scalafx.scene.text.{Font, Text}
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import scalafx.scene.image.ImageView
-import scalafx.Includes._
+import scalafx.Includes.*
 
 class AISelectionScene(
                         controller: IController,
@@ -73,7 +73,7 @@ class AISelectionScene(
     GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
   }
 
-  private val buttonBox = new HBox(30, backButton, startButton) {
+  private val buttonBox = new HBox(30, startButton, backButton) {
     alignment = Pos.CENTER
     padding = Insets(30, 0, 0, 0)
   }
@@ -90,20 +90,20 @@ class AISelectionScene(
 
   private def createAICard(profile: AIProfile): VBox = {
     val image = new ImageView(PlayerAvatarRegistry.getImages(profile.imageFile)) {
-      fitWidth = 250
-      fitHeight = 250
+      fitWidth = 450
+      fitHeight = 300
       preserveRatio = true
       smooth = true
     }
 
     val nameLabel = new Label(profile.name) {
-      styleClass += "ai-card-name"
+      styleClass += "ai-card-title"
     }
 
     val descLabel = new Label(profile.description) {
       wrapText = true
       maxWidth = 180
-      styleClass += "ai-card-desc"
+      styleClass += "ai-card-description"
     }
 
     val card = new VBox(10, image, nameLabel, descLabel) {
@@ -111,6 +111,8 @@ class AISelectionScene(
       padding = Insets(10)
       styleClass += "ai-card"
     }
+
+    image.fitWidthProperty.bind(card.widthProperty.subtract(20))
 
     card.onMouseClicked = _ => {
       selectedAI = Some(profile.name)
@@ -124,7 +126,7 @@ class AISelectionScene(
     aiCardContainer.children.foreach {
       case node: javafx.scene.layout.VBox =>
         node.getStyleClass.remove("selected-card")
-      case _ => // ignore non-VBox nodes
+      case _ =>
     }
     selected.styleClass += "selected-card"
   }

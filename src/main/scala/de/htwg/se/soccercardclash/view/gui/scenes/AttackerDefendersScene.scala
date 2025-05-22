@@ -8,11 +8,11 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.util.StateEvent.NoBoostsEvent
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{BoostBar, GameStatusBar, PlayersFieldBar, SelectableFieldCardRenderer}
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{AttackerBar, BoostBar, GameStatusBar, PlayersFieldBar, SelectableFieldCardRenderer}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.{HasContextHolder, Styles}
 import javafx.scene.layout.{BackgroundPosition, BackgroundRepeat, BackgroundSize}
 import scalafx.Includes.*
 import scalafx.application.Platform
@@ -26,8 +26,11 @@ import scalafx.scene.text.Text
 class AttackerDefendersScene(
                               controller: IController,
                               val contextHolder: IGameContextHolder,
-                            ) extends GameScene {
+                            ) extends GameScene with HasContextHolder{
+  override def getContextHolder: IGameContextHolder = contextHolder
+
   this.getStylesheets.add(Styles.attackerFieldSceneCss)
+  val attackerBar = new AttackerBar(controller, this)
   val gameStatusBar = new GameStatusBar
   val overlay = new Overlay(this)
   val attackerDefenderField: Option[PlayersFieldBar] = {
@@ -50,23 +53,29 @@ class AttackerDefendersScene(
   private val boostButton: Button = ActionButtonFactory.createBoostButton(
     BoostButton(), "Boost Card", 200, 100, this, controller
   )
-
+  val playerBarWrapper = new BorderPane {
+    top = attackerBar
+  }
   private val buttonLayout = new HBox {
     alignment = Pos.Center
     spacing = 15
     children = Seq(boostButton, backButton)
   }
-
-  private val layout = new VBox {
+  private val layoutCenter = new VBox {
     alignment = Pos.Center
     spacing = 20
     padding = Insets(20)
     children = attackerDefenderField.toSeq :+ buttonLayout
   }
 
+  private val fullLayout = new BorderPane {
+    padding = Insets(30)
+    top = playerBarWrapper
+    center = layoutCenter
+  }
 
   root = new StackPane {
-    children = Seq(backgroundView, layout, overlay.getPane)
+    children = Seq(backgroundView, fullLayout, overlay.getPane)
   }
 
   override def handleStateEvent(e: StateEvent): Unit = e match

@@ -5,7 +5,7 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatu
 import de.htwg.se.soccercardclash.view.gui.scenes.{AttackerHandScene, PlayingFieldScene}
 case class RegularSwapButton() extends ActionButton[AttackerHandScene] {
   override def execute(controller: IController, attackerHandScene: AttackerHandScene): Unit = {
-    val contextHolder = attackerHandScene.contextHolder
+    val contextHolder = attackerHandScene.getContextHolder
     val ctx = contextHolder.get
 
     attackerHandScene.attackerHandBar.selectedCardIndex match {

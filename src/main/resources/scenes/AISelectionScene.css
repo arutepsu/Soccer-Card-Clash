@@ -1,18 +1,34 @@
-
 .ai-selection-layout {
     -fx-background-image: url("/images/data/frames/background8.jpg");
     -fx-background-size: cover;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
-
-.label.title {
-    -fx-text-fill: white;
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-padding: 20px 0 30px 0;
+.ai-card-description {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 20px;
+    -fx-font-weight: regular;
+    -fx-text-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
 }
 
+.ai-card-title {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, #ff00cc, #83018e);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 8, 0.4, 0, 2);
+    -fx-text-alignment: center;
+}
+
+.title {
+    -fx-font-size: 68px;
+    -fx-font-family: "Rajdhani";
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
+}
 
 .hbox {
     -fx-spacing: 20px;
@@ -20,31 +36,31 @@
 }
 
 .ai-card {
-    -fx-background-color: #2a2a2a;
+    -fx-background-color: #000000;
     -fx-background-radius: 15px;
     -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0.3, 0, 2);
     -fx-cursor: hand;
     -fx-scale-x: 1.0;
     -fx-scale-y: 1.0;
+    -fx-effect: dropshadow(gaussian, #9828e0, 10, 0.6, 0, 0);
     -fx-transition: all 0.2s ease-in-out;
 }
 
 .ai-card:hover {
-    -fx-background-color: #3a3a3a;
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, #9828e0, 20, 0.8, 0, 0);
 }
-
 .selected-card {
-    -fx-border-color: #66ff99;
+    -fx-border-color: #eac4fb;
+    -fx-effect: dropshadow(gaussian, #eac4fb, 10, 0.6, 0, 0);
     -fx-border-width: 3px;
     -fx-border-radius: 15px;
-    -fx-background-color: #333333;
+    -fx-background-color: #7e2da4;
 }
 
 .selected-card:hover {
     -fx-scale-x: 1.08;
     -fx-scale-y: 1.08;
-    -fx-effect: dropshadow(gaussian, #66ff99, 12, 0.5, 0, 4);
+    -fx-effect: dropshadow(gaussian, #eac4fb, 12, 0.5, 0, 4);
 }

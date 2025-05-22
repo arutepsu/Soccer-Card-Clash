@@ -87,6 +87,17 @@ class PlayingFieldScene(
     children = Seq(playersBar)
   }
 
+  val inputBlocker = new Region {
+    style = "-fx-background-color: rgba(0,0,0,0);" // fully transparent
+    pickOnBounds = true
+    mouseTransparent = false
+    visible = false
+  }
+  StackPane.setAlignment(inputBlocker, Pos.CENTER)
+
+  private val attackerAvatarBox = new VBox {
+    alignment = Pos.TOP_CENTER
+  }
 
   private val mainLayout = new StackPane {
     children = Seq(
@@ -104,8 +115,6 @@ class PlayingFieldScene(
                 })
               }
             }
-
-
           },
           new BorderPane {
             center = new VBox {
@@ -119,14 +128,15 @@ class PlayingFieldScene(
                 },
                 new HBox {
                   alignment = Pos.Center
-                  children = Seq(playerHands)
+                  children = Seq(playerHands, attackerAvatarBox)
                 }
               )
             }
           }
             )
       },
-      overlay.getPane
+      overlay.getPane,
+      inputBlocker
     )
     styleClass += "root"
   }
@@ -182,7 +192,7 @@ class PlayingFieldScene(
       case _: StateEvent =>
         Platform.runLater(() => comparisonHandler.handleComparisonEvent(e))
 
-      case TurnEvent.NextTurnEvent =>
+      case AIEvent.NextAIEvent =>
         pendingAITurn = true
 
       case event: SceneSwitchEvent =>
@@ -202,23 +212,46 @@ class PlayingFieldScene(
     }
   }
   def updateDisplay(viewCtx: GameContext): Unit = {
-        updateFieldBars(viewCtx)
-        updateHands(viewCtx)
-        updateAvatars()
-        updateScores(viewCtx)
+    updateFieldBars(viewCtx)
+    updateHands(viewCtx)
+    updateAvatars()
+    updateScores(viewCtx)
 
-        if (pendingAITurn) {
+
+    val avatar: ImageView = PlayerAvatarRegistry.getAvatarView(
+      player = contextHolder.get.state.getRoles.attacker,
+      scale = 0.04
+    )
+    avatar.styleClass += "neon-avatar"
+
+    val titleLabel = new Label("Attacker:") {
+      styleClass += "attacker-label"
+      padding = Insets(0, 10, 0, 10)
+    }
+
+    val nameLabel = new Label(contextHolder.get.state.getRoles.attacker.name) {
+      styleClass += "attacker-name"
+      padding = Insets(0, 10, 0, 10)
+    }
+
+    new HBox(10, titleLabel, avatar, nameLabel) {
+      alignment = Pos.CENTER_RIGHT
+    }
+    attackerAvatarBox.children.setAll(titleLabel, avatar, nameLabel)
+
+    if (pendingAITurn) {
           val attacker = contextHolder.get.state.getRoles.attacker
           pendingAITurn = false
 
           attacker match {
             case ai: Player if ai.isAI =>
+              inputBlocker.visible = true
               scheduler.runSequence(
                 UIAction.delayed(4000) {
                   handleAITurn()
                 }
               )
-            case _ => 
+            case _ =>  inputBlocker.visible = false
           }
         }
   }
@@ -278,17 +311,22 @@ class PlayingFieldScene(
   }
   def handleAITurn(): Unit = {
     if (overlay.getPane.isVisible) return
+
     val ctx = contextHolder.get
     ctx.state.getRoles.attacker match {
       case player: Player if player.isAI =>
+        inputBlocker.visible = true
         val strategy = player.playerType.asInstanceOf[AI].strategy
         val currentCtx = contextHolder.get
         val action = strategy.decideAction(currentCtx, player)
         val (newCtx, _) = controller.executeAIAction(action, currentCtx)
         contextHolder.set(newCtx)
+        inputBlocker.visible = false
 
       case _ =>
+        inputBlocker.visible = false
     }
   }
+
 
 }

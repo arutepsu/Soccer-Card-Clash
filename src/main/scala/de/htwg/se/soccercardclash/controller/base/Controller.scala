@@ -36,7 +36,7 @@ class Controller @Inject()(
     }
 
     if (result.success) {
-      EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+      EventDispatcher.dispatchSingle(this, AIEvent.NextAIEvent)
     }
 
     (updatedCtx, result.success)
@@ -83,7 +83,7 @@ class Controller @Inject()(
       new UndoManager
     )
     contextHolder.set(ctx)
-    EventDispatcher.dispatchSingle(this, TurnEvent.NextTurnEvent)
+    EventDispatcher.dispatchSingle(this, AIEvent.NextAIEvent)
   }
 
   override def loadGame(fileName: String): Boolean = {

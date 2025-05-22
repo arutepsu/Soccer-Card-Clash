@@ -7,29 +7,35 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, RegularSwapButton, ReverseSwapButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{GameStatusBar, GameStatusMessages, PlayersHandBar, SelectableHandCardRenderer}
+import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{AttackerBar, GameStatusBar, GameStatusMessages, PlayersBar, PlayersHandBar, SelectableHandCardRenderer}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.{HasContextHolder, Styles}
 import scalafx.application.Platform
+import scalafx.geometry
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.Button
-import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
+import scalafx.scene.control.{Button, Label}
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.{BorderPane, HBox, Priority, Region, StackPane, VBox}
 import scalafx.scene.text.Text
 import scalafx.scene.{Node, Scene}
 
 class AttackerHandScene(
                          controller: IController,
                          val contextHolder: IGameContextHolder,
-                       ) extends GameScene {
+                       ) extends GameScene with HasContextHolder{
+  override def getContextHolder: IGameContextHolder = contextHolder
 
   this.getStylesheets.add(Styles.attackerHandSceneCss)
 
+  val attackerBar = new AttackerBar(controller, this)
+
   val attackerHandBar = new PlayersHandBar(
-    player = contextHolder.get.state.getRoles.attacker,
-    playingField = contextHolder.get.state,
-    renderer = new SelectableHandCardRenderer(() => contextHolder.get.state)
+    player = getContextHolder.get.state.getRoles.attacker,
+    playingField = getContextHolder.get.state,
+    renderer = new SelectableHandCardRenderer(() => getContextHolder.get.state)
   )
   private val overlay = new Overlay(this)
   private val backButton: Button = GameButtonFactory.createGameButton("Back to Game", 200, 100) {
@@ -60,12 +66,25 @@ class AttackerHandScene(
     children = Seq(backButton, infoButton)
   }
 
+  val playerBarWrapper = new BorderPane {
+    top = attackerBar
+  }
+
+
   private val layout = new VBox {
-    alignment = Pos.Center
+    alignment = Pos.TopCenter
     spacing = 30
     padding = Insets(30)
-    children = Seq(navButtonLayout, attackerHandBar, actionButtonLayout)
+    children = Seq(
+      playerBarWrapper, // <- full width now
+      navButtonLayout,
+      attackerHandBar,
+      actionButtonLayout
+    )
   }
+
+
+
 
   root = new StackPane {
     styleClass.add("attacker-hand-scene")
@@ -86,9 +105,10 @@ class AttackerHandScene(
     case _ =>
 
   def updateDisplay(): Unit = {
-    val gameState = contextHolder.get.state
+    val gameState = getContextHolder.get.state
     attackerHandBar.updateBar(gameState)
-    
+    attackerBar.refreshActionStates()
+    attackerBar.updateBar()
   }
 
   override def handleStateEvent(e: StateEvent): Unit = e match

@@ -1,0 +1,27 @@
+.player-actions {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 18px;
+    -fx-text-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
+.neon-avatar {
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-background-radius: 50%;
+}
+
+.player-name {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 40px;
+    -fx-text-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
+.player-bar {
+    -fx-background-image: url("/images/data/frames/frame.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 25% 350%;
+    -fx-background-position: center;
+    -fx-background-color: transparent;
+    -fx-padding: 30;
+}

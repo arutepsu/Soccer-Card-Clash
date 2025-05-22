@@ -4,7 +4,25 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
+.attacker-label {
+    -fx-font-size: 12px;
+    -fx-font-family: "Rajdhani";
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
+.neon-avatar {
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-background-radius: 50%;
+}
 
+.attacker-name {
+    -fx-font-size: 12px;
+    -fx-font-family: "Rajdhani";
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
 
 .game-button {
     -fx-background-size: 200% 200%;
