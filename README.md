@@ -12,4 +12,12 @@
 # Software Engineering game project in Konstanz University of Applied Sciences
 
 
+### Project Status
+![fun](https://img.shields.io/badge/fun-100%25-brightgreen)
+![AI](https://img.shields.io/badge/learning_ai-maybe-blue)
+![Immutable GameState](https://img.shields.io/badge/Immutable_GameState-Completed-brightgreen)
+![Modular MVC Design](https://img.shields.io/badge/Modular_MVC_Design-Completed-brightgreen)
+![DI (Guice)](https://img.shields.io/badge/DI_(Guice)-Completed-brightgreen)
+![Event System](https://img.shields.io/badge/Event_System-Completed-brightgreen)
+
 _Developed by [Arutepsu](https://github.com/arutepsu)_

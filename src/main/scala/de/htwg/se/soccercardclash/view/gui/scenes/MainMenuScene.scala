@@ -36,7 +36,7 @@ class MainMenuScene(controller: IController) extends GameScene {
   }
   StackPane.setAlignment(bottomSpacer, Pos.BottomCenter)
   private val rootBox = new VBox {
-    spacing = 10
+    spacing = 20
     alignment = Pos.Center
     children = Seq(
       GameButtonFactory.createGameButton("Singleplayer", 200, 150) {
@@ -58,7 +58,7 @@ class MainMenuScene(controller: IController) extends GameScene {
     )
   }
 
-  StackPane.setAlignment(infoLabel, Pos.BottomRight)
+  StackPane.setAlignment(infoLabel, Pos.BottomCenter)
 
   this.root = new StackPane {
     children = Seq(

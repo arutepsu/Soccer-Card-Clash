@@ -12,6 +12,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
 import scala.collection.mutable
 
+
 trait IGameCardsFactory {
   def create(attacker: IPlayer, defender: IPlayer): IGameCards
 
@@ -166,5 +167,5 @@ trait IGameCards {
   def newRefillStrategy(strategy: IRefillStrategy): IGameCards
 
   def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IGameCards
-
+  
 }
