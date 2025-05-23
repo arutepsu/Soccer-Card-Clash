@@ -23,6 +23,10 @@
 
 [//]: # (![Demo]&#40;https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHB5djFkY3Z5OTFza2lhcWh4eHZhdHVxM3dlNXhqbjI1cXRlMmdlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vaukOTojeunEyYuSJv/giphy.gif&#41;)
 ### Demo Gameplay
-[▶ Watch the demo](https://res.cloudinary.com/dhcku9w9c/video/upload/game_cppr7h.mp4)
+<video autoplay loop muted playsinline width="100%" controls>
+  <source src="https://res.cloudinary.com/dhcku9w9c/video/upload/v1748031003/game_cppr7h.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
 
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
