@@ -19,9 +19,10 @@
 ![DI (Guice)](https://img.shields.io/badge/DI_(Guice)-Completed-brightgreen)
 ![Event System](https://img.shields.io/badge/Event_System-Completed-brightgreen)
 
-### Demo Gameplay
-<p align="center">
-  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" width="100%" />
-</p>
+[//]: # (### Demo Game Creation with AI)
 
-_Developed by [Arutepsu](https://github.com/arutepsu)_
+[//]: # (![Demo]&#40;https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHB5djFkY3Z5OTFza2lhcWh4eHZhdHVxM3dlNXhqbjI1cXRlMmdlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vaukOTojeunEyYuSJv/giphy.gif&#41;)
+### Demo Gameplay
+[▶ Watch the demo](https://res.cloudinary.com/dhcku9w9c/video/upload/game_cppr7h.mp4)
+
+_Developed by [Arutepsu](httzps://github.com/arutepsu)_
