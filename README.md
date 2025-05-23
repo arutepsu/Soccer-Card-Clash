@@ -18,15 +18,9 @@
 ![Modular MVC Design](https://img.shields.io/badge/Modular_MVC_Design-Completed-brightgreen)
 ![DI (Guice)](https://img.shields.io/badge/DI_(Guice)-Completed-brightgreen)
 ![Event System](https://img.shields.io/badge/Event_System-Completed-brightgreen)
-
-[//]: # (### Demo Game Creation with AI)
-
-[//]: # (![Demo]&#40;https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHB5djFkY3Z5OTFza2lhcWh4eHZhdHVxM3dlNXhqbjI1cXRlMmdlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vaukOTojeunEyYuSJv/giphy.gif&#41;)
+### Demo Game Creation with AI
+![Demo](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHB5djFkY3Z5OTFza2lhcWh4eHZhdHVxM3dlNXhqbjI1cXRlMmdlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vaukOTojeunEyYuSJv/giphy.gif)
 ### Demo Gameplay
-<video autoplay loop muted playsinline width="100%" controls>
-  <source src="https://res.cloudinary.com/dhcku9w9c/video/upload/v1748031003/game_cppr7h.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-
+![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
 
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
