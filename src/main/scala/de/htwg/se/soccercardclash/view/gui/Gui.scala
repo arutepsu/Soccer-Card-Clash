@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui
 
 import com.google.inject.Injector
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.module.SceneModule
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry

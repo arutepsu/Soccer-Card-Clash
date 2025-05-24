@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.base.Controller
 import de.htwg.se.soccercardclash.util.*
-import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
+import de.htwg.se.soccercardclash.view.gui.components.dialog.{DialogFactory, GameInfoPaneFactory}
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -49,7 +49,7 @@ class MainMenuScene(controller: IController) extends GameScene {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)
       },
       GameButtonFactory.createGameButton("About", 200, 150) {
-        () => DialogFactory.showGameInfoDialog(overlay)
+        () => DialogFactory.showInfoDialog("", "GENERAL_INFO", overlay)
       },
       GameButtonFactory.createGameButton("Quit", 200, 150) {
         () => controller.quit()

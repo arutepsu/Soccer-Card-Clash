@@ -1,7 +1,8 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.factory
 
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.BoostDefenderActionCommand
+import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.view.tui.IPrompter
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.*
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand

@@ -11,9 +11,9 @@ import scala.concurrent.Future
 import scalafx.application.Platform
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
+import de.htwg.se.soccercardclash.util.{GlobalObservable, IGameContextHolder, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 
 object DialogFactory {
@@ -21,30 +21,10 @@ object DialogFactory {
   def showGameOverPopup(winner: IPlayer, overlay: Overlay, controller: IController,contextHolder: IGameContextHolder, autoHide: Boolean): Unit = {
     new WinnerDialog(winner, overlay, controller, contextHolder, autoHide)
   }
-
-
-  def showGameInfoDialog(overlay: Overlay): Unit = {
-    new InfoDialog(
-      title = "About the Game",
-      message = "Soccer Card Clash is a strategic 2-player card game. Each player tries to outwit their opponent with card-based moves!",
-      overlay = overlay
-    )
-
-  }
-
-  def showGameInfo(overlay: Overlay, controller: IController, contextHolder: IGameContextHolder): Unit = {
-    new ConfirmationDialog(
-      overlay,
-      message = "GAME_INFO",
-      onConfirm = () => (), // No action needed
-      controller = controller,
-      contextHolder = contextHolder
-    ).show()
-  }
-
-  def showHandInfoDialog(title: String,
-                         message: String,
-                         overlay: Overlay):
+  
+  def showInfoDialog(title: String,
+                     message: String,
+                     overlay: Overlay):
   Unit = { new InfoDialog(title, message, overlay) }
 
   def showLoadGameConfirmation(gameFile: String,

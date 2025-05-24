@@ -46,8 +46,14 @@ class InfoDialog(
   }
 
   private val messageContent = if (message == "GAME_INFO") {
-    GameInfoPaneFactory.create(overlay.getPane.width.value-400, overlay.getPane.height.value-280)
-  } else {
+    GameInfoPaneFactory.createMainInstructionsDialog(overlay.getPane.width.value-400, overlay.getPane.height.value-280)
+  } else if (message == "SWAP_INFO") {
+    GameInfoPaneFactory.createSwapInstructionsDialog(overlay.getPane.width.value - 400, overlay.getPane.height.value - 280)
+  } else if (message == "BOOST_INFO") {
+    GameInfoPaneFactory.createBoostInstructionsDialog(overlay.getPane.width.value - 400, overlay.getPane.height.value - 280)
+  } else if (message == "GENERAL_INFO") {
+    GameInfoPaneFactory.createGameInfoDialog(overlay.getPane.width.value - 400, overlay.getPane.height.value - 280)
+  }else {
     new Text(message) {
       styleClass += "dialog-message"
       wrappingWidth = 600

@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
-import de.htwg.se.soccercardclash.util.{EventDispatcher, GlobalObservable, SceneSwitchEvent}
+import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.{EventDispatcher, GlobalObservable, IGameContextHolder, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 

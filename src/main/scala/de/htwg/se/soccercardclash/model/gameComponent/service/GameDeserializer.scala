@@ -21,9 +21,9 @@ class GameDeserializer @Inject() (
                                    playerDeserializer: PlayerDeserializer,
                                    cardDeserializer: CardDeserializer,
                                    handCardsQueueFactory: IHandCardsQueueFactory,
-                                   handManagerFactory: IHandCardsFactory,
-                                   fieldManagerFactory: IFieldCardsFactory,
-                                   dataManagerFactory: IGameCardsFactory,
+                                   handCardsFactory: IHandCardsFactory,
+                                   fieldCardsFactory: IFieldCardsFactory,
+                                   gameCardsFactory: IGameCardsFactory,
                                    rolesFactory: IRolesFactory,
                                    scoresFactory: IScoresFactory
                                  ) extends Deserializer[IGameState] {
@@ -79,7 +79,7 @@ class GameDeserializer @Inject() (
     val player1Score = (xml \ "attackerScore").headOption.map(_.text.trim.toInt).getOrElse(0)
     val player2Score = (xml \ "defenderScore").headOption.map(_.text.trim.toInt).getOrElse(0)
 
-    val dataManager = dataManagerFactory.createFromData(
+    val gameCards = gameCardsFactory.createFromData(
       attacker = attacker,
       attackerHand = player1HandCards,
       defender = defender,
@@ -97,7 +97,7 @@ class GameDeserializer @Inject() (
 
     val roles = rolesFactory.create(attacker, defender)
 
-    GameState(dataManager, roles, scores)
+    GameState(gameCards, roles, scores)
   }
 
   override def fromJson(json: JsObject): IGameState = {
@@ -136,7 +136,7 @@ class GameDeserializer @Inject() (
     val player1Score = (json \ "attackerScore").asOpt[Int].getOrElse(0)
     val player2Score = (json \ "defenderScore").asOpt[Int].getOrElse(0)
 
-    val dataManager = dataManagerFactory.createFromData(
+    val gameCards = gameCardsFactory.createFromData(
       attacker,
       player1HandCards,
       defender,
@@ -154,7 +154,7 @@ class GameDeserializer @Inject() (
 
     val roles = rolesFactory.create(attacker, defender)
 
-    GameState(dataManager, roles, scores)
+    GameState(gameCards, roles, scores)
   }
 
 }

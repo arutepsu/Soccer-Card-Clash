@@ -8,6 +8,7 @@ import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.util.StateEvent.NoBoostsEvent
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, BoostButton}
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
+import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
@@ -57,10 +58,14 @@ class AttackerDefendersScene(
   private val boostButton: Button = ActionButtonFactory.createBoostButton(
     BoostButton(), "Boost Card", 200, 100, this, controller
   )
+
+  private val infoButton: Button = GameButtonFactory.createGameButton("Info", 200, 100) {
+    () => DialogFactory.showInfoDialog("Swap Instructions", "BOOST_INFO", overlay)
+  }
   private val buttonLayout = new HBox {
     alignment = Pos.Center
     spacing = 15
-    children = Seq(boostButton, backButton)
+    children = Seq(boostButton, infoButton, backButton)
   }
   private val layoutCenter = new VBox {
     alignment = Pos.Center

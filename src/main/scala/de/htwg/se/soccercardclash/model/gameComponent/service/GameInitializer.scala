@@ -8,15 +8,16 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameInitializer
-import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
+
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
@@ -31,7 +32,7 @@ trait IGameInitializer {
 class GameInitializer @Inject()(
                                  playerFactory: IPlayerFactory,
                                  deckFactory: IDeckFactory,
-                                 dataManagerFactory: IGameCardsFactory,
+                                 gameCardsFactory: IGameCardsFactory,
                                  rolesFactory: IRolesFactory,
                                  scoresFactory: IScoresFactory
                                ) extends IGameInitializer {
@@ -45,7 +46,7 @@ class GameInitializer @Inject()(
     val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
-    val dataManager = dataManagerFactory.createFromData(
+    val gameCards = gameCardsFactory.createFromData(
       attacker = p1,
       attackerHand = hand1,
       defender = p2,
@@ -60,7 +61,7 @@ class GameInitializer @Inject()(
     val scores = scoresFactory.create(Seq(p1, p2))
 
     GameState(
-      gameCards = dataManager,
+      gameCards = gameCards,
       roles = roles,
       scores = scores
     )
@@ -71,7 +72,7 @@ class GameInitializer @Inject()(
     val p1 = state.getRoles.attacker
     val p2 = state.getRoles.defender
 
-    val dataManager = dataManagerFactory.createFromData(
+    val gameCards = gameCardsFactory.createFromData(
       attacker = p1,
       attackerHand = state.getGameCards.getPlayerHand(p1).toList,
       defender = p2,
@@ -92,7 +93,7 @@ class GameInitializer @Inject()(
       p2 -> state.getScores.getScore(p2)
     ))
 
-    GameState(dataManager, roles, scores)
+    GameState(gameCards, roles, scores)
   }
 
   override def createGameStateWithAI(humanName: String, aiPlayer: IPlayer): IGameState = {
@@ -104,7 +105,7 @@ class GameInitializer @Inject()(
     val hand1 = (1 to 26).map(_ => deck.dequeue()).toList
     val hand2 = (1 to 26).map(_ => deck.dequeue()).toList
 
-    val dataManager = dataManagerFactory.createFromData(
+    val gameCards = gameCardsFactory.createFromData(
       attacker = humanPlayer,
       attackerHand = hand1,
       defender = aiPlayer,
@@ -118,7 +119,7 @@ class GameInitializer @Inject()(
     val roles = rolesFactory.create(humanPlayer, aiPlayer)
     val scores = scoresFactory.create(Seq(humanPlayer, aiPlayer))
 
-    GameState(dataManager, roles, scores)
+    GameState(gameCards, roles, scores)
   }
 
 

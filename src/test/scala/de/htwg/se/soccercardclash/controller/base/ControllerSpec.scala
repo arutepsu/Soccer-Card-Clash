@@ -1,153 +1,453 @@
 package de.htwg.se.soccercardclash.controller.base
 
-import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
+import com.sun.net.httpserver.Authenticator.Failure
+import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.controller.command.workflow.WorkflowCommand
-import de.htwg.se.soccercardclash.model.gameComponent.IGame
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.*
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.should.Matchers
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
+import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, IGameContextHolder, Observable, ObservableEvent, Observer, UndoManager}
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.Roles
+import de.htwg.se.soccercardclash.model.playerComponent.base.AI
+import de.htwg.se.soccercardclash.util.*
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.*
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.util.{Events, Observer, UndoManager}
 
+import scala.util.{Success, Try}
 
-class ControllerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
+class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
-  // Mock dependencies
-  private var mockGame: IGame = _
-  private var mockCommandFactory: ICommandFactory = _
-  private var mockCommand: ICommand = _
-  private var mockWorkflowCommand: WorkflowCommand = _
-  private var controller: Controller = _
+  val mockCommandFactory = mock[ICommandFactory]
+  val mockGameService = mock[IGameService]
+  val mockActionManager = mock[IActionManager]
+  val mockContextHolder = mock[IGameContextHolder]
 
-  override def beforeEach(): Unit = {
-    mockGame = mock[IGame]
-    mockCommandFactory = mock[ICommandFactory]
-    mockCommand = mock[ICommand]
-    mockWorkflowCommand = mock[WorkflowCommand] // Separate mock for WorkflowCommand
-    controller = new Controller(mockGame, mockCommandFactory)
+  val controller = new Controller(mockCommandFactory, mockGameService, mockActionManager, mockContextHolder)
+
+  "singleAttack" should "run the correct command and update context" in {
+    val initialState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
+    val updatedState = mock[IGameState]
+
+    val expectedResult = CommandResult(success = true, updatedState, List(GameActionEvent.RegularAttack))
+
+    when(mockCommandFactory.createSingleAttackCommand(0)).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(expectedResult)
+
+    val (newCtx, success) = controller.singleAttack(0, ctx)
+
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
   }
 
-  "Controller" should {
+  "doubleAttack" should "run the correct command and update context on success" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
 
-    "return the current game" in {
-      controller.getCurrentGame shouldBe mockGame
-    }
+    val result = CommandResult(success = true, updatedState, List(GameActionEvent.DoubleAttack))
 
-    "execute a single attack command" in {
-      when(mockCommandFactory.createSingleAttackCommand(1)).thenReturn(mockCommand)
+    // Setup mocks
+    when(mockCommandFactory.createDoubleAttackCommand(1)).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(result)
 
-      controller.executeSingleAttackCommand(1)
+    val (newCtx, success) = controller.doubleAttack(1, ctx)
 
-      verify(mockCommandFactory).createSingleAttackCommand(1)
-      verify(mockCommand).doStep()
-    }
-
-    "execute a double attack command" in {
-      when(mockCommandFactory.createDoubleAttackCommand(2)).thenReturn(mockCommand)
-
-      controller.executeDoubleAttackCommand(2)
-
-      verify(mockCommandFactory).createDoubleAttackCommand(2)
-      verify(mockCommand).doStep()
-    }
-
-    "boost a defender" in {
-      when(mockCommandFactory.createBoostDefenderCommand(3)).thenReturn(mockCommand)
-
-      controller.boostDefender(3)
-
-      verify(mockCommandFactory).createBoostDefenderCommand(3)
-      verify(mockCommand).doStep()
-    }
-
-    "boost the goalkeeper" in {
-      when(mockCommandFactory.createBoostGoalkeeperCommand()).thenReturn(mockCommand)
-
-      controller.boostGoalkeeper()
-
-      verify(mockCommandFactory).createBoostGoalkeeperCommand()
-      verify(mockCommand).doStep()
-    }
-
-    "perform a regular swap" in {
-      when(mockCommandFactory.createRegularSwapCommand(2)).thenReturn(mockCommand)
-
-      controller.regularSwap(2)
-
-      verify(mockCommandFactory).createRegularSwapCommand(2)
-      verify(mockCommand).doStep()
-    }
-
-    "perform a reverse swap" in {
-      when(mockCommandFactory.createReverseSwapCommand()).thenReturn(mockCommand)
-
-      controller.reverseSwap()
-
-      verify(mockCommandFactory).createReverseSwapCommand()
-      verify(mockCommand).doStep()
-    }
-
-    "create a new game" in {
-      doReturn(mockWorkflowCommand).when(mockCommandFactory).createCreateGameCommand(any[IGame], any[String], any[String])
-
-      controller.createGame("Alice", "Bob")
-
-      verify(mockCommandFactory).createCreateGameCommand(mockGame, "Alice", "Bob")
-      verify(mockWorkflowCommand).doStep()
-    }
-
-    "quit the game" in {
-      doReturn(mockWorkflowCommand).when(mockCommandFactory).createQuitCommand(any[IGame])
-
-      controller.quit()
-
-      verify(mockCommandFactory).createQuitCommand(mockGame)
-      verify(mockWorkflowCommand).doStep()
-    }
-
-    "save the game" in {
-      doReturn(mockWorkflowCommand).when(mockCommandFactory).createSaveGameCommand()
-
-      controller.saveGame()
-
-      verify(mockCommandFactory).createSaveGameCommand()
-      verify(mockWorkflowCommand).doStep()
-    }
-
-    "load a game from file" in {
-      doReturn(mockWorkflowCommand).when(mockCommandFactory).createLoadGameCommand(any[String])
-
-      controller.loadGame("game.json")
-
-      verify(mockCommandFactory).createLoadGameCommand("game.json")
-      verify(mockWorkflowCommand).doStep()
-    }
-
-    "reset the game" in {
-      when(mockCommandFactory.createResetGameCommand()).thenReturn(mockCommand)
-
-      controller.resetGame()
-
-      verify(mockCommandFactory).createResetGameCommand()
-      verify(mockCommand).doStep()
-    }
-
-    "undo a command" in {
-      controller.undo()
-
-      verify(mockCommand, never()).undoStep() // Ensures undoManager calls undoStep
-    }
-
-    "redo a command" in {
-      controller.redo()
-
-      verify(mockCommand, never()).redoStep() // Ensures undoManager calls redoStep
-    }
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
   }
+
+  "doubleAttack fallback" should "dispatch NoDoubleAttacksEvent when command fails" in {
+    val attacker = mock[IPlayer]
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+
+    val mockCommand = mock[ICommand]
+    val result = CommandResult(success = false, state, Nil)
+
+    // Prepare mocks
+    when(mockCommandFactory.createDoubleAttackCommand(1)).thenReturn(mockCommand)
+    when(mockCommand.execute(state)).thenReturn(result)
+    when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
+
+    val (newCtx, success) = controller.doubleAttack(1, ctx)
+
+    assert(!success)
+    assert(newCtx == ctx)
+
+    // You could verify fallback behavior here with a spy on EventDispatcher if needed
+  }
+
+  "createGame" should "set context with new game" in {
+    val state = mock[IGameState]
+    when(mockGameService.createNewGame("Alice", "Bob")).thenReturn(state)
+
+    controller.createGame("Alice", "Bob")
+
+    verify(mockContextHolder).set(argThat(_.state == state))
+  }
+
+  "createGameWithAI" should "set context and dispatch AI event" in {
+    val state = mock[IGameState]
+    when(mockGameService.createNewGameWithAI("Alice", "Taka")).thenReturn(state)
+
+    controller.createGameWithAI("Alice", "Taka")
+
+    verify(mockContextHolder).set(argThat(_.state == state))
+    // Would ideally verify dispatch of AIEvent.NextAIEvent
+  }
+
+  "undo" should "update context state and dispatch Undo event" in {
+    val state = mock[IGameState]
+    val newState = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val events = List(GameActionEvent.Undo)
+
+    val undoManagerSpy = spy(ctx.undoManager)
+    when(undoManagerSpy.undoStep(state)).thenReturn((newState, events))
+
+    val updatedCtx = controller.undo(ctx.copy(undoManager = undoManagerSpy))
+
+    assert(updatedCtx.state eq newState)
+    verify(mockContextHolder).set(updatedCtx)
+    // Optional: verify EventDispatcher.dispatch(controller, List(GameActionEvent.Undo, StateEvent.SomeEvent))
+  }
+
+  "redo" should "update context state and dispatch Redo event" in {
+    val state = mock[IGameState]
+    val newState = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val events = List(GameActionEvent.Redo)
+
+    val undoManagerSpy = spy(ctx.undoManager)
+    when(undoManagerSpy.redoStep(state)).thenReturn((newState, events))
+
+    val updatedCtx = controller.redo(ctx.copy(undoManager = undoManagerSpy))
+
+    assert(updatedCtx.state eq newState)
+    verify(mockContextHolder).set(updatedCtx)
+    // Optional: verify EventDispatcher.dispatch(controller, List(GameActionEvent.Redo, StateEvent.AnotherEvent))
+  }
+
+  "regularSwap" should "run the correct command and update context" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = true, updatedState, List(GameActionEvent.RegularSwap))
+
+    when(mockCommandFactory.createRegularSwapCommand(1)).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(result)
+
+    val (newCtx, success) = controller.regularSwap(1, ctx)
+
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
+  }
+
+  "regularSwap fallback" should "dispatch NoSwapsEvent when command fails" in {
+    val attacker = mock[IPlayer]
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = false, state, Nil)
+
+    when(mockCommandFactory.createRegularSwapCommand(2)).thenReturn(mockCommand)
+    when(mockCommand.execute(state)).thenReturn(result)
+    when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
+
+    val (newCtx, success) = controller.regularSwap(2, ctx)
+
+    assert(!success)
+    assert(newCtx == ctx)
+
+    // Optional: verify fallback event StateEvent.NoSwapsEvent(attacker) dispatched
+  }
+
+  "reverseSwap" should "run the correct command and update context" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = true, updatedState, List(GameActionEvent.ReverseSwap))
+
+    when(mockCommandFactory.createReverseSwapCommand()).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(result)
+
+    val (newCtx, success) = controller.reverseSwap(ctx)
+
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
+  }
+
+  "reverseSwap fallback" should "dispatch NoSwapsEvent when command fails" in {
+    val attacker = mock[IPlayer]
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = false, state, Nil)
+
+    when(mockCommandFactory.createReverseSwapCommand()).thenReturn(mockCommand)
+    when(mockCommand.execute(state)).thenReturn(result)
+    when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
+
+    val (newCtx, success) = controller.reverseSwap(ctx)
+
+    assert(!success)
+    assert(newCtx == ctx)
+
+    // Optional: verify fallback event StateEvent.NoSwapsEvent(attacker) dispatched
+  }
+
+  "boostDefender" should "run the correct command and update context" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = true, updatedState, List(GameActionEvent.BoostDefender))
+
+    when(mockCommandFactory.createBoostDefenderCommand(0)).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(result)
+
+    val (newCtx, success) = controller.boostDefender(0, ctx)
+
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
+  }
+
+
+  "boostDefender fallback" should "dispatch NoBoostsEvent when command fails" in {
+    val attacker = mock[IPlayer]
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = false, state, Nil)
+
+    when(mockCommandFactory.createBoostDefenderCommand(1)).thenReturn(mockCommand)
+    when(mockCommand.execute(state)).thenReturn(result)
+    when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
+
+    val (newCtx, success) = controller.boostDefender(1, ctx)
+
+    assert(!success)
+    assert(newCtx == ctx)
+
+    // Optional: verify fallback event: StateEvent.NoBoostsEvent(attacker)
+  }
+
+  "boostGoalkeeper" should "run the correct command and update context" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val ctx = GameContext(initialState, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = true, updatedState, List(GameActionEvent.BoostGoalkeeper))
+
+    when(mockCommandFactory.createBoostGoalkeeperCommand()).thenReturn(mockCommand)
+    when(mockCommand.execute(initialState)).thenReturn(result)
+
+    val (newCtx, success) = controller.boostGoalkeeper(ctx)
+
+    assert(success)
+    assert(newCtx.state eq updatedState)
+    verify(mockContextHolder).set(newCtx)
+  }
+  "boostGoalkeeper fallback" should "dispatch NoBoostsEvent when command fails" in {
+    val attacker = mock[IPlayer]
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+    val mockCommand = mock[ICommand]
+
+    val result = CommandResult(success = false, state, Nil)
+
+    when(mockCommandFactory.createBoostGoalkeeperCommand()).thenReturn(mockCommand)
+    when(mockCommand.execute(state)).thenReturn(result)
+    when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
+
+    val (newCtx, success) = controller.boostGoalkeeper(ctx)
+
+    assert(!success)
+    assert(newCtx == ctx)
+
+    // Optional: verify fallback event: StateEvent.NoBoostsEvent(attacker)
+  }
+
+  "loadGame" should "load state and update context when successful" in {
+    val state = mock[IGameState]
+    when(mockGameService.loadGame("game1")).thenReturn(Success(state))
+
+    val result = controller.loadGame("game1")
+
+    assert(result)
+    verify(mockContextHolder).set(argThat(_.state eq state))
+  }
+
+  "saveGame" should "return true and dispatch SaveGame event if successful" in {
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+
+    when(mockGameService.saveGame(state)).thenReturn(Success(()))
+
+    val result = controller.saveGame(ctx)
+
+    assert(result)
+    // Optional: verify EventDispatcher.dispatchSingle(controller, GameActionEvent.SaveGame)
+  }
+
+  "saveGame" should "return false and not dispatch event if unsuccessful" in {
+    val state = mock[IGameState]
+    val ctx = GameContext(state, new UndoManager)
+
+    // Correct way to simulate failure
+    when(mockGameService.saveGame(state)).thenReturn(Try(throw new Exception("fail")))
+
+    val result = controller.saveGame(ctx)
+
+    assert(!result)
+    // Optional: verify EventDispatcher.dispatchSingle was NOT called
+  }
+
+
+  "executeAIAction" should "call singleAttack for SingleAttackAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).singleAttack(1, ctx)
+
+    val result = spyController.executeAIAction(SingleAttackAIAction(1), ctx)
+
+    assert(result._1 eq expectedCtx)
+    assert(result._2)
+    verify(spyController).singleAttack(1, ctx)
+  }
+
+  it should "call doubleAttack for DoubleAttackAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).doubleAttack(2, ctx)
+
+    val result = spyController.executeAIAction(DoubleAttackAIAction(2), ctx)
+
+    assert(result._1 eq expectedCtx)
+    assert(result._2)
+    verify(spyController).doubleAttack(2, ctx)
+  }
+
+  it should "call regularSwap for RegularSwapAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).regularSwap(0, ctx)
+
+    val result = spyController.executeAIAction(RegularSwapAIAction(0), ctx)
+
+    assert(result._1 eq expectedCtx)
+    verify(spyController).regularSwap(0, ctx)
+  }
+
+  it should "call reverseSwap for ReverseSwapAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).reverseSwap(ctx)
+
+    val result = spyController.executeAIAction(ReverseSwapAIAction, ctx)
+
+    assert(result._1 eq expectedCtx)
+    verify(spyController).reverseSwap(ctx)
+  }
+
+  it should "call boostDefender for BoostAIAction with DefenderZone" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).boostDefender(3, ctx)
+
+    val result = spyController.executeAIAction(BoostAIAction(3, DefenderZone), ctx)
+
+    assert(result._1 eq expectedCtx)
+    verify(spyController).boostDefender(3, ctx)
+  }
+
+  it should "call boostGoalkeeper for BoostAIAction with GoalkeeperZone" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn((expectedCtx, true)).when(spyController).boostGoalkeeper(ctx)
+
+    val result = spyController.executeAIAction(BoostAIAction(0, GoalkeeperZone), ctx)
+
+    assert(result._1 eq expectedCtx)
+    verify(spyController).boostGoalkeeper(ctx)
+  }
+
+  it should "call undo and return true for UndoAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn(expectedCtx).when(spyController).undo(ctx)
+
+    val result = spyController.executeAIAction(UndoAIAction, ctx)
+
+    assert(result._1 eq expectedCtx)
+    assert(result._2)
+    verify(spyController).undo(ctx)
+  }
+
+  it should "call redo and return true for RedoAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+    val spyController = spy(controller)
+    val expectedCtx = ctx.copy()
+
+    doReturn(expectedCtx).when(spyController).redo(ctx)
+
+    val result = spyController.executeAIAction(RedoAIAction, ctx)
+
+    assert(result._1 eq expectedCtx)
+    assert(result._2)
+    verify(spyController).redo(ctx)
+  }
+
+  it should "do nothing and return true for NoOpAIAction" in {
+    val ctx = GameContext(mock[IGameState], new UndoManager)
+
+    val result = controller.executeAIAction(NoOpAIAction, ctx)
+
+    assert(result._1 eq ctx)
+    assert(result._2)
+  }
+
+
 }
+

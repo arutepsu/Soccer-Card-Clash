@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.dialog
 
-import de.htwg.se.soccercardclash.controller.{IGameContextHolder, *}
+import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
@@ -11,7 +11,7 @@ import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, Observer, StateEvent}
+import de.htwg.se.soccercardclash.util.{GameActionEvent, IGameContextHolder, ObservableEvent, Observer, StateEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGenerator
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory

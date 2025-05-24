@@ -18,7 +18,6 @@ import scalafx.scene.text.{Font, Text}
 import scalafx.scene.control.Label
 
 import java.io.File
-import de.htwg.se.soccercardclash.controller.IGameContextHolder
 class LoadGameScene(controller: IController, gameContextHolder: IGameContextHolder) extends GameScene {
 
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)

@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.*
@@ -47,24 +47,24 @@ class AttackerHandScene(
     RegularSwapButton(), "Regular Swap", 200, 100, this, controller
   )
 
-  private val circularSwapButton: Button = ActionButtonFactory.createReverseSwapButton(
+  private val reverseSwapButton: Button = ActionButtonFactory.createReverseSwapButton(
     ReverseSwapButton(), "Reverse Swap", 200, 100, this, controller
   )
   private val infoButton: Button = GameButtonFactory.createGameButton("Info", 200, 100) {
-    () => DialogFactory.showHandInfoDialog("Title", "Message", overlay)
+    () => DialogFactory.showInfoDialog("Swap Instructions", "SWAP_INFO", overlay)
   }
 
   private val actionButtonLayout = new HBox {
     styleClass.add("button-layout")
     alignment = Pos.Center
     spacing = 15
-    children = Seq(regularSwapButton, circularSwapButton)
+    children = Seq(regularSwapButton, reverseSwapButton)
   }
   private val navButtonLayout = new HBox {
     styleClass.add("button-layout")
     alignment = Pos.Center
     spacing = 15
-    children = Seq(backButton, infoButton)
+    children = Seq(infoButton, backButton)
   }
 
   val playerBarWrapper = new BorderPane {
@@ -78,9 +78,9 @@ class AttackerHandScene(
     padding = Insets(30)
     children = Seq(
       playerBarWrapper,
-      navButtonLayout,
+      actionButtonLayout,
       attackerHandBar,
-      actionButtonLayout
+      navButtonLayout
     )
   }
 

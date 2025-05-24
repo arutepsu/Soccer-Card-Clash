@@ -4,6 +4,7 @@ import com.google.inject.{AbstractModule, Provides, Scopes, Singleton}
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.stage.Stage
 import de.htwg.se.soccercardclash.controller.*
+import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 
 

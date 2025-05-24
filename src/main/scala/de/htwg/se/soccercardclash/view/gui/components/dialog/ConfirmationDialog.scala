@@ -13,8 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
-import de.htwg.se.soccercardclash.controller.IGameContextHolder
+import de.htwg.se.soccercardclash.util.{GlobalObservable, IGameContextHolder, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.util.EventDispatcher
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController, contextHolder: IGameContextHolder) {

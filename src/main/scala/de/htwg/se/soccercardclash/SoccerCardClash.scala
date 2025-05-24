@@ -2,9 +2,10 @@ package de.htwg.se.soccercardclash
 
 import com.google.inject.{Guice, Injector}
 import de.htwg.se.soccercardclash.controller.base.Controller
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.RegularCard
 import de.htwg.se.soccercardclash.module.SoccerCardClashModule
+import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.view.gui.Gui
 import de.htwg.se.soccercardclash.view.tui.Tui
 import scalafx.application.JFXApp3

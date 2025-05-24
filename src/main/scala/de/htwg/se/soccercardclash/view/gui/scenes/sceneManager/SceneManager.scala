@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.scenes.sceneManager
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.controller.{IController, IGameContextHolder}
+import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.PauseDialog
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder

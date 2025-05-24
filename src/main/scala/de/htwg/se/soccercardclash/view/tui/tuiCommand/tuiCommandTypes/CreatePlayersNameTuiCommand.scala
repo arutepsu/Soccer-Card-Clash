@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes
 
 import de.htwg.se.soccercardclash.controller.*
-import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
+import de.htwg.se.soccercardclash.util.{GlobalObservable, IGameContextHolder, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.StartGameTuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 
