@@ -26,7 +26,7 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
     smooth = true
     cache = true
   }
-  
+
   private val messageText = new Text(message) {
     style = "-fx-font-size: 20px; -fx-fill: white; -fx-font-weight: bold;"
   }

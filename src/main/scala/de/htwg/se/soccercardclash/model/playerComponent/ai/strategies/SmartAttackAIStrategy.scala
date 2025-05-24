@@ -22,41 +22,37 @@ class SmartAttackAIStrategy extends IAIStrategy {
     val attackerHand = dataManager.getPlayerHand(player).toList
     if (attackerHand.isEmpty) return NoOpAIAction
 
-    val attackCard = attackerHand.head
+    val attackCard = attackerHand.last
     val attackValue = attackCard.value
 
-    val defenderField = dataManager.getPlayerDefenders(defender)
+    val defendersIndexed: List[(ICard, Int)] = dataManager.getPlayerDefenders(defender)
+      .zipWithIndex.collect { case (Some(card), idx) => (card, idx) }
 
-    val defendersIndexed: List[(ICard, Int)] = defenderField.zipWithIndex.collect {
-      case (Some(card), idx) => (card, idx)
+    val beatableDefenders = defendersIndexed.filter { case (card, _) =>
+      card.value < attackValue
     }
 
-    val beatable = defendersIndexed.filter { case (defCard, _) =>
-      defCard.value < attackValue
+    if (beatableDefenders.nonEmpty) {
+      val strongestBeatableIndex = beatableDefenders.maxBy(_._1.value)._2
+      return SingleAttackAIAction(defenderIndex = strongestBeatableIndex)
     }
 
-    if (beatable.nonEmpty) {
-      val chosenDefenderIndex = beatable.minBy(_._1.value)._2
-      SingleAttackAIAction(defenderIndex = chosenDefenderIndex)
+    val doubleAttackAvailable =
+      playerActionManager.canPerform(player, PlayerActionPolicies.DoubleAttack) &&
+        attackerHand.size >= 2
 
-    } else {
-      val fallbackIndexOpt =
-        defendersIndexed match {
-          case Nil =>
-            if (dataManager.getPlayerGoalkeeper(defender).isDefined) Some(-1) else None
-          case nonEmpty => Some(nonEmpty.maxBy(_._1.value)._2)
-        }
+    if (defendersIndexed.nonEmpty && doubleAttackAvailable) {
+      val strongestDefenderIndex = defendersIndexed.maxBy(_._1.value)._2
+      return DoubleAttackAIAction(defenderIndex = strongestDefenderIndex)
+    }
 
-      fallbackIndexOpt match {
-        case Some(index) if playerActionManager.canPerform(player, PlayerActionPolicies.DoubleAttack) && attackerHand.size >= 2 =>
-          DoubleAttackAIAction(defenderIndex = index)
-
-        case Some(index) =>
-          SingleAttackAIAction(defenderIndex = index)
-
-        case None =>
-          NoOpAIAction
-      }
+    dataManager.getPlayerGoalkeeper(defender) match {
+      case Some(goalkeeper) if attackValue > goalkeeper.value =>
+        SingleAttackAIAction(defenderIndex = -1)
+      case Some(goalkeeper) if doubleAttackAvailable =>
+        DoubleAttackAIAction(defenderIndex = -1)
+      case _ =>
+        NoOpAIAction
     }
   }
 }

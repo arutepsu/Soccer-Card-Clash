@@ -19,7 +19,6 @@ import de.htwg.se.soccercardclash.util.*
 class Controller @Inject()(
                             commandFactory: ICommandFactory,
                             gameService: IGameService,
-                            handFactory: IHandCardsQueueFactory,
                             actionManager: IActionManager,
                             contextHolder: IGameContextHolder
                           ) extends IController{

@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactor
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.util.SceneSwitchEvent
 import de.htwg.se.soccercardclash.view.gui.utils.Styles
-import scalafx.scene.control.Button
+import scalafx.scene.control.{Button, ScrollPane}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.{Font, Text, TextAlignment}
 import scalafx.scene.image.{Image, ImageView}
@@ -45,10 +45,14 @@ class InfoDialog(
     textAlignment = TextAlignment.Center
   }
 
-  private val messageText = new Text(message) {
-    styleClass += "dialog-message"
-    wrappingWidth = 600
-    textAlignment = TextAlignment.Center
+  private val messageContent = if (message == "GAME_INFO") {
+    GameInfoPaneFactory.create(overlay.getPane.width.value-400, overlay.getPane.height.value-280)
+  } else {
+    new Text(message) {
+      styleClass += "dialog-message"
+      wrappingWidth = 600
+      textAlignment = TextAlignment.Center
+    }
   }
 
   private val okButton = GameButtonFactory.createGameButton(
@@ -62,12 +66,13 @@ class InfoDialog(
   private val layout = new VBox {
     alignment = Pos.Center
     spacing = 20
-    children = Seq(titleText, messageText, okButton)
+    children = Seq(titleText, messageContent, okButton)
   }
 
   private val dialogPane = new StackPane {
     alignment = Pos.Center
     children = Seq(backgroundImageView, layout)
+
   }
 
   overlay.show(dialogPane, autoHide)

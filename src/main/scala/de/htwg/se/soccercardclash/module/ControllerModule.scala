@@ -27,8 +27,6 @@ class ControllerModule extends AbstractModule {
     ))
     .in(classOf[Singleton])
 
-
-    bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
     bind(classOf[IActionManager]).to(classOf[ActionManager])
   }
   @Provides

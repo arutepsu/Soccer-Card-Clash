@@ -35,7 +35,7 @@ case class ActionButtonBar(controller: IController,
     controller)
 
   private val infoButton: Button = GameButtonFactory.createGameButton("Info", 180, 80) {
-    () => DialogFactory.showHandInfoDialog("Title", "Message", overlay)
+    () => DialogFactory.showHandInfoDialog("Game Instructions", "GAME_INFO", overlay)
   }
 
   alignment = Pos.CENTER_LEFT

@@ -31,6 +31,17 @@ object DialogFactory {
     )
 
   }
+
+  def showGameInfo(overlay: Overlay, controller: IController, contextHolder: IGameContextHolder): Unit = {
+    new ConfirmationDialog(
+      overlay,
+      message = "GAME_INFO",
+      onConfirm = () => (), // No action needed
+      controller = controller,
+      contextHolder = contextHolder
+    ).show()
+  }
+
   def showHandInfoDialog(title: String,
                          message: String,
                          overlay: Overlay):
