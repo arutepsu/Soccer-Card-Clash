@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.manager
+package de.htwg.se.soccercardclash.model.gameComponent.action.manager
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, PlayerActionPolicies}

@@ -1,5 +1,5 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.types
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
 import de.htwg.se.soccercardclash.util.NoOpAIAction
 import scala.util.Random
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext

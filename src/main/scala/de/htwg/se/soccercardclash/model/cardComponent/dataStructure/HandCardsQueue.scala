@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.model.cardComponent.dataStructure
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-
 import play.api.libs.json.*
-import scala.util.{Try, Success, Failure}
+
+import scala.util.{Failure, Success, Try}
 import scala.collection.mutable
 import scala.xml.*
 

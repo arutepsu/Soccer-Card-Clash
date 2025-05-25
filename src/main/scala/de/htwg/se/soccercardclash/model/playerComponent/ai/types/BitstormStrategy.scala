@@ -1,5 +1,5 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.types
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
 import de.htwg.se.soccercardclash.util.NoOpAIAction
 
 import scala.util.Random
@@ -11,7 +11,7 @@ import de.htwg.se.soccercardclash.util.AIAction
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.{SimpleSwapAIStrategy, SmartBoostWeakestDefenderAIStrategy}
 
 class BitstormStrategy(random: Random) extends IAIStrategy {
-  private val strategies: Vector[IAIStrategy] = Vector(
+  protected val strategies: Vector[IAIStrategy] = Vector(
     new SmartAggressiveAttackAIStrategy(),
     new SmartBoostWeakestDefenderAIStrategy(),
     new SimpleSwapAIStrategy(random)

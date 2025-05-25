@@ -3,9 +3,9 @@ package de.htwg.se.soccercardclash.model.cardComponent.factory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
-import de.htwg.se.soccercardclash.model.cardComponent.factory.ICardFactory
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.*
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
 import de.htwg.se.soccercardclash.util.Deserializer
 import play.api.libs.json.*
 

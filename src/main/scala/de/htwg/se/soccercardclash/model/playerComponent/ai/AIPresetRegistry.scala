@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.SmartBoostWeakestDefenderAIStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy

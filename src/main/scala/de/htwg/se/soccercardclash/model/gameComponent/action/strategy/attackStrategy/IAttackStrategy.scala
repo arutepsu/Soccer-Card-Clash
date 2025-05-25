@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy
 
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent

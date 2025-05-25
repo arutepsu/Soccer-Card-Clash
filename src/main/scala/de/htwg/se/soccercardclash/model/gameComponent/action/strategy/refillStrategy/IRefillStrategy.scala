@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.refillStrategy
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue

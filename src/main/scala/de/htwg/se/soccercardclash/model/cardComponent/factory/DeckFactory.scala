@@ -3,7 +3,6 @@ package de.htwg.se.soccercardclash.model.cardComponent.factory
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
-import de.htwg.se.soccercardclash.model.cardComponent.factory.CardFactory
 
 import scala.collection.mutable
 import scala.util.Random

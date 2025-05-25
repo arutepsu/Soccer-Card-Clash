@@ -1,14 +1,14 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.strategies
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 import de.htwg.se.soccercardclash.util.{AIAction, DoubleAttackAIAction, NoOpAIAction, RegularSwapAIAction, SingleAttackAIAction}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
 
 import scala.util.Random
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
 
 class SimpleSwapAIStrategy(random: Random) extends IAIStrategy {
   private val playerActionManager = PlayerActionManager()

@@ -1,13 +1,13 @@
 package de.htwg.se.soccercardclash.module
 
 import com.google.inject.{AbstractModule, Singleton}
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{IHandCardsQueueFactory, *}
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 
 class SerializationModule extends AbstractModule {

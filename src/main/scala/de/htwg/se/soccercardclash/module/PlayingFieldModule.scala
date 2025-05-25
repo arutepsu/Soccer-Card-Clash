@@ -5,12 +5,12 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQu
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.scoringStrategy.base.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.{IPlayerFactory, PlayerDeserializer}
 

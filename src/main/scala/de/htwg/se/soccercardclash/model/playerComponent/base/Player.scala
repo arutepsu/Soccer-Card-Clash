@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.model.playerComponent.base
-import de.htwg.se.soccercardclash.util.AIAction
+
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.util.AIAction
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -36,7 +37,7 @@ case class Player(
 
   override def hashCode(): Int = name.hashCode
 
-  def isAI: Boolean = playerType match {
+  override def isAI: Boolean = playerType match {
     case AI(_) => true
     case _ => false
   }

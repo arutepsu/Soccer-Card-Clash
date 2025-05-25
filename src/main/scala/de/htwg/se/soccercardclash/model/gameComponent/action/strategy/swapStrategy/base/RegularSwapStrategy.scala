@@ -1,10 +1,10 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.base
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.base
 
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IPlayerActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.ISwapStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IPlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.ISwapStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 

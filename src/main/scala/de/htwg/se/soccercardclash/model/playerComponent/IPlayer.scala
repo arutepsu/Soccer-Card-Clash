@@ -61,7 +61,7 @@ trait IPlayer extends Serializable {
     }
   }
 
-
+  def isAI: Boolean
   def equals(obj: Any): Boolean
 
   def hashCode(): Int

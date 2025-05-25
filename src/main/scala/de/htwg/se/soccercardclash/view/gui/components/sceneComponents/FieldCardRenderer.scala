@@ -1,4 +1,5 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
+
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import javafx.application.Platform
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer

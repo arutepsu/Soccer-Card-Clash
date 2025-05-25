@@ -1,16 +1,16 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.manager
+package de.htwg.se.soccercardclash.model.gameComponent.action.manager
 
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.IActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.attackStrategy.{AttackManager, IAttackManager, IAttackStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.{AttackManager, IAttackManager, IAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.base.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.base.{RegularSwapStrategy, ReverseSwapStrategy}
 import de.htwg.se.soccercardclash.util.ObservableEvent
 import play.api.libs.json.*
 import play.api.libs.json.util.*

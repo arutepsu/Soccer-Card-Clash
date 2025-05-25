@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.cardComponent
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
-import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
+import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard, *}
 import de.htwg.se.soccercardclash.util.Serializable
 import play.api.libs.json.*
 

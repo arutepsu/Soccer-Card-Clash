@@ -2,15 +2,15 @@ package de.htwg.se.soccercardclash.model.gameComponent.service
 
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{IHandCardsQueueFactory, *}
+import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IFieldCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
-import de.htwg.se.soccercardclash.model.gameComponent.state.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IFieldCardsFactory, IGameCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 import play.api.libs.json.*
 

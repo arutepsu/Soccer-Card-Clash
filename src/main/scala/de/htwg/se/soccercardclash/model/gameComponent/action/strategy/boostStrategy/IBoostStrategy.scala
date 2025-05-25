@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.strategy.boostStrategy
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy
 
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent

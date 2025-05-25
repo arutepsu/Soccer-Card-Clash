@@ -1,9 +1,10 @@
 package de.htwg.se.soccercardclash.model.cardComponent.base.types
 
-import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.*
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
+import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Value, *}
+import Suit.Suit
+import Value.Value
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import play.api.libs.json.*
 
 import scala.xml.*
