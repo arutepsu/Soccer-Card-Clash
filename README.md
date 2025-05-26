@@ -6,7 +6,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c8252a455c9a41f881a18a2e319642b1)](https://app.codacy.com/gh/arutepsu/Soccer-Card-Clash/dashboard)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/arutepsu/Soccer-Card-Clash?color=blue)
 ![Last commit](https://img.shields.io/github/last-commit/arutepsu/Soccer-Card-Clash?color=yellow)
-[![Scala CI](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml/badge.svg)](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml)
 ![Repo size](https://img.shields.io/github/repo-size/arutepsu/Soccer-Card-Clash?color=orange)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 ---
@@ -53,20 +52,26 @@ The controller mediates between the model and views:
 ## 🧑‍💻 Technologies Used
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
 ![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
-![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-blue?logo=scala)
+![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-yellow?logo=scala)
 ![DI](https://img.shields.io/badge/DI-Google_Juice-orange?logo=sbt)
-![Test](https://img.shields.io/badge/tested%20with-ScalaTest%203.2.14-brightgreen)
+![Test](https://img.shields.io/badge/Test-ScalaTest%203.2.14-brightgreen)
+![AI](https://img.shields.io/badge/Images%20by-DeepAI-blue)
+
 ---
 
-<h2 style="text-align: center;">Demo Gameplay</h2>
+<h2 style="text-align: center;">▶️ Demo Gameplay</h2>
 <div style="display: flex; gap: 0px;">
   <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3hiaTlobWpiZzM5NjRyb3k5Y2Zwb3BpczF2MXdwOXptOWU1MmpweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjGkzFmRiVrOamBDoF/giphy.gif" alt="Demo Game Creation" height="237"/>
   <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" alt="Demo Gameplay" height="237"/>
 </div>
 
 
-## Screenshots
+## 📸 Screenshots
+#### 🏠 Main Menu
+**A starting point to choose between singleplayer, multiplayer, or loading a game.**
 ![menu](src/main/resources/docs/screenshots/mainmenu.png)
+#### 🎯 Singleplayer Mode Selection
+**Choose your game mode and configure a singleplayer match.**
 ![singleplayer](src/main/resources/docs/screenshots/singleplayer.png)
 ![choseai](src/main/resources/docs/screenshots/choseai.png)
 ![playingfield](src/main/resources/docs/screenshots/playingfield.png)
