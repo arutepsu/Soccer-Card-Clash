@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.*
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.{SceneManager, UIAction, UIActionScheduler}
-import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{BoostImage, Styles}
 import scalafx.animation.FadeTransition
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}

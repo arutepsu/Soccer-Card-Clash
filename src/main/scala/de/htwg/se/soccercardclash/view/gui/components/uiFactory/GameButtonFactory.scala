@@ -8,7 +8,7 @@ import scalafx.scene.effect.DropShadow
 import scalafx.scene.layout.*
 import scalafx.scene.paint.Color
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.{ButtonAnimationFactory, CardAnimationFactory}
-import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
+import de.htwg.se.soccercardclash.view.gui.utils.BoostImage
 import scalafx.scene.text.Font
 import javafx.event.ActionEvent
 import javafx.event.EventHandler

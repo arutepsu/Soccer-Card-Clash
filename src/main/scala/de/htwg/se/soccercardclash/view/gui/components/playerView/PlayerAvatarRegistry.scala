@@ -5,7 +5,7 @@ import scalafx.geometry.Pos
 import scalafx.scene.control.Button
 import scalafx.scene.image.ImageView
 import scalafx.scene.layout.VBox
-import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
+import de.htwg.se.soccercardclash.view.gui.utils.BoostImage
 import scala.util.{Try, Success, Failure}
 import scalafx.scene.image.Image
 import scala.collection.mutable

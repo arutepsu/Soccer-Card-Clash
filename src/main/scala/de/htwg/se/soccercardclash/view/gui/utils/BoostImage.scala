@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.utils
 
 import scalafx.scene.image.{Image, ImageView}
 
-object ImageUtils {
+object BoostImage {
   private var boostImage: Option[Image] = None
 
   def preloadImages(): Unit = {

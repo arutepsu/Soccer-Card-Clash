@@ -15,7 +15,7 @@ import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGen
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{BoostImage, Styles}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -31,7 +31,7 @@ import de.htwg.se.soccercardclash.view.gui.components.dialog.ComparisonDialogGen
 import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFieldBar, PlayersHandBar}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
-import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{BoostImage, Styles}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -49,7 +49,7 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.{PlayersFi
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.UIAction
-import de.htwg.se.soccercardclash.view.gui.utils.{ImageUtils, Styles}
+import de.htwg.se.soccercardclash.view.gui.utils.{BoostImage, Styles}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

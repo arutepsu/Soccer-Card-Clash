@@ -17,7 +17,7 @@ import scalafx.util.Duration
 import scalafx.scene.image.ImageView
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{Pane, StackPane}
-import de.htwg.se.soccercardclash.view.gui.utils.ImageUtils
+import de.htwg.se.soccercardclash.view.gui.utils.BoostImage
 import scalafx.collections.ObservableBuffer
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.BoostLoader
@@ -34,7 +34,7 @@ object CardAnimationFactory {
   def applyBoostEffect(card: FieldCard): Unit = {
 //    if (card.card.additionalValue > 0) {
     val scaleFactor = 0.2f // Adjust scale factor for the boost effect
-    val boostImage = ImageUtils.getBoostImage
+    val boostImage = BoostImage.getBoostImage
 
     val boostView = new ImageView(boostImage) {
       preserveRatio = true
