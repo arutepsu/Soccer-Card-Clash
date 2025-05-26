@@ -4,7 +4,7 @@
 
 ---
 
-[![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main&cachebust=1)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c8252a455c9a41f881a18a2e319642b1)](https://app.codacy.com/gh/arutepsu/Soccer-Card-Clash/dashboard)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/arutepsu/Soccer-Card-Clash?color=blue)
 ![Last commit](https://img.shields.io/github/last-commit/arutepsu/Soccer-Card-Clash?color=yellow)
@@ -115,6 +115,6 @@ Let the Card Clash begin! ⚽🔥⚔️
 
 ---
 
-#### _👨‍💻 Developed with passion by [Arutepsu](httzps://github.com/arutepsu)_
+#### _👨‍💻 Developed with passion by_ [Arutepsu](httzps://github.com/arutepsu)
 
 ---
