@@ -20,7 +20,8 @@ Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to 
 * Take turns as the attacker or defender.
 * Outsmart your opponent by choosing the right action at the right time.
 * Score goals by breaking through all defenders and beating the goalkeeper.
-[Read Full Game Rules](docs/GAMERULES.md)
+
+[Read Full Game Rules](src/main/resources/docs/GAMERULES.md)
 
 
 
@@ -45,13 +46,13 @@ Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to 
 ![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
 
 ### Screenshots
-![menu](src/main/resources/screenshots/mainmenu.png)
-![singleplayer](src/main/resources/screenshots/singleplayer.png)
-![choseai](src/main/resources/screenshots/choseai.png)
-![playingfield](src/main/resources/screenshots/playingfield.png)
-![comparison](src/main/resources/screenshots/comparison.png)
-![fieldcards](src/main/resources/screenshots/fieldcards.png)
-![info](src/main/resources/screenshots/info.png)
-![handcards](src/main/resources/screenshots/handcards.png)
-![pause](src/main/resources/screenshots/pause.png)
+![menu](src/main/resources/docs/screenshots/mainmenu.png)
+![singleplayer](src/main/resources/docs/screenshots/singleplayer.png)
+![choseai](src/main/resources/docs/screenshots/choseai.png)
+![playingfield](src/main/resources/docs/screenshots/playingfield.png)
+![comparison](src/main/resources/docs/screenshots/comparison.png)
+![fieldcards](src/main/resources/docs/screenshots/fieldcards.png)
+![info](src/main/resources/docs/screenshots/info.png)
+![handcards](src/main/resources/docs/screenshots/handcards.png)
+![pause](src/main/resources/docs/screenshots/pause.png)
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
