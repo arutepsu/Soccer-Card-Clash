@@ -1,5 +1,5 @@
 <p align="center">
-<img src="src/main/resources/images/data/logo/logoCut.png" alt="Logo" width="400"/>
+<img src="src/main/resources/images/data/logo/logoCut.png" alt="Logo" height="400"/>
 </p>
 
 [![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main&cachebust=1)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
