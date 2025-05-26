@@ -11,7 +11,7 @@ class RegularSwapTuiCommand(controller: IController, contextHolder: IGameContext
       case Some(index) =>
         controller.regularSwap(index, contextHolder.get)
       case None =>
-        println("❌ Invalid input. Please enter a number.")
+        println("Invalid input. Please enter a number.")
     }
   }
 }

@@ -7,7 +7,7 @@ import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 
 class StartGameTuiCommand(controller: IController, contextHolder: IGameContextHolder, player1: String, player2: String) extends ITuiCommand {
   override def execute(input: Option[String] = None): Unit = {
-    println(s"🎮 Starting game with players: $player1 & $player2")
+    println(s"Starting game with players: $player1 & $player2")
     controller.createGame(player1, player2)
     val players = Seq(
       contextHolder.get.state.getRoles.attacker,

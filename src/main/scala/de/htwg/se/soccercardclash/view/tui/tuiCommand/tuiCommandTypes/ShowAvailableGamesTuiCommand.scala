@@ -15,12 +15,12 @@ class ShowAvailableGamesTuiCommand(controller: IController, prompter: IPrompter,
           val index = parts(1).toInt - 1
           factory.createLoadSelectedGameTuiCommand(index)
         } else {
-          println("❌ Usage: select <number>")
+          println("Usage: select <number>")
         }
 
       case _ =>
 
-        println("🎮 Showing available saved games:")
+        println("Showing available saved games:")
         prompter.showAvailableGames()
     }
   }

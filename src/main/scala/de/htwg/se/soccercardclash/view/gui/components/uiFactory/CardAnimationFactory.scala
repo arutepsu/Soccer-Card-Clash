@@ -33,8 +33,17 @@ object CardAnimationFactory {
   
   def applyBoostEffect(card: FieldCard): Unit = {
 //    if (card.card.additionalValue > 0) {
-      val scaleFactor = 0.2f // Adjust scale factor for the boost effect
-      val boostView = ImageUtils.importImageAsViewSize(boostEffectPath, scaleFactor, 50, 70) // Max 100x100 size
+    val scaleFactor = 0.2f // Adjust scale factor for the boost effect
+    val boostImage = ImageUtils.getBoostImage
+
+    val boostView = new ImageView(boostImage) {
+      preserveRatio = true
+      fitWidth = Math.min(boostImage.width.value * scaleFactor, 50)
+      fitHeight = Math.min(boostImage.height.value * scaleFactor, 70)
+    }
+
+    boostView.translateX = card.width.value * 0.4
+    boostView.translateY = -card.height.value * 0.4
 
       // Positioning the boost effect relative to the card
       boostView.translateX = card.width.value * 0.4 // Move slightly to the right

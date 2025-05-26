@@ -102,7 +102,7 @@ class DoubleAttackStrategy(
     }
   }
 
-  private def processGoalkeeperAttack(
+  protected def processGoalkeeperAttack(
                                        attacker: IPlayer,
                                        defender: IPlayer,
                                        attackerHand: IHandCardsQueue,
@@ -172,7 +172,7 @@ class DoubleAttackStrategy(
     }
   }
 
-  private def attackerWins(
+  protected def attackerWins(
                             hand: IHandCardsQueue,
                             gameCards: IGameCards,
                             attacker: IPlayer,
@@ -187,7 +187,7 @@ class DoubleAttackStrategy(
   }
 
 
-  private def defenderWins(
+  protected def defenderWins(
                             hand: IHandCardsQueue,
                             gameCards: IGameCards,
                             attacker: IPlayer,
@@ -201,7 +201,7 @@ class DoubleAttackStrategy(
   }
 
 
-  private def processDefenderAttack(
+  protected def processDefenderAttack(
                                      attacker: IPlayer,
                                      defender: IPlayer,
                                      attackerHand: IHandCardsQueue,
@@ -272,7 +272,7 @@ class DoubleAttackStrategy(
     }
   }
 
-  private def handleTie(
+  protected def handleTie(
                          attacker: IPlayer,
                          defender: IPlayer,
                          attackerHand: IHandCardsQueue,

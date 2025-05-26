@@ -79,7 +79,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
   }
 
 
-  private def processGoalkeeperAttack(
+  protected def processGoalkeeperAttack(
                                        attacker: IPlayer,
                                        defender: IPlayer,
                                        attackerHand: IHandCardsQueue,
@@ -151,7 +151,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
   }
 
 
-  private def attackerWins(
+  protected def attackerWins(
                             hand: IHandCardsQueue,
                             gameCards: IGameCards,
                             attacker: IPlayer,
@@ -166,7 +166,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
   }
 
 
-  private def defenderWins(
+  protected def defenderWins(
                             hand: IHandCardsQueue,
                             gameCards: IGameCards,
                             attacker: IPlayer,
@@ -181,7 +181,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
   }
 
 
-  private def processDefenderAttack(
+  protected def processDefenderAttack(
                                      attacker: IPlayer,
                                      defender: IPlayer,
                                      attackerHand: IHandCardsQueue,
@@ -249,7 +249,7 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
     }
   }
 
-  private def handleTie(
+  protected def handleTie(
                          attacker: IPlayer,
                          defender: IPlayer,
                          attackerHand: IHandCardsQueue,

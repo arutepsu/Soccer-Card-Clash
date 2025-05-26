@@ -10,7 +10,7 @@ class StartGameTuiCommandWithAI(controller: IController,
                                 human: String,
                                 ai: String) extends ITuiCommand {
   override def execute(input: Option[String] = None): Unit = {
-    println(s"🎮 Starting game with players: $human vs $ai")
+    println(s"Starting game with players: $human vs $ai")
     controller.createGameWithAI(human, ai)
 
     val players = Seq(

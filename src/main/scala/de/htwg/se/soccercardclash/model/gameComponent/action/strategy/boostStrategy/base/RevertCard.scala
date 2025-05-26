@@ -38,8 +38,6 @@ class RevertCard {
       .newPlayerDefenders(defender, updatedDefenderField)
 
     val updatedState = playingField.newGameCards(dataManager)
-//    updatedState.notifyObservers(StateEvent.CardReverted(revertedCard, attacker))
-
     revertedCard
   }
 }

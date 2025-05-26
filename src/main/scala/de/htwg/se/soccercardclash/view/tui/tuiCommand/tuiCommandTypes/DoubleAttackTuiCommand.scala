@@ -12,14 +12,14 @@ class DoubleAttackTuiCommand(controller: IController, contextHolder: IGameContex
       case Some(indexStr) =>
         Try(indexStr.toInt) match {
           case Success(position) =>
-            println(s"⚔️ Executing attack on position: $position")
+            println(s"Executing attack on position: $position")
             controller.doubleAttack(position, contextHolder.get)
           case Failure(_) =>
-            println("❌ Error: Invalid attack format! Expected `:attack <position>`.")
+            println("Error: Invalid attack format! Expected `:attack <position>`.")
         }
 
       case None =>
-        println("❌ Error: Missing position! Use `:attack <position>`.")
+        println("Error: Missing position! Use `:attack <position>`.")
     }
   }
 }

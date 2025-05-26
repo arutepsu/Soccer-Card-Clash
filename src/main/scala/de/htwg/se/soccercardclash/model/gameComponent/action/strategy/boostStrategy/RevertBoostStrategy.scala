@@ -19,10 +19,3 @@ trait IRevertStrategy {
   def revertCard(card: Option[ICard]): Option[ICard]
 }
 
-class RevertCardActionCommand(card: Option[ICard], revertStrategy: IRevertStrategy, gameState: IGameState) {
-
-  def revert(): Option[ICard] = {
-    val revertedCard = revertStrategy.revertCard(card)
-    revertedCard
-  }
-}
