@@ -45,7 +45,7 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 ### Demo Game Creation with AI
 ![Demo](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWR2bHhucnJmZzdjdDBzZXVpeG52YnY1c3VnbWkzMTcwMmMzZjFtNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NWgaxXgGqVNcwUO5AN/giphy.gif)
 ### Demo Gameplay
-![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
+
 
 ### Screenshots
 ![menu](src/main/resources/docs/screenshots/mainmenu.png)
