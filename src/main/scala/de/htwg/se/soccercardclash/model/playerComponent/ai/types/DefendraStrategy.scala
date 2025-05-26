@@ -10,7 +10,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActio
 import de.htwg.se.soccercardclash.util.AIAction
 
 class DefendraStrategy(random: Random) extends IAIStrategy {
-  private val strategies: Vector[IAIStrategy] = Vector(
+  protected val strategies: Vector[IAIStrategy] = Vector(
     new SimpleAttackAIStrategy,
     new RandomAttackAIStrategy(random),
     new SmartBoostWeakestDefenderAIStrategy(),

@@ -24,4 +24,7 @@
 ### Demo Gameplay
 ![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
 
+### Screenshots
+![menu](src/main/resources/screenshots/mainmenu.png)
+
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_

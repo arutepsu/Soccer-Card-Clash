@@ -12,9 +12,10 @@ class CreatePlayersNameWithAITuiCommand(
                                        ) extends ITuiCommand {
 
   private var waitingForInput: Boolean = false
-  private var playerNameOpt: Option[String] = None
-  private var phase: Int = 0 // 0 = ask for player name, 1 = ask for AI name
+  def isWaitingForNames: Boolean = waitingForInput
 
+  private var playerNameOpt: Option[String] = None
+  private var phase: Int = 0
   override def execute(input: Option[String] = None): Unit = {
     waitingForInput = true
     phase = 0
@@ -36,6 +37,7 @@ class CreatePlayersNameWithAITuiCommand(
       phase = 1
 
       println(s"Available AIs:")
+      GlobalObservable.notifyObservers(SceneSwitchEvent.AISelection)
       AIRegistry.aiProfiles.zipWithIndex.foreach { case (ai, idx) =>
         println(s"  ${idx + 1}. ${ai.name} - ${ai.description}")
       }

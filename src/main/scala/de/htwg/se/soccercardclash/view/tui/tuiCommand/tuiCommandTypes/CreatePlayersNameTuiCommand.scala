@@ -9,6 +9,7 @@ import java.lang.invoke.SwitchPoint
 
 class CreatePlayersNameTuiCommand(controller: IController, contextHolder: IGameContextHolder) extends ITuiCommand {
   private var waitingForNames: Boolean = false
+  def isWaitingForNames: Boolean = waitingForNames
 
   override def execute(input: Option[String] = None): Unit = {
     waitingForNames = true

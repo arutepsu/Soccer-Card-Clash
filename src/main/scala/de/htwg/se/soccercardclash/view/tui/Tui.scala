@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.view.tui
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.tui
 import de.htwg.se.soccercardclash.view.tui.PromptState
@@ -28,6 +29,7 @@ enum PromptState {
   case PlayingField
   case MainMenu
   case CreatePlayers
+  case CreatePlayersAI
   case Exit
   case Reverted
 }
@@ -68,13 +70,22 @@ class Tui(
   def processInputLine(input: String): Unit = {
     println(s"\uD83D\uDEE0 Received input: '$input'")
 
-    if (createPlayersNameWitAITuiCommand.handlePlayerNames(input)) return
-      if (createPlayersNameTuiCommand.handlePlayerNames(input)) return
+    if (createPlayersNameWitAITuiCommand.isWaitingForNames &&
+      createPlayersNameWitAITuiCommand.handlePlayerNames(input)) {
+      promptState = PromptState.None
+      return
+    }
 
-        promptHandlers.get(promptState) match {
-          case Some(handler) => handler(input)
-          case None => handlePrimaryCommand(input)
-        }
+    if (createPlayersNameTuiCommand.isWaitingForNames &&
+      createPlayersNameTuiCommand.handlePlayerNames(input)) {
+      promptState = PromptState.None
+      return
+    }
+
+    promptHandlers.get(promptState) match {
+      case Some(handler) => handler(input)
+      case None => handlePrimaryCommand(input)
+    }
   }
 
   private def handlePrimaryCommand(input: String): Unit = {
@@ -93,6 +104,7 @@ class Tui(
     }
 
     commandKey match {
+
       case TuiKeys.Attack.key =>
         promptState = PromptState.SingleAttack
         prompter.promptRegularAttack()
@@ -122,10 +134,11 @@ class Tui(
         prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
       case TuiKeys.CreatePlayers.key =>
-        GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
+        createPlayersNameTuiCommand.execute()
 
       case TuiKeys.CreatePlayersAI.key =>
-        GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
+        createPlayersNameWitAITuiCommand.execute()
+
 
       case TuiKeys.Save.key =>
         commands(TuiKeys.Save.key).execute()
