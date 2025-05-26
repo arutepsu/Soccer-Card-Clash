@@ -8,8 +8,6 @@
 ![Last commit](https://img.shields.io/github/last-commit/arutepsu/Soccer-Card-Clash?color=yellow)
 [![Scala CI](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml/badge.svg)](https://github.com/arutepsu/Soccer-Card-Clash/actions/workflows/scala.yml)
 ![Repo size](https://img.shields.io/github/repo-size/arutepsu/Soccer-Card-Clash?color=orange)
-![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
-![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 ---
 # Soccer Card Clash
@@ -51,22 +49,14 @@ The controller mediates between the model and views:
 * Supports undo/redo functionality
 * Dispatches events independently to both TUI and GUI observers
 
-
-
-### Project Status
-![fun](https://img.shields.io/badge/Fun-100%25-brightgreen)
-
-![AI](https://img.shields.io/badge/Learning_ai-maybe-blue)
-
-![Immutable GameState](https://img.shields.io/badge/Immutable_GameState-Completed-brightgreen)
-
-![Modular MVC Design](https://img.shields.io/badge/Modular_MVC_Design-Completed-brightgreen)
-
-![DI (Guice)](https://img.shields.io/badge/DI_(Guice)-Completed-brightgreen)
-
-![Event System](https://img.shields.io/badge/Event_System-Completed-brightgreen)
-
-![Event System](https://img.shields.io/badge/Undo_Redo-Completed-brightgreen)
+---
+### 🧑‍💻 Technologies Used
+![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
+![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
+![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-blue?logo=scala)
+![DI](https://img.shields.io/badge/DI-Google_Juice-orange?logo=sbt)
+![Test](https://img.shields.io/badge/tested%20with-ScalaTest%203.2.14-brightgreen)
+---
 
 <h2 style="text-align: center;">Demo Gameplay</h2>
 <div style="display: flex; gap: 0px;">
@@ -75,7 +65,7 @@ The controller mediates between the model and views:
 </div>
 
 
-### Screenshots
+## Screenshots
 ![menu](src/main/resources/docs/screenshots/mainmenu.png)
 ![singleplayer](src/main/resources/docs/screenshots/singleplayer.png)
 ![choseai](src/main/resources/docs/screenshots/choseai.png)
