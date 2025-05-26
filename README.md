@@ -23,6 +23,12 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 
 #### 📖[Read Full Game Rules](src/main/resources/docs/GAMERULES.md)
 
+
+<h2 style="text-align: center;">▶️ Demo Gameplay</h2>
+<div style="display: flex; gap: 0px;">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3hiaTlobWpiZzM5NjRyb3k5Y2Zwb3BpczF2MXdwOXptOWU1MmpweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjGkzFmRiVrOamBDoF/giphy.gif" alt="Demo Game Creation" height="237"/>
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" alt="Demo Gameplay" height="237"/>
+</div>
 ---
 
 ## 🧱 Architecture
@@ -59,19 +65,8 @@ The controller mediates between the model and views:
 
 ---
 
-<h2 style="text-align: center;">▶️ Demo Gameplay</h2>
-<div style="display: flex; gap: 0px;">
-  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3hiaTlobWpiZzM5NjRyb3k5Y2Zwb3BpczF2MXdwOXptOWU1MmpweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjGkzFmRiVrOamBDoF/giphy.gif" alt="Demo Game Creation" height="237"/>
-  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" alt="Demo Gameplay" height="237"/>
-</div>
-
-
 ## 📸 Screenshots
-#### 🏠 Main Menu
-**A starting point to choose between singleplayer, multiplayer, or loading a game.**
 ![menu](src/main/resources/docs/screenshots/mainmenu.png)
-#### 🎯 Singleplayer Mode Selection
-**Choose your game mode and configure a singleplayer match.**
 ![singleplayer](src/main/resources/docs/screenshots/singleplayer.png)
 ![choseai](src/main/resources/docs/screenshots/choseai.png)
 ![playingfield](src/main/resources/docs/screenshots/playingfield.png)
@@ -80,5 +75,34 @@ The controller mediates between the model and views:
 ![info](src/main/resources/docs/screenshots/info.png)
 ![handcards](src/main/resources/docs/screenshots/handcards.png)
 ![pause](src/main/resources/docs/screenshots/pause.png)
+
+# 🚀 Getting Started
+Want to jump into the game? Just clone this repository and launch it locally:
+
+git clone https://github.com/arutepsu/Soccer-Card-Clash.git
+cd soccer-card-clash
+
+# 🛠️ How to Use
+This is a standard sbt project. Here are the most common commands:
+
+### 🔨 Compile the project
+
+sbt compile
+
+### 🎮 Start the game
+
+sbt run
+### 🧪 Run tests
+
+sbt test
+
+### 📫 Get in Touch
+Questions? Feedback? Found a bug?
+Feel free to reach out via email: arutepsu@gmail.com
+or open an issue right here on GitHub.
+
+Let the Card Clash begin! ⚽🔥⚔️
+
+
 
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
