@@ -26,5 +26,12 @@
 
 ### Screenshots
 ![menu](src/main/resources/screenshots/mainmenu.png)
-
+![singleplayer](src/main/resources/screenshots/singleplayer.png)
+![choseai](src/main/resources/screenshots/choseai.png)
+![playingfield](src/main/resources/screenshots/playingfield.png)
+![comparison](src/main/resources/screenshots/comparison.png)
+![fieldcards](src/main/resources/screenshots/fieldcards.png)
+![info](src/main/resources/screenshots/info.png)
+![handcards](src/main/resources/screenshots/handcards.png)
+![pause](src/main/resources/screenshots/pause.png)
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
