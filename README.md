@@ -18,6 +18,7 @@
 ![Modular MVC Design](https://img.shields.io/badge/Modular_MVC_Design-Completed-brightgreen)
 ![DI (Guice)](https://img.shields.io/badge/DI_(Guice)-Completed-brightgreen)
 ![Event System](https://img.shields.io/badge/Event_System-Completed-brightgreen)
+![Event System](https://img.shields.io/badge/Undo_Redo-Completed-brightgreen)
 ### Demo Game Creation with AI
 ![Demo](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXUxNjk2OG03cDRzZnZ4NGlrZHQxdDBtbG8xdTI5ejJicTl6YWZ5bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NWgaxXgGqVNcwUO5AN/giphy.gif)
 ### Demo Gameplay
