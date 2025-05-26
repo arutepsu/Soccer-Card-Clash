@@ -10,39 +10,39 @@
 ![Repo size](https://img.shields.io/github/repo-size/arutepsu/Soccer-Card-Clash?color=orange)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 ---
-# Soccer Card Clash
+<h1 style="text-align: center;">Soccer Card Clash</h1>
 An unofficial Scala version of the Soccer Card Clash game for Software Engineering classes at HTWG Konstanz.
 
-* Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
-* Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
+* 🎮 Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
+* 🧠 Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
 ---
-### Game Overview
-* Each player controls a hand of soccer-themed player cards.
-* Take turns as the attacker or defender.
-* Outsmart your opponent by choosing the right action at the right time.
-* Score goals by breaking through all defenders and beating the goalkeeper.
+## ⚽ Game Overview
+* 🃏 Each player controls a hand of soccer-themed player cards.
+* 🔄 Take turns as the attacker or defender.
+* 🧠 Outsmart your opponent by choosing the right action at the right time.
+* 🎯 Score goals by breaking through all defenders and beating the goalkeeper.
 
-[Read Full Game Rules](src/main/resources/docs/GAMERULES.md)
+#### 📖[Read Full Game Rules](src/main/resources/docs/GAMERULES.md)
 
 ---
 
 ## 🧱 Architecture
 This game is built using the Model-View-Controller (MVC) architectural pattern, ensuring a clean separation of concerns and modularity.
 
-### 🔹Model
+### 🧠 Model
 
 The model contains the immutable core logic of the game:
 
 * Cards, roles, scores, and game state
 * Designed for predictability, testability, and safe concurrent use
 
-### 🔹 View
+### 🖼️ View
 Two synchronized views provide flexible interaction:
 
 * Text-based UI (TUI) for quick testing and interaction via console
 * Graphical UI (GUI) built with ScalaFX, offering a richer user experience
 
-### 🔹 Controller
+### 🎮 Controller
 The controller mediates between the model and views:
 
 * Processes commands and applies changes to the game state
@@ -50,7 +50,7 @@ The controller mediates between the model and views:
 * Dispatches events independently to both TUI and GUI observers
 
 ---
-### 🧑‍💻 Technologies Used
+## 🧑‍💻 Technologies Used
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
 ![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
 ![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-blue?logo=scala)
