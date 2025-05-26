@@ -75,3 +75,26 @@
 ### 📌 Notes on Actions
 - Every swap (regular or reverse) **consumes one action**.
 - When all actions are used up, no further actions are allowed for that turn.
+
+---
+
+### 🧮 Action Limit
+
+Each turn comes with a limited number of actions. 
+Once you've used all your actions, you won’t be able to perform any more until the next turn.
+
+##### 📝 Actions that count toward the limit:
+
+* 🔄 Regular Swap
+* 
+* 🔁 Reverse Swap
+* 
+* ⚡ Boost
+* 
+* 🛡️ Defend
+* 
+* ⚔️ Double Attack
+
+###### ⛔ Once the limit is reached, further actions are blocked for that turn.
+
+---
