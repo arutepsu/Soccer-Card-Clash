@@ -13,8 +13,8 @@
 # Soccer Card Clash
 An unofficial Scala version of the Soccer Card Clash game for Software Engineering classes at HTWG Konstanz.
 
-Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
-Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
+* Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
+* Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
 ---
 ### Game Overview
 * Each player controls a hand of soccer-themed player cards.
@@ -43,7 +43,7 @@ Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to 
 ![Event System](https://img.shields.io/badge/Undo_Redo-Completed-brightgreen)
 
 ### Demo Game Creation with AI
-![Demo](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXUxNjk2OG03cDRzZnZ4NGlrZHQxdDBtbG8xdTI5ejJicTl6YWZ5bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NWgaxXgGqVNcwUO5AN/giphy.gif)
+![Demo](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWR2bHhucnJmZzdjdDBzZXVpeG52YnY1c3VnbWkzMTcwMmMzZjFtNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NWgaxXgGqVNcwUO5AN/giphy.gif)
 ### Demo Gameplay
 ![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
 
