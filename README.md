@@ -28,6 +28,30 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 
 ---
 
+## 🧱 Architecture
+This game is built using the Model-View-Controller (MVC) architectural pattern, ensuring a clean separation of concerns and modularity.
+
+### 🔹Model
+
+The model contains the immutable core logic of the game:
+
+* Cards, roles, scores, and game state
+* Designed for predictability, testability, and safe concurrent use
+
+### 🔹 View
+Two synchronized views provide flexible interaction:
+
+* Text-based UI (TUI) for quick testing and interaction via console
+* Graphical UI (GUI) built with ScalaFX, offering a richer user experience
+
+### 🔹 Controller
+The controller mediates between the model and views:
+
+* Processes commands and applies changes to the game state
+* Supports undo/redo functionality
+* Dispatches events independently to both TUI and GUI observers
+
+
 
 ### Project Status
 ![fun](https://img.shields.io/badge/Fun-100%25-brightgreen)
@@ -44,12 +68,11 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 
 ![Event System](https://img.shields.io/badge/Undo_Redo-Completed-brightgreen)
 
-<h3>Demo Game Creation with AI &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; Demo Gameplay</h3>
+<h2 style="text-align: center;">Demo Gameplay</h2>
 <div style="display: flex; gap: 0px;">
   <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3hiaTlobWpiZzM5NjRyb3k5Y2Zwb3BpczF2MXdwOXptOWU1MmpweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjGkzFmRiVrOamBDoF/giphy.gif" alt="Demo Game Creation" height="237"/>
   <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" alt="Demo Gameplay" height="237"/>
 </div>
-
 
 
 ### Screenshots
@@ -62,4 +85,5 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 ![info](src/main/resources/docs/screenshots/info.png)
 ![handcards](src/main/resources/docs/screenshots/handcards.png)
 ![pause](src/main/resources/docs/screenshots/pause.png)
+
 _Developed by [Arutepsu](httzps://github.com/arutepsu)_
