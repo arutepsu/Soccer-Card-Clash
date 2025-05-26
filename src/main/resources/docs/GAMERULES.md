@@ -1,5 +1,6 @@
-<img src="../images/data/logo/logoCut.png" alt="Description" width="250" style="display: block; margin: 0 auto;" />
-
+<p align="center">
+  <img src="../images/data/logo/logoCut.png" alt="Description" width="250"/>
+</p>
 
 ## ⚽ Game Rules
 

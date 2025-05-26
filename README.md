@@ -1,4 +1,8 @@
-![Logo](src/main/resources/images/data/logo/logoCut.png)
+[//]: # (![Logo]&#40;src/main/resources/images/data/logo/logoCut.png&#41;)
+<p align="center">
+  <img src="src/main/resources/images/data/logo/logoCut.png" alt="Logo" width="300"/>
+</p>
+
 [![Coverage Status](https://coveralls.io/repos/github/arutepsu/Soccer-Card-Clash/badge.svg?branch=main&cachebust=1)](https://coveralls.io/github/arutepsu/Soccer-Card-Clash?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c8252a455c9a41f881a18a2e319642b1)](https://app.codacy.com/gh/arutepsu/Soccer-Card-Clash/dashboard)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/arutepsu/Soccer-Card-Clash?color=blue)
@@ -8,13 +12,13 @@
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
 ![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
-
+---
 # Soccer Card Clash
 An unofficial Scala version of the Soccer Card Clash game for Software Engineering classes at HTWG Konstanz.
 
 Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
 Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
-
+---
 ### Game Overview
 * Each player controls a hand of soccer-themed player cards.
 * Take turns as the attacker or defender.
@@ -23,6 +27,7 @@ Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to 
 
 [Read Full Game Rules](src/main/resources/docs/GAMERULES.md)
 
+---
 
 
 ### Project Status
