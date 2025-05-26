@@ -44,10 +44,12 @@ An unofficial Scala version of the Soccer Card Clash game for Software Engineeri
 
 ![Event System](https://img.shields.io/badge/Undo_Redo-Completed-brightgreen)
 
-### Demo Game Creation with AI
-![Demo](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTZlNDVhcXp1eW4xZ20yNnBnZmllaG0wNnpnYmtzdXVpOTNwMzl3YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NWgaxXgGqVNcwUO5AN/giphy.gif)
-### Demo Gameplay
-![Demo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif)
+<h3>Demo Game Creation with AI &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; Demo Gameplay</h3>
+<div style="display: flex; gap: 0px;">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3hiaTlobWpiZzM5NjRyb3k5Y2Zwb3BpczF2MXdwOXptOWU1MmpweCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjGkzFmRiVrOamBDoF/giphy.gif" alt="Demo Game Creation" width="200"/>
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJiNnYzMzdnN3RnYnV4NTJxbnFhZGN1ZXRyY240czZhcXliZW1rMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfqWgunekLvxE5SnEt/giphy.gif" alt="Demo Gameplay" width=200"/>
+</div>
+
 
 ### Screenshots
 ![menu](src/main/resources/docs/screenshots/mainmenu.png)
