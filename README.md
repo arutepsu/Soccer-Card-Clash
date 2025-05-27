@@ -37,19 +37,19 @@ Konstanz University of Applied Sciences.
 
 ---
 ## ✨ Features
-#### 🎮 Singleplayer Mode
+### 🎮 Singleplayer Mode
 Play against various AI opponents, each with its own unique strategy and behavior.
 
-#### 🧠 Multiple AI Strategies
+### 🧠 Multiple AI Strategies
 Challenge AIs with different difficulty levels and tactics — from cautious defenders to aggressive attackers.
 
-#### 🤝 Multiplayer Mode
+### 🤝 Multiplayer Mode
 Play with friends in local multiplayer matches.
 
-#### 🎨 Unique Cyberpunk Design
+### 🎨 Unique Cyberpunk Design
 Dive into a cyberpunk-inspired world with bold visuals, neon effects, and a futuristic interface.
 
-#### ⚔️ Strategic Gameplay
+### ⚔️ Strategic Gameplay
 Mix and match actions like Swap, Boost, and Double Attack to outsmart your opponent.
 
 --- 
