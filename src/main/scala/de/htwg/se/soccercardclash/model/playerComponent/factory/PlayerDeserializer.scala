@@ -3,23 +3,23 @@ package de.htwg.se.soccercardclash.model.playerComponent.factory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies, PlayerActionState}
-import de.htwg.se.soccercardclash.util.Deserializer
-import play.api.libs.json.*
-
-import scala.util.Random
-import javax.inject.{Inject, Singleton}
-import scala.util.{Failure, Success, Try}
-import scala.xml.Elem
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.model.playerComponent.ai.*
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.ai.types.{BitstormStrategy, DefendraStrategy, MetaAIStrategy, TakaStrategy}
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies, PlayerActionState}
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
+import de.htwg.se.soccercardclash.util.Deserializer
+import play.api.libs.json.*
+
+import javax.inject.{Inject, Singleton}
+import scala.util.{Failure, Success, Try}
+import scala.xml.Elem
 @Singleton
 class PlayerDeserializer @Inject()(
                                     playerFactory: IPlayerFactory,
-                                    cardDeserializer: CardDeserializer
+                                    cardDeserializer: CardDeserializer,
+                                    randoms: Map[String, IRandomProvider]
                                   ) extends Deserializer[IPlayer] {
 
   override def fromXml(xml: Elem): IPlayer = {
@@ -111,13 +111,14 @@ class PlayerDeserializer @Inject()(
     }
   }
 
-  private def createAIStrategy(name: String): Option[IAIStrategy] = name match {
-    case "TakaStrategy"                => Some(new TakaStrategy(new Random()))
-    case "BitstormStrategy"            => Some(new BitstormStrategy(new Random()))
-    case "DefendraStrategy"            => Some(new DefendraStrategy(new Random()))
-    case "MetaAIStrategy"              => Some(new MetaAIStrategy(new Random()))
-    case _                             => None
-  }
+  private def createAIStrategy(name: String): Option[IAIStrategy] =
+    name match {
+      case "TakaStrategy" => Some(new TakaStrategy(randoms("Taka")))
+      case "BitstormStrategy" => Some(new BitstormStrategy(randoms("Bitstorm")))
+      case "DefendraStrategy" => Some(new DefendraStrategy(randoms("Defendra")))
+      case "MetaAIStrategy" => Some(new MetaAIStrategy(randoms("MetaAI")))
+      case _ => None
+    }
 
-  
+
 }

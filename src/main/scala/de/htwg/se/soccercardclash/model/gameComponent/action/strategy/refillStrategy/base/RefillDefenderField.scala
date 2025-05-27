@@ -2,15 +2,15 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStr
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
 class RefillDefenderField {
 
   def refill(gameCards: IGameCards, defender: IPlayer): IGameCards = {
     val defenderHand = gameCards.getPlayerHand(defender)
-    val defenders = gameCards.getPlayerDefenders(defender) // List[Option[ICard]]
+    val defenders = gameCards.getPlayerDefenders(defender)
     val goalkeeper = gameCards.getPlayerGoalkeeper(defender)
 
     if (defenders.forall(_.isEmpty) && goalkeeper.isEmpty) {
@@ -51,31 +51,26 @@ class RefillDefenderField {
     val (newCards, updatedHand) =
       if (neededSlots > 0) defenderHand.splitAtEnd(neededSlots)
       else (Nil, defenderHand)
-    
+
     val cardIterator = newCards.iterator
     val updatedDefenders: List[Option[ICard]] = defenderField.map {
       case None => if (cardIterator.hasNext) Some(cardIterator.next()) else None
       case some => some
     }
-    
+
     val (goalkeeper, updatedDefendersWithGoalieBack): (ICard, List[ICard]) =
       adjustGoalkeeper(updatedDefenders, goalkeeperOpt)
-    
+
     val replacedCards = updatedDefendersWithGoalieBack.iterator
     val adjustedDefenders: List[Option[ICard]] = updatedDefenders.map {
       case Some(_) => if (replacedCards.hasNext) Some(replacedCards.next()) else None
-      case None    => if (replacedCards.hasNext) Some(replacedCards.next()) else None
+      case None => if (replacedCards.hasNext) Some(replacedCards.next()) else None
     }
 
     gameCards
       .newPlayerGoalkeeper(defender, Some(goalkeeper))
       .newPlayerDefenders(defender, adjustedDefenders)
       .newPlayerHand(defender, updatedHand)
-  }
-
-  private def extractGoalkeeper(cards: List[ICard]): (ICard, List[ICard]) = {
-    val highestCard = cards.maxBy(_.valueToInt)
-    (highestCard, cards.filterNot(_ == highestCard))
   }
 
   private def adjustGoalkeeper(
@@ -95,5 +90,10 @@ class RefillDefenderField {
       case None =>
         extractGoalkeeper(defenderCards)
     }
+  }
+
+  private def extractGoalkeeper(cards: List[ICard]): (ICard, List[ICard]) = {
+    val highestCard = cards.maxBy(_.valueToInt)
+    (highestCard, cards.filterNot(_ == highestCard))
   }
 }

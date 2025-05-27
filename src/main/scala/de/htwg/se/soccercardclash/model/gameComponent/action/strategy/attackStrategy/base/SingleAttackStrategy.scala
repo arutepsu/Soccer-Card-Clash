@@ -2,11 +2,10 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStr
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.IAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.{BoostManager, IBoostManager, IRevertStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
@@ -74,21 +73,21 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
       (true, newState, comparisonEvent :: additionalEvents)
     } match {
       case Success(result) => result
-      case Failure(_)      => (false, state, Nil)
+      case Failure(_) => (false, state, Nil)
     }
   }
 
 
   protected def processGoalkeeperAttack(
-                                       attacker: IPlayer,
-                                       defender: IPlayer,
-                                       attackerHand: IHandCardsQueue,
-                                       gameCards: IGameCards,
-                                       attackingCard: ICard,
-                                       revertStrategy: IRevertStrategy,
-                                       scores: IScores,
-                                       roles: IRoles
-                                     ): (IGameCards, IRoles, IScores, List[ObservableEvent]) = {
+                                         attacker: IPlayer,
+                                         defender: IPlayer,
+                                         attackerHand: IHandCardsQueue,
+                                         gameCards: IGameCards,
+                                         attackingCard: ICard,
+                                         revertStrategy: IRevertStrategy,
+                                         scores: IScores,
+                                         roles: IRoles
+                                       ): (IGameCards, IRoles, IScores, List[ObservableEvent]) = {
 
     val goalkeeperOpt = gameCards.getPlayerGoalkeeper(defender)
 
@@ -152,12 +151,12 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
 
   protected def attackerWins(
-                            hand: IHandCardsQueue,
-                            gameCards: IGameCards,
-                            attacker: IPlayer,
-                            defender: IPlayer,
-                            cards: Option[ICard]*
-                          ): (IGameCards, ObservableEvent) = {
+                              hand: IHandCardsQueue,
+                              gameCards: IGameCards,
+                              attacker: IPlayer,
+                              defender: IPlayer,
+                              cards: Option[ICard]*
+                            ): (IGameCards, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedGameCards = gameCards.newPlayerHand(attacker, updatedHand)
 
@@ -167,12 +166,12 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
 
   protected def defenderWins(
-                            hand: IHandCardsQueue,
-                            gameCards: IGameCards,
-                            attacker: IPlayer,
-                            defender: IPlayer,
-                            cards: Option[ICard]*
-                          ): (IGameCards, ObservableEvent) = {
+                              hand: IHandCardsQueue,
+                              gameCards: IGameCards,
+                              attacker: IPlayer,
+                              defender: IPlayer,
+                              cards: Option[ICard]*
+                            ): (IGameCards, ObservableEvent) = {
     val updatedHand = cards.flatten.foldLeft(hand)((h, card) => h.addCard(card))
     val updatedGameCards = gameCards.newPlayerHand(defender, updatedHand)
 
@@ -182,16 +181,16 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
 
 
   protected def processDefenderAttack(
-                                     attacker: IPlayer,
-                                     defender: IPlayer,
-                                     attackerHand: IHandCardsQueue,
-                                     defenderHand: IHandCardsQueue,
-                                     attackingCard: ICard,
-                                     defenderCard: Option[ICard],
-                                     gameCards: IGameCards,
-                                     revertStrategy: IRevertStrategy,
-                                     roles: IRoles
-                                   ): (IGameCards, IRoles, List[ObservableEvent]) = {
+                                       attacker: IPlayer,
+                                       defender: IPlayer,
+                                       attackerHand: IHandCardsQueue,
+                                       defenderHand: IHandCardsQueue,
+                                       attackingCard: ICard,
+                                       defenderCard: Option[ICard],
+                                       gameCards: IGameCards,
+                                       revertStrategy: IRevertStrategy,
+                                       roles: IRoles
+                                     ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
     val revertedCard: Option[ICard] = revertStrategy.revertCard(defenderCard)
 
@@ -250,16 +249,16 @@ class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) exte
   }
 
   protected def handleTie(
-                         attacker: IPlayer,
-                         defender: IPlayer,
-                         attackerHand: IHandCardsQueue,
-                         defenderHand: IHandCardsQueue,
-                         attackingCard: ICard,
-                         defenderCard: Option[ICard],
-                         gameCards: IGameCards,
-                         revertStrategy: IRevertStrategy,
-                         roles: IRoles
-                       ): (IGameCards, IRoles, List[ObservableEvent]) = {
+                           attacker: IPlayer,
+                           defender: IPlayer,
+                           attackerHand: IHandCardsQueue,
+                           defenderHand: IHandCardsQueue,
+                           attackingCard: ICard,
+                           defenderCard: Option[ICard],
+                           gameCards: IGameCards,
+                           revertStrategy: IRevertStrategy,
+                           roles: IRoles
+                         ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
     val revertedDefenderCard: Option[ICard] = revertStrategy.revertCard(defenderCard)
 

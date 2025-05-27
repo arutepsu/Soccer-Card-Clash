@@ -7,6 +7,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.factory.{CardDeserializer,
 class HandCardsQueueModule extends AbstractModule {
   
   override def configure(): Unit = {
+    
     bind(classOf[IHandCardsQueueFactory]).to(classOf[HandCardsQueueFactory])
 
     bind(classOf[HandCardsQueueDeserializer])

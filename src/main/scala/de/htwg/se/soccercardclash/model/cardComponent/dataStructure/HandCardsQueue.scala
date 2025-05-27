@@ -3,8 +3,8 @@ package de.htwg.se.soccercardclash.model.cardComponent.dataStructure
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import play.api.libs.json.*
 
-import scala.util.{Failure, Success, Try}
 import scala.collection.mutable
+import scala.util.{Failure, Success, Try}
 import scala.xml.*
 
 trait IHandCardsQueue {
@@ -23,7 +23,9 @@ trait IHandCardsQueue {
   def toList: List[ICard] = cards
 
   def toXml: Elem =
-    <HandCardsQueue>{cards.map(_.toXml)}</HandCardsQueue>
+    <HandCardsQueue>
+      {cards.map(_.toXml)}
+    </HandCardsQueue>
 
   def toJson: JsObject = Json.obj(
     "cards" -> cards.map(_.toJson)
@@ -46,6 +48,7 @@ case class HandCardsQueue(cards: List[ICard]) extends IHandCardsQueue {
     val (remaining, taken) = cards.splitAt(cards.length - n max 0)
     (taken, HandCardsQueue(remaining))
   }
+
   override def swap(index1: Int, index2: Int): Try[IHandCardsQueue] = Try {
     if (index1 < 0 || index2 < 0 || index1 >= cards.length || index2 >= cards.length)
       throw new IndexOutOfBoundsException("Invalid indices for swap.")

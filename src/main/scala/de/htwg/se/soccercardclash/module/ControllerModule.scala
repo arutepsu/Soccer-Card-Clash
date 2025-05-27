@@ -11,12 +11,16 @@ import de.htwg.se.soccercardclash.util.Observable
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.AIPresetRegistry
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 
 class ControllerModule extends AbstractModule {
 
   override def configure(): Unit = {
+    
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
+    
     bind(classOf[Observable]).to(classOf[IController])
+    
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
 
     bind(classOf[IGameService])
@@ -28,10 +32,7 @@ class ControllerModule extends AbstractModule {
     .in(classOf[Singleton])
 
     bind(classOf[IActionManager]).to(classOf[ActionManager])
+    
   }
-  @Provides
-  @Singleton
-  def provideAiRoster(playerFactory: IPlayerFactory): Map[String, IPlayer] = {
-    AIPresetRegistry.registerCoreAIs(playerFactory)
-  }
+
 }

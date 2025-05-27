@@ -2,16 +2,15 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{IHandCardsQueue, IHandCardsQueueFactory}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.StandardRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
 
 class HandCardsFactory(val queueFactory: IHandCardsQueueFactory
-                              ) extends IHandCardsFactory {
+                      ) extends IHandCardsFactory {
 
   override def empty: IHandCards =
     HandCards(Map.empty, queueFactory)
@@ -44,9 +43,9 @@ trait IHandCardsFactory {
 }
 
 case class HandCards(
-                              val playerHands: Map[String, IHandCardsQueue],
-                              handCardsQueueFactory: IHandCardsQueueFactory
-                            ) extends IHandCards {
+                      val playerHands: Map[String, IHandCardsQueue],
+                      handCardsQueueFactory: IHandCardsQueueFactory
+                    ) extends IHandCards {
 
   override def initializePlayerHands(
                                       player1: IPlayer,
@@ -70,11 +69,11 @@ case class HandCards(
   override def getAttackingCard(attacker: IPlayer): ICard =
     getPlayerHand(attacker).toList.last
 
-  override def getPlayerHand(player: IPlayer): IHandCardsQueue =
-    playerHands.getOrElse(player.name, handCardsQueueFactory.create(List()))
-
   override def getDefenderCard(defender: IPlayer): ICard =
     getPlayerHand(defender).toList.last
+
+  override def getPlayerHand(player: IPlayer): IHandCardsQueue =
+    playerHands.getOrElse(player.name, handCardsQueueFactory.create(List()))
 
 }
 

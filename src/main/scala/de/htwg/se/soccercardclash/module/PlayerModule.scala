@@ -5,25 +5,31 @@ import de.htwg.se.soccercardclash.model.cardComponent.factory.{CardDeserializer,
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import com.google.inject.{AbstractModule, Provides}
+import com.google.inject.{AbstractModule, Provides, Singleton}
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{FieldCards, FieldCardsFactory, IFieldCards, IFieldCardsFactory}
+import de.htwg.se.soccercardclash.model.playerComponent.ai.AIPresetRegistry
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 
 class PlayerModule extends AbstractModule {
 
   override def configure(): Unit = {
+    
     bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
+    
     bind(classOf[IFieldCardsFactory]).to(classOf[FieldCardsFactory])
 
     bind(classOf[PlayerDeserializer])
       .toConstructor(classOf[PlayerDeserializer]
-        .getConstructor(classOf[IPlayerFactory], classOf[CardDeserializer]))
+        .getConstructor(classOf[IPlayerFactory], classOf[CardDeserializer], classOf[Map[String, IRandomProvider]]))
     
   }
 
   @Provides
-  def providePlayer(factory: IPlayerFactory): IPlayer =
-    factory.createPlayer("Player1")
-
-  @Provides
-  def provideEmptyPlayerFieldManager(): IFieldCards = FieldCards()
+  @Singleton
+  def provideAiRoster(
+                       playerFactory: IPlayerFactory,
+                       randomProviders: Map[String, IRandomProvider]
+                     ): Map[String, IPlayer] = {
+    AIPresetRegistry.registerCoreAIs(playerFactory, randomProviders)
+  }
 }

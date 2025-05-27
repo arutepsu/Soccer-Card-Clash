@@ -1,17 +1,17 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.types
 
-import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.SmartBoostWeakestDefenderAIStrategy
-import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
-import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-import de.htwg.se.soccercardclash.util.{AIAction, NoOpAIAction}
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.*
+import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
+import de.htwg.se.soccercardclash.util.{AIAction, NoOpAIAction}
+
 import scala.util.Random
 
 
-class MetaAIStrategy(random: Random) extends IAIStrategy {
+class MetaAIStrategy(random: IRandomProvider) extends IAIStrategy {
   private val strategies: Vector[IAIStrategy] = Vector(
     new SmartAttackAIStrategy(),
     new SimpleAttackAIStrategy(),

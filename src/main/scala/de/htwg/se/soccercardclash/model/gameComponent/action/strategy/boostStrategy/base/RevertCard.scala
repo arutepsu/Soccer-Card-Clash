@@ -17,7 +17,7 @@ class RevertCard {
 
     val revertedCard: Option[ICard] = card.map {
       case boosted: BoostedCard => boosted.revertBoost()
-      case other                => other
+      case other => other
     }
 
     val attackerField = dataManager.getPlayerDefenders(attacker)
@@ -25,12 +25,12 @@ class RevertCard {
 
     val updatedAttackerField = attackerField.map {
       case c if c == card => revertedCard
-      case other          => other
+      case other => other
     }
 
     val updatedDefenderField = defenderField.map {
       case c if c == card => revertedCard
-      case other          => other
+      case other => other
     }
 
     dataManager = dataManager

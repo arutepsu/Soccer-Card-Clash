@@ -1,25 +1,22 @@
 package de.htwg.se.soccercardclash.controller.base
 
 import com.google.inject.Inject
-import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.base.Player
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
+import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Player}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
-import de.htwg.se.soccercardclash.util.{EventDispatcher, IGameContextHolder, Observable, ObservableEvent, Observer, UndoManager}
-import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 import de.htwg.se.soccercardclash.util.*
 
 class Controller @Inject()(
                             commandFactory: ICommandFactory,
                             gameService: IGameService,
-                            actionManager: IActionManager,
                             contextHolder: IGameContextHolder
                           ) extends IController{
 

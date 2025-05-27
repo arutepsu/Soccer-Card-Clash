@@ -1,21 +1,22 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.types
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
-import de.htwg.se.soccercardclash.util.NoOpAIAction
-
-import scala.util.Random
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.*
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
-import de.htwg.se.soccercardclash.util.AIAction
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
+import de.htwg.se.soccercardclash.util.{AIAction, NoOpAIAction}
 
-class DefendraStrategy(random: Random) extends IAIStrategy {
+import scala.util.Random
+
+class DefendraStrategy(random: IRandomProvider) extends IAIStrategy {
   protected val strategies: Vector[IAIStrategy] = Vector(
     new SimpleAttackAIStrategy,
     new RandomAttackAIStrategy(random),
     new SmartBoostWeakestDefenderAIStrategy(),
     new SimpleSwapAIStrategy(random)
   )
+
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val actionManager = PlayerActionManager()
     val eligible = strategies.filter {

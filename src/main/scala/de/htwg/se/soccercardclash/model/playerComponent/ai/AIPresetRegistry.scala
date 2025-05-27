@@ -12,24 +12,27 @@ import de.htwg.se.soccercardclash.model.playerComponent.ai.types.{BitstormStrate
 import scala.util.Random
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies.*
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 object AIPresetRegistry {
-
-  def registerCoreAIs(factory: IPlayerFactory): Map[String, IPlayer] = {
+  def registerCoreAIs(
+                       factory: IPlayerFactory,
+                       randomMap: Map[String, IRandomProvider]
+                     ): Map[String, IPlayer] = {
     Map(
       "Taka" -> factory.createAIPlayer(
-        "Taka", new TakaStrategy(new scala.util.Random()),
+        "Taka", new TakaStrategy(randomMap("Taka")),
         Map(Boost -> 2, DoubleAttack -> 1, Swap -> 1)
       ),
       "Bitstorm" -> factory.createAIPlayer(
-        "Bitstorm", new BitstormStrategy(new scala.util.Random()),
+        "Bitstorm", new BitstormStrategy(randomMap("Bitstorm")),
         Map(Boost -> 1, DoubleAttack -> 5, Swap -> 1)
       ),
       "Defendra" -> factory.createAIPlayer(
-        "Defendra", new DefendraStrategy(new scala.util.Random()),
+        "Defendra", new DefendraStrategy(randomMap("Defendra")),
         Map(Boost -> 7, DoubleAttack -> 1, Swap -> 3)
       ),
       "MetaAI" -> factory.createAIPlayer(
-        "MetaAI", new MetaAIStrategy(new scala.util.Random()),
+        "MetaAI", new MetaAIStrategy(randomMap("MetaAI")),
         Map(Boost -> 3, DoubleAttack -> 2, Swap -> 3)
       )
     )
