@@ -2,31 +2,31 @@ package de.htwg.se.soccercardclash.model.gameComponent.service
 
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{IHandCardsQueueFactory, *}
-import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IFieldCardsFactory, IGameCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 import play.api.libs.json.*
 
 import scala.xml.*
 
 @Singleton
-class GameDeserializer @Inject() (
-                                   playerDeserializer: PlayerDeserializer,
-                                   cardDeserializer: CardDeserializer,
-                                   handCardsQueueFactory: IHandCardsQueueFactory,
-                                   handCardsFactory: IHandCardsFactory,
-                                   fieldCardsFactory: IFieldCardsFactory,
-                                   gameCardsFactory: IGameCardsFactory,
-                                   rolesFactory: IRolesFactory,
-                                   scoresFactory: IScoresFactory
-                                 ) extends Deserializer[IGameState] {
+class GameDeserializer @Inject()(
+                                  playerDeserializer: PlayerDeserializer,
+                                  cardDeserializer: CardDeserializer,
+                                  handCardsQueueFactory: IHandCardsQueueFactory,
+                                  handCardsFactory: IHandCardsFactory,
+                                  fieldCardsFactory: IFieldCardsFactory,
+                                  gameCardsFactory: IGameCardsFactory,
+                                  rolesFactory: IRolesFactory,
+                                  scoresFactory: IScoresFactory
+                                ) extends Deserializer[IGameState] {
 
   override def fromXml(xml: Elem): IGameState = {
     def extractInner(tag: String): Elem =
@@ -114,18 +114,18 @@ class GameDeserializer @Inject() (
     val player1Defenders: List[Option[ICard]] =
       (json \ "attackerField").asOpt[List[JsValue]].getOrElse(Nil)
         .map {
-          case JsNull        => None
+          case JsNull => None
           case obj: JsObject => Some(cardDeserializer.fromJson(obj))
-          case other         => throw new IllegalArgumentException(s"Invalid card JSON: $other")
+          case other => throw new IllegalArgumentException(s"Invalid card JSON: $other")
         }
         .padTo(3, None)
 
     val player2Defenders: List[Option[ICard]] =
       (json \ "defenderField").asOpt[List[JsValue]].getOrElse(Nil)
         .map {
-          case JsNull        => None
+          case JsNull => None
           case obj: JsObject => Some(cardDeserializer.fromJson(obj))
-          case other         => throw new IllegalArgumentException(s"Invalid card JSON: $other")
+          case other => throw new IllegalArgumentException(s"Invalid card JSON: $other")
         }
         .padTo(3, None)
 

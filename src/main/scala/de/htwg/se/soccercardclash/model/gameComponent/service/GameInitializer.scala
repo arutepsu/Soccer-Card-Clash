@@ -7,11 +7,11 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameInitializer
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
@@ -26,9 +26,12 @@ import scala.xml.*
 
 trait IGameInitializer {
   def createGameState(playerName1: String, playerName2: String): IGameState
+
   def initializeFromState(state: IGameState): IGameState
+
   def createGameStateWithAI(humanName: String, aiPlayer: IPlayer): IGameState
 }
+
 class GameInitializer @Inject()(
                                  playerFactory: IPlayerFactory,
                                  deckFactory: IDeckFactory,
@@ -67,6 +70,8 @@ class GameInitializer @Inject()(
     )
   }
 
+  private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) =
+    (playerFactory.createPlayer(playerName1), playerFactory.createPlayer(playerName2))
 
   override def initializeFromState(state: IGameState): IGameState = {
     val p1 = state.getRoles.attacker
@@ -121,11 +126,6 @@ class GameInitializer @Inject()(
 
     GameState(gameCards, roles, scores)
   }
-
-
-
-  private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) =
-    (playerFactory.createPlayer(playerName1), playerFactory.createPlayer(playerName2))
 
 
 }

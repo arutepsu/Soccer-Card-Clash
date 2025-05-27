@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.{IHandCardsQueue, *}
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
 import scala.collection.mutable
@@ -41,7 +41,7 @@ class RefillField {
       case (0, 0) => 4
       case (1, _) => 2
       case (2, _) => 1
-      case _      => 0
+      case _ => 0
     }
 
     if cardsNeeded > 0 then

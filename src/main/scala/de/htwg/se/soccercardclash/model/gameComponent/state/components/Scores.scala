@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
 import com.google.inject.{Inject, Singleton}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.IScoringStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.StandardScoring
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.*
@@ -13,6 +13,7 @@ import scala.xml.Elem
 
 trait IScoresFactory {
   def create(players: Seq[IPlayer]): IScores
+
   def createWithScores(playerScores: Map[IPlayer, Int]): IScores
 }
 
@@ -46,17 +47,17 @@ case class Scores(
     (updated, events)
   }
 
-  override def updateScoringStrategy(strategy: IScoringStrategy): IScores =
-    this.copy(scoringStrategy = strategy)
-
-  override def newScore(player: IPlayer, score: Int): IScores =
-    this.copy(playerToScore = playerToScore.updated(player, score))
-  
   private def checkForWinner(): List[StateEvent] = {
     playerToScore.collectFirst {
       case (player, score) if score >= 3 => StateEvent.GameOver(player)
     }.toList
   }
+
+  override def updateScoringStrategy(strategy: IScoringStrategy): IScores =
+    this.copy(scoringStrategy = strategy)
+
+  override def newScore(player: IPlayer, score: Int): IScores =
+    this.copy(playerToScore = playerToScore.updated(player, score))
 }
 
 trait IScores {
@@ -67,5 +68,5 @@ trait IScores {
   def scoreGoal(player: IPlayer): (IScores, List[StateEvent])
 
   def newScore(player: IPlayer, score: Int): IScores
-  
+
 }

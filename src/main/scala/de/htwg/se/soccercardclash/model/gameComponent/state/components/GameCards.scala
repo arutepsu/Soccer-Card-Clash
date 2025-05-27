@@ -3,11 +3,10 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.components
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.StandardRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
@@ -32,7 +31,7 @@ trait IGameCardsFactory {
 class GameCardsFactory @Inject()(
                                   handCardsFactory: IHandCardsFactory,
                                   fieldCardsFactory: IFieldCardsFactory
-                                  ) extends IGameCardsFactory {
+                                ) extends IGameCardsFactory {
 
   override def create(attacker: IPlayer, defender: IPlayer): IGameCards = {
     val handManager = handCardsFactory.empty
@@ -80,10 +79,10 @@ class GameCardsFactory @Inject()(
 }
 
 case class GameCards(
-                        handCards: IHandCards,
-                        fieldCards: IFieldCards,
-                        refillStrategy: IRefillStrategy = new StandardRefillStrategy()
-                      ) extends IGameCards {
+                      handCards: IHandCards,
+                      fieldCards: IFieldCards,
+                      refillStrategy: IRefillStrategy = new StandardRefillStrategy()
+                    ) extends IGameCards {
   override def getPlayerHand(player: IPlayer): IHandCardsQueue =
     handCards.getPlayerHand(player)
 
@@ -125,6 +124,7 @@ case class GameCards(
     val updated2 = refillStrategy.refillField(updated1, defender, handCards.getPlayerHand(defender))
     updated2
   }
+
   override def refillDefenderField(defender: IPlayer): IGameCards =
     refillStrategy.refillDefenderField(this, defender)
 
@@ -168,5 +168,5 @@ trait IGameCards {
   def newRefillStrategy(strategy: IRefillStrategy): IGameCards
 
   def newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IGameCards
-  
+
 }

@@ -2,9 +2,9 @@ package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.StandardRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 
@@ -25,11 +25,11 @@ trait IFieldCardsFactory {
 }
 
 case class FieldCards(
-                               playerFields: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List()),
-                               goalkeepers: Map[IPlayer, Option[ICard]] = Map().withDefaultValue(None),
-                               defenders: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List())
-                             ) extends IFieldCards {
-  
+                       playerFields: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List()),
+                       goalkeepers: Map[IPlayer, Option[ICard]] = Map().withDefaultValue(None),
+                       defenders: Map[IPlayer, List[Option[ICard]]] = Map().withDefaultValue(List())
+                     ) extends IFieldCards {
+
   override def newPlayerDefenders(player: IPlayer, newField: List[Option[ICard]]): FieldCards = {
     copy(defenders = defenders.updated(player, newField))
   }
@@ -46,7 +46,7 @@ case class FieldCards(
 
   override def removeDefenderCard(currentDefender: IPlayer, defenderCardOpt: Option[ICard]): FieldCards = {
     val original = defenders(currentDefender)
-    
+
     val updated = original.zipWithIndex.map {
       case (Some(c), i) if defenderCardOpt.contains(c) => None
       case (other, _) => other

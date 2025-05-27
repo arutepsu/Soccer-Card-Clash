@@ -1,16 +1,18 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
-import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
+import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.StandardRefillStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.cardComponent.ICard
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo, any}
 
 class GameCardsSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -79,12 +81,105 @@ class GameCardsSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val attacker = mock[IPlayer]
       val attackerHand = mock[IHandCardsQueue]
 
-      // act
       val result = gameCards.initializeFields(attacker, mock[IPlayer])
 
-      // assert
       verify(customStrategy).refillField(gameCards, attacker, handCards.getPlayerHand(attacker))
     }
 
+  }
+  "GameCards" should {
+
+    val player = mock[IPlayer]
+    val otherPlayer = mock[IPlayer]
+
+    val mockHandCards = mock[IHandCards]
+    val mockFieldCards = mock[IFieldCards]
+    val mockRefillStrategy = mock[IRefillStrategy]
+    val newHand = mock[IHandCardsQueue]
+    val defenderCard = mock[ICard]
+    val goalkeeper = mock[ICard]
+
+    "replace the hand for a player with newPlayerHand" in {
+      val updatedHandCards = mock[IHandCards]
+      when(mockHandCards.newPlayerHand(player, newHand)).thenReturn(updatedHandCards)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val updated = gameCards.newPlayerHand(player, newHand)
+
+      updated.getPlayerHand(player) shouldBe updatedHandCards.getPlayerHand(player)
+    }
+
+    "get defender card at specific index" in {
+      when(mockFieldCards.getDefenderCard(player, 1)).thenReturn(Some(defenderCard))
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      gameCards.getDefenderCard(player, 1) shouldBe Some(defenderCard)
+    }
+
+    "set new defenders for a player" in {
+      val updatedField = mock[IFieldCards]
+      val defenders = List(Some(defenderCard))
+
+      when(mockFieldCards.newPlayerDefenders(player, defenders)).thenReturn(updatedField)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val updated = gameCards.newPlayerDefenders(player, defenders)
+
+      updated.getPlayerDefenders(player) shouldBe updatedField.getPlayerDefenders(player)
+    }
+
+    "remove a specific defender card" in {
+      val updatedField = mock[IFieldCards]
+      when(mockFieldCards.removeDefenderCard(player, Some(defenderCard))).thenReturn(updatedField)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val updated = gameCards.removeDefenderCard(player, Some(defenderCard))
+
+      updated.getPlayerDefenders(player) shouldBe updatedField.getPlayerDefenders(player)
+    }
+
+    "remove a goalkeeper for defender" in {
+      val updatedField = mock[IFieldCards]
+      when(mockFieldCards.removeDefenderGoalkeeper(player)).thenReturn(updatedField)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val updated = gameCards.removeDefenderGoalkeeper(player)
+
+      updated.getPlayerGoalkeeper(player) shouldBe updatedField.getPlayerGoalkeeper(player)
+    }
+
+    "check if all defenders are beaten" in {
+      when(mockFieldCards.allDefendersBeaten(player)).thenReturn(true)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      gameCards.allDefendersBeaten(player) shouldBe true
+    }
+
+    "get defender card at index" in {
+      when(mockFieldCards.getDefenderCard(player, 0)).thenReturn(Some(defenderCard))
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      gameCards.getDefenderCardAt(player, 0) shouldBe Some(defenderCard)
+    }
+
+    "refill defender field" in {
+      val updatedGameCards = mock[IGameCards]
+      when(mockRefillStrategy.refillDefenderField(any[IGameCards], eqTo(player))).thenReturn(updatedGameCards)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val result = gameCards.refillDefenderField(player)
+
+      result shouldBe updatedGameCards
+    }
+
+    "assign a new goalkeeper for attacker" in {
+      val updatedField = mock[IFieldCards]
+      when(mockFieldCards.newGoalkeeperForAttacker(player, goalkeeper)).thenReturn(updatedField)
+
+      val gameCards = GameCards(mockHandCards, mockFieldCards, mockRefillStrategy)
+      val updated = gameCards.newGoalkeeperForAttacker(player, goalkeeper)
+
+      updated.getPlayerGoalkeeper(player) shouldBe updatedField.getPlayerGoalkeeper(player)
+    }
   }
 }

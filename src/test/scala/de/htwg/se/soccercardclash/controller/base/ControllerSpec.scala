@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.controller.base
 
-import com.sun.net.httpserver.Authenticator.Failure
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
@@ -20,19 +19,19 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.*
+import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-import scala.util.{Success, Try}
+import scala.util.{Success, Try, Failure}
 
 class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
   val mockCommandFactory = mock[ICommandFactory]
   val mockGameService = mock[IGameService]
-  val mockActionManager = mock[IActionManager]
   val mockContextHolder = mock[IGameContextHolder]
 
-  val controller = new Controller(mockCommandFactory, mockGameService, mockActionManager, mockContextHolder)
+  val controller = new Controller(mockCommandFactory, mockGameService, mockContextHolder)
 
   "singleAttack" should "run the correct command and update context" in {
     val initialState = mock[IGameState]
@@ -60,7 +59,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
     val result = CommandResult(success = true, updatedState, List(GameActionEvent.DoubleAttack))
 
-    // Setup mocks
     when(mockCommandFactory.createDoubleAttackCommand(1)).thenReturn(mockCommand)
     when(mockCommand.execute(initialState)).thenReturn(result)
 
@@ -79,7 +77,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     val mockCommand = mock[ICommand]
     val result = CommandResult(success = false, state, Nil)
 
-    // Prepare mocks
     when(mockCommandFactory.createDoubleAttackCommand(1)).thenReturn(mockCommand)
     when(mockCommand.execute(state)).thenReturn(result)
     when(state.getRoles).thenReturn(Roles(attacker, mock[IPlayer]))
@@ -89,7 +86,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(!success)
     assert(newCtx == ctx)
 
-    // You could verify fallback behavior here with a spy on EventDispatcher if needed
   }
 
   "createGame" should "set context with new game" in {
@@ -108,7 +104,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     controller.createGameWithAI("Alice", "Taka")
 
     verify(mockContextHolder).set(argThat(_.state == state))
-    // Would ideally verify dispatch of AIEvent.NextAIEvent
   }
 
   "undo" should "update context state and dispatch Undo event" in {
@@ -124,7 +119,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
     assert(updatedCtx.state eq newState)
     verify(mockContextHolder).set(updatedCtx)
-    // Optional: verify EventDispatcher.dispatch(controller, List(GameActionEvent.Undo, StateEvent.SomeEvent))
   }
 
   "redo" should "update context state and dispatch Redo event" in {
@@ -140,7 +134,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
     assert(updatedCtx.state eq newState)
     verify(mockContextHolder).set(updatedCtx)
-    // Optional: verify EventDispatcher.dispatch(controller, List(GameActionEvent.Redo, StateEvent.AnotherEvent))
   }
 
   "regularSwap" should "run the correct command and update context" in {
@@ -178,7 +171,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(!success)
     assert(newCtx == ctx)
 
-    // Optional: verify fallback event StateEvent.NoSwapsEvent(attacker) dispatched
   }
 
   "reverseSwap" should "run the correct command and update context" in {
@@ -216,7 +208,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(!success)
     assert(newCtx == ctx)
 
-    // Optional: verify fallback event StateEvent.NoSwapsEvent(attacker) dispatched
   }
 
   "boostDefender" should "run the correct command and update context" in {
@@ -255,7 +246,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(!success)
     assert(newCtx == ctx)
 
-    // Optional: verify fallback event: StateEvent.NoBoostsEvent(attacker)
   }
 
   "boostGoalkeeper" should "run the correct command and update context" in {
@@ -292,18 +282,25 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(!success)
     assert(newCtx == ctx)
 
-    // Optional: verify fallback event: StateEvent.NoBoostsEvent(attacker)
   }
 
-  "loadGame" should "load state and update context when successful" in {
-    val state = mock[IGameState]
-    when(mockGameService.loadGame("game1")).thenReturn(Success(state))
 
-    val result = controller.loadGame("game1")
+  "loadGame" should "return false and not update context when game loading fails" in {
+    val mockGameService = mock[IGameService]
+    val mockContextHolder = mock[IGameContextHolder]
+    val mockCommandFactory = mock[ICommandFactory]
+    val controller = new Controller(mockCommandFactory, mockGameService, mockContextHolder)
 
-    assert(result)
-    verify(mockContextHolder).set(argThat(_.state eq state))
+    when(mockGameService.loadGame("invalidGame"))
+      .thenReturn(Failure(new Exception("Load failed")): Try[IGameState])
+
+    val result = controller.loadGame("invalidGame")
+
+    result shouldBe false
+    verify(mockContextHolder, never()).set(any[GameContext])
   }
+
+
 
   "saveGame" should "return true and dispatch SaveGame event if successful" in {
     val state = mock[IGameState]
@@ -314,20 +311,17 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     val result = controller.saveGame(ctx)
 
     assert(result)
-    // Optional: verify EventDispatcher.dispatchSingle(controller, GameActionEvent.SaveGame)
   }
 
   "saveGame" should "return false and not dispatch event if unsuccessful" in {
     val state = mock[IGameState]
     val ctx = GameContext(state, new UndoManager)
 
-    // Correct way to simulate failure
     when(mockGameService.saveGame(state)).thenReturn(Try(throw new Exception("fail")))
 
     val result = controller.saveGame(ctx)
 
     assert(!result)
-    // Optional: verify EventDispatcher.dispatchSingle was NOT called
   }
 
 
@@ -447,7 +441,6 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(result._1 eq ctx)
     assert(result._2)
   }
-
 
 }
 

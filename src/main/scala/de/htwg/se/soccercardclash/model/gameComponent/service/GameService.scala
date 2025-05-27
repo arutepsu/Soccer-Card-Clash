@@ -1,21 +1,21 @@
 package de.htwg.se.soccercardclash.model.gameComponent.service
 
+import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence, IGameService}
 import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence}
-import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.playerComponent.ai.types.MetaAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.{SimpleAttackAIStrategy, SmartAttackAIStrategy}
+import de.htwg.se.soccercardclash.model.playerComponent.ai.types.MetaAIStrategy
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Random, Try}
-import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+
 class GameService @Inject()(
                              initializer: IGameInitializer,
                              persistence: IGamePersistence,
                              aiRoster: Map[String, IPlayer]
-                           ) extends IGameService{
+                           ) extends IGameService {
   def createNewGame(player1: String, player2: String): IGameState =
     initializer.createGameState(player1, player2)
 
@@ -26,7 +26,6 @@ class GameService @Inject()(
     )
     initializer.createGameStateWithAI(humanPlayerName, aiPlayer)
   }
-
 
 
   def loadGame(file: String): Try[IGameState] = {
@@ -42,9 +41,13 @@ class GameService @Inject()(
   def saveGame(state: IGameState): Try[Unit] =
     persistence.saveGame(state)
 }
+
 trait IGameService {
   def createNewGame(player1: String, player2: String): IGameState
+
   def createNewGameWithAI(humanPlayerName: String, aiName: String): IGameState
+
   def loadGame(file: String): Try[IGameState]
+
   def saveGame(state: IGameState): Try[Unit]
 }

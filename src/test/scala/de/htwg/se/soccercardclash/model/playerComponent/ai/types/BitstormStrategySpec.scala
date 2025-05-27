@@ -1,46 +1,42 @@
 package de.htwg.se.soccercardclash.model.playerComponent.ai.types
 
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
+import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.*
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.{NoOpAIAction, AIAction}
-import org.mockito.Mockito.*
-import org.mockito.ArgumentMatchers.any
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.mockito.MockitoSugar
-import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
-import java.util.Random
+import de.htwg.se.soccercardclash.util.*
 
 class BitstormStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
-  class FixedRandom(indexToReturn: Int) extends Random {
-    override def nextInt(bound: Int): Int = indexToReturn
-  }
 
   "BitstormStrategy" should {
-
-    "delegate decision to a randomly selected strategy" in {
-      val mockCtx = mock[GameContext]
+    "delegate to the strategy returned by random index" in {
+      val mockContext = mock[GameContext]
       val mockPlayer = mock[IPlayer]
+      val mockRandom = mock[IRandomProvider]
 
-      val mockAggressive = mock[IAIStrategy]
-      val mockBoost = mock[IAIStrategy]
-      val mockSwap = mock[IAIStrategy]
+      val mockStrategy1 = mock[IAIStrategy]
+      val mockStrategy2 = mock[IAIStrategy]
+      val mockStrategy3 = mock[IAIStrategy]
 
-      val expectedAction = NoOpAIAction
-      when(mockBoost.decideAction(any(), any())).thenReturn(expectedAction)
+      val mockAction = mock[AIAction]
 
-      val fakeStrategies = Vector(mockAggressive, mockBoost, mockSwap)
-      val fixedRandom = new FixedRandom(1) // always returns index 1
-
-      // Create testable version of BitstormStrategy with injected mocks
-      val strategy = new BitstormStrategy(fixedRandom) {
-        override val strategies: Vector[IAIStrategy] = fakeStrategies
+      val strategy = new BitstormStrategy(mockRandom) {
+        override protected val strategies: Vector[IAIStrategy] =
+          Vector(mockStrategy1, mockStrategy2, mockStrategy3)
       }
 
-      val result = strategy.decideAction(mockCtx, mockPlayer)
+      when(mockRandom.nextInt(3)).thenReturn(1)
+      when(mockStrategy2.decideAction(mockContext, mockPlayer)).thenReturn(mockAction)
 
-      result shouldBe expectedAction
-      verify(mockBoost).decideAction(mockCtx, mockPlayer)
+      val result = strategy.decideAction(mockContext, mockPlayer)
+      result shouldBe mockAction
+
+      verify(mockRandom).nextInt(3)
+      verify(mockStrategy2).decideAction(mockContext, mockPlayer)
     }
   }
 }

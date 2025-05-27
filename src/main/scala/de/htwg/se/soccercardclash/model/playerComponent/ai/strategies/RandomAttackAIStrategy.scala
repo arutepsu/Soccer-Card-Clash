@@ -6,10 +6,12 @@ import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 import de.htwg.se.soccercardclash.util.{AIAction, DoubleAttackAIAction, NoOpAIAction, SingleAttackAIAction}
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
+import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
+
 import scala.util.Random
 
 
-class RandomAttackAIStrategy(random: Random) extends IAIStrategy {
+class RandomAttackAIStrategy(random: IRandomProvider) extends IAIStrategy {
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
     val dataManager = state.getGameCards

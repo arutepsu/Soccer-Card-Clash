@@ -3,9 +3,8 @@ package de.htwg.se.soccercardclash.model.cardComponent.factory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Suit.Suit
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value.Value
-import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.*
-import de.htwg.se.soccercardclash.model.cardComponent.base.components.{Suit, Value}
+import de.htwg.se.soccercardclash.model.cardComponent.base.types.*
 import de.htwg.se.soccercardclash.util.Deserializer
 import play.api.libs.json.*
 
@@ -15,7 +14,7 @@ import scala.xml.*
 
 
 @Singleton
-class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deserializer[ICard]{
+class CardDeserializer @Inject()(val cardFactory: ICardFactory) extends Deserializer[ICard] {
 
   override def fromXml(xml: Elem): ICard = {
     val rawSuitText = (xml \ "suit").text
@@ -38,9 +37,15 @@ class CardDeserializer @Inject() (val cardFactory: ICardFactory) extends Deseria
       cardType match {
         case "Regular" => cardFactory.createCard(value, suit)
         case "Boosted" =>
-          val additionalValue = Try((xml \ "additionalValue").text.trim.toInt).getOrElse(0)
-          val baseCard = cardFactory.createCard(value, suit)
-          BoostedCard(baseCard.asInstanceOf[RegularCard], additionalValue)
+          val additionalValue = Try((xml \ "additionalValue").text.trim.toInt)
+            .getOrElse(throw new IllegalArgumentException("Missing or invalid <additionalValue> for Boosted card"))
+
+          cardFactory.createCard(value, suit) match {
+            case regular: RegularCard => BoostedCard(regular, additionalValue)
+            case other =>
+              throw new IllegalStateException(s"Expected RegularCard, but got: ${other.getClass.getSimpleName}")
+          }
+
         case _ =>
           throw new IllegalArgumentException(s"Unknown card type: $cardType")
       }
