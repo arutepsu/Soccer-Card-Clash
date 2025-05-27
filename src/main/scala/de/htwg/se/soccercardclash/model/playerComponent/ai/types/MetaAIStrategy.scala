@@ -12,7 +12,7 @@ import scala.util.Random
 
 
 class MetaAIStrategy(random: IRandomProvider) extends IAIStrategy {
-  private val strategies: Vector[IAIStrategy] = Vector(
+  protected val strategies: Vector[IAIStrategy] = Vector(
     new SmartAttackAIStrategy(),
     new SimpleAttackAIStrategy(),
     new RandomAttackAIStrategy(random),

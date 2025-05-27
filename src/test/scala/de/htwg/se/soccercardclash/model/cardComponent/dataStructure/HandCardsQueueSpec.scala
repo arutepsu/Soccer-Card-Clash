@@ -82,4 +82,55 @@ class HandCardsQueueSpec extends AnyWordSpec with Matchers with MockitoSugar {
       (json \ "cards")(0) shouldBe Json.obj("mock" -> "card")
     }
   }
+  "split correctly with splitAtEnd" in {
+    val card1 = mock[ICard]
+    val card2 = mock[ICard]
+    val card3 = mock[ICard]
+
+    val queue = new HandCardsQueue(List(card1, card2, card3))
+    val (taken, remainingQueue) = queue.splitAtEnd(2)
+
+    taken should contain inOrder(card2, card3)
+    remainingQueue.toList should contain only card1
+  }
+
+  "return empty taken and full queue when splitAtEnd with 0" in {
+    val card1 = mock[ICard]
+    val card2 = mock[ICard]
+
+    val queue = new HandCardsQueue(List(card1, card2))
+    val (taken, remainingQueue) = queue.splitAtEnd(0)
+
+    taken shouldBe empty
+    remainingQueue.toList should contain inOrder(card1, card2)
+  }
+
+  "swap two valid indices correctly" in {
+    val card1 = mock[ICard]
+    val card2 = mock[ICard]
+    val card3 = mock[ICard]
+
+    val queue = new HandCardsQueue(List(card1, card2, card3))
+    val result = queue.swap(0, 2)
+
+    result match {
+      case Success(swappedQueue) =>
+        swappedQueue.toList should contain inOrder(card3, card2, card1)
+      case Failure(_) =>
+        fail("Expected successful swap")
+    }
+  }
+
+  "fail to swap with invalid indices" in {
+    val card1 = mock[ICard]
+    val card2 = mock[ICard]
+
+    val queue = new HandCardsQueue(List(card1, card2))
+    val result = queue.swap(-1, 5)
+
+    result should matchPattern {
+      case Failure(ex: IndexOutOfBoundsException) if ex.getMessage.contains("Invalid indices") =>
+    }
+  }
+
 }

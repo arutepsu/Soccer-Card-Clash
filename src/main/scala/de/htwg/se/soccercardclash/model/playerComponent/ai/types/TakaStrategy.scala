@@ -11,7 +11,7 @@ import scala.util.Random
 
 
 class TakaStrategy(random: IRandomProvider) extends IAIStrategy {
-  private val strategies: Vector[IAIStrategy] = Vector(
+  protected val strategies: Vector[IAIStrategy] = Vector(
     new SmartAttackAIStrategy(),
     new SmartBoostWeakestDefenderAIStrategy(),
     new SimpleSwapAIStrategy(random)
