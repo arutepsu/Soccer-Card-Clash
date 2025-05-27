@@ -11,12 +11,14 @@
 ![Repo size](https://img.shields.io/github/repo-size/arutepsu/Soccer-Card-Clash?color=orange)
 ![License](https://img.shields.io/github/license/arutepsu/Soccer-Card-Clash?color=lightgrey)
 ---
-<h1 style="text-align: center;">Soccer Card Clash</h1>
+# Soccer Card Clash
+
 An unofficial Scala version of the Soccer Card Clash game for Software Engineering classes at 
 Konstanz University of Applied Sciences.
 
 * 🎮 Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
 * 🧠 Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
+
 ---
 ## ⚽ Game Overview
 * 🃏 Each player controls a hand of soccer-themed player cards.
@@ -34,6 +36,23 @@ Konstanz University of Applied Sciences.
 </div>
 
 ---
+## ✨ Features
+#### 🎮 Singleplayer Mode
+Play against various AI opponents, each with its own unique strategy and behavior.
+
+#### 🧠 Multiple AI Strategies
+Challenge AIs with different difficulty levels and tactics — from cautious defenders to aggressive attackers.
+
+#### 🤝 Multiplayer Mode
+Play with friends in local multiplayer matches.
+
+#### 🎨 Unique Cyberpunk Design
+Dive into a cyberpunk-inspired world with bold visuals, neon effects, and a futuristic interface.
+
+#### ⚔️ Strategic Gameplay
+Mix and match actions like Swap, Boost, and Double Attack to outsmart your opponent.
+
+--- 
 
 ## 🧱 Architecture
 This game is built using the Model-View-Controller (MVC) architectural pattern, ensuring a clean separation of concerns and modularity.
