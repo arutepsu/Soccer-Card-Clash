@@ -27,18 +27,4 @@ class Observable {
     }
   }
 
-
-
-  def removeAllObservers(): Unit = {
-    subscribers = Vector()
-  }
-
-  def printAllObservers(): Unit = {
-    if (subscribers.isEmpty) {
-    } else {
-      subscribers.zipWithIndex.foreach { case (observer, index) =>
-        println(s"[$index] ${observer.getClass.getSimpleName} @ ${observer.hashCode()}")
-      }
-    }
-  }
 }
