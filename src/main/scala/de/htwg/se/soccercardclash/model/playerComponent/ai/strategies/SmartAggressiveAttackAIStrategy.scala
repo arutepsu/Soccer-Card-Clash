@@ -14,7 +14,7 @@ import scala.util.Random
 import de.htwg.se.soccercardclash.util.*
 
 class SmartAggressiveAttackAIStrategy extends IAIStrategy {
-  private val playerActionManager = PlayerActionManager()
+  protected val playerActionManager = PlayerActionManager()
 
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
