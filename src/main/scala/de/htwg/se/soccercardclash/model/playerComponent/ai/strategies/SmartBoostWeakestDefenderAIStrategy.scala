@@ -13,7 +13,7 @@ import de.htwg.se.soccercardclash.util.*
 import scala.util.Random
 
 class SmartBoostWeakestDefenderAIStrategy() extends IAIStrategy {
-  private val playerActionManager = PlayerActionManager()
+  protected val playerActionManager = PlayerActionManager()
 
   override def decideAction(ctx: GameContext, player: IPlayer): AIAction = {
     val state = ctx.state
