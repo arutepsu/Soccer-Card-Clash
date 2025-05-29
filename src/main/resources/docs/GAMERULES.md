@@ -7,6 +7,8 @@
 - 🔄 Players alternate roles each round.
 - 🃏 The **attacker** always uses the last card(s) in hand.
 - 🛡️ The **defender** does not act — only endures the attack.
+- 🆚 Cards are compared — the stronger card wins.
+- ⚠️ Exception: 2 can beat an Ace to maintain fairness.
 - 🚫 You can't attack the goalkeeper until all defenders are defeated.
 - 🥅 Beating the goalkeeper scores a goal and switches roles.
 

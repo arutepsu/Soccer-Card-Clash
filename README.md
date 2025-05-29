@@ -37,7 +37,7 @@ Konstanz University of Applied Sciences.
 
 ---
 ## ✨ Features
-### 🎮 Singleplayer Mode
+### 🤖 Singleplayer Mode
 Play against various AI opponents, each with its own unique strategy and behavior.
 
 ### 🧠 Multiple AI Strategies

@@ -31,6 +31,8 @@ object GameInfoPaneFactory {
           "- Each turn, one player is the attacker, and the other is the defender.\n" +
             "- The attacker always uses the last card in their hand to attack.\n" +
             "- The defender cannot act — they only wait to see the outcome of the attack.\n" +
+            "- Cards are compared — the stronger card wins.\n"+
+            "- Exception: 2 can beat an Ace to maintain fairness.\n" +
             "- You cannot attack the goalkeeper until all defender cards have been beaten.\n" +
             "- After the goalkeeper is beaten, a goal is scored, and roles are switched.\n\n"
         ) {
