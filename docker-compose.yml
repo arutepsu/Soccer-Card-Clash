@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  soccer-card-clash:
+    build: .
+    environment:
+      - DISPLAY=172.20.32.1
+      - LIBGL_ALWAYS_INDIRECT=true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    network_mode: host
+    stdin_open: true
+    tty: true
+    command: [ "java", "-jar", "target/scala-3.4.1/SoccerCardClash.jar" ]

@@ -31,7 +31,7 @@ setJavaFXVersion := {
 
 lazy val root = project
   .in(file("."))
-  .enablePlugins(CoverallsPlugin)
+  .enablePlugins(CoverallsPlugin, AssemblyPlugin)
   .settings(
     name := "Soccer Card Clash",
     version := "0.1.0-SNAPSHOT",
@@ -61,3 +61,13 @@ lazy val root = project
 
     addCommandAlias("fullTest", ";clean;coverage;test;coverageReport;coverageAggregate;coveralls")
   )
+
+import sbtassembly.AssemblyPlugin.autoImport._
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "substance", _*) => MergeStrategy.discard
+  case PathList("META-INF", "versions", _*)  => MergeStrategy.first
+  case PathList("META-INF", "services", _*)  => MergeStrategy.filterDistinctLines
+  case "module-info.class"                   => MergeStrategy.discard
+  case _                                     => MergeStrategy.first
+}
