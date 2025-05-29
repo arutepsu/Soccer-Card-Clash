@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.model.playerComponent.ai.strategies
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.state.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles}

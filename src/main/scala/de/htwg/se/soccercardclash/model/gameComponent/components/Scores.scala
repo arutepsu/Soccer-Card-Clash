@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
 import com.google.inject.{Inject, Singleton}
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.IScoringStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.StandardScoring
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.*

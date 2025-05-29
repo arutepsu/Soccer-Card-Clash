@@ -1,7 +1,6 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent
 
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
-
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import scala.util.Try
 
 trait IFileIO {

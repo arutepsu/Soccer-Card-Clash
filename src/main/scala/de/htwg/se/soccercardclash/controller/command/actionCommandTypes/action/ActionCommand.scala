@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action
 
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 

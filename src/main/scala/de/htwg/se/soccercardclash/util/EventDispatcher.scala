@@ -1,7 +1,8 @@
 package de.htwg.se.soccercardclash.util
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
+
 object EventDispatcher {
 
   def dispatch(controller: IController, events: List[ObservableEvent]): Unit =

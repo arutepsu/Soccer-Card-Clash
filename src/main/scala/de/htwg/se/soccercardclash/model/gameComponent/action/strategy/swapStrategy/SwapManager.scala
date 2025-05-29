@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy
 
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent
 
 import javax.inject.{Inject, Singleton}

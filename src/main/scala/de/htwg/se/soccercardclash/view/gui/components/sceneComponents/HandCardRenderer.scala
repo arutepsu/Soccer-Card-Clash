@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.view.gui.components.cardView.HandCardFactory
 import scalafx.application.Platform

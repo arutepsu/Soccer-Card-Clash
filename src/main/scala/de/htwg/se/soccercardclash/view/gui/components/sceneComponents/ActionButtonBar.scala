@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
 import scalafx.scene.layout.VBox
 import scalafx.geometry.Pos
@@ -8,7 +9,6 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.Button
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.{GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.actionButton.{ActionButtonFactory, DoubleButton, SingleButton}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{DialogFactory, PauseDialog}

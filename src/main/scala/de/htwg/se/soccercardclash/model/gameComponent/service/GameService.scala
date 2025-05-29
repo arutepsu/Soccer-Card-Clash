@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent.service
 
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.{IGameInitializer, IGamePersistence, IGameService}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.{SimpleAttackAIStrategy, SmartAttackAIStrategy}

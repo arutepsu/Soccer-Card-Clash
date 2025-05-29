@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.util.{GameActionEvent, GlobalObservable, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.dialog.DialogFactory
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry

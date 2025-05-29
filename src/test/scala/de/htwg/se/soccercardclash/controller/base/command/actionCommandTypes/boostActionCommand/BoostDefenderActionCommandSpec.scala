@@ -9,12 +9,12 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackAc
 
 import scala.util.{Failure, Success, Try}
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.controller.command.CommandResult
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.BoostDefenderActionCommand
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
 
 class BoostDefenderActionCommandSpec extends AnyFlatSpec with Matchers {

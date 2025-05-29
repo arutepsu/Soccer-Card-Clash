@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.fileIOComponent.base.FileIO
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.should.Matchers

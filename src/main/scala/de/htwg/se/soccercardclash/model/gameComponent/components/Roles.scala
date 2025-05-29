@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.components
 
 import com.google.inject.Inject
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
 import play.api.libs.json.*

@@ -8,11 +8,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackActionCommands.SingleAttackActionCommand
 import scala.util.{Failure, Success, Try}
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.ObservableEvent
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.controller.command.CommandResult
 import de.htwg.se.soccercardclash.controller.command.ICommand
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
 
 class SingleAttackActionCommandSpec extends AnyFlatSpec with Matchers {

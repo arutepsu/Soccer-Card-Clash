@@ -4,9 +4,9 @@ package de.htwg.se.soccercardclash.model.playerComponent.ai.strategies
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.PlayerActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{GameCards, IGameCards}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies

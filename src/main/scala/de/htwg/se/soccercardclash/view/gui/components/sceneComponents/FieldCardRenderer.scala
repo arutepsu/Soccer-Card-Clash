@@ -1,9 +1,9 @@
 package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import javafx.application.Platform
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.Includes.*
 import scalafx.animation.*
 import scalafx.geometry.{Insets, Pos}

@@ -7,7 +7,7 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActi
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.{DeckFactory, IDeckFactory}
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer

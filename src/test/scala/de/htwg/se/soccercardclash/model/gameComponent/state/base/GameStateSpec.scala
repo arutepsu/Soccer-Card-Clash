@@ -1,6 +1,6 @@
 package de.htwg.se.soccercardclash.model.gameComponent.state.base
 
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import org.scalatest.matchers.should.Matchers

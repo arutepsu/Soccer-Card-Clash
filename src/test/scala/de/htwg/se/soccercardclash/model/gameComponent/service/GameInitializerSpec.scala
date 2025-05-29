@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.service
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
 import de.htwg.se.soccercardclash.model.cardComponent.factory.{DeckFactory, IDeckFactory}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IGameCardsFactory, IRoles, IRolesFactory, IScores, IScoresFactory, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory

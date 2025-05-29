@@ -2,7 +2,6 @@ package de.htwg.se.soccercardclash.view.gui.components.dialog
 
 import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -37,6 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}

@@ -13,8 +13,8 @@ import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import org.scalatest.wordspec.AnyWordSpec
 
 class PrompterSpec extends AnyWordSpec with Matchers {

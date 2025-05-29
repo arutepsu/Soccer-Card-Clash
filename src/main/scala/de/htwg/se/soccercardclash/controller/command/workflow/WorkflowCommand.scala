@@ -2,8 +2,8 @@ package de.htwg.se.soccercardclash.controller.command.workflow
 
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.*
 
 import scala.util.{Failure, Success, Try}

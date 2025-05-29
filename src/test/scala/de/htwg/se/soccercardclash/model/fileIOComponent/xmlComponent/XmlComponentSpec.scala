@@ -1,8 +1,8 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent
 
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.GameDeserializer
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.should.Matchers

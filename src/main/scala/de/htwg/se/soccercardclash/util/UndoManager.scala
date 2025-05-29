@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.util
 
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 
 class UndoManager {
   private var undoStack: List[(ICommand, IGameState)] = Nil

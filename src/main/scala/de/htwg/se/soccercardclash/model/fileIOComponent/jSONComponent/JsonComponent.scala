@@ -1,8 +1,8 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 import play.api.libs.json.*

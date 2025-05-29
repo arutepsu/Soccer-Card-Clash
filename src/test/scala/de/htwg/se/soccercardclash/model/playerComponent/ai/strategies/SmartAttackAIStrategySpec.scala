@@ -16,6 +16,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.model.cardComponent.base.components.Value
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 
 class SmartAttackAIStrategySpec extends AnyWordSpec with Matchers with MockitoSugar {
 

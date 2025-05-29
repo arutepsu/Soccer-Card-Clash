@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.manager
 
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.{AttackManager, IAttackManager, IAttackStrategy}

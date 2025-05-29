@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.jsonComponent
 
 import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.GameDeserializer
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.any

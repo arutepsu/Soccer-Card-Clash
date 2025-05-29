@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.module
 
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*

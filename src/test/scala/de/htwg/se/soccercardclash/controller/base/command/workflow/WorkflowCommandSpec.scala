@@ -1,8 +1,8 @@
 package de.htwg.se.soccercardclash.controller.base.command.workflow
 
 import de.htwg.se.soccercardclash.controller.command.workflow.*
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.gameComponent.state.IGameState
 import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, SceneSwitchEvent}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
