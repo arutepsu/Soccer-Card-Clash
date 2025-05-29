@@ -65,7 +65,7 @@ class AISelectionScene(
   }
 
   private val backButton = GameButtonFactory.createGameButton("Back", 250, 60) { () =>
-    GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.SinglePlayer)
   }
 
   private val buttonBox = new HBox(30, startButton, backButton) {

@@ -11,7 +11,7 @@ import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTu
 class Prompter(controller: IController, gameContextHolder: IGameContextHolder) extends IPrompter {
 
   def promptPlayersName(): Unit = {
-    println(f"Enter player names (format: `player1 player2`):${TuiKeys.CreatePlayers.toString}")
+    println(f"Enter player names (format: `player1 player2`):${TuiKeys.Multiplayer.toString}")
   }
 
   def promptRegularAttack(): Unit = {

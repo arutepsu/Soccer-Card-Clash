@@ -13,7 +13,7 @@ class CreatePlayersNameTuiCommand(controller: IController, contextHolder: IGameC
 
   override def execute(input: Option[String] = None): Unit = {
     waitingForNames = true
-    GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.Multiplayer)
     println("Please enter players names:")
   }
 
@@ -26,7 +26,7 @@ class CreatePlayersNameTuiCommand(controller: IController, contextHolder: IGameC
       val player2 = playerNames(1)
 
       println(s"Players set: $player1 & $player2")
-      controller.notifyObservers(SceneSwitchEvent.CreatePlayer)
+      controller.notifyObservers(SceneSwitchEvent.Multiplayer)
 
       val startGameCommand = new StartGameTuiCommand(controller, contextHolder, player1, player2)
       startGameCommand.execute()

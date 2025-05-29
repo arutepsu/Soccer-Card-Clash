@@ -43,20 +43,20 @@ class Tui(
   controller.add(this)
   protected val prompter: IPrompter = new Prompter(controller, gameContextHolder)
   protected val tuiCommandFactory: ITuiCommandFactory = new TuiCommandFactory(controller, gameContextHolder, prompter)
-  private val createPlayersNameTuiCommand:
+  protected val createPlayersNameTuiCommand:
     CreatePlayersNameTuiCommand = tuiCommandFactory.createCreatePlayersNameTuiCommand()
-  private val createPlayersNameWitAITuiCommand:
+  protected val createPlayersNameWitAITuiCommand:
     CreatePlayersNameWithAITuiCommand = tuiCommandFactory.createCreatePlayersNameWithAITuiCommand()
-  private val commands: Map[String, ITuiCommand] = Map(
-    TuiKeys.CreatePlayers.key -> createPlayersNameTuiCommand,
-    TuiKeys.CreatePlayersAI.key -> createPlayersNameWitAITuiCommand,
+  protected val commands: Map[String, ITuiCommand] = Map(
+    TuiKeys.Multiplayer.key -> createPlayersNameTuiCommand,
+    TuiKeys.SinglePlayer.key -> createPlayersNameWitAITuiCommand,
     TuiKeys.Undo.key -> tuiCommandFactory.createUndoTuiCommand(),
     TuiKeys.Redo.key -> tuiCommandFactory.createRedoTuiCommand(),
     TuiKeys.Save.key -> tuiCommandFactory.createSaveGameTuiCommand(),
     TuiKeys.Exit.key -> tuiCommandFactory.createExitTuiCommand(),
     TuiKeys.ShowGames.key -> tuiCommandFactory.createShowGamesTuiCommand()
   )
-  private val promptHandlers: Map[PromptState, String => Unit] = Map(
+  protected val promptHandlers: Map[PromptState, String => Unit] = Map(
     PromptState.SingleAttack -> (input => runCommand(tuiCommandFactory.createSingleAttackTuiCommand(), input)),
     PromptState.DoubleAttack -> (input => runCommand(tuiCommandFactory.createDoubleAttackTuiCommand(), input)),
     PromptState.Boost -> (input => runCommand(tuiCommandFactory.createBoostDefenderTuiCommand(), input)),
@@ -65,7 +65,7 @@ class Tui(
     PromptState.BoostGoalkeeper -> (_ => runCommand(tuiCommandFactory.createBoostGoalkeeperTuiCommand(), "")),
     PromptState.LoadGame -> handleLoadGameInput
   )
-  private var promptState: PromptState = PromptState.None
+  protected var promptState: PromptState = PromptState.None
 
   def processInputLine(input: String): Unit = {
     println(s"\uD83D\uDEE0 Received input: '$input'")
@@ -88,20 +88,11 @@ class Tui(
     }
   }
 
-  private def handlePrimaryCommand(input: String): Unit = {
+  protected def handlePrimaryCommand(input: String): Unit = {
     val parts = input.split(" ").map(_.trim)
     val commandKey = parts.head
     val commandArg = if (parts.length > 1) Some(parts(1)) else None
 
-    if (commandKey == TuiKeys.StartGameWithAI.key) {
-      createPlayersNameWitAITuiCommand.execute()
-      return
-    }
-
-    if (commandKey == TuiKeys.StartGameMultiplayer.key) {
-      createPlayersNameTuiCommand.execute()
-      return
-    }
 
     commandKey match {
 
@@ -133,10 +124,10 @@ class Tui(
         promptState = PromptState.BoostGoalkeeper
         prompter.promptShowGoalkeeper(gameContextHolder.get.state.getRoles.attacker)
 
-      case TuiKeys.CreatePlayers.key =>
+      case TuiKeys.Multiplayer.key =>
         createPlayersNameTuiCommand.execute()
 
-      case TuiKeys.CreatePlayersAI.key =>
+      case TuiKeys.SinglePlayer.key =>
         createPlayersNameWitAITuiCommand.execute()
 
 
@@ -160,7 +151,7 @@ class Tui(
         promptState = PromptState.MainMenu
         prompter.promptMainMenu()
 
-      case SceneSwitchEvent.CreatePlayer =>
+      case SceneSwitchEvent.Multiplayer =>
         promptState = PromptState.CreatePlayers
         prompter.promptCreatePlayers()
 
@@ -229,7 +220,7 @@ class Tui(
     promptState = PromptState.None
   }
 
-  private def handleLoadGameInput(input: String): Unit = {
+  protected def handleLoadGameInput(input: String): Unit = {
     val pattern = """(?i)select\s+(\d+)""".r
     input match {
       case pattern(numStr) =>
