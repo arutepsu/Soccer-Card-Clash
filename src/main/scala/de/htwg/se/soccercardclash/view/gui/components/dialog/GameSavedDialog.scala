@@ -8,10 +8,12 @@ import scalafx.scene.text.Text
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.geometry.Pos
 import scalafx.scene.Node
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 class GameSavedDialog(overlay: Overlay, autoHide: Boolean) {
   
   val backgroundImagePath = "/images/data/frames/overlay.png"
@@ -29,7 +31,7 @@ class GameSavedDialog(overlay: Overlay, autoHide: Boolean) {
   }
   
   val savedLabel = new Text("Game Saved!") {
-    style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: white;"
+    styleClass += "info-message"
   }
   
   val backButton: Button = GameButtonFactory.createGameButton(
@@ -52,6 +54,7 @@ class GameSavedDialog(overlay: Overlay, autoHide: Boolean) {
   val dialogPane = new StackPane {
     alignment = Pos.CENTER
     children = Seq(backgroundImageView, layout)
+    stylesheets += Styles.infoDialogCss
   }
 
   overlay.show(dialogPane, autoHide)

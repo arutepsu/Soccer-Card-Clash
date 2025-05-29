@@ -1,15 +1,15 @@
 package de.htwg.se.soccercardclash.view.gui.components.playerView
 
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import de.htwg.se.soccercardclash.view.gui.utils.BoostImage
 import scalafx.geometry.Pos
 import scalafx.scene.control.Button
-import scalafx.scene.image.ImageView
+import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.VBox
-import de.htwg.se.soccercardclash.view.gui.utils.BoostImage
-import scala.util.{Try, Success, Failure}
-import scalafx.scene.image.Image
+
 import scala.collection.mutable
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import scala.util.{Failure, Success, Try}
 object PlayerAvatarRegistry {
 
   val avatarsPath = "/images/data/players/"
@@ -77,9 +77,5 @@ object PlayerAvatarRegistry {
       smooth = true
     }
   }
-
-//  def clear(): Unit = {
-//    images.clear()
-//    playerImageMap.clear()
-//  }
+  
 }

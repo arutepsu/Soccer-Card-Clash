@@ -2,8 +2,11 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.BoostedCard
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import javafx.application.Platform
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
+import de.htwg.se.soccercardclash.view.gui.components.cardView.{FieldCardFactory, HandCard}
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
+import de.htwg.se.soccercardclash.view.gui.utils.{CardImageRegistry, Styles}
+import javafx.application.Platform
 import scalafx.Includes.*
 import scalafx.animation.*
 import scalafx.geometry.{Insets, Pos}
@@ -13,9 +16,6 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.layout.{GridPane, HBox, Region, VBox}
 import scalafx.scene.paint.Color
 import scalafx.util.Duration
-import de.htwg.se.soccercardclash.view.gui.components.cardView.{FieldCardFactory, HandCard}
-import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
-import de.htwg.se.soccercardclash.view.gui.utils.{CardImageRegistry, Styles}
 
 trait FieldCardRenderer {
   def createDefenderRow(player: IPlayer, getGameState: () => IGameState): HBox

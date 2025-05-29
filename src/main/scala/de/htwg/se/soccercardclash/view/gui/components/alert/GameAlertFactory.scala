@@ -9,6 +9,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.Text
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -23,8 +24,8 @@ object GameAlertFactory {
   }
 
   def createAlert(message: String, overlay: Overlay, autoHide: Boolean): Node = {
-    val warningText = new Text(s"⚠️ $message") {
-      style = "-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: red;"
+    val warningText = new Text(s"$message") {
+      styleClass += "dialog-message"
     }
 
     val okButton = GameButtonFactory.createGameButton(
@@ -44,6 +45,7 @@ object GameAlertFactory {
     val alertPane = new StackPane {
       alignment = Pos.CENTER
       children = Seq(backgroundImage, alertBox)
+      stylesheets += Styles.infoDialogCss
     }
 
     if (autoHide) {

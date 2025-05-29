@@ -16,4 +16,12 @@
     -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
     -fx-text-alignment: center;
 }
+.info-message {
+    -fx-font-size: 32px;
+    -fx-font-family: "Rajdhani";
+    -fx-font-weight: regular;
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
 

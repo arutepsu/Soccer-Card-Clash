@@ -4,12 +4,12 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import de.htwg.se.soccercardclash.view.gui.scenes.PlayingFieldScene
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.Node as FXNode
 import scalafx.scene.control.Label
 import scalafx.scene.layout.*
-import scalafx.scene.Node as FXNode
 
 class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox {
 
@@ -143,7 +143,6 @@ class PlayersBar(controller: IController, scene: PlayingFieldScene) extends HBox
     }
   }
   def refreshOnRoleSwitch(): Unit = {
-//    updateAttackerHighlight()
     refreshActionStates()
     refreshScores()
   }

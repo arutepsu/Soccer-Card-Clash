@@ -173,7 +173,7 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
         override protected val prompter: IPrompter = testPrompter
       }
 
-      tui.processInputLine(":attack")
+      tui.processInputLine(":singleattack")
 
       testPrompter.regularAttackCalled shouldBe true
       testPrompter.showDefendersFieldCalled shouldBe true

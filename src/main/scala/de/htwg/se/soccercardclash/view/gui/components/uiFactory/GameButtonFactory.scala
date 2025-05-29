@@ -24,7 +24,6 @@ object GameButtonFactory {
                         imagePath: String = defaultImagePath
                       )(onFinishedAction: () => Unit): Button = {
     val button = new Button(text)
-//    applyGlitchEffect(button)
     button.prefWidth = width
     button.prefHeight = height
 

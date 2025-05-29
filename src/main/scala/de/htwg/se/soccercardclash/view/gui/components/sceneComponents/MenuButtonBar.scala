@@ -63,7 +63,6 @@ class MenuButtonBar(controller: IController, playingFieldScene: PlayingFieldScen
       Thread.sleep(300)
       Platform.runLater {
         playingFieldScene.contextHolder.clear()
-//        PlayerAvatarRegistry.clear()
         GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
       }
     }

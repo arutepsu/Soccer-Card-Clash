@@ -2,23 +2,22 @@ package de.htwg.se.soccercardclash.view.gui.components.sceneComponents
 
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.view.gui.components.cardView.HandCardFactory
-import scalafx.application.Platform
+import de.htwg.se.soccercardclash.view.gui.components.cardView.{HandCard, HandCardFactory}
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 import scalafx.Includes.*
+import scalafx.animation.*
+import scalafx.application.Platform
 import scalafx.geometry.Pos
+import scalafx.scene.control.Label
 import scalafx.scene.effect.DropShadow
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color
-import de.htwg.se.soccercardclash.view.gui.components.cardView.HandCard
-import de.htwg.se.soccercardclash.view.gui.components.uiFactory.CardAnimationFactory
-import de.htwg.se.soccercardclash.view.gui.utils.Styles
-import scalafx.animation.{FadeTransition, Interpolator, RotateTransition, ScaleTransition, TranslateTransition}
-import scalafx.scene.control.Label
+import scalafx.util.Duration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scalafx.util.Duration
 
 trait HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox

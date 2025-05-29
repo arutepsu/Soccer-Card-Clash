@@ -3,7 +3,6 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ConfirmationDialog, DialogFactory}
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameLabel
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager

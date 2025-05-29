@@ -7,7 +7,7 @@ enum TuiKeys(val key: String) {
   case Undo extends TuiKeys(":undo")
   case Redo extends TuiKeys(":redo")
   case Save extends TuiKeys(":save")
-  case Attack extends TuiKeys(":attack")
+  case Attack extends TuiKeys(":singleattack")
   case DoubleAttack extends TuiKeys(":doubleattack")
   case RegularSwap extends TuiKeys(":regularswap")
   case ReverseSwap extends TuiKeys(":reverseswap")

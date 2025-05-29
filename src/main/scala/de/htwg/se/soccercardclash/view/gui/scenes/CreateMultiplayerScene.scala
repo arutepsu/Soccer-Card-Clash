@@ -1,12 +1,13 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
+
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.IController
-import de.htwg.se.soccercardclash.model.playerComponent.base.*
+import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
+import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory.getClass
 import de.htwg.se.soccercardclash.view.gui.overlay.Overlay
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import de.htwg.se.soccercardclash.view.gui.utils.{Assets, Styles}
@@ -14,27 +15,25 @@ import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, TextField}
+import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{StackPane, VBox}
 import scalafx.scene.text.{Font, Text}
 
-class CreatePlayerWithAIScene @Inject()(
-                                         controller: IController,
-                                         contextHolder: IGameContextHolder,
-                                         startupDataHolder: GameStartupDataHolder
-                                       ) extends GameScene {
-  
-  this.getStylesheets.add(Styles.createPlayerWitAICss)
+class CreateMultiplayerScene @Inject()(
+                                   controller: IController,
+                                   contextHolder: IGameContextHolder
+                                 ) extends GameScene {
+  this.getStylesheets.add(Styles.createPlayerCss)
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
   Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 20)
-
+  val maxAllowedPlayersCount = 2
+  val playerTextInputFields: Seq[TextField] =
+    for (_ <- 1 to maxAllowedPlayersCount) yield new TextField {
+      prefWidth = 300
+      prefHeight = 40
+      styleClass += "player-text-input"
+    }
   private val overlay = new Overlay(this)
-
-  val playerTextInput: TextField = new TextField {
-    prefWidth = 300
-    prefHeight = 40
-    styleClass += "player-text-input"
-  }
-
   private val rootVBox: VBox = new VBox {
     spacing = 20
     prefHeight = 600
@@ -42,18 +41,20 @@ class CreatePlayerWithAIScene @Inject()(
     fillWidth = false
     padding = Insets(10)
     alignment = Pos.TOP_CENTER
+    this.getStylesheets.add(Styles.createPlayerCss)
     styleClass.add("create-player-panel")
 
-    // --- Logo ---
-    val logo = Assets.createLogoImageView()
+    val logo = new VBox {
+      alignment = Pos.TOP_CENTER
+      children = Seq(Assets.createLogoImageView())
+    }
 
-    // --- Title aSection ---
-    val createPlayersTitle: Label = new Label("Create Player") {
+    val createPlayersTitle: Label = new Label("Create Players") {
       styleClass += "title"
       padding = Insets(10)
     }
 
-    val nameTitle: Label = new Label("Enter Player's Name") {
+    val nameTitle: Label = new Label("Enter Player Names") {
       styleClass += "subtitle"
     }
 
@@ -62,15 +63,14 @@ class CreatePlayerWithAIScene @Inject()(
       children.addAll(createPlayersTitle, nameTitle)
     }
 
-    // --- Input Field ---
     val inputFieldBox = new VBox(10) {
       alignment = Pos.CENTER
-      children = Seq(playerTextInput)
+      children.addAll(playerTextInputFields.map(_.delegate): _*)
     }
 
-    // --- Buttons ---
-    val startButton = GameButtonFactory.createGameButton("Ok", 250, 60) {
-      () => proceedToAISelection()
+    val startButton = GameButtonFactory.createGameButton("Start", 250, 60) {
+
+      () => startGame()
     }
 
     val mainMenuButton = GameButtonFactory.createGameButton("Back", 250, 60) {
@@ -79,12 +79,12 @@ class CreatePlayerWithAIScene @Inject()(
         GlobalObservable.notifyObservers(SceneSwitchEvent.MainMenu)
     }
 
+
     val startButtonBox = new VBox(10) {
       alignment = Pos.CENTER
       children = Seq(startButton, mainMenuButton)
     }
 
-    // --- Final layout ---
     children.addAll(
       logo,
       titleSection,
@@ -101,23 +101,32 @@ class CreatePlayerWithAIScene @Inject()(
   overlay.getPane.prefHeight = 600
   overlay.getPane.visible = false
 
-  private def proceedToAISelection(): Unit = {
-    getPlayerName match {
-      case Some(humanName) =>
-        startupDataHolder.data.humanPlayerName = Some(humanName)
-        EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.AISelection)
+  private def startGame(): Unit = {
+    val playerNames = getPlayerNames()
 
-      case None =>
-        showAlert("Please enter the player's name.")
+    if (playerNames.size != 2) {
+      showAlert("Exactly 2 players are required to start the game.")
+      return
     }
+
+    controller.createGame(playerNames.head, playerNames(1))
+
+    val players = Seq(
+      contextHolder.get.state.getRoles.attacker,
+      contextHolder.get.state.getRoles.defender
+    )
+
+    PlayerAvatarRegistry.assignAvatarsInOrder(players)
+
+    EventDispatcher.dispatchSingle(controller, SceneSwitchEvent.PlayingField)
   }
 
-
-  private def getPlayerName: Option[String] =
-    Option(playerTextInput.text.value.trim).filter(_.nonEmpty)
+  private def getPlayerNames(): Seq[String] =
+    playerTextInputFields.map(_.text.value.trim).filter(_.nonEmpty)
 
   private def showAlert(content: String): Unit = {
     val alert = GameAlertFactory.createAlert(content, overlay, autoHide = false)
     overlay.show(alert, autoHide = false)
   }
+
 }

@@ -16,6 +16,7 @@ import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.util.{GlobalObservable, IGameContextHolder, SceneSwitchEvent}
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.util.EventDispatcher
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Unit, controller: IController, contextHolder: IGameContextHolder) {
   
   private val backgroundImagePath = "/images/data/frames/overlay.png"
@@ -27,7 +28,7 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
   }
 
   private val messageText = new Text(message) {
-    style = "-fx-font-size: 20px; -fx-fill: white; -fx-font-weight: bold;"
+    styleClass += "info-message"
   }
 
   private val okButton: Button = GameButtonFactory.createGameButton(
@@ -73,6 +74,7 @@ class ConfirmationDialog(overlay: Overlay, message: String, onConfirm: () => Uni
   private val dialogPane = new StackPane {
     alignment = Pos.CENTER
     children = Seq(backgroundImage, alertBox)
+    stylesheets += Styles.infoDialogCss
   }
   
   def show(): Unit = {

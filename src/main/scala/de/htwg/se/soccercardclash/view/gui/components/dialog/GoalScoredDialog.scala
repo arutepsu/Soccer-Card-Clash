@@ -16,6 +16,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scalafx.application.Platform
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
 
 class GoalScoredDialog(
                         player: IPlayer,
@@ -50,12 +51,7 @@ class GoalScoredDialog(
   }
   
   private val scoredLabel = new Text(s"${player.name} scored a goal!") {
-    style =
-      "-fx-font-family: Rajdhani;" +
-        "-fx-font-size: 32px;" +
-        "-fx-font-weight: bold;" +
-        "-fx-fill: linear-gradient(from 0% 0% to 100% 100%, #ff00cc, #83018e);" +
-        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 8, 0.4, 0, 2);"
+    styleClass += "info-message"
   }
 
 
@@ -68,6 +64,7 @@ class GoalScoredDialog(
   private val dialogPane = new StackPane {
     alignment = Pos.CENTER
     children = Seq(backgroundImageView, layout)
+    stylesheets += Styles.infoDialogCss
   }
   
   overlay.show(dialogPane, autoHide)
