@@ -13,9 +13,9 @@ case class SceneChangedEvent(newScene: SceneSwitchEvent) extends ObservableEvent
 object SceneSwitchEvent:
   case object MainMenu extends SceneSwitchEvent
 
-  case object CreatePlayer extends SceneSwitchEvent
+  case object Multiplayer extends SceneSwitchEvent
 
-  case object CreatePlayerWithAI extends SceneSwitchEvent
+  case object SinglePlayer extends SceneSwitchEvent
 
   case object AISelection extends SceneSwitchEvent
 
