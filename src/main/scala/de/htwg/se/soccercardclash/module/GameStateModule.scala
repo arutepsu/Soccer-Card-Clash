@@ -14,23 +14,31 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrate
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.{IPlayerFactory, PlayerDeserializer}
 
-class PlayingFieldModule extends AbstractModule {
+class GameStateModule extends AbstractModule {
 
   override def configure(): Unit = {
+    
     bind(classOf[IGameCardsFactory]).to(classOf[GameCardsFactory])
+    
     bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
+    
     bind(classOf[IRolesFactory]).to(classOf[RolesFactory])
+    
     bind(classOf[IScoresFactory]).to(classOf[ScoresFactory])
+    
     bind(classOf[IHandCardsFactory]).toConstructor(
       classOf[HandCardsFactory]
         .getConstructor(classOf[IHandCardsQueueFactory])
     )
 
     bind(classOf[IAttackManager]).to(classOf[AttackManager]).in(classOf[Singleton])
+    
     bind(classOf[IBoostManager]).to(classOf[BoostManager]).in(classOf[Singleton])
+    
     bind(classOf[ISwapManager]).to(classOf[SwapManager]).in(classOf[Singleton])
 
     bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
+    
     bind(classOf[IPlayerActionManager]).to(classOf[PlayerActionManager])
   }
 }

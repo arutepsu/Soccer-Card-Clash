@@ -39,6 +39,5 @@ class GameCardsFactorySpec extends AnyWordSpec with Matchers with MockitoSugar {
       result.getPlayerHand(player1) shouldBe handQueue1
       result.getPlayerDefenders(player1) shouldBe List(None, None, None)
     }
-    //
   }
 }

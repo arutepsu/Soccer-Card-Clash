@@ -11,8 +11,11 @@ import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartu
 
 class SceneModule(stage: Stage) extends AbstractModule {
   override def configure(): Unit = {
+    
     bind(classOf[Stage]).toInstance(stage)
+    
     bind(classOf[GameStartupDataHolder]).in(classOf[Singleton])
+    
   }
 
   @Provides

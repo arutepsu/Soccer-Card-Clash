@@ -40,10 +40,10 @@ class MainMenuScene(controller: IController) extends GameScene {
     alignment = Pos.Center
     children = Seq(
       GameButtonFactory.createGameButton("Singleplayer", 200, 150) {
-        () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
+        () => GlobalObservable.notifyObservers(SceneSwitchEvent.SinglePlayer)
       },
       GameButtonFactory.createGameButton("Multiplayer", 200, 150) {
-        () => GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayer)
+        () => GlobalObservable.notifyObservers(SceneSwitchEvent.Multiplayer)
       },
       GameButtonFactory.createGameButton("Load Game", 200, 150) {
         () => GlobalObservable.notifyObservers(SceneSwitchEvent.LoadGame)

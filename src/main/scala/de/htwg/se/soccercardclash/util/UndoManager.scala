@@ -42,8 +42,4 @@ class UndoManager {
     }
   }
 
-  def clear(): Unit = {
-    undoStack = Nil
-    redoStack = Nil
-  }
 }

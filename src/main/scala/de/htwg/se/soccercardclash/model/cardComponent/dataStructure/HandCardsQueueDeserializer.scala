@@ -1,14 +1,13 @@
 package de.htwg.se.soccercardclash.model.cardComponent.dataStructure
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
+import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.util.Deserializer
-
-import scala.xml.*
 import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
 import scala.collection.mutable
-import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
+import scala.xml.*
 
 
 trait IHandCardsQueueFactory {

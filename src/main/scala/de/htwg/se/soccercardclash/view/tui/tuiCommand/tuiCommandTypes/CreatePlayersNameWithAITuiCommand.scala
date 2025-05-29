@@ -19,7 +19,7 @@ class CreatePlayersNameWithAITuiCommand(
   override def execute(input: Option[String] = None): Unit = {
     waitingForInput = true
     phase = 0
-    GlobalObservable.notifyObservers(SceneSwitchEvent.CreatePlayerWithAI)
+    GlobalObservable.notifyObservers(SceneSwitchEvent.SinglePlayer)
     println("Please enter your name (you will play against an AI):")
   }
 

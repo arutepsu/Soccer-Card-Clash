@@ -14,6 +14,7 @@ import de.htwg.se.soccercardclash.util.{GameContextHolder, IGameContextHolder}
 class GameCoreModule extends AbstractModule {
   
   override def configure(): Unit = {
+    
     bind(classOf[IGameInitializer])
       .toConstructor(classOf[GameInitializer]
         .getConstructor(

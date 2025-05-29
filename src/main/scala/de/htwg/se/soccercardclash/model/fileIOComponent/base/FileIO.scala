@@ -10,10 +10,10 @@ import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class FileIO @Inject() (
-                         jsonComponent: JsonComponent,
-                         xmlComponent: XmlComponent
-                       ) extends IFileIO {
+class FileIO @Inject()(
+                        jsonComponent: JsonComponent,
+                        xmlComponent: XmlComponent
+                      ) extends IFileIO {
 
   override def saveGame(gameState: IGameState): Try[Unit] = Try {
     xmlComponent.save(gameState)

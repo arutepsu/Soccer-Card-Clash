@@ -1,5 +1,5 @@
 package de.htwg.se.soccercardclash.tui
-import java.io.File
+import java.io.{ByteArrayOutputStream, File, PrintStream}
 import scala.io.StdIn
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
@@ -35,7 +35,7 @@ class PrompterSpec extends AnyWordSpec with Matchers {
       val gameCards = mock(classOf[IGameCards])
       val handQueue = mock(classOf[IHandCardsQueue])
       when(handQueue.toList).thenReturn(List(card1, card2))
-      when(gameCards.getPlayerHand(attacker)).thenReturn(handQueue) // ✅ correct
+      when(gameCards.getPlayerHand(attacker)).thenReturn(handQueue)
 
 
       val roles = mock(classOf[IRoles])
@@ -163,6 +163,118 @@ class PrompterSpec extends AnyWordSpec with Matchers {
       output should include(":startAI")
       output should include(":exit")
     }
+  }
+  "Prompter" should {
+
+    "should print the defender's field cards" in {
+      val mockPlayer = mock(classOf[IPlayer])
+      when(mockPlayer.name).thenReturn("Defender")
+
+      val mockCards = List(mock(classOf[ICard]))
+      val mockGameCards = mock(classOf[IGameCards])
+      when(mockGameCards.getPlayerDefenders(mockPlayer)).thenReturn(mockCards)
+
+      val mockState = mock(classOf[IGameState])
+      when(mockState.getGameCards).thenReturn(mockGameCards)
+
+      val mockContext = mock(classOf[GameContext])
+      when(mockContext.state).thenReturn(mockState)
+
+      val holder = mock(classOf[IGameContextHolder])
+      when(holder.get).thenReturn(mockContext)
+
+      val controller = mock(classOf[IController])
+
+      val prompter = new Prompter(controller, holder)
+
+      val out = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(out)) {
+        prompter.promptShowDefendersField(mockPlayer)
+      }
+
+      val output = out.toString
+      output should include("Defender's defender cards")
+      output should include("===================================")
+    }
+
+
+    "print the goalkeeper card" in {
+      val mockPlayer = mock(classOf[IPlayer])
+      when(mockPlayer.name).thenReturn("Goalkeeper")
+
+      val mockCard = mock(classOf[ICard])
+      val mockGameCards = mock(classOf[IGameCards])
+      when(mockGameCards.getPlayerGoalkeeper(mockPlayer)).thenReturn(Some(mockCard))
+
+      val mockState = mock(classOf[IGameState])
+      when(mockState.getGameCards).thenReturn(mockGameCards)
+
+      val mockContext = mock(classOf[GameContext])
+      when(mockContext.state).thenReturn(mockState)
+
+      val holder = mock(classOf[IGameContextHolder])
+      when(holder.get).thenReturn(mockContext)
+
+      val controller = mock(classOf[IController])
+
+      val prompter = new Prompter(controller, holder)
+
+      val out = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(out)) {
+        prompter.promptShowGoalkeeper(mockPlayer)
+      }
+
+      val output = out.toString
+      output should include("Goalkeeper's goalkeeper Card")
+      output should include("===================================")
+    }
+  }
+  "print the current game state" in {
+    val attacker = mock(classOf[IPlayer])
+    when(attacker.name).thenReturn("Attacker")
+
+    val defender = mock(classOf[IPlayer])
+    when(defender.name).thenReturn("Defender")
+
+    val roles = mock(classOf[IRoles])
+    when(roles.attacker).thenReturn(attacker)
+    when(roles.defender).thenReturn(defender)
+
+    val hand = List(mock(classOf[ICard]))
+    val defenders = List(mock(classOf[ICard]))
+
+    val handQueue = mock(classOf[IHandCardsQueue])
+    when(handQueue.toList).thenReturn(hand)
+
+    val gameCards = mock(classOf[IGameCards])
+    when(gameCards.getPlayerHand(attacker)).thenReturn(handQueue)
+    when(gameCards.getPlayerDefenders(defender)).thenReturn(defenders)
+
+    val mockState = mock(classOf[IGameState])
+    when(mockState.getRoles).thenReturn(roles)
+    when(mockState.getGameCards).thenReturn(gameCards)
+
+    val mockContext = mock(classOf[GameContext])
+    when(mockContext.state).thenReturn(mockState)
+
+    val holder = mock(classOf[IGameContextHolder])
+    when(holder.get).thenReturn(mockContext)
+
+    val controller = mock(classOf[IController])
+
+    val prompter = new Prompter(controller, holder)
+
+    val out = new ByteArrayOutputStream()
+    Console.withOut(new PrintStream(out)) {
+      prompter.printGameState()
+    }
+
+    val output = out.toString
+    output should include("**CURRENT GAME STATE**")
+    output should include("Attacker: Attacker")
+    output should include("Defender: Defender")
+    output should include("Attacker's Hand")
+    output should include("Defender's Defenders")
   }
 
 }

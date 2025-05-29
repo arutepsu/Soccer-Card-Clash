@@ -13,22 +13,15 @@ import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class JsonComponent @Inject() (gameDeserializer: GameDeserializer):
+class JsonComponent @Inject()(gameDeserializer: GameDeserializer):
 
   private val folderPath = "games/"
   private val defaultFile = s"${folderPath}game.json"
-
-  private def ensureFolderExists(): Unit =
-    Option(File(folderPath)).filterNot(_.exists()).foreach(_.mkdir())
 
   def load(fileName: String): Option[IGameState] =
     ensureFolderExists()
     val filePath = s"$folderPath$fileName"
     readJsonFromFile(filePath).flatMap(parseGameState)
-
-  def save(gameState: IGameState): Unit =
-    ensureFolderExists()
-    writeJsonToFile(defaultFile, gameState.toJson)
 
   private def readJsonFromFile(path: String): Option[JsObject] =
     Try(Source.fromFile(path).getLines().mkString)
@@ -37,6 +30,13 @@ class JsonComponent @Inject() (gameDeserializer: GameDeserializer):
 
   private def parseGameState(json: JsObject): Option[IGameState] =
     Try(gameDeserializer.fromJson(json)).toOption
+
+  def save(gameState: IGameState): Unit =
+    ensureFolderExists()
+    writeJsonToFile(defaultFile, gameState.toJson)
+
+  private def ensureFolderExists(): Unit =
+    Option(File(folderPath)).filterNot(_.exists()).foreach(_.mkdir())
 
   private def writeJsonToFile(path: String, json: JsValue): Unit =
     Try(PrintWriter(File(path)))

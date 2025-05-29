@@ -25,6 +25,43 @@ class FieldCardsFactorySpec extends AnyWordSpec with Matchers with MockitoSugar 
     }
   }
 
+  "A FieldCards instance" should {
+
+    "return None for a goalkeeper if none was set" in {
+      val player = mock[IPlayer]
+      val fieldCards = FieldCards()
+
+      fieldCards.goalkeepers(player) shouldBe None
+    }
+
+    "return empty list for defenders if none were set" in {
+      val player = mock[IPlayer]
+      val fieldCards = FieldCards()
+
+      fieldCards.defenders(player) shouldBe empty
+    }
+
+    "store and retrieve a goalkeeper" in {
+      val player = mock[IPlayer]
+      val card = mock[ICard]
+      val fieldCards = FieldCards(goalkeepers = Map(player -> Some(card)))
+
+      fieldCards.goalkeepers(player) shouldBe Some(card)
+    }
+
+    "store and retrieve defenders" in {
+      val player = mock[IPlayer]
+      val card1 = mock[ICard]
+      val card2 = mock[ICard]
+
+      val defenderList = List(Some(card1), None, Some(card2))
+      val fieldCards = FieldCards(defenders = Map(player -> defenderList))
+
+      fieldCards.defenders(player) shouldBe defenderList
+    }
+
+  }
+
   "FieldCards" should {
     val player = mock[IPlayer]
     val card1 = mock[ICard]

@@ -8,10 +8,10 @@ class SoccerCardClashModule extends AbstractModule {
     install(new ControllerModule())
     install(new PlayerModule())
     install(new CardModule())
-    install(new PlayingFieldModule())
+    install(new GameStateModule())
     install(new HandCardsQueueModule())
     install(new GameCoreModule())
-    install(new SerializationModule())
     install(new FileIOModule())
+    install(new RandomProviderModule())
   }
 }
