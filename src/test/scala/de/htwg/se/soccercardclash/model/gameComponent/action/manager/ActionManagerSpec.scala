@@ -23,7 +23,7 @@ class ActionManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     val state = mock[IGameState]
     val events = List(mock[ObservableEvent])
 
-    val manager = new ActionManager(mockService, mockAttackManager, mockBoostManager, mockSwapManager)
+    val manager = new ActionExecutor(mockService, mockAttackManager, mockBoostManager, mockSwapManager)
 
     "delegate singleAttack correctly" in {
       when(mockAttackManager.executeAttack(any(), any())).thenReturn((true, state, events))

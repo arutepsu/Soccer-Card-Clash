@@ -24,7 +24,7 @@ class TestControllerModule extends AbstractModule {
     bind(classOf[IController]).to(classOf[Controller]).in(classOf[Singleton])
     bind(classOf[Observable]).to(classOf[IController])
     bind(classOf[ICommandFactory]).to(classOf[CommandFactory])
-    bind(classOf[IActionManager]).to(classOf[ActionManager])
+    bind(classOf[IActionExecutor]).to(classOf[ActionExecutor])
     bind(classOf[IGameService]).toInstance(mock(classOf[IGameService]))
     bind(classOf[IGameInitializer]).toInstance(mock(classOf[IGameInitializer]))
     bind(classOf[IGamePersistence]).toInstance(mock(classOf[IGamePersistence]))

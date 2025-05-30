@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap
 
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState

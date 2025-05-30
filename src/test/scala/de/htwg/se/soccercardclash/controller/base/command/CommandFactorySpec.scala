@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAct
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands.*
 import de.htwg.se.soccercardclash.controller.command.workflow.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
@@ -17,7 +17,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class CommandFactorySpec extends AnyFlatSpec with Matchers {
 
   val mockGameService = mock(classOf[IGameService])
-  val mockActionManager = mock(classOf[IActionManager])
+  val mockActionManager = mock(classOf[IActionExecutor])
   val factory = new CommandFactory(mockGameService, mockActionManager)
 
   "CommandFactory" should "create SingleAttackActionCommand with correct index" in {

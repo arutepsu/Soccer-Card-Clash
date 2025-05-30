@@ -1,9 +1,9 @@
-package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.attack
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.revert.IRevertStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer

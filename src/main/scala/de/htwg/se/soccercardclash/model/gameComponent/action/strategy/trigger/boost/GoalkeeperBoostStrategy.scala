@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}

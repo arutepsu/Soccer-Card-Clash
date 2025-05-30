@@ -13,7 +13,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 //import de.htwg.se.soccercardclash.model.gameComponent.playingFiledComponent.factory.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{ActionManager, IActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{ActionExecutor, IActionExecutor}
 import de.htwg.se.soccercardclash.util.UndoManager
 import play.api.libs.json.*
 

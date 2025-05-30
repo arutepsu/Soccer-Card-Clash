@@ -13,7 +13,7 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.A
 import de.htwg.se.soccercardclash.controller.command.CommandResult
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
 
 class SingleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
@@ -21,7 +21,7 @@ class SingleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
     val state = mock(classOf[IGameState])
     val updatedState = mock(classOf[IGameState])
     val event = mock(classOf[ObservableEvent])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.singleAttack(state, 0)).thenReturn((true, updatedState, List(event)))
 
@@ -33,7 +33,7 @@ class SingleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
   it should "return None when actionManager returns (false, ...)" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.singleAttack(state, 1)).thenReturn((false, state, Nil))
 
@@ -45,7 +45,7 @@ class SingleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
   it should "return None when actionManager throws an exception" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.singleAttack(state, 2)).thenThrow(new RuntimeException("fail"))
 

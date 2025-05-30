@@ -25,7 +25,7 @@ class ActionManagerFactorySpec extends AnyWordSpec with Matchers with MockitoSug
 
       val result = factory.create()
 
-      result shouldBe a[ActionManager]
+      result shouldBe a[ActionExecutor]
     }
   }
 }

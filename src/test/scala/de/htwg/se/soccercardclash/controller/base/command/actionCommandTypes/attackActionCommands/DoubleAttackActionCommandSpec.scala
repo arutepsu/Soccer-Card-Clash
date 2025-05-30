@@ -15,7 +15,7 @@ import de.htwg.se.soccercardclash.controller.command.CommandResult
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackActionCommands.DoubleAttackActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
 
 class DoubleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
@@ -23,7 +23,7 @@ class DoubleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
     val state = mock(classOf[IGameState])
     val updatedState = mock(classOf[IGameState])
     val event = mock(classOf[ObservableEvent])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.doubleAttack(state, 1)).thenReturn((true, updatedState, List(event)))
 
@@ -35,7 +35,7 @@ class DoubleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
   it should "return None when actionManager returns (false, ...)" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.doubleAttack(state, 2)).thenReturn((false, state, Nil))
 
@@ -47,7 +47,7 @@ class DoubleAttackActionCommandSpec extends AnyFlatSpec with Matchers {
 
   it should "return None when actionManager throws an exception" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val manager = mock(classOf[IActionExecutor])
 
     when(manager.doubleAttack(state, 3)).thenThrow(new RuntimeException("fail"))
 

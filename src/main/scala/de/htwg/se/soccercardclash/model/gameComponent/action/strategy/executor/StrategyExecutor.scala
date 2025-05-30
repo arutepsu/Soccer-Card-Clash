@@ -1,10 +1,10 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.executor
 
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.revert.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap.{RegularSwapStrategy, ReverseSwapStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.attack.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.{DefenderBoostStrategy, GoalkeeperBoostStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap.{RegularSwapStrategy, ReverseSwapStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent}
 
