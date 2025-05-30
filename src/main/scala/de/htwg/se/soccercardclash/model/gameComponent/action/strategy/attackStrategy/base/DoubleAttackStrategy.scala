@@ -20,14 +20,13 @@ import scala.util.{Failure, Success, Try}
 class DoubleAttackStrategy(
                             defenderIndex: Int,
                             playerActionService: IPlayerActionManager,
-                            boostManager: IBoostManager
+                            revertStrategy: IRevertStrategy
                           ) extends IActionStrategy {
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles
     val attackerBeforeAction = roles.attacker
     val defender = roles.defender
-    val revertStrategy = boostManager.getRevertStrategy(state)
     val scores = state.getScores
     val gameCards = state.getGameCards
 

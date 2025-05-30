@@ -2,7 +2,8 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapAct
 
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{IActionManager, IPlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{IActionManager, IPlayerActionManager, PlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.base.RegularSwapStrategy
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}
@@ -13,11 +14,10 @@ class RegularSwapActionCommand(
                               ) extends ActionCommand {
 
   override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] = {
-    Try(actionManager.regularSwap(state, cardIndex)) match {
-      case Success((true, updatedState, events)) =>
-        Some((updatedState, events))
-      case _ =>
-        None
-    }
+    val playerActionManager = new PlayerActionManager()
+    val strategy = RegularSwapStrategy(cardIndex, playerActionManager)
+    val (success, updatedState, events) = actionManager.execute(strategy, state)
+
+    if success then Some((updatedState, events)) else None
   }
 }

@@ -46,7 +46,7 @@ class ActionManagerFactory @Inject()(
   override def create(): IActionManager =
     new ActionManager(handlerChain)
 }
-@Singleton
+//@Singleton
 class ActionManager @Inject() (
                                 handlerChain: IActionHandler
                               ) extends IActionManager {

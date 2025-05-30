@@ -4,6 +4,8 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.SingleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.RevertBoostStrategy
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}
@@ -11,12 +13,11 @@ import scala.util.{Failure, Success, Try}
 class SingleAttackActionCommand(defenderIndex: Int,
                                 actionManager: IActionManager) extends ActionCommand {
   override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] = {
-    Try(actionManager.singleAttack(state, defenderIndex)) match {
-      case Success((true, updatedState, events)) =>
-        Some((updatedState, events))
-      case _ =>
-        None
-    }
+    val revertBoostStrategy = new RevertBoostStrategy(state)
+    val strategy = SingleAttackStrategy(defenderIndex, revertBoostStrategy)
+    val (success, updatedState, events) = actionManager.execute(strategy, state)
+
+    if success then Some((updatedState, events)) else None
   }
 }
 

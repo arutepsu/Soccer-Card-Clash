@@ -15,13 +15,12 @@ import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, Observ
 import scala.util.{Failure, Success, Try}
 
 //TODO : Implement Goalkeeper tie case
-class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) extends IActionStrategy{
+class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertStrategy) extends IActionStrategy{
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
-    val revertStrategy = boostManager.getRevertStrategy(state)
     val scores = state.getScores
     val gameCards = state.getGameCards
 

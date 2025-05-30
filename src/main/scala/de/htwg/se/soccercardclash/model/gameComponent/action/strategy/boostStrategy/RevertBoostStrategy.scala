@@ -7,11 +7,11 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrat
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActionPolicies
 
-class RevertBoostStrategy(playingField: IGameState) extends IRevertStrategy {
+class RevertBoostStrategy(state: IGameState) extends IRevertStrategy {
   protected val cardReverter = new RevertCard
 
   override def revertCard(card: Option[ICard]): Option[ICard] = {
-    cardReverter.revertCard(playingField, card)
+    cardReverter.revertCard(state, card)
   }
 }
 
