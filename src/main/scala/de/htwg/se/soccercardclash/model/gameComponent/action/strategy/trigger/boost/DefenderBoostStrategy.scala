@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.base.types.{BoostedCard, RegularCard}
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.Roles
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}

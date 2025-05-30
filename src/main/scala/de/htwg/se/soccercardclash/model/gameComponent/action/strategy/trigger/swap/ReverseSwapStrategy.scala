@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IPlayerActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, StateEvent}

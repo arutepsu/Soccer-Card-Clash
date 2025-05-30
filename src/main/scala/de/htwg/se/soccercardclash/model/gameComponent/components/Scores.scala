@@ -17,21 +17,21 @@ trait IScoresFactory {
   def createWithScores(playerScores: Map[IPlayer, Int]): IScores
 }
 
-class ScoresFactory extends IScoresFactory {
+class ScoresFactory @Inject (scoringStrategy: IScoringStrategy) extends IScoresFactory {
   override def create(players: Seq[IPlayer]): IScores = {
     val initialScores = players.map(p => p -> 0).toMap
-    Scores(initialScores)
+    Scores(initialScores, scoringStrategy)
   }
 
   override def createWithScores(playerScores: Map[IPlayer, Int]): IScores = {
-    Scores(playerScores)
+    Scores(playerScores, scoringStrategy)
   }
 }
 
 
 case class Scores(
                    playerToScore: Map[IPlayer, Int],
-                   scoringStrategy: IScoringStrategy = new StandardScoring()
+                   scoringStrategy: IScoringStrategy,
                  ) extends IScores {
 
   override def getScore(player: IPlayer): Int =

@@ -3,13 +3,12 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.manager
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.IActionHandler
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.executor.HandlerChainFactory
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.executor.{HandlerChainFactory, IActionHandler}
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.util.ObservableEvent

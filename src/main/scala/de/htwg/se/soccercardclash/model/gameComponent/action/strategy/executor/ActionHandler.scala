@@ -1,9 +1,8 @@
-package de.htwg.se.soccercardclash.model.gameComponent.action
+package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.executor
 
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.util.GameActionEvent
-import de.htwg.se.soccercardclash.util.ObservableEvent
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
+import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent}
 
 
 trait IActionHandler {
@@ -13,7 +12,7 @@ trait IActionHandler {
 }
 
 
-abstract class BaseActionHandler extends IActionHandler {
+abstract class ActionHandler extends IActionHandler {
   private var nextHandler: Option[IActionHandler] = None
 
   override def setNext(handler: IActionHandler): IActionHandler = {

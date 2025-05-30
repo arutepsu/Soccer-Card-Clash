@@ -32,7 +32,7 @@ class GameStateModule extends AbstractModule {
     bind(classOf[IDefenderFieldRefillStrategy]).to(classOf[DefenderFieldRefillStrategy])
     bind(classOf[IFieldRefillStrategy]).to(classOf[FieldRefillStrategy])
     bind(classOf[IRefillStrategy]).to(classOf[StandardRefillStrategy])
-    
+    bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
     bind(classOf[IPlayerActionManager]).to(classOf[PlayerActionManager])
   }
 }

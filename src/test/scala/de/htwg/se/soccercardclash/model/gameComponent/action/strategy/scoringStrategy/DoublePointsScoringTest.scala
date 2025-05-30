@@ -1,6 +1,5 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy
 
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.DoublePointsScoring
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.IScoringStrategy
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
