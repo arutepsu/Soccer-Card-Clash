@@ -10,10 +10,10 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.collection.mutable
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
+class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends IActionStrategy {
 
-class ReverseSwapStrategy(playerActionService: IPlayerActionManager) extends ISwapStrategy {
-
-  override def swap(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+  override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     var gameCards = state.getGameCards
     val roles = state.getRoles
     val attacker = roles.attacker

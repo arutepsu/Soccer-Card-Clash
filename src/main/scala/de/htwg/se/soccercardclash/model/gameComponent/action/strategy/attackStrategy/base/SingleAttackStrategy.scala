@@ -3,6 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStr
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.IAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.{BoostManager, IBoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
@@ -14,7 +15,7 @@ import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, Observ
 import scala.util.{Failure, Success, Try}
 
 //TODO : Implement Goalkeeper tie case
-class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) extends IAttackStrategy {
+class SingleAttackStrategy(defenderIndex: Int, boostManager: IBoostManager) extends IActionStrategy{
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles

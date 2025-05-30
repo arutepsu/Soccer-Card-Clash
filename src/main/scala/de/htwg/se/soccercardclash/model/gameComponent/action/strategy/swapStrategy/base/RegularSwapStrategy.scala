@@ -10,10 +10,10 @@ import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, Observ
 
 import scala.collection.mutable
 import scala.util.{Failure, Success}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
+class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager) extends IActionStrategy {
 
-class RegularSwapStrategy(index: Int, playerActionService: IPlayerActionManager) extends ISwapStrategy {
-
-  override def swap(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+  override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender

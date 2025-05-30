@@ -4,6 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IPlayerActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.IAttackStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.{BoostManager, IBoostManager, IRevertStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
@@ -20,7 +21,7 @@ class DoubleAttackStrategy(
                             defenderIndex: Int,
                             playerActionService: IPlayerActionManager,
                             boostManager: IBoostManager
-                          ) extends IAttackStrategy {
+                          ) extends IActionStrategy {
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles

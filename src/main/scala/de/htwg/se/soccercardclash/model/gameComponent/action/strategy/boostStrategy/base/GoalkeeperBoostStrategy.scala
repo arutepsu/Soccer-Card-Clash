@@ -8,12 +8,12 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrat
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.Roles
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
-
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.IActionStrategy
 class GoalkeeperBoostStrategy(
                                playerActionService: IPlayerActionManager
-                             ) extends IBoostStrategy {
+                             ) extends IActionStrategy {
 
-  override def boost(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
+  override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles
     val attacker = roles.attacker
     val defender = roles.defender
