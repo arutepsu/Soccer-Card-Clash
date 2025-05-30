@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.RefillDefenderField
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.DefenderFieldRefillStrategy
 import org.mockito.Mockito.*
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.scalatest.matchers.should.Matchers
@@ -41,7 +41,7 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       when(updatedGC1.newPlayerDefenders(eqTo(player), eqTo(expectedDefenders))).thenReturn(updatedGC2)
       when(updatedGC2.newPlayerHand(eqTo(player), eqTo(updatedHand))).thenReturn(updatedGC3)
 
-      val strategy = new RefillDefenderField()
+      val strategy = new DefenderFieldRefillStrategy()
       val result = strategy.refill(gameCards, player)
 
       result shouldBe updatedGC3
@@ -77,7 +77,7 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       when(updatedGC1.newPlayerDefenders(eqTo(player), any())).thenReturn(updatedGC2)
       when(updatedGC2.newPlayerHand(eqTo(player), eqTo(updatedHand))).thenReturn(updatedGC3)
 
-      val strategy = new RefillDefenderField()
+      val strategy = new DefenderFieldRefillStrategy()
       val result = strategy.refill(gameCards, player)
 
       result shouldBe updatedGC3
@@ -93,7 +93,7 @@ class RefillDefenderFieldSpec extends AnyWordSpec with Matchers with MockitoSuga
       when(gameCards.getPlayerDefenders(player)).thenReturn(defenders)
       when(gameCards.getPlayerGoalkeeper(player)).thenReturn(goalkeeper)
 
-      val strategy = new RefillDefenderField()
+      val strategy = new DefenderFieldRefillStrategy()
       strategy.refill(gameCards, player) shouldBe gameCards
     }
   }

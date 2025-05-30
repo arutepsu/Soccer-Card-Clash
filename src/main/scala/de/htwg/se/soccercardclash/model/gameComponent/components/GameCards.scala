@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.components
+package de.htwg.se.soccercardclash.model.gameComponent.components
 
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
@@ -30,8 +30,10 @@ trait IGameCardsFactory {
 
 class GameCardsFactory @Inject()(
                                   handCardsFactory: IHandCardsFactory,
-                                  fieldCardsFactory: IFieldCardsFactory
+                                  fieldCardsFactory: IFieldCardsFactory,
+                                  refillStrategy: IRefillStrategy
                                 ) extends IGameCardsFactory {
+
 
   override def create(attacker: IPlayer, defender: IPlayer): IGameCards = {
     val handManager = handCardsFactory.empty
@@ -40,7 +42,7 @@ class GameCardsFactory @Inject()(
       Map(attacker -> None, defender -> None).withDefaultValue(None),
       Map(attacker -> List.empty, defender -> List.empty).withDefaultValue(List.empty)
     )
-    GameCards(handManager, fieldManager)
+    GameCards(handManager, fieldManager, refillStrategy)
   }
 
   override def createFromData(
@@ -73,7 +75,7 @@ class GameCardsFactory @Inject()(
       )
     )
 
-    val rawGameCards = GameCards(hand, field)
+    val rawGameCards = GameCards(hand, field, refillStrategy)
     rawGameCards.initializeFields(attacker, defender)
   }
 }
@@ -81,7 +83,7 @@ class GameCardsFactory @Inject()(
 case class GameCards(
                       handCards: IHandCards,
                       fieldCards: IFieldCards,
-                      refillStrategy: IRefillStrategy = new StandardRefillStrategy()
+                      refillStrategy: IRefillStrategy
                     ) extends IGameCards {
   override def getPlayerHand(player: IPlayer): IHandCardsQueue =
     handCards.getPlayerHand(player)

@@ -4,10 +4,10 @@ import com.google.inject._
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.gameComponent.state.components._
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost._
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap._
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.StandardScoring
 import org.scalatest.matchers.should.Matchers

@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStr
 
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
+import de.htwg.se.soccercardclash.model.gameComponent.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 
 import scala.collection.mutable

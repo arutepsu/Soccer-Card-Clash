@@ -3,10 +3,10 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackA
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{IActionManager, IPlayerActionManager}
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.DoubleAttackStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.RevertBoostStrategy
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.DoubleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.revert.RevertBoostStrategy
 import scala.util.{Failure, Success, Try}
 
 

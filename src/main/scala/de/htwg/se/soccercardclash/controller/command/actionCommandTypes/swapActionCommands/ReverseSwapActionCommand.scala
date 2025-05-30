@@ -3,8 +3,8 @@ package de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapAct
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{IActionManager, IPlayerActionManager, PlayerActionManager}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap.ReverseSwapStrategy
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.base.ReverseSwapStrategy
 
 import scala.util.{Failure, Success, Try}
 

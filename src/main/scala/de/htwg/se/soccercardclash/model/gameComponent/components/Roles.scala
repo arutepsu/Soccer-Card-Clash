@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.components
+package de.htwg.se.soccercardclash.model.gameComponent.components
 
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState

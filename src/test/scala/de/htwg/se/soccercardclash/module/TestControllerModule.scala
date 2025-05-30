@@ -7,9 +7,9 @@ import de.htwg.se.soccercardclash.controller.command.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
 import de.htwg.se.soccercardclash.util.IGameContextHolder

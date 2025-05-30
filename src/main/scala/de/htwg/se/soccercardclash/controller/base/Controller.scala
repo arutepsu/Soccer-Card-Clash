@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Player}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}

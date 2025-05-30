@@ -1,12 +1,11 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.base
+package de.htwg.se.soccercardclash.model.gameComponent.base
 
 import com.google.inject.{Inject, Provider, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.{DoubleAttackStrategy, SingleAttackStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.{AttackManager, IAttackStrategy}
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCards, IRoles, IScores}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.{DoubleAttackStrategy, SingleAttackStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.Observable

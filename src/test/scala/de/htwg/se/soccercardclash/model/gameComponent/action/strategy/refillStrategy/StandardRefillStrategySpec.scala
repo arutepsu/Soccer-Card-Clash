@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy
 
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.{RefillDefenderField, RefillField, StandardRefillStrategy}
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.{DefenderFieldRefillStrategy, FieldRefillStrategy, StandardRefillStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import org.mockito.Mockito.*
@@ -18,9 +18,9 @@ class StandardRefillStrategySpec extends AnyWordSpec with Matchers with MockitoS
       val mockPlayer = mock[IPlayer]
       val mockRefilled = mock[IGameCards]
 
-      val defenderField = mock[RefillDefenderField]
+      val defenderField = mock[DefenderFieldRefillStrategy]
       val refill = new StandardRefillStrategy {
-        override protected val defenderFieldRefill: RefillDefenderField = defenderField
+        override protected val defenderFieldRefill: DefenderFieldRefillStrategy = defenderField
       }
 
       when(defenderField.refill(mockGameCards, mockPlayer)).thenReturn(mockRefilled)
@@ -35,9 +35,9 @@ class StandardRefillStrategySpec extends AnyWordSpec with Matchers with MockitoS
       val mockHand = mock[IHandCardsQueue]
       val mockRefilled = mock[IGameCards]
 
-      val field = mock[RefillField]
+      val field = mock[FieldRefillStrategy]
       val refill = new StandardRefillStrategy {
-        override protected val fieldRefill: RefillField = field
+        override protected val fieldRefill: FieldRefillStrategy = field
       }
 
       when(field.refill(mockGameCards, mockPlayer, mockHand)).thenReturn(mockRefilled)

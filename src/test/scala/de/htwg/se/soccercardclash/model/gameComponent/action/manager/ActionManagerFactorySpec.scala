@@ -1,8 +1,8 @@
 package de.htwg.se.soccercardclash.model.gameComponent.action.manager
 
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.IAttackManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.IBoostManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.ISwapManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.IAttackManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.IBoostManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swap.ISwapManager
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar

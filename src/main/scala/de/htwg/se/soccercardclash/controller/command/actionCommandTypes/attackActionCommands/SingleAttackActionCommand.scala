@@ -4,8 +4,8 @@ import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.base.SingleAttackStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.RevertBoostStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attack.SingleAttackStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boost.revert.RevertBoostStrategy
 import de.htwg.se.soccercardclash.util.{EventDispatcher, ObservableEvent}
 
 import scala.util.{Failure, Success, Try}

@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStr
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.gameComponent.state.components.IGameCards
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.RefillField
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.refillStrategy.base.FieldRefillStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
@@ -44,7 +44,7 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(updatedCards.newPlayerGoalkeeper(eqTo(player), any())).thenReturn(withGoalkeeper)
       when(withGoalkeeper.newPlayerHand(player, updatedHand)).thenReturn(withHand)
 
-      val strategy = new RefillField
+      val strategy = new FieldRefillStrategy
       val result = strategy.refill(gameCards, player, hand)
 
       result shouldBe withHand
@@ -58,7 +58,7 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       when(gameCards.getPlayerDefenders(player)).thenReturn(List(Some(mock[ICard]), None, None))
       when(gameCards.getPlayerGoalkeeper(player)).thenReturn(None)
 
-      val strategy = new RefillField
+      val strategy = new FieldRefillStrategy
       val result = strategy.refill(gameCards, player, hand)
 
       result shouldBe gameCards
