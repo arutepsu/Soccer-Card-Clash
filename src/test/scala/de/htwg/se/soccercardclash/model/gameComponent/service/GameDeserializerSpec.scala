@@ -7,13 +7,15 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IFieldCardsFactory, IGameCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.components.{IFieldCardsFactory, IGameCardsFactory, IHandCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.util.{Deserializer, Serializable}
 import play.api.libs.json.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
+import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.mockito.ArgumentMatchers.eq
 import scala.xml.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -85,6 +87,114 @@ class GameDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       result shouldBe a[IGameState]
     }
+    "fromXml" should {
+
+      "correctly deserialize well-formed XML with full data" in {
+        val xml =
+          <Game>
+            <attacker><Player name="A" type="Human"/></attacker>
+            <defender><Player name="B" type="Human"/></defender>
+            <attackerHand>
+              <Card><value>5</value><suit>Hearts</suit><type>Regular</type></Card>
+            </attackerHand>
+            <defenderHand>
+              <Card><value>9</value><suit>Clubs</suit><type>Regular</type></Card>
+            </defenderHand>
+            <attackerField>
+              <Card xsi:nil="true"/>
+              <Card><value>7</value><suit>Spades</suit><type>Regular</type></Card>
+            </attackerField>
+            <defenderField></defenderField>
+            <attackerGoalkeeper><Card><value>6</value><suit>Hearts</suit><type>Regular</type></Card></attackerGoalkeeper>
+            <defenderGoalkeeper><Card><value>4</value><suit>Diamonds</suit><type>Regular</type></Card></defenderGoalkeeper>
+            <attackerScore>2</attackerScore>
+            <defenderScore>3</defenderScore>
+          </Game>
+
+        val attacker = mock[IPlayer]
+        val defender = mock[IPlayer]
+        val card1 = mock[ICard]
+        val card2 = mock[ICard]
+        val gk1 = mock[ICard]
+        val gk2 = mock[ICard]
+        val gameCards = mock[IGameCards]
+        val scores = mock[IScores]
+        val roles = mock[IRoles]
+
+        when(mockPlayerDeserializer.fromXml(any[Elem])) thenReturn attacker thenReturn defender
+        when(mockCardDeserializer.fromXml(any[Elem])) thenReturn card1 thenReturn card2 thenReturn gk1 thenReturn gk2
+        when(mockGameCardsFactory.createFromData(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(gameCards)
+        when(mockRolesFactory.create(attacker, defender)).thenReturn(roles)
+        when(mockScoresFactory.createWithScores(any())).thenReturn(scores)
+
+        val result = deserializer.fromXml(xml)
+        result shouldBe a[IGameState]
+      }
+
+      "throw exception if attacker element is missing" in {
+        val xml = <Game><defender><Player name="B" type="Human"/></defender></Game>
+        val ex = intercept[IllegalArgumentException](deserializer.fromXml(xml))
+        ex.getMessage should include ("Missing <attacker> inner element")
+      }
+
+      "throw exception if defender element is missing" in {
+        val xml = <Game><attacker><Player name="A" type="Human"/></attacker></Game>
+        val ex = intercept[IllegalArgumentException](deserializer.fromXml(xml))
+        ex.getMessage should include ("Missing <defender> inner element")
+      }
+
+      "treat missing cards and nil fields as empty" in {
+        val xml =
+          <Game>
+            <attacker><Player name="A" type="Human"/></attacker>
+            <defender><Player name="B" type="Human"/></defender>
+            <attackerHand></attackerHand>
+            <defenderHand></defenderHand>
+            <attackerField>
+              <Card xsi:nil="true"/>
+              <Card/>
+            </attackerField>
+            <defenderField>
+              <Card xsi:nil="true"/>
+            </defenderField>
+          </Game>
+
+        val attacker = mock[IPlayer]
+        val defender = mock[IPlayer]
+        val gameCards = mock[IGameCards]
+        val scores = mock[IScores]
+        val roles = mock[IRoles]
+
+        when(mockPlayerDeserializer.fromXml(any[Elem])) thenReturn attacker thenReturn defender
+        when(mockGameCardsFactory.createFromData(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(gameCards)
+        when(mockRolesFactory.create(attacker, defender)).thenReturn(roles)
+        when(mockScoresFactory.createWithScores(any())).thenReturn(scores)
+
+        val result = deserializer.fromXml(xml)
+        result shouldBe a[IGameState]
+      }
+
+      "throw exception for invalid card elements" in {
+        val xml =
+          <Game>
+            <attacker><Player name="A" type="Human"/></attacker>
+            <defender><Player name="B" type="Human"/></defender>
+            <attackerHand><Card><invalid/></Card></attackerHand>
+            <defenderHand></defenderHand>
+          </Game>
+
+        val attacker = mock[IPlayer]
+        val defender = mock[IPlayer]
+
+        when(mockPlayerDeserializer.fromXml(any[Elem])) thenReturn attacker thenReturn defender
+        when(mockCardDeserializer.fromXml(any[Elem])).thenThrow(new IllegalArgumentException("Invalid card"))
+
+        assertThrows[IllegalArgumentException] {
+          deserializer.fromXml(xml)
+        }
+      }
+
+    }
 
     "throw exception when missing attacker tag" in {
       val xml: Elem = <Game></Game>
@@ -130,5 +240,53 @@ class GameDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       result shouldBe a[IGameState]
     }
+    "gracefully handle missing optional JSON fields" in {
+      val json: JsObject = Json.obj(
+        "attacker" -> Json.obj("name" -> "Alice", "type" -> "Human"),
+        "defender" -> Json.obj("name" -> "Bob", "type" -> "Human")
+        // attackerHand, defenderHand, attackerField, etc. are omitted
+      )
+
+      val attacker = mock[IPlayer]
+      val defender = mock[IPlayer]
+      val gameCards = mock[IGameCards]
+      val scores = mock[IScores]
+      val roles = mock[IRoles]
+
+      when(mockPlayerDeserializer.fromJson(any[JsObject])) thenReturn attacker thenReturn defender
+      when(mockGameCardsFactory.createFromData(
+        eqTo(attacker), eqTo(Nil),
+        eqTo(defender), eqTo(Nil),
+        eqTo(List(None, None, None)),
+        eqTo(List(None, None, None)),
+        eqTo(None), eqTo(None))
+      ).thenReturn(gameCards)
+
+      when(mockRolesFactory.create(attacker, defender)).thenReturn(roles)
+      when(mockScoresFactory.createWithScores(any())).thenReturn(scores)
+
+      val result = deserializer.fromJson(json)
+
+      result shouldBe a[IGameState]
+    }
+    "throw exception when defenderField contains invalid JSON" in {
+      val json = Json.obj(
+        "attacker" -> Json.obj("name" -> "Alice", "type" -> "Human"),
+        "defender" -> Json.obj("name" -> "Bob", "type" -> "Human"),
+        "defenderField" -> Json.arr("invalid-card")
+      )
+
+      val attacker = mock[IPlayer]
+      val defender = mock[IPlayer]
+
+      when(mockPlayerDeserializer.fromJson(any[JsObject])) thenReturn attacker thenReturn defender
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromJson(json)
+      }
+
+      exception.getMessage should include("Invalid card JSON")
+    }
+
   }
 }

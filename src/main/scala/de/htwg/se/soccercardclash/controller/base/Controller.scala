@@ -38,7 +38,7 @@ class Controller @Inject()(
     (updatedCtx, result.success)
   }
 
-  private def fallbackEventFor(mainEvent: ObservableEvent, ctx: GameContext): List[ObservableEvent] = {
+  protected def fallbackEventFor(mainEvent: ObservableEvent, ctx: GameContext): List[ObservableEvent] = {
     val attacker = ctx.state.getRoles.attacker
     mainEvent match {
       case GameActionEvent.DoubleAttack => List(StateEvent.NoDoubleAttacksEvent(attacker))

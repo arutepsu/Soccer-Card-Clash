@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.a
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertBoostStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -14,7 +14,7 @@ import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, Observ
 import scala.util.{Failure, Success, Try}
 
 //TODO : Implement Goalkeeper tie case
-class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertStrategy) extends IActionStrategy{
+class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertBoostStrategy) extends IActionStrategy{
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     val roles = state.getRoles
@@ -83,7 +83,7 @@ class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertStrategy) 
                                          attackerHand: IHandCardsQueue,
                                          gameCards: IGameCards,
                                          attackingCard: ICard,
-                                         revertStrategy: IRevertStrategy,
+                                         revertStrategy: IRevertBoostStrategy,
                                          scores: IScores,
                                          roles: IRoles
                                        ): (IGameCards, IRoles, IScores, List[ObservableEvent]) = {
@@ -187,7 +187,7 @@ class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertStrategy) 
                                        attackingCard: ICard,
                                        defenderCard: Option[ICard],
                                        gameCards: IGameCards,
-                                       revertStrategy: IRevertStrategy,
+                                       revertStrategy: IRevertBoostStrategy,
                                        roles: IRoles
                                      ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
@@ -255,7 +255,7 @@ class SingleAttackStrategy(defenderIndex: Int, revertStrategy: IRevertStrategy) 
                            attackingCard: ICard,
                            defenderCard: Option[ICard],
                            gameCards: IGameCards,
-                           revertStrategy: IRevertStrategy,
+                           revertStrategy: IRevertBoostStrategy,
                            roles: IRoles
                          ): (IGameCards, IRoles, List[ObservableEvent]) = {
 

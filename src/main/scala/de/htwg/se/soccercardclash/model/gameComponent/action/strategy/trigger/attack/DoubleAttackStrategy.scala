@@ -4,7 +4,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IPlayerActionManager
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertBoostStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -19,7 +19,7 @@ import scala.util.{Failure, Success, Try}
 class DoubleAttackStrategy(
                             defenderIndex: Int,
                             playerActionService: IPlayerActionManager,
-                            revertStrategy: IRevertStrategy
+                            revertStrategy: IRevertBoostStrategy
                           ) extends IActionStrategy {
 
   override def execute(state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
@@ -107,7 +107,7 @@ class DoubleAttackStrategy(
                                          attackingCard1: ICard,
                                          attackingCard2: ICard,
                                          attackValue: Int,
-                                         revertStrategy: IRevertStrategy,
+                                         revertStrategy: IRevertBoostStrategy,
                                          scores: IScores,
                                          roles: IRoles
                                        ): (IGameCards, IRoles, IScores, List[ObservableEvent]) = {
@@ -179,7 +179,7 @@ class DoubleAttackStrategy(
                                        attackingCard2: Option[ICard],
                                        defenderCard: Option[ICard],
                                        attackValue: Int,
-                                       revertStrategy: IRevertStrategy,
+                                       revertStrategy: IRevertBoostStrategy,
                                        roles: IRoles
                                      ): (IGameCards, IRoles, List[ObservableEvent]) = {
 
@@ -261,7 +261,7 @@ class DoubleAttackStrategy(
                            attackingCard1: Option[ICard],
                            attackingCard2: Option[ICard],
                            gameCards: IGameCards,
-                           revertStrategy: IRevertStrategy,
+                           revertStrategy: IRevertBoostStrategy,
                            roles: IRoles
                          ): (IGameCards, IRoles, List[ObservableEvent]) = {
 

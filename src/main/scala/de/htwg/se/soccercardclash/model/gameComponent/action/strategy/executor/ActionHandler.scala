@@ -5,6 +5,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IA
 import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent}
 
 
+
 trait IActionHandler {
   def setNext(handler: IActionHandler): IActionHandler
 

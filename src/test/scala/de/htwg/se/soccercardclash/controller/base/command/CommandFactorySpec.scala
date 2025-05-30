@@ -6,7 +6,8 @@ import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostAct
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.swapActionCommands.*
 import de.htwg.se.soccercardclash.controller.command.workflow.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.IRevertBoostStrategyFactory
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.mockito.Mockito.*
@@ -17,8 +18,17 @@ import org.scalatestplus.mockito.MockitoSugar
 class CommandFactorySpec extends AnyFlatSpec with Matchers {
 
   val mockGameService = mock(classOf[IGameService])
-  val mockActionManager = mock(classOf[IActionExecutor])
-  val factory = new CommandFactory(mockGameService, mockActionManager)
+  val mockActionExecutor = mock(classOf[IActionExecutor])
+  val mockPlayerActionManager = mock(classOf[IPlayerActionManager])
+  val mockRevertBoostFactory = mock(classOf[IRevertBoostStrategyFactory])
+
+  val factory = new CommandFactory(
+    mockGameService,
+    mockActionExecutor,
+    mockPlayerActionManager,
+    mockRevertBoostFactory
+  )
+
 
   "CommandFactory" should "create SingleAttackActionCommand with correct index" in {
     val cmd = factory.createSingleAttackCommand(2)

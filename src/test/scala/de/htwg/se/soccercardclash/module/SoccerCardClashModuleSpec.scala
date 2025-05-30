@@ -32,10 +32,6 @@ class SoccerCardClashModuleSpec extends AnyWordSpec with Matchers {
       cardFactory shouldBe a[CardFactory]
     }
 
-    "provide an ActionManagerFactory" in {
-      val factory = injector.getInstance(classOf[IActionManagerFactory])
-      factory shouldBe a[ActionManagerFactory]
-    }
     "provide a GameDeserializer" in {
       val deserializer = injector.getInstance(classOf[GameDeserializer])
       deserializer shouldBe a[GameDeserializer]

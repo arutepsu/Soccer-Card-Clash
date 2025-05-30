@@ -18,9 +18,7 @@ import play.api.libs.json.util.*
 import scala.collection.mutable.ListBuffer
 import scala.xml.*
 
-class ActionExecutor @Inject() extends IActionExecutor {
-
-  private val handlerChain: IActionHandler = HandlerChainFactory.fullChain()
+class ActionExecutor @Inject() (handlerChain: IActionHandler) extends IActionExecutor {
 
   override def execute(strategy: IActionStrategy, state: IGameState): (Boolean, IGameState, List[ObservableEvent]) = {
     handlerChain.handle(strategy, state).getOrElse {
@@ -29,6 +27,7 @@ class ActionExecutor @Inject() extends IActionExecutor {
   }
 
 }
+
 trait IActionExecutor {
   def execute(strategy: IActionStrategy, state: IGameState): (Boolean, IGameState, List[ObservableEvent])
 }

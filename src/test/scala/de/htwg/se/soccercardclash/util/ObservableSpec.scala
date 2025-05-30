@@ -14,25 +14,60 @@ class ObservableSpec extends AnyFlatSpec with Matchers {
   behavior of "Observable"
 
   it should "notify added observers when notifyObservers is called" in {
-    // Step 1: Create a concrete ObservableEvent
     case object DummyEvent extends ObservableEvent
 
-    // Step 2: Track if update was called
     var updateCalled = false
 
-    // Step 3: Create an observer that flips the flag
     val observer = new Observer {
       override def update(e: ObservableEvent): Unit = {
         updateCalled = true
       }
     }
 
-    // Step 4: Create observable and test
     val observable = new Observable
     observable.add(observer)
     observable.notifyObservers(DummyEvent)
 
-    // Step 5: Assert
     updateCalled shouldBe true
   }
+  it should "remove an observer when remove is called" in {
+    var updateCalled = false
+
+    val observer = new Observer {
+      override def update(e: ObservableEvent): Unit = {
+        updateCalled = true
+      }
+    }
+
+    val observable = new Observable
+    observable.add(observer)
+    observable.remove(observer)
+    observable.notifyObservers(new ObservableEvent {}) // anonymous event
+
+    updateCalled shouldBe false // observer should not be called
+  }
+
+  it should "do nothing when removing an observer that was never added" in {
+    var updateCalled = false
+
+    val observerAdded = new Observer {
+      override def update(e: ObservableEvent): Unit = {
+        updateCalled = true
+      }
+    }
+
+    val observerNotAdded = new Observer {
+      override def update(e: ObservableEvent): Unit = {
+        fail("This observer should not be called")
+      }
+    }
+
+    val observable = new Observable
+    observable.add(observerAdded)
+    observable.remove(observerNotAdded) // no effect
+
+    observable.notifyObservers(new ObservableEvent {})
+    updateCalled shouldBe true // only the added one was triggered
+  }
+
 }

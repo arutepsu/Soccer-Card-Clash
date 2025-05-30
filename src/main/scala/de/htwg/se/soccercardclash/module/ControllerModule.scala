@@ -32,7 +32,7 @@ class ControllerModule extends AbstractModule {
     ))
     .in(classOf[Singleton])
 
-//    bind(classOf[IActionManager]).to(classOf[ActionManager])
+    bind(classOf[IActionExecutor]).toInstance(new ActionExecutor(HandlerChainFactory.fullChain()))
     
   }
   

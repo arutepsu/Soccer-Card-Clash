@@ -175,5 +175,50 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
 
       result shouldBe mockPlayer
     }
+    "throw exception when XML has unknown player type" in {
+      val xml: Elem =
+        <Player name="Ghost" type="Alien">
+          <ActionStates></ActionStates>
+        </Player>
+
+      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+
+      val ex = intercept[RuntimeException] {
+        deserializer.fromXml(xml)
+      }
+
+      ex.getMessage.toLowerCase should include("unknown player type")
+    }
+    "throw exception when JSON has unknown player type" in {
+      val json: JsObject = Json.obj(
+        "name" -> "Ghost",
+        "type" -> "Alien"
+      )
+
+      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+
+      val ex = intercept[RuntimeException] {
+        deserializer.fromJson(json)
+      }
+
+      ex.getMessage.toLowerCase should include("unknown player type")
+    }
+    "throw exception when AI strategy is unknown in JSON" in {
+      val json = Json.obj(
+        "name" -> "Bot",
+        "type" -> "AI",
+        "strategy" -> "UnknownStrategy",
+        "actionStates" -> Json.obj("Boost" -> "CanPerformAction(1)")
+      )
+
+      val mockFactory = mock[IPlayerFactory]
+      val deserializer = new PlayerDeserializer(mockFactory, mock[CardDeserializer], Map.empty)
+
+      val ex = intercept[RuntimeException] {
+        deserializer.fromJson(json)
+      }
+
+      ex.getMessage should include("Unsupported AI strategy: UnknownStrategy")
+    }
   }
 }
