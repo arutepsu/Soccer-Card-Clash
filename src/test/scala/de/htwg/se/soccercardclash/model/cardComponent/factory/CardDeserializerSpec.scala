@@ -152,6 +152,43 @@ class CardDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       exception.getMessage should include("Invalid card value: InvalidValue")
 
     }
+    "throw an exception when Boosted card is missing <additionalValue>" in {
+      val xml: Elem =
+        <card>
+          <type>Boosted</type>
+          <suit>Hearts</suit>
+          <value>5</value>
+        </card>
+
+      val mockRegularCard = mock[RegularCard]
+      when(mockCardFactory.createCard(Value.Five, Suit.Hearts)).thenReturn(mockRegularCard)
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromXml(xml)
+      }
+
+      exception.getMessage should include("Missing or invalid <additionalValue>")
+    }
+    "throw an exception when <additionalValue> is not an integer" in {
+      val xml: Elem =
+        <card>
+          <type>Boosted</type>
+          <suit>Hearts</suit>
+          <value>5</value>
+          <additionalValue>abc</additionalValue>
+        </card>
+
+      val mockRegularCard = mock[RegularCard]
+      when(mockCardFactory.createCard(Value.Five, Suit.Hearts)).thenReturn(mockRegularCard)
+
+      val exception = intercept[IllegalArgumentException] {
+        deserializer.fromXml(xml)
+      }
+
+      exception.getMessage should include("Missing or invalid <additionalValue>")
+    }
+
+
     "throw an exception when deserializing from XML without type tag" in {
       val xml: Elem =
         <card>

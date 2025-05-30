@@ -2,7 +2,7 @@ package de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent
 
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 
 import java.io.{File, PrintWriter}
 import javax.inject.{Inject, Singleton}

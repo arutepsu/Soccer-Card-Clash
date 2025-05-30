@@ -46,8 +46,8 @@ class ControllerModuleSpec extends AnyWordSpec with Matchers {
     }
 
     "bind IActionManager to ActionManager" in {
-      val manager = injector.getInstance(classOf[IActionManager])
-      manager shouldBe a[ActionManager]
+      val manager = injector.getInstance(classOf[IActionExecutor])
+      manager shouldBe a[ActionExecutor]
     }
   }
 }

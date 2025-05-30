@@ -15,42 +15,47 @@ import de.htwg.se.soccercardclash.controller.command.CommandResult
 import de.htwg.se.soccercardclash.controller.command.ICommand
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.{BoostDefenderActionCommand, BoostGoalkeeperActionCommand}
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.{IActionExecutor, IPlayerActionManager}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 
 class BoostGoalkeeperActionCommandSpec extends AnyFlatSpec with Matchers {
 
-  "BoostGoalkeeperActionCommand" should "return Some(...) when actionManager succeeds" in {
+  "BoostGoalkeeperActionCommand" should "return Some(...) when actionExecutor succeeds" in {
     val state = mock(classOf[IGameState])
     val updatedState = mock(classOf[IGameState])
     val event = mock(classOf[ObservableEvent])
-    val manager = mock(classOf[IActionManager])
-    when(manager.boostGoalkeeper(state)).thenReturn((true, updatedState, List(event)))
+    val executor = mock(classOf[IActionExecutor])
+    val playerActionManager = mock(classOf[IPlayerActionManager])
 
-    val command = new BoostGoalkeeperActionCommand(manager)
+    when(executor.execute(any(), eqTo(state))).thenReturn((true, updatedState, List(event)))
+
+    val command = new BoostGoalkeeperActionCommand(executor, playerActionManager)
     val result = command.executeAction(state)
 
     result shouldBe Some((updatedState, List(event)))
   }
 
-  it should "return None when actionManager returns (false, ...)" in {
+  it should "return None when actionExecutor returns (false, ...)" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val executor = mock(classOf[IActionExecutor])
+    val playerActionManager = mock(classOf[IPlayerActionManager])
 
-    when(manager.boostGoalkeeper(state)).thenReturn((false, state, Nil))
+    when(executor.execute(any(), eqTo(state))).thenReturn((false, state, Nil))
 
-    val command = new BoostGoalkeeperActionCommand(manager)
+    val command = new BoostGoalkeeperActionCommand(executor, playerActionManager)
     val result = command.executeAction(state)
 
     result shouldBe None
   }
 
-  it should "return None when actionManager throws an exception" in {
+  it should "return None when actionExecutor throws an exception" in {
     val state = mock(classOf[IGameState])
-    val manager = mock(classOf[IActionManager])
+    val executor = mock(classOf[IActionExecutor])
+    val playerActionManager = mock(classOf[IPlayerActionManager])
 
-    when(manager.boostGoalkeeper(state)).thenThrow(new RuntimeException("fail"))
+    when(executor.execute(any(), eqTo(state))).thenThrow(new RuntimeException("fail"))
 
-    val command = new BoostGoalkeeperActionCommand(manager)
+    val command = new BoostGoalkeeperActionCommand(executor, playerActionManager)
     val result = command.executeAction(state)
 
     result shouldBe None

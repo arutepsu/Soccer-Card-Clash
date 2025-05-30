@@ -3,7 +3,7 @@ package de.htwg.se.soccercardclash.tui
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
+import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.util.*
@@ -78,7 +78,6 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
     override def promptSwap(): Unit = swapCalled= true
     override def promptShowDefendersField(player: IPlayer): Unit = showDefendersFieldCalled = true
 
-    // All other methods do nothing
     def promptMainMenu(): Unit = ()
 
     def promptCreatePlayers(): Unit = ()
@@ -110,7 +109,6 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       val tui = new Tui(controller, contextHolder)
 
-      // Verify the Tui instance is created (not null) and promptState starts as None
       tui should not be null
     }
   }
@@ -155,7 +153,6 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "trigger the attack prompt state and call appropriate prompts" in {
       val controller = new DummyController
 
-      // Stubbed roles
       val roles = mock[IRoles]
       when(roles.defender).thenReturn(mock[IPlayer])
       val state = mock[IGameState]
@@ -211,7 +208,6 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "trigger the boost prompt state and call appropriate prompts" in {
       val controller = new DummyController
 
-      // Stub roles
       val attacker = mock[IPlayer]
       val roles = mock[IRoles]
       when(roles.attacker).thenReturn(attacker)
@@ -302,7 +298,6 @@ class TuiSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val contextHolder = mock[IGameContextHolder]
       val testPrompter = mock[IPrompter]
 
-      // Subclass Tui to expose promptState for testing
       class TestableTui extends Tui(controller, contextHolder) {
         override val prompter: IPrompter = testPrompter
 

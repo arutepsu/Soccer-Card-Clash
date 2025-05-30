@@ -14,7 +14,7 @@ import org.mockito.Mockito.*
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
+import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import org.scalatest.wordspec.AnyWordSpec
 
 class PrompterSpec extends AnyWordSpec with Matchers {

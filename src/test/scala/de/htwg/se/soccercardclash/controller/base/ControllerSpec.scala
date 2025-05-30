@@ -6,13 +6,13 @@ import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQu
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionManager
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.util.{EventDispatcher, IGameContextHolder, Observable, ObservableEvent, Observer, UndoManager}
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.Roles
+import de.htwg.se.soccercardclash.model.gameComponent.components.Roles
 import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 import de.htwg.se.soccercardclash.util.*
 import org.scalatest.wordspec.AnyWordSpec
@@ -173,6 +173,7 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
   }
 
+
   "reverseSwap" should "run the correct command and update context" in {
     val initialState = mock[IGameState]
     val updatedState = mock[IGameState]
@@ -300,6 +301,23 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     verify(mockContextHolder, never()).set(any[GameContext])
   }
 
+  "loadGame" should "return true and update context when game loading succeeds" in {
+    val mockGameService = mock[IGameService]
+    val mockContextHolder = mock[IGameContextHolder]
+    val mockCommandFactory = mock[ICommandFactory]
+    val mockGameState = mock[IGameState]
+
+    val controller = new Controller(mockCommandFactory, mockGameService, mockContextHolder)
+
+    when(mockGameService.loadGame("validGame")).thenReturn(Success(mockGameState))
+
+    val result = controller.loadGame("validGame")
+
+    result shouldBe true
+    verify(mockContextHolder).set(argThat { ctx =>
+      ctx.state == mockGameState && ctx.undoManager.isInstanceOf[UndoManager]
+    })
+  }
 
 
   "saveGame" should "return true and dispatch SaveGame event if successful" in {

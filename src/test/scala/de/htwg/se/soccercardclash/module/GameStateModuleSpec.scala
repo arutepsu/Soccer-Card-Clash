@@ -2,14 +2,14 @@ package de.htwg.se.soccercardclash.module
 
 import com.google.inject._
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
-import de.htwg.se.soccercardclash.model.gameComponent.state.components._
+import de.htwg.se.soccercardclash.model.gameComponent.components._
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy._
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.attack._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy._
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap._
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.StandardScoring
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.base.StandardScoring
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.mockito.Mockito.*
@@ -30,11 +30,6 @@ class GameStateModuleSpec extends AnyWordSpec with Matchers {
       gameCardsFactory shouldBe a[GameCardsFactory]
     }
 
-    "bind IActionManagerFactory to ActionManagerFactory" in {
-      val factory = injector.getInstance(classOf[IActionManagerFactory])
-      factory shouldBe a[ActionManagerFactory]
-    }
-
     "bind IRolesFactory to RolesFactory" in {
       val factory = injector.getInstance(classOf[IRolesFactory])
       factory shouldBe a[RolesFactory]
@@ -48,27 +43,6 @@ class GameStateModuleSpec extends AnyWordSpec with Matchers {
     "bind IHandCardsFactory to HandCardsFactory" in {
       val factory = injector.getInstance(classOf[IHandCardsFactory])
       factory shouldBe a[HandCardsFactory]
-    }
-
-    "bind IAttackManager to AttackManager singleton" in {
-      val m1 = injector.getInstance(classOf[IAttackManager])
-      val m2 = injector.getInstance(classOf[IAttackManager])
-      m1 shouldBe a[AttackManager]
-      m1 shouldBe theSameInstanceAs(m2)
-    }
-
-    "bind IBoostManager to BoostManager singleton" in {
-      val m1 = injector.getInstance(classOf[IBoostManager])
-      val m2 = injector.getInstance(classOf[IBoostManager])
-      m1 shouldBe a[BoostManager]
-      m1 shouldBe theSameInstanceAs(m2)
-    }
-
-    "bind ISwapManager to SwapManager singleton" in {
-      val m1 = injector.getInstance(classOf[ISwapManager])
-      val m2 = injector.getInstance(classOf[ISwapManager])
-      m1 shouldBe a[SwapManager]
-      m1 shouldBe theSameInstanceAs(m2)
     }
 
     "bind IScoringStrategy to StandardScoring" in {

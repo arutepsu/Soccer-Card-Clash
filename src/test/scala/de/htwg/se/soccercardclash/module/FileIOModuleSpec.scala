@@ -9,7 +9,7 @@ import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonCompon
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
+import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

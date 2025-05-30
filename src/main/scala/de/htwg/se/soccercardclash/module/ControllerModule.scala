@@ -7,6 +7,7 @@ import de.htwg.se.soccercardclash.controller.command.{CommandFactory, ICommandFa
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.executor.HandlerChainFactory
 import de.htwg.se.soccercardclash.util.Observable
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.AIPresetRegistry
@@ -31,8 +32,8 @@ class ControllerModule extends AbstractModule {
     ))
     .in(classOf[Singleton])
 
-    bind(classOf[IActionManager]).to(classOf[ActionManager])
+    bind(classOf[IActionExecutor]).toInstance(new ActionExecutor(HandlerChainFactory.fullChain()))
     
   }
-
+  
 }

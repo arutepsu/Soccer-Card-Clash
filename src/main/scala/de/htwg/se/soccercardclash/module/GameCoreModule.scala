@@ -6,7 +6,7 @@ import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
 import de.htwg.se.soccercardclash.model.gameComponent.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
+import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.{GameContextHolder, IGameContextHolder}

@@ -1,9 +1,9 @@
-package de.htwg.se.soccercardclash.model.gameComponent.state.components
+package de.htwg.se.soccercardclash.model.gameComponent.components
 
 import com.google.inject.{Inject, Singleton}
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.IScoringStrategy
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.StandardScoring
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.IScoringStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.base.StandardScoring
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.*
@@ -17,21 +17,21 @@ trait IScoresFactory {
   def createWithScores(playerScores: Map[IPlayer, Int]): IScores
 }
 
-class ScoresFactory extends IScoresFactory {
+class ScoresFactory @Inject (scoringStrategy: IScoringStrategy) extends IScoresFactory {
   override def create(players: Seq[IPlayer]): IScores = {
     val initialScores = players.map(p => p -> 0).toMap
-    Scores(initialScores)
+    Scores(initialScores, scoringStrategy)
   }
 
   override def createWithScores(playerScores: Map[IPlayer, Int]): IScores = {
-    Scores(playerScores)
+    Scores(playerScores, scoringStrategy)
   }
 }
 
 
 case class Scores(
                    playerToScore: Map[IPlayer, Int],
-                   scoringStrategy: IScoringStrategy = new StandardScoring()
+                   scoringStrategy: IScoringStrategy,
                  ) extends IScores {
 
   override def getScore(player: IPlayer): Int =

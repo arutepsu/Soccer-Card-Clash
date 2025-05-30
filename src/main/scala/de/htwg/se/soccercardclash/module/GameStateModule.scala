@@ -3,24 +3,24 @@ package de.htwg.se.soccercardclash.module
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.base.GameState
-import de.htwg.se.soccercardclash.model.gameComponent.state.components.*
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
+import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.attackStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.boostStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.scoringStrategy.base.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.swapStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.attack.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost.revert.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.base.*
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.factory.{IPlayerFactory, PlayerDeserializer}
-
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.IRefillStrategy
+import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.base.*
 class GameStateModule extends AbstractModule {
 
   override def configure(): Unit = {
     
     bind(classOf[IGameCardsFactory]).to(classOf[GameCardsFactory])
-    
-    bind(classOf[IActionManagerFactory]).to(classOf[ActionManagerFactory])
     
     bind(classOf[IRolesFactory]).to(classOf[RolesFactory])
     
@@ -30,15 +30,11 @@ class GameStateModule extends AbstractModule {
       classOf[HandCardsFactory]
         .getConstructor(classOf[IHandCardsQueueFactory])
     )
-
-    bind(classOf[IAttackManager]).to(classOf[AttackManager]).in(classOf[Singleton])
-    
-    bind(classOf[IBoostManager]).to(classOf[BoostManager]).in(classOf[Singleton])
-    
-    bind(classOf[ISwapManager]).to(classOf[SwapManager]).in(classOf[Singleton])
-
+    bind(classOf[IDefenderFieldRefillStrategy]).to(classOf[DefenderFieldRefillStrategy])
+    bind(classOf[IFieldRefillStrategy]).to(classOf[FieldRefillStrategy])
+    bind(classOf[IRefillStrategy]).to(classOf[StandardRefillStrategy])
     bind(classOf[IScoringStrategy]).to(classOf[StandardScoring])
-    
+    bind(classOf[IRevertBoostStrategyFactory]).to(classOf[RevertBoostStrategyFactory])
     bind(classOf[IPlayerActionManager]).to(classOf[PlayerActionManager])
   }
 }
