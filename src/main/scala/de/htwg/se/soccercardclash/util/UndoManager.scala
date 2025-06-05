@@ -4,14 +4,14 @@ import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand}
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 
 class UndoManager {
-  private var undoStack: List[(ICommand, IGameState)] = Nil
-  private var redoStack: List[(ICommand, IGameState)] = Nil
+  private var undoStack: List[(ICommand, Memento)] = Nil
+  private var redoStack: List[(ICommand, Memento)] = Nil
 
   def doStep(command: ICommand, currentState: IGameState): CommandResult = {
     val result = command.execute(currentState)
 
     if (result.success) {
-      undoStack = (command, currentState) :: undoStack
+      undoStack = (command, currentState.createMemento()) :: undoStack
       redoStack = Nil
     }
 
@@ -20,10 +20,10 @@ class UndoManager {
 
   def undoStep(currentState: IGameState): (IGameState, List[ObservableEvent]) = {
     undoStack match {
-      case (command, prevState) :: rest =>
+      case (command, memento) :: rest =>
         undoStack = rest
-        redoStack = (command, currentState) :: redoStack
-        (prevState, List(GameActionEvent.Undo))
+        redoStack = (command, currentState.createMemento()) :: redoStack
+        (currentState.restoreFromMemento(memento), List(GameActionEvent.Undo))
 
       case Nil =>
         (currentState, List.empty)
@@ -32,14 +32,13 @@ class UndoManager {
 
   def redoStep(currentState: IGameState): (IGameState, List[ObservableEvent]) = {
     redoStack match {
-      case (command, nextState) :: rest =>
+      case (command, memento) :: rest =>
         redoStack = rest
-        undoStack = (command, currentState) :: undoStack
-        (nextState, List(GameActionEvent.Redo))
+        undoStack = (command, currentState.createMemento()) :: undoStack
+        (currentState.restoreFromMemento(memento), List(GameActionEvent.Redo))
 
       case Nil =>
         (currentState, List.empty)
     }
   }
-
 }

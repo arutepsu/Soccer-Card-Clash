@@ -129,9 +129,6 @@ class SelectableHandCardRenderer(getGameState: () => IGameState) extends HandCar
   }
 }
 
-
-
-
 object DefaultHandCardRenderer extends HandCardRenderer {
   def createHandCardRow(player: IPlayer, gameState: IGameState): HBox = {
     val handList = gameState.getGameCards.getPlayerHand(player).toList

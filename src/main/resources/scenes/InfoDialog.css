@@ -25,3 +25,19 @@
     -fx-text-alignment: center;
 }
 
+.general-title {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 20px;
+    -fx-fill: #dddddd;
+    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
+    -fx-text-alignment: center;
+}
+
+.general-header {
+    -fx-font-family: "Rajdhani";
+    -fx-font-size: 26px;
+    -fx-font-weight: Bold;
+    -fx-fill: linear-gradient(from 0% 0% to 100% 100%, #ff00cc, #83018e);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 8, 0.4, 0, 2);
+    -fx-text-alignment: center;
+}

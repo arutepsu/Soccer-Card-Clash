@@ -1,9 +1,7 @@
 package de.htwg.se.soccercardclash.model.gameComponent
 
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
-import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.Observable
+import de.htwg.se.soccercardclash.util.Memento
 import play.api.libs.json.*
 
 import scala.xml.*
@@ -21,6 +19,10 @@ trait IGameState extends Serializable {
 
   def newScores(newScores: IScores): IGameState
 
+  def createMemento(): Memento
+
+  def restoreFromMemento(m: Memento): IGameState
+  
   def toXml: Elem = {
     <gameState>
       <attacker>
