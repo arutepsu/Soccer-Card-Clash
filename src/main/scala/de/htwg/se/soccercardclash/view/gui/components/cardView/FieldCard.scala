@@ -53,9 +53,8 @@ object FieldCardFactory {
     card match {
       case Some(boosted: BoostedCard) =>
         CardAnimationFactory.applyBoostEffect(fieldCard)
-      case Some(card) =>
+      case Some(_) =>
       case None =>
-      case _ => ()
     }
     
     fieldCard.onMouseEntered = _ =>

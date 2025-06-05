@@ -1,23 +1,15 @@
 package de.htwg.se.soccercardclash.model.gameComponent.base
 
-import com.google.inject.{Inject, Provider, Singleton}
-import de.htwg.se.soccercardclash.model.cardComponent.factory.DeckFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.attack.{DoubleAttackStrategy, SingleAttackStrategy}
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
-import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import de.htwg.se.soccercardclash.util.Observable
-import play.api.libs.json.*
-
-import scala.xml.*
+import de.htwg.se.soccercardclash.util.{GameStateMemento, Memento}
 
 case class GameState(
                       gameCards: IGameCards,
                       roles: IRoles,
                       scores: IScores
                     ) extends IGameState {
+  
   override def getGameCards: IGameCards = gameCards
 
   override def getRoles: IRoles = roles
@@ -32,6 +24,17 @@ case class GameState(
 
   override def newScores(newScores: IScores): IGameState =
     copy(scores = newScores)
+
+  override def createMemento(): Memento =
+    GameStateMemento(gameCards, roles, scores)
+
+  override def restoreFromMemento(m: Memento): IGameState = m match {
+    case GameStateMemento(cards, r, s) =>
+      copy(gameCards = cards, roles = r, scores = s)
+
+    case _ =>
+      throw new IllegalArgumentException("Invalid memento for GameState")
+  }
 
 }
 

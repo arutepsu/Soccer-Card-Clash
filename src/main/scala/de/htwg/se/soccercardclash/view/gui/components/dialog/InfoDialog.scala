@@ -21,8 +21,8 @@ class InfoDialog(
                   overlay: Overlay,
                   autoHide: Boolean = false
                 ) {
-  val regularFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 18)
-  val boldFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 28)
+  // val regularFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 18)
+  // val boldFont = Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Bold.ttf"), 28)
 
 
   private val backgroundImagePath = "/images/data/frames/overlay.png"

@@ -15,7 +15,6 @@ import javafx.event.EventHandler
 object GameButtonFactory {
 
   private val defaultImagePath = "/images/data/buttons/button.png"
-  Font.loadFont(getClass.getResourceAsStream("/fonts/Rajdhani/Rajdhani-Regular.ttf"), 20)
 
   def createGameButton(
                         text: String,

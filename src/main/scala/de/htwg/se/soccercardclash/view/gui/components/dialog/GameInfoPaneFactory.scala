@@ -1,5 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.components.dialog
 
+import de.htwg.se.soccercardclash.view.gui.utils.Styles
+import de.htwg.se.soccercardclash.view.gui.utils.Styles.*
 import scalafx.geometry.Insets
 import scalafx.scene.control.ScrollPane
 import scalafx.scene.paint.Color
@@ -10,8 +12,6 @@ import scalafx.scene.control.ScrollPane.ScrollBarPolicy
 import scalafx.scene.text.{Text, TextFlow}
 
 object GameInfoPaneFactory {
-  val generaltitleStyle = "     -fx-font-family: \"Rajdhani\";\n    -fx-font-size: 20px;\n    -fx-fill: #dddddd;\n    -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);\n    -fx-text-alignment: center;"
-  val generalheaderStyle ="    -fx-font-family: \"Rajdhani\";\n    -fx-font-size: 26px;\n    -fx-font-weight: bold;\n    -fx-fill: linear-gradient(from 0% 0% to 100% 100%, #ff00cc, #83018e);\n    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 8, 0.4, 0, 2);\n    -fx-text-alignment: center;"
   def createMainInstructionsDialog(overlayWidth: Double, overlayHeight: Double): ScrollPane = new ScrollPane {
 
     content = new TextFlow {
@@ -19,13 +19,13 @@ object GameInfoPaneFactory {
       lineSpacing = 8
       children = Seq(
         new Text("\nGoal:\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text("Beat all of your opponent’s defenders and their goalkeeper to score a goal. The first player to score 3 goals wins the match.\n\n") {
-          style =  generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Gameplay Basics\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- Each turn, one player is the attacker, and the other is the defender.\n" +
@@ -36,10 +36,10 @@ object GameInfoPaneFactory {
             "- You cannot attack the goalkeeper until all defender cards have been beaten.\n" +
             "- After the goalkeeper is beaten, a goal is scored, and roles are switched.\n\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Field View\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- You will see:\n" +
@@ -49,10 +49,10 @@ object GameInfoPaneFactory {
             "    - Goalkeeper\n" +
             "- When roles switch, these views are flipped accordingly.\n\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Attack Rules\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- Single Attack: Uses the last card in the attacker’s hand.\n" +
@@ -66,10 +66,10 @@ object GameInfoPaneFactory {
             "  - The next-to-last cards are compared.\n" +
             "  - The stronger pair wins the round.\n\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Buttons on the Playing Field\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- Show Defenders:\n" +
@@ -78,10 +78,10 @@ object GameInfoPaneFactory {
             "- Make Swap:\n" +
             "- Lets the attacker reorder their hand cards.\n\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Field Cards Mechanics\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- When the field is initialized, defender cards are filtered, and the strongest card becomes the goalkeeper.\n" +
@@ -89,7 +89,7 @@ object GameInfoPaneFactory {
             "  - If multiple defenders were beaten, the remaining field cards are re-evaluated.\n" +
             "  - The new strongest card becomes the goalkeeper automatically.\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         }
       )
     }
@@ -103,6 +103,7 @@ object GameInfoPaneFactory {
 
     vbarPolicy = ScrollPane.ScrollBarPolicy.Never
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    stylesheets += Styles.infoDialogCss
   }
 
   def createSwapInstructionsDialog(overlayWidth: Double, overlayHeight: Double): ScrollPane = new ScrollPane {
@@ -112,7 +113,7 @@ object GameInfoPaneFactory {
       lineSpacing = 8
       children = Seq(
         new Text("Regular Swap:\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
             "- Select a card from your hand.\n" +
@@ -120,19 +121,19 @@ object GameInfoPaneFactory {
             "- The selected card will be swapped with the last card in your hand.\n"
 
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Reverse Swap\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
             "  - Click the \"Reverse Swap\" button.\n" +
             "  - All cards in your hand will be reversed instantly.\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Action Tracker\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- At the top of the screen, you can view the number of actions remaining in your turn.\n" +
@@ -143,10 +144,10 @@ object GameInfoPaneFactory {
             "  - Roles switch — the defender becomes the attacker, and vice versa.\n" +
             "- If no actions are left, an alert will be shown and further swaps (or any other actions) will be blocked for the turn.\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
           new Text("Use your actions strategically to turn the game in your favor!\n") {
-            style = generalheaderStyle
+            style = "general-header"
           },
       )
     }
@@ -160,6 +161,7 @@ object GameInfoPaneFactory {
 
     vbarPolicy = ScrollPane.ScrollBarPolicy.Never
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    stylesheets += Styles.infoDialogCss
   }
 
   def createBoostInstructionsDialog(overlayWidth: Double, overlayHeight: Double): ScrollPane = new ScrollPane {
@@ -168,7 +170,7 @@ object GameInfoPaneFactory {
       lineSpacing = 8
       children = Seq(
         new Text("Boosting:\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- You can boost either a defender or the goalkeeper.\n" +
@@ -189,19 +191,19 @@ object GameInfoPaneFactory {
             "  - King → +1\n" +
             "  - Ace → +0\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Note:\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           "- Boosting counts as one action.\n" +
             "- If no actions are left for your turn, boosting will be disabled and an alert will be shown.\n"
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         },
         new Text("Use boosts strategically to strengthen your defense and control the game!\n") {
-          style = generalheaderStyle
+          style = "general-header"
         }
       )
     }
@@ -214,6 +216,7 @@ object GameInfoPaneFactory {
     maxHeight = overlayHeight * 0.7
     vbarPolicy = ScrollPane.ScrollBarPolicy.Never
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    stylesheets += Styles.infoDialogCss
   }
   def createGameInfoDialog(overlayWidth: Double, overlayHeight: Double): ScrollPane = new ScrollPane {
     content = new TextFlow {
@@ -221,7 +224,7 @@ object GameInfoPaneFactory {
       lineSpacing = 8
       children = Seq(
         new Text("About the Game\n") {
-          style = generalheaderStyle
+          styleClass += "general-header"
         },
         new Text(
           """|**Soccer Card Clash** is a fast-paced, strategic 2-player card game where soccer meets tactical mind games!
@@ -236,7 +239,7 @@ object GameInfoPaneFactory {
              |Are you ready to kick off and clash?
              |""".stripMargin
         ) {
-          style = generaltitleStyle
+          styleClass += "general-title"
         }
       )
     }
@@ -249,6 +252,7 @@ object GameInfoPaneFactory {
     maxHeight = overlayHeight * 0.7
     vbarPolicy = ScrollPane.ScrollBarPolicy.Never
     hbarPolicy = ScrollPane.ScrollBarPolicy.AsNeeded
+    stylesheets += Styles.infoDialogCss
   }
 
 }
