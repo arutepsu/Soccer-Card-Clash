@@ -1,17 +1,10 @@
 package de.htwg.se.soccercardclash.model.gameComponent.components
 
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.Inject
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
-import de.htwg.se.soccercardclash.model.gameComponent.IGameState
-import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.*
-import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.base.StandardRefillStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-
-import scala.collection.mutable
-
 
 trait IGameCardsFactory {
   def create(attacker: IPlayer, defender: IPlayer): IGameCards

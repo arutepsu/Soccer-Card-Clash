@@ -19,22 +19,37 @@ object AIPresetRegistry {
                        randomMap: Map[String, IRandomProvider]
                      ): Map[String, IPlayer] = {
     Map(
-      "Taka" -> factory.createAIPlayer(
-        "Taka", new TakaStrategy(randomMap("Taka")),
-        Map(Boost -> 2, DoubleAttack -> 1, Swap -> 1)
-      ),
-      "Bitstorm" -> factory.createAIPlayer(
-        "Bitstorm", new BitstormStrategy(randomMap("Bitstorm")),
-        Map(Boost -> 1, DoubleAttack -> 5, Swap -> 1)
-      ),
-      "Defendra" -> factory.createAIPlayer(
-        "Defendra", new DefendraStrategy(randomMap("Defendra")),
-        Map(Boost -> 7, DoubleAttack -> 1, Swap -> 3)
-      ),
-      "MetaAI" -> factory.createAIPlayer(
-        "MetaAI", new MetaAIStrategy(randomMap("MetaAI")),
-        Map(Boost -> 3, DoubleAttack -> 2, Swap -> 3)
-      )
+      "Taka" -> PlayerBuilder()
+        .withName("Taka")
+        .asAI(new TakaStrategy(randomMap("Taka")))
+        .withPolicy(Boost, 2)
+        .withPolicy(DoubleAttack, 1)
+        .withPolicy(Swap, 1)
+        .build(),
+
+      "Bitstorm" -> PlayerBuilder()
+        .withName("Bitstorm")
+        .asAI(new BitstormStrategy(randomMap("Bitstorm")))
+        .withPolicy(Boost, 1)
+        .withPolicy(DoubleAttack, 5)
+        .withPolicy(Swap, 1)
+        .build(),
+
+      "Defendra" -> PlayerBuilder()
+        .withName("Defendra")
+        .asAI(new DefendraStrategy(randomMap("Defendra")))
+        .withPolicy(Boost, 7)
+        .withPolicy(DoubleAttack, 1)
+        .withPolicy(Swap, 3)
+        .build(),
+
+      "MetaAI" -> PlayerBuilder()
+        .withName("MetaAI")
+        .asAI(new MetaAIStrategy(randomMap("MetaAI")))
+        .withPolicy(Boost, 3)
+        .withPolicy(DoubleAttack, 2)
+        .withPolicy(Swap, 3)
+        .build()
     )
   }
 }
