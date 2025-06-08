@@ -13,7 +13,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.util.Observable
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.playerComponent.ai.AIPresetRegistry
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 
 class ControllerModuleSpec extends AnyWordSpec with Matchers {
@@ -42,7 +41,7 @@ class ControllerModuleSpec extends AnyWordSpec with Matchers {
 
     "bind IGameService to a mock" in {
       val gameService = injector.getInstance(classOf[IGameService])
-      gameService should not be null // can't check concrete type, it's a mock
+      gameService should not be null
     }
 
     "bind IActionManager to ActionManager" in {

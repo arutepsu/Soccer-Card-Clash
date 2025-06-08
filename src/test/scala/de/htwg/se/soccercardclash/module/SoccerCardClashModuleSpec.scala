@@ -22,11 +22,6 @@ class SoccerCardClashModuleSpec extends AnyWordSpec with Matchers {
       controller shouldBe a[Controller]
     }
 
-    "provide a PlayerFactory" in {
-      val playerFactory = injector.getInstance(classOf[IPlayerFactory])
-      playerFactory shouldBe a[PlayerFactory]
-    }
-
     "provide a CardFactory" in {
       val cardFactory = injector.getInstance(classOf[ICardFactory])
       cardFactory shouldBe a[CardFactory]

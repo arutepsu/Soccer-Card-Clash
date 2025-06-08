@@ -17,7 +17,6 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.Elem
 @Singleton
 class PlayerDeserializer @Inject()(
-                                    playerFactory: IPlayerFactory,
                                     cardDeserializer: CardDeserializer,
                                     randoms: Map[String, IRandomProvider]
                                   ) extends Deserializer[IPlayer] {

@@ -4,49 +4,39 @@ import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrateg
 import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Human, Player, PlayerType}
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies, PlayerActionState}
 
-class PlayerBuilder {
-  private var name: String = "Unnamed"
-  private var playerType: PlayerType = Human
-  private var limits: Map[PlayerActionPolicies, Int] = Map.empty
-  private var directStates: Option[Map[PlayerActionPolicies, PlayerActionState]] = None
+case class PlayerBuilder(
+                          name: String = "Unnamed",
+                          playerType: PlayerType = Human,
+                          limits: Map[PlayerActionPolicies, Int] = Map.empty,
+                          directStates: Option[Map[PlayerActionPolicies, PlayerActionState]] = None
+                        ) {
 
-  def withName(n: String): PlayerBuilder = {
-    name = n
-    this
-  }
+  def withName(n: String): PlayerBuilder =
+    copy(name = n)
 
-  def asHuman(): PlayerBuilder = {
-    playerType = Human
-    this
-  }
+  def asHuman(): PlayerBuilder =
+    copy(playerType = Human)
 
-  def asAI(strategy: IAIStrategy): PlayerBuilder = {
-    playerType = AI(strategy)
-    this
-  }
+  def asAI(strategy: IAIStrategy): PlayerBuilder =
+    copy(playerType = AI(strategy))
 
-  def withPolicy(policy: PlayerActionPolicies, maxUses: Int): PlayerBuilder = {
-    limits = limits.updated(policy, maxUses)
-    this
-  }
+  def withPolicy(policy: PlayerActionPolicies, maxUses: Int): PlayerBuilder =
+    copy(limits = limits.updated(policy, maxUses))
 
-  def withActionStates(states: Map[PlayerActionPolicies, PlayerActionState]): PlayerBuilder = {
-    directStates = Some(states)
-    this
-  }
+  def withActionStates(states: Map[PlayerActionPolicies, PlayerActionState]): PlayerBuilder =
+    copy(directStates = Some(states))
 
+  def withDefaultLimits(): PlayerBuilder =
+    copy(limits = PlayerActionPolicies.values.map(p => p -> p.maxUses).toMap)
 
-  def withDefaultLimits(): PlayerBuilder = {
-    limits = PlayerActionPolicies.values.map(p => p -> p.maxUses).toMap
-    this
-  }
-
-  def withConvertedLimitsFromStates(states: Map[PlayerActionPolicies, PlayerActionState]): PlayerBuilder = {
-    this.limits = states.map {
+  def withConvertedLimitsFromStates(
+                                     states: Map[PlayerActionPolicies, PlayerActionState]
+                                   ): PlayerBuilder = {
+    val convertedLimits = states.map {
       case (policy, CanPerformAction(uses)) => policy -> uses
-      case (policy, OutOfActions) => policy -> 0
+      case (policy, OutOfActions)           => policy -> 0
     }
-    this
+    copy(limits = convertedLimits)
   }
 
   def build(): Player = {

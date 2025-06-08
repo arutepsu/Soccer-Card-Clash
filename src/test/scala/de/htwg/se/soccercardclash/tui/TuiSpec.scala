@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.tui
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.tui
 import de.htwg.se.soccercardclash.view.tui.{IPrompter, PromptState, Prompter, Tui}

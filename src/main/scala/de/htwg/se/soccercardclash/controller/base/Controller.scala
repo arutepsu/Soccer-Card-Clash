@@ -3,6 +3,7 @@ package de.htwg.se.soccercardclash.controller.base
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.controller.command.{ICommand, ICommandFactory}
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor

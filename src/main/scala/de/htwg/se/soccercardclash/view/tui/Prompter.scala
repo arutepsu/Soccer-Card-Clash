@@ -3,8 +3,8 @@ package de.htwg.se.soccercardclash.view.tui
 import java.io.File
 import scala.io.StdIn
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand
 

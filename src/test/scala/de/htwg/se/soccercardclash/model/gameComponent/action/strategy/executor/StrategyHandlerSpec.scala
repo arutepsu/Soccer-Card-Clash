@@ -58,9 +58,9 @@ class StrategyHandlerSpec extends AnyFlatSpec with Matchers {
     val expected = Some((true, state, List(mock(classOf[ObservableEvent]))))
     when(nextHandler.handle(strategy, state)).thenReturn(expected)
 
-    handler.setNext(nextHandler)
+    val handlerWithNext = handler.setNext(nextHandler)
 
-    val result = handler.handle(strategy, state)
+    val result = handlerWithNext.handle(strategy, state)
     result shouldBe expected
   }
 

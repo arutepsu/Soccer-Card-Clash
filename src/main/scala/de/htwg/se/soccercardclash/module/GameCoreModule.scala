@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.module
 
 import com.google.inject.{AbstractModule, Scopes}
+import de.htwg.se.soccercardclash.controller.contextHolder.{GameContextHolder, IGameContextHolder}
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.*
 import de.htwg.se.soccercardclash.model.cardComponent.factory.IDeckFactory
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
@@ -8,8 +9,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCardsFactory, IRolesFactory, IScoresFactory}
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import de.htwg.se.soccercardclash.util.{GameContextHolder, IGameContextHolder}
 
 class GameCoreModule extends AbstractModule {
   
@@ -18,7 +17,6 @@ class GameCoreModule extends AbstractModule {
     bind(classOf[IGameInitializer])
       .toConstructor(classOf[GameInitializer]
         .getConstructor(
-          classOf[IPlayerFactory],
           classOf[IDeckFactory],
           classOf[IGameCardsFactory],
           classOf[IRolesFactory],

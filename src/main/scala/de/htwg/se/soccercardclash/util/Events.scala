@@ -32,6 +32,7 @@ object SceneSwitchEvent:
 sealed trait GameActionEvent extends ObservableEvent
 object GameActionEvent:
   case object RegularAttack extends GameActionEvent
+
   case object DoubleAttack extends GameActionEvent
 
   case object RegularSwap extends GameActionEvent

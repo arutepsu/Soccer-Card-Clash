@@ -14,22 +14,19 @@ class PlayerModule extends AbstractModule {
 
   override def configure(): Unit = {
     
-    bind(classOf[IPlayerFactory]).to(classOf[PlayerFactory])
-    
     bind(classOf[IFieldCardsFactory]).to(classOf[FieldCardsFactory])
 
     bind(classOf[PlayerDeserializer])
       .toConstructor(classOf[PlayerDeserializer]
-        .getConstructor(classOf[IPlayerFactory], classOf[CardDeserializer], classOf[Map[String, IRandomProvider]]))
+        .getConstructor(classOf[CardDeserializer], classOf[Map[String, IRandomProvider]]))
     
   }
 
   @Provides
   @Singleton
   def provideAiRoster(
-                       playerFactory: IPlayerFactory,
                        randomProviders: Map[String, IRandomProvider]
                      ): Map[String, IPlayer] = {
-    AIPresetRegistry.registerCoreAIs(playerFactory, randomProviders)
+    AIPresetRegistry.registerCoreAIs(randomProviders)
   }
 }

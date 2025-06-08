@@ -15,7 +15,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.sw
 import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.components.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.{IPlayerFactory, PlayerDeserializer}
+import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerDeserializer
 class GameStateModule extends AbstractModule {
 
   override def configure(): Unit = {

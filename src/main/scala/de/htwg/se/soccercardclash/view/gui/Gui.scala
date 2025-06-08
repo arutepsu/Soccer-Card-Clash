@@ -2,11 +2,12 @@ package de.htwg.se.soccercardclash.view.gui
 
 import com.google.inject.Injector
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.module.SceneModule
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.playerView.PlayerAvatarRegistry
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
-import de.htwg.se.soccercardclash.view.gui.utils.{Assets, CardImageRegistry, BoostImage}
+import de.htwg.se.soccercardclash.view.gui.utils.{Assets, BoostImage, CardImageRegistry}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.image.Image

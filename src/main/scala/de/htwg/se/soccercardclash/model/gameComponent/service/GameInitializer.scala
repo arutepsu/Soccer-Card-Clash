@@ -33,7 +33,6 @@ trait IGameInitializer {
 }
 
 class GameInitializer @Inject()(
-                                 playerFactory: IPlayerFactory,
                                  deckFactory: IDeckFactory,
                                  gameCardsFactory: IGameCardsFactory,
                                  rolesFactory: IRolesFactory,

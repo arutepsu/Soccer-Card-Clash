@@ -4,6 +4,7 @@ import com.google.inject.{AbstractModule, Singleton}
 import de.htwg.se.soccercardclash.controller.*
 import de.htwg.se.soccercardclash.controller.base.Controller
 import de.htwg.se.soccercardclash.controller.command.*
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
 import de.htwg.se.soccercardclash.model.gameComponent.*
@@ -14,7 +15,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.bo
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap.*
 import de.htwg.se.soccercardclash.model.gameComponent.service.*
 import de.htwg.se.soccercardclash.model.gameComponent.components.*
-import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.util.Observable
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

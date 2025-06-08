@@ -8,7 +8,7 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActio
 import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 import de.htwg.se.soccercardclash.util.{AIAction, NoOpAIAction}
 
-class BitstormStrategy(random: IRandomProvider) extends IAIStrategy {
+class BitstormStrategy(val random: IRandomProvider) extends IAIStrategy {
   protected val strategies: Vector[IAIStrategy] = Vector(
     new SmartAggressiveAttackAIStrategy(),
     new SmartBoostWeakestDefenderAIStrategy(),

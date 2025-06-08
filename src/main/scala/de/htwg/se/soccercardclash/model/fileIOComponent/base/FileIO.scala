@@ -1,7 +1,7 @@
 package de.htwg.se.soccercardclash.model.fileIOComponent.base
 
 import de.htwg.se.soccercardclash.model.fileIOComponent.IFileIO
-import de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent.JsonComponent
+import de.htwg.se.soccercardclash.model.fileIOComponent.jsonComponent.JsonComponent
 import de.htwg.se.soccercardclash.model.fileIOComponent.xmlComponent.XmlComponent
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.base.GameState

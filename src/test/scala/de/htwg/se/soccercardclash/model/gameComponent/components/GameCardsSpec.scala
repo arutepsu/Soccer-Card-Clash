@@ -8,7 +8,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.*
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.refillStrategy.base.StandardRefillStrategy
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers

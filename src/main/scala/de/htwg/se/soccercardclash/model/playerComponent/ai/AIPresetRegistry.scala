@@ -15,7 +15,6 @@ import de.htwg.se.soccercardclash.model.playerComponent.playerAction.PlayerActio
 import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 object AIPresetRegistry {
   def registerCoreAIs(
-                       factory: IPlayerFactory,
                        randomMap: Map[String, IRandomProvider]
                      ): Map[String, IPlayer] = {
     Map(

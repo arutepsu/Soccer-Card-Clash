@@ -1,5 +1,8 @@
 package de.htwg.se.soccercardclash.controller.base.command.actionCommandTypes.action
 
+import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.action.ActionCommand
+import de.htwg.se.soccercardclash.model.gameComponent.IGameState
+import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent}
 import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
@@ -7,55 +10,37 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-class ActionCommandSpec extends AnyFlatSpec with Matchers {
+class ActionCommandSpec extends AnyFlatSpec with MockitoSugar {
 
-  trait ObservableEvent
-  trait IGameState
-  trait ICommand {
-    def execute(state: IGameState): CommandResult
-  }
-  case class CommandResult(success: Boolean, state: IGameState, events: List[ObservableEvent])
+  "ActionCommand" should "return success when executeAction returns Some(updatedState, events)" in {
+    val initialState = mock[IGameState]
+    val updatedState = mock[IGameState]
+    val events = List(GameActionEvent.RegularAttack)
 
-  abstract class MyCommand extends ICommand {
-    def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])]
-
-    override def execute(state: IGameState): CommandResult =
-      executeAction(state) match {
-        case Some((updatedState, events)) => CommandResult(success = true, updatedState, events)
-        case None                         => CommandResult(success = false, state, Nil)
-      }
-  }
-
-  "Command.execute" should "return success=true and update state/events on Some" in {
-    val initialState = mock(classOf[IGameState])
-    val updatedState = mock(classOf[IGameState])
-    val event = mock(classOf[ObservableEvent])
-
-    val command = new MyCommand {
+    val command = new ActionCommand {
       override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] =
-        Some((updatedState, List(event)))
+        Some((updatedState, events))
     }
 
     val result = command.execute(initialState)
 
-    result.success shouldBe true
-    result.state shouldBe theSameInstanceAs(updatedState)
-    assert(result.events.contains(event))
-
+    assert(result.success)
+    assert(result.state eq updatedState)
+    assert(result.events == events)
   }
 
-  it should "return success=false and same state on None" in {
-    val initialState = mock(classOf[IGameState])
+  it should "return failure when executeAction returns None" in {
+    val initialState = mock[IGameState]
 
-    val command = new MyCommand {
+    val command = new ActionCommand {
       override def executeAction(state: IGameState): Option[(IGameState, List[ObservableEvent])] =
         None
     }
 
     val result = command.execute(initialState)
 
-    result.success shouldBe false
-    result.state shouldBe theSameInstanceAs(initialState)
-    result.events shouldBe empty
+    assert(!result.success)
+    assert(result.state eq initialState)
+    assert(result.events.isEmpty)
   }
 }

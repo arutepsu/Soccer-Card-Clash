@@ -1,6 +1,7 @@
 package de.htwg.se.soccercardclash.view.gui.scenes
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.dialog.{ConfirmationDialog, DialogFactory}
 import de.htwg.se.soccercardclash.view.gui.components.uiFactory.GameButtonFactory

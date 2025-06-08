@@ -2,9 +2,10 @@ package de.htwg.se.soccercardclash.tui
 import java.io.{ByteArrayOutputStream, File, PrintStream}
 import scala.io.StdIn
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.{IGameContextHolder, UndoManager}
+import de.htwg.se.soccercardclash.util.UndoManager
 import de.htwg.se.soccercardclash.view.tui.Prompter
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.factory.ITuiCommandFactory
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTuiCommand

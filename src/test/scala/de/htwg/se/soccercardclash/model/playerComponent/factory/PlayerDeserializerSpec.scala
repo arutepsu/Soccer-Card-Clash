@@ -3,19 +3,21 @@ package de.htwg.se.soccercardclash.model.playerComponent.factory
 import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.factory.CardDeserializer
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.base.Player
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
+import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Human, Player}
+import de.htwg.se.soccercardclash.model.playerComponent.factory.*
 import de.htwg.se.soccercardclash.model.playerComponent.util.IRandomProvider
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies, PlayerActionState}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json._
+import play.api.libs.json.*
+
 import scala.xml.Elem
 import org.mockito.ArgumentMatchers.any
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import de.htwg.se.soccercardclash.model.playerComponent.ai.types.{DefendraStrategy, TakaStrategy}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 
 class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -30,23 +32,30 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
           </ActionStates>
         </Player>
 
-      val mockFactory = mock[IPlayerFactory]
-      val mockCardDeserializer = mock[CardDeserializer]
-      val mockPlayer = mock[IPlayer]
-
-      val expectedLimits = Map(
-        PlayerActionPolicies.DoubleAttack -> 2,
-        PlayerActionPolicies.Swap -> 0
+      val mockRandomProvider = mock[IRandomProvider]
+      val deserializer = new PlayerDeserializer(
+        mock[CardDeserializer],
+        Map("Taka" -> mockRandomProvider)
       )
 
-      when(mockFactory.createAIPlayer(eqTo("Bot"), any[IAIStrategy], eqTo(expectedLimits)))
-        .thenReturn(mockPlayer)
-
-      val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer, Map("Taka" -> mock[IRandomProvider]))
       val result = deserializer.fromXml(xml)
 
-      result shouldBe mockPlayer
+      result.name shouldBe "Bot"
+      result.playerType match {
+        case AI(strategy: TakaStrategy) =>
+          strategy.random shouldBe mockRandomProvider
+        case other =>
+          fail(s"Expected AI with TakaStrategy, but got: $other")
+      }
+
+      result.actionStates shouldBe Map(
+        PlayerActionPolicies.Boost -> CanPerformAction(2),
+        PlayerActionPolicies.DoubleAttack -> CanPerformAction(2),
+        PlayerActionPolicies.Swap -> OutOfActions
+      )
+
     }
+
 
     "correctly deserialize an AI Player from JSON with strategy" in {
       val json = Json.obj(
@@ -55,41 +64,48 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
         "strategy" -> "DefendraStrategy",
         "actionStates" -> Json.obj(
           "Boost" -> "OutOfActions",
-          "Swap" -> "CanPerformAction(1)"
-        )
+          "Swap" -> "CanPerformAction(1)")
       )
 
-      val mockFactory = mock[IPlayerFactory]
-      val mockCardDeserializer = mock[CardDeserializer]
-      val mockPlayer = mock[IPlayer]
-
-      val expectedLimits = Map(
-        PlayerActionPolicies.Boost -> 0,
-        PlayerActionPolicies.Swap -> 1
+      val mockRandomProvider = mock[IRandomProvider]
+      val deserializer = new PlayerDeserializer(
+        mock[CardDeserializer],
+        Map("Defendra" -> mockRandomProvider)
       )
 
-      when(mockFactory.createAIPlayer(eqTo("Bot"), any[IAIStrategy], eqTo(expectedLimits)))
-        .thenReturn(mockPlayer)
-
-      val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer, Map("Defendra" -> mock[IRandomProvider]))
       val result = deserializer.fromJson(json)
 
-      result shouldBe mockPlayer
+      result.name shouldBe "Bot"
+      result.playerType match {
+        case AI(strategy: DefendraStrategy) =>
+          strategy.random shouldBe mockRandomProvider
+        case other =>
+          fail(s"Expected AI with DefendraStrategy, but got: $other")
+      }
+
+      result.actionStates shouldBe Map(
+        PlayerActionPolicies.Boost -> OutOfActions,
+        PlayerActionPolicies.DoubleAttack -> CanPerformAction(1),
+        PlayerActionPolicies.Swap -> CanPerformAction(1)
+      )
+
     }
+
 
     "throw exception when XML is missing name" in {
       val xml: Elem = <Player></Player>
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromXml(xml)
       }
+
       ex.getMessage should include("Missing player 'name' attribute")
     }
 
     "throw exception when JSON is missing name" in {
       val json: JsObject = Json.obj("type" -> "AI")
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromJson(json)
@@ -105,7 +121,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
           </ActionStates>
         </Player>
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromXml(xml)
@@ -121,7 +137,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
           </ActionStates>
         </Player>
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromXml(xml)
@@ -135,7 +151,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
         "actionStates" -> Json.obj("Teleport" -> "OutOfActions")
       )
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromJson(json)
@@ -149,7 +165,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
         "actionStates" -> Json.obj("Boost" -> "InvalidState")
       )
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromJson(json)
@@ -163,25 +179,21 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
           <ActionStates></ActionStates>
         </Player>
 
-      val mockFactory = mock[IPlayerFactory]
-      val mockCardDeserializer = mock[CardDeserializer]
-      val mockPlayer = mock[IPlayer]
-
-      when(mockFactory.createPlayer("Jake")).thenReturn(mockPlayer)
-      when(mockPlayer.setActionStates(Map.empty)).thenReturn(mockPlayer)
-
-      val deserializer = new PlayerDeserializer(mockFactory, mockCardDeserializer, Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
       val result = deserializer.fromXml(xml)
 
-      result shouldBe mockPlayer
+      result.name shouldBe "Jake"
+      result.playerType shouldBe Human
+      result.actionStates shouldBe Map.empty
     }
+
     "throw exception when XML has unknown player type" in {
       val xml: Elem =
         <Player name="Ghost" type="Alien">
           <ActionStates></ActionStates>
         </Player>
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromXml(xml)
@@ -195,7 +207,7 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
         "type" -> "Alien"
       )
 
-      val deserializer = new PlayerDeserializer(mock[IPlayerFactory], mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromJson(json)
@@ -211,14 +223,33 @@ class PlayerDeserializerSpec extends AnyWordSpec with Matchers with MockitoSugar
         "actionStates" -> Json.obj("Boost" -> "CanPerformAction(1)")
       )
 
-      val mockFactory = mock[IPlayerFactory]
-      val deserializer = new PlayerDeserializer(mockFactory, mock[CardDeserializer], Map.empty)
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
 
       val ex = intercept[RuntimeException] {
         deserializer.fromJson(json)
       }
 
       ex.getMessage should include("Unsupported AI strategy: UnknownStrategy")
+    }
+    "correctly deserialize a Human Player from JSON" in {
+      val json = Json.obj(
+        "name" -> "Alice",
+        "type" -> "Human",
+        "actionStates" -> Json.obj(
+          "DoubleAttack" -> "CanPerformAction(2)",
+          "Swap" -> "OutOfActions"
+        )
+      )
+
+      val deserializer = new PlayerDeserializer(mock[CardDeserializer], Map.empty)
+      val result = deserializer.fromJson(json)
+
+      result.name shouldBe "Alice"
+      result.playerType shouldBe Human
+      result.actionStates shouldBe Map(
+        PlayerActionPolicies.DoubleAttack -> CanPerformAction(2),
+        PlayerActionPolicies.Swap -> OutOfActions
+      )
     }
   }
 }

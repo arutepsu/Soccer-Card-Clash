@@ -5,7 +5,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.IScoringStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.base.StandardScoring
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.util.*
 import play.api.libs.json.{JsObject, Json}
 

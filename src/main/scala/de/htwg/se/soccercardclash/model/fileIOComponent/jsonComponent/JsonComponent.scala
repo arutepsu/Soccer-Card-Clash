@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.model.fileIOComponent.jSONComponent
+package de.htwg.se.soccercardclash.model.fileIOComponent.jsonComponent
 
 import de.htwg.se.soccercardclash.controller.IController
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
