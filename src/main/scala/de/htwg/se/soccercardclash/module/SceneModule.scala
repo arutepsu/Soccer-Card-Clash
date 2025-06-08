@@ -1,11 +1,11 @@
 package de.htwg.se.soccercardclash.module
 
 import com.google.inject.{AbstractModule, Provides, Scopes, Singleton}
+import de.htwg.se.soccercardclash.controller.*
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
+import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 import de.htwg.se.soccercardclash.view.gui.scenes.sceneManager.SceneManager
 import scalafx.stage.Stage
-import de.htwg.se.soccercardclash.controller.*
-import de.htwg.se.soccercardclash.util.IGameContextHolder
-import de.htwg.se.soccercardclash.view.gui.components.sceneComponents.GameStartupDataHolder
 
 
 

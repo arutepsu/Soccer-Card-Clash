@@ -13,7 +13,6 @@ class HandCardsQueueModuleSpec extends AnyWordSpec with Matchers with MockitoSug
   class TestHandCardsQueueModule extends AbstractModule {
     override def configure(): Unit = {
       bind(classOf[CardDeserializer]).toInstance(mock[CardDeserializer])
-      // Let HandCardsQueueModule bind IHandCardsQueueFactory
       install(new HandCardsQueueModule)
     }
   }

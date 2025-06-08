@@ -10,14 +10,13 @@ import de.htwg.se.soccercardclash.util.{GameActionEvent, ObservableEvent}
 
 import scala.reflect.ClassTag
 
-class StrategyHandler[S <: IActionStrategy](using executor: StrategyExecutor[S], ct: ClassTag[S]) extends IActionHandler {
-  private var next: Option[IActionHandler] = None
+class StrategyHandler[S <: IActionStrategy](
+                                             val next: Option[IActionHandler] = None
+                                           )(using executor: StrategyExecutor[S], ct: ClassTag[S])
+  extends IActionHandler {
 
-  override def setNext(handler: IActionHandler): IActionHandler = {
-    next = Some(handler)
-    this
-  }
-
+  override def setNext(handler: IActionHandler): IActionHandler =
+    new StrategyHandler[S](Some(handler))
 
   override def handle(strategy: IActionStrategy, state: IGameState): Option[(Boolean, IGameState, List[ObservableEvent])] = {
 
@@ -30,22 +29,15 @@ class StrategyHandler[S <: IActionStrategy](using executor: StrategyExecutor[S],
 
 }
 
-
 object HandlerChainFactory {
 
   def fullChain(): IActionHandler = {
-    val singleAttack = StrategyHandler[SingleAttackStrategy]()
-    val doubleAttack = StrategyHandler[DoubleAttackStrategy]()
-    val defenderBoost = StrategyHandler[DefenderBoostStrategy]()
-    val goalkeeperBoost = StrategyHandler[GoalkeeperBoostStrategy]()
-    val regularSwap = StrategyHandler[RegularSwapStrategy]()
-    val reverseSwap = StrategyHandler[ReverseSwapStrategy]()
-
-    singleAttack.setNext(doubleAttack)
-    doubleAttack.setNext(defenderBoost)
-    defenderBoost.setNext(goalkeeperBoost)
-    goalkeeperBoost.setNext(regularSwap)
-    regularSwap.setNext(reverseSwap)
+    val reverseSwap     = StrategyHandler[ReverseSwapStrategy]()
+    val regularSwap     = StrategyHandler[RegularSwapStrategy](Some(reverseSwap))
+    val goalkeeperBoost = StrategyHandler[GoalkeeperBoostStrategy](Some(regularSwap))
+    val defenderBoost   = StrategyHandler[DefenderBoostStrategy](Some(goalkeeperBoost))
+    val doubleAttack    = StrategyHandler[DoubleAttackStrategy](Some(defenderBoost))
+    val singleAttack    = StrategyHandler[SingleAttackStrategy](Some(doubleAttack))
 
     singleAttack
   }

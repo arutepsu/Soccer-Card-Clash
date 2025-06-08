@@ -7,8 +7,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.bo
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.IActionStrategy
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
-import de.htwg.se.soccercardclash.model.playerComponent.playerAction.*
 import de.htwg.se.soccercardclash.util.{EventDispatcher, GameActionEvent, ObservableEvent, StateEvent}
 
 import scala.util.{Failure, Success, Try}

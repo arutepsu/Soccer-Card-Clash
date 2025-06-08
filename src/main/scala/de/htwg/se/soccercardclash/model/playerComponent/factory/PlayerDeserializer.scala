@@ -17,7 +17,6 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.Elem
 @Singleton
 class PlayerDeserializer @Inject()(
-                                    playerFactory: IPlayerFactory,
                                     cardDeserializer: CardDeserializer,
                                     randoms: Map[String, IRandomProvider]
                                   ) extends Deserializer[IPlayer] {
@@ -44,18 +43,21 @@ class PlayerDeserializer @Inject()(
 
       typeAttr match {
         case "Human" =>
-          playerFactory.createPlayer(name).setActionStates(actionStates)
+          PlayerBuilder()
+          .withName(name)
+          .asHuman()
+          .withActionStates(actionStates)
+          .build()
 
         case "AI" =>
           val strategy = createAIStrategy(strategyAttr)
             .getOrElse(throw new IllegalArgumentException(s"Unsupported AI strategy: $strategyAttr"))
 
-          val customLimits: Map[PlayerActionPolicies, Int] = actionStates.map {
-            case (policy, CanPerformAction(uses)) => policy -> uses
-            case (policy, OutOfActions) => policy -> 0
-          }
-
-          playerFactory.createAIPlayer(name, strategy, customLimits)
+          PlayerBuilder()
+            .withName(name)
+            .asAI(strategy)
+            .withConvertedLimitsFromStates(actionStates)
+            .build()
 
         case other =>
           throw new IllegalArgumentException(s"Unknown player type: $other")
@@ -87,18 +89,24 @@ class PlayerDeserializer @Inject()(
 
       typeStr match {
         case "Human" =>
-          playerFactory.createPlayer(name).setActionStates(actionStates)
+          
+          PlayerBuilder()
+            .withName(name)
+            .asHuman()
+            .withActionStates(actionStates)
+            .build()
+
 
         case "AI" =>
           val strategy = createAIStrategy(strategyStr)
             .getOrElse(throw new IllegalArgumentException(s"Unsupported AI strategy: $strategyStr"))
+          
+          PlayerBuilder()
+            .withName(name)
+            .asAI(strategy)
+            .withConvertedLimitsFromStates(actionStates)
+            .build()
 
-          val customLimits: Map[PlayerActionPolicies, Int] = actionStates.map {
-            case (policy, CanPerformAction(uses)) => policy -> uses
-            case (policy, OutOfActions) => policy -> 0
-          }
-
-          playerFactory.createAIPlayer(name, strategy, customLimits)
 
         case other =>
           throw new IllegalArgumentException(s"Unknown player type: $other")

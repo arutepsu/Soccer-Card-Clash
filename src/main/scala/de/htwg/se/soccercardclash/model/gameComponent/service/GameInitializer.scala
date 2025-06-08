@@ -33,7 +33,6 @@ trait IGameInitializer {
 }
 
 class GameInitializer @Inject()(
-                                 playerFactory: IPlayerFactory,
                                  deckFactory: IDeckFactory,
                                  gameCardsFactory: IGameCardsFactory,
                                  rolesFactory: IRolesFactory,
@@ -71,7 +70,16 @@ class GameInitializer @Inject()(
   }
 
   private def createPlayers(playerName1: String, playerName2: String): (IPlayer, IPlayer) =
-    (playerFactory.createPlayer(playerName1), playerFactory.createPlayer(playerName2))
+    (
+      new PlayerBuilder()
+      .withName(playerName1)
+      .withDefaultLimits()
+      .build(),
+      new PlayerBuilder()
+      .withName(playerName2)
+      .withDefaultLimits()
+      .build()
+    )
 
   override def initializeFromState(state: IGameState): IGameState = {
     val p1 = state.getRoles.attacker
@@ -102,7 +110,10 @@ class GameInitializer @Inject()(
   }
 
   override def createGameStateWithAI(humanName: String, aiPlayer: IPlayer): IGameState = {
-    val humanPlayer = playerFactory.createPlayer(humanName)
+    val humanPlayer = new PlayerBuilder()
+      .withName(humanName)
+      .withDefaultLimits()
+      .build()
 
     val deck = deckFactory.createDeck()
     deckFactory.shuffleDeck(deck)

@@ -8,7 +8,6 @@ import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.at
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.boost._
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy._
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.trigger.swap._
-import de.htwg.se.soccercardclash.model.playerComponent.factory.IPlayerFactory
 import de.htwg.se.soccercardclash.model.gameComponent.action.strategy.flow.scoringStrategy.base.StandardScoring
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

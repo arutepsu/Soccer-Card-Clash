@@ -1,4 +1,4 @@
-package de.htwg.se.soccercardclash.util
+package de.htwg.se.soccercardclash.controller.contextHolder
 
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.util.{Observable, ObservableEvent}

@@ -18,17 +18,18 @@ import de.htwg.se.soccercardclash.model.playerComponent.base.{AI, Human}
 import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import de.htwg.se.soccercardclash.model.playerComponent.ai.strategies.IAIStrategy
+import de.htwg.se.soccercardclash.model.playerComponent.factory.PlayerBuilder
 import de.htwg.se.soccercardclash.util.NoOpAIAction
 import org.mockito.ArgumentMatchers.any
 class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
 
   val defaultName = "Alice"
-  val humanPlayer = Player.withDefaultActions(defaultName, Human)
+  val humanPlayer = PlayerBuilder().withName("Alice").asHuman().withDefaultLimits().build()
   val mockStrategy = mock[IAIStrategy]
   when(mockStrategy.decideAction(any(), any())).thenReturn(NoOpAIAction)
 
-  val aiPlayer = Player.withDefaultActions("AI_Player", AI(mockStrategy))
+  val aiPlayer = PlayerBuilder().withName("AI_Player").asAI(mockStrategy).withDefaultLimits().build()
 
 
   "A Player" should {
@@ -58,18 +59,31 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "be equal to another player with the same name" in {
-      val clone = Player.withDefaultActions(defaultName, Human)
+      val clone = PlayerBuilder()
+        .withName(defaultName)
+        .asHuman()
+        .withDefaultLimits()
+        .build()
+
       humanPlayer shouldEqual clone
     }
 
     "not be equal to another player with a different name" in {
-      val other = Player.withDefaultActions("Charlie", Human)
+      val other = PlayerBuilder()
+        .withName("Charlie")
+        .asHuman()
+        .withDefaultLimits()
+        .build()
+
       humanPlayer should not equal other
     }
 
     "have consistent hashCode based on name only" in {
-      val mockStrategy = mock[IAIStrategy]
-      val sameNameOther = Player.withDefaultActions(defaultName, AI(mockStrategy))
+      val sameNameOther = PlayerBuilder()
+        .withName(defaultName)
+        .asAI(mock[IAIStrategy])
+        .withDefaultLimits()
+        .build()
 
       humanPlayer.hashCode shouldBe sameNameOther.hashCode
     }
@@ -95,12 +109,12 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "construct with custom action limits properly" in {
-      val limits = Map(
-        PlayerActionPolicies.Swap -> 0,
-        PlayerActionPolicies.DoubleAttack -> 2
-      )
-
-      val custom = Player.withCustomActions("Custom", Human, limits)
+      val custom = PlayerBuilder()
+        .withName("Custom")
+        .asHuman()
+        .withPolicy(PlayerActionPolicies.Swap, 0)
+        .withPolicy(PlayerActionPolicies.DoubleAttack, 2)
+        .build()
       custom.getActionStates(PlayerActionPolicies.Swap) shouldBe OutOfActions
       custom.getActionStates(PlayerActionPolicies.DoubleAttack) shouldBe CanPerformAction(2)
     }

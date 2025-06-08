@@ -11,7 +11,7 @@ import de.htwg.se.soccercardclash.util.{AIAction, NoOpAIAction}
 import scala.util.Random
 
 
-class MetaAIStrategy(random: IRandomProvider) extends IAIStrategy {
+class MetaAIStrategy(val random: IRandomProvider) extends IAIStrategy {
   protected val strategies: Vector[IAIStrategy] = Vector(
     new SmartAttackAIStrategy(),
     new SimpleAttackAIStrategy(),

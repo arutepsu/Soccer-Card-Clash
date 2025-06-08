@@ -4,9 +4,10 @@ import de.htwg.se.soccercardclash.model.cardComponent.ICard
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueue
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.*
+import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.components.{IGameCards, IRoles, IScores}
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
-import de.htwg.se.soccercardclash.util.Observable
+import de.htwg.se.soccercardclash.util.{Memento, Observable}
 import org.mockito.Mockito.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers.*
@@ -54,19 +55,7 @@ class GameStateSpec extends AnyFlatSpec with MockitoSugar {
     when(scores.getScore(attacker)).thenReturn(3)
     when(scores.getScore(defender)).thenReturn(5)
 
-    val gameState = new IGameState {
-      override def getGameCards: IGameCards = gameCards
-
-      override def getRoles: IRoles = roles
-
-      override def getScores: IScores = scores
-
-      override def newGameCards(newGameCards: IGameCards): IGameState = this
-
-      override def newRoles(newRoles: IRoles): IGameState = this
-
-      override def newScores(newScores: IScores): IGameState = this
-    }
+    val gameState = GameState(gameCards, roles, scores)
 
     val xml = gameState.toXml
 
@@ -122,19 +111,7 @@ class GameStateSpec extends AnyFlatSpec with MockitoSugar {
     when(scores.getScore(attacker)).thenReturn(1)
     when(scores.getScore(defender)).thenReturn(2)
 
-    val gameState = new IGameState {
-      override def getGameCards: IGameCards = gameCards
-
-      override def getRoles: IRoles = roles
-
-      override def getScores: IScores = scores
-
-      override def newGameCards(newGameCards: IGameCards): IGameState = this
-
-      override def newRoles(newRoles: IRoles): IGameState = this
-
-      override def newScores(newScores: IScores): IGameState = this
-    }
+    val gameState = GameState(gameCards, roles, scores)
 
     val json = gameState.toJson
 
@@ -150,5 +127,35 @@ class GameStateSpec extends AnyFlatSpec with MockitoSugar {
     (json \ "defenderGoalkeeper").get shouldBe Json.obj()
     (json \ "attackerScore").as[Int] shouldBe 1
     (json \ "defenderScore").as[Int] shouldBe 2
+  }
+  "GameState" should "create and restore from valid GameStateMemento" in {
+    val gameCards = mock[IGameCards]
+    val roles = mock[IRoles]
+    val scores = mock[IScores]
+
+    val state = GameState(gameCards, roles, scores)
+    val memento = state.createMemento()
+
+    val restored = state.restoreFromMemento(memento)
+
+    assert(restored.isInstanceOf[GameState])
+    val restoredState = restored.asInstanceOf[GameState]
+    assert(restoredState.gameCards eq gameCards)
+    assert(restoredState.roles eq roles)
+    assert(restoredState.scores eq scores)
+  }
+
+  it should "throw IllegalArgumentException on invalid memento" in {
+    val gameCards = mock[IGameCards]
+    val roles = mock[IRoles]
+    val scores = mock[IScores]
+
+    val state = GameState(gameCards, roles, scores)
+
+    val invalidMemento = new Memento {}
+
+    assertThrows[IllegalArgumentException] {
+      state.restoreFromMemento(invalidMemento)
+    }
   }
 }

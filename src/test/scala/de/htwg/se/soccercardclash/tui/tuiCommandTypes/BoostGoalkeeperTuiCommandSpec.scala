@@ -1,8 +1,8 @@
 package de.htwg.se.soccercardclash.tui.tuiCommandTypes
 
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.util.IGameContextHolder
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.base.ITuiCommand
 import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.{AttackTuiCommand, BoostDefenderTuiCommand, BoostGoalkeeperTuiCommand}
 import org.scalatest.flatspec.AnyFlatSpec

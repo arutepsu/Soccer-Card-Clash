@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.controller.base
 
 import de.htwg.se.soccercardclash.controller.command.{CommandResult, ICommand, ICommandFactory}
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.cardComponent.dataStructure.IHandCardsQueueFactory
 import de.htwg.se.soccercardclash.model.gameComponent.IGameState
 import de.htwg.se.soccercardclash.model.playerComponent.IPlayer
@@ -10,7 +11,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.base.GameState
 import de.htwg.se.soccercardclash.model.gameComponent.action.manager.IActionExecutor
 import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
-import de.htwg.se.soccercardclash.util.{EventDispatcher, IGameContextHolder, Observable, ObservableEvent, Observer, UndoManager}
+import de.htwg.se.soccercardclash.util.{EventDispatcher, Observable, ObservableEvent, Observer, UndoManager}
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
 import de.htwg.se.soccercardclash.model.gameComponent.components.Roles
 import de.htwg.se.soccercardclash.model.playerComponent.base.AI

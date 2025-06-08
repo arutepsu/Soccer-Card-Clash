@@ -7,21 +7,24 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.*
 class UndoManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
+
   "UndoManager" should {
 
     "store executed commands and allow undo" in {
       val command = mock[ICommand]
       val oldState = mock[IGameState]
       val newState = mock[IGameState]
-      val result = CommandResult(success = true, state = newState, events = List.empty)
+      val memento = mock[Memento]
 
-
-      when(command.execute(oldState)).thenReturn(result)
+      when(command.execute(oldState)).thenReturn(CommandResult(success = true, newState, List.empty))
+      when(oldState.createMemento()).thenReturn(memento)
+      when(newState.createMemento()).thenReturn(mock[Memento])
+      when(newState.restoreFromMemento(memento)).thenReturn(oldState)
 
       val undoManager = new UndoManager
-      val commandResult = undoManager.doStep(command, oldState)
+      val result = undoManager.doStep(command, oldState)
 
-      commandResult shouldBe result
+      result.state shouldBe newState
 
       val (undoState, undoEvents) = undoManager.undoStep(newState)
       undoState shouldBe oldState
@@ -31,10 +34,9 @@ class UndoManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "not push to undo stack if execution fails" in {
       val command = mock[ICommand]
       val oldState = mock[IGameState]
-      val result = CommandResult(success = false, state = oldState, events = List.empty)
+      val failedResult = CommandResult(success = false, oldState, List.empty)
 
-
-      when(command.execute(oldState)).thenReturn(result)
+      when(command.execute(oldState)).thenReturn(failedResult)
 
       val undoManager = new UndoManager
       undoManager.doStep(command, oldState)
@@ -48,19 +50,24 @@ class UndoManagerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val command = mock[ICommand]
       val oldState = mock[IGameState]
       val newState = mock[IGameState]
-      val result = CommandResult(success = true, state = newState, events = List.empty)
+      val memento = mock[Memento]
 
-
-      when(command.execute(oldState)).thenReturn(result)
+      when(command.execute(oldState)).thenReturn(CommandResult(success = true, newState, List.empty))
+      when(oldState.createMemento()).thenReturn(memento)
+      when(newState.createMemento()).thenReturn(memento)
+      when(newState.restoreFromMemento(memento)).thenReturn(oldState)
+      when(oldState.restoreFromMemento(memento)).thenReturn(newState)
 
       val undoManager = new UndoManager
       undoManager.doStep(command, oldState)
-      val (_, _) = undoManager.undoStep(newState)
+
+      undoManager.undoStep(newState)
 
       val (redoState, redoEvents) = undoManager.redoStep(oldState)
       redoState shouldBe newState
       redoEvents should contain only GameActionEvent.Redo
     }
+
 
     "do nothing on undo when stack is empty" in {
       val undoManager = new UndoManager

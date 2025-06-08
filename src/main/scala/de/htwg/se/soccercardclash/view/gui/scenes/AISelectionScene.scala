@@ -2,6 +2,7 @@ package de.htwg.se.soccercardclash.view.gui.scenes
 
 import com.google.inject.Inject
 import de.htwg.se.soccercardclash.controller.IController
+import de.htwg.se.soccercardclash.controller.contextHolder.IGameContextHolder
 import de.htwg.se.soccercardclash.model.playerComponent.base.*
 import de.htwg.se.soccercardclash.util.*
 import de.htwg.se.soccercardclash.view.gui.components.alert.GameAlertFactory
