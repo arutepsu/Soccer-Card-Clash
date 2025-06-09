@@ -62,6 +62,7 @@
 
 - ⚠️ Boosting counts as **one action** per turn.
 - ❗ If no actions remain, boosting is disabled and a warning appears.
+- 🔁 Whenever a boosted card is moved to a player's hand (whether attacker or defender), its original value is restored.
 
 ---
 
@@ -91,9 +92,9 @@ Once you've used all your actions, you won’t be able to perform any more until
 * 
 * 🔁 Reverse Swap
 * 
-* ⚡ Boost
+* ⚡ Defender Boost
 * 
-* 🛡️ Defend
+* ⚡ Goalkeeper Boost
 * 
 * ⚔️ Double Attack
 
