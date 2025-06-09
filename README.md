@@ -81,9 +81,10 @@ The controller mediates between the model and views:
 ## 💻 Technologies Used
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
 ![sbt](https://img.shields.io/badge/sbt-1.9.9-purple?logo=sbt)
-![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-yellow?logo=scala)
+![ScalaFX](https://img.shields.io/badge/ScalaFX-22.0.0-violet?logo=scala)
 ![DI](https://img.shields.io/badge/DI-Google_Juice-orange?logo=sbt)
 ![Test](https://img.shields.io/badge/Test-ScalaTest%203.2.14-brightgreen)
+![Docker](https://img.shields.io/badge/Docker%20-3.8-teal)
 ![AI](https://img.shields.io/badge/Images%20by-DeepAI-blue)
 
 ---
