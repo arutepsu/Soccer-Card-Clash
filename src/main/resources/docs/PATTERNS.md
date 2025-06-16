@@ -63,14 +63,14 @@ This is a classic use of the Strategy Pattern, promoting open/closed design and 
 ### 🧠 Strategy Pattern
 
 | **Component**                                                                                                                                 | **Role**                                                             |
-|-----------------------------------------------------------------------------------------------------------------------------------------------| -------------------------------------------------------------------- |
+|-----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
 | [`IActionStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/IActionStrategy.scala)                 | Strategy interface – defines the `execute()` method                  |
 | [`SingleAttackStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/attack/SingleAttackStrategy.scala) | Concrete strategy – performs a basic attack                          |
 | [`DoubleAttackStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/attack/DoubleAttackStrategy.scala) | Concrete strategy – performs a double-card attack                    |
 | [`DefenderBoostStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/boost/DefenderBoostStrategy.scala) | Concrete strategy – boosts a defender card                           |
 | [`GoalkeeperBoostStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/boost/GoalkeeperBoostStrategy.scala) | Concrete strategy – boosts a goalkeeper card                         |
 | [`RegularSwapStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/swap/RegularSwapStrategy.scala) | Concrete strategy – swaps last hand card with chosen hand card index |
-| [`ReverseSwapStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/swap/ReverseSwapStrategy.scala) | Concrete strategy – reverts the last swap made (hand ↔ hand)         |
+| [`ReverseSwapStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/swap/ReverseSwapStrategy.scala) | Concrete strategy – reverses the hand cards indexes                  |
 
 Each action is modular, testable, and swap-friendly at runtime, enabling both player and AI decision logic to reuse the
 same interface.
