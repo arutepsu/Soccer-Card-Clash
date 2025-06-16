@@ -77,6 +77,7 @@ The controller mediates between the model and views:
 * Supports undo/redo functionality
 * Dispatches events independently to both TUI and GUI observers
 
+* ### 📖[DesignPatterns](src/main/resources/docs/PATTERNS.md)
 ---
 ## 💻 Technologies Used
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)

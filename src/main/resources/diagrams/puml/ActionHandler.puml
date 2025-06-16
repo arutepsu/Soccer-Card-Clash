@@ -1,0 +1,51 @@
+@startuml
+
+interface IActionHandler {
+  +setNext(handler: IActionHandler): IActionHandler
+  +handle(strategy: IActionStrategy, state: IGameState): Option
+}
+
+interface IActionStrategy
+
+interface StrategyExecutor<S> {
+  +canHandle(strategy: IActionStrategy): Boolean
+  +execute(strategy: S, state: IGameState): (Boolean, IGameState, List<ObservableEvent>)
+}
+
+
+abstract class ActionHandler {
+  -nextHandler: Option<IActionHandler>
+  +setNext(handler: IActionHandler): IActionHandler
+  +handleNext(strategy: IActionStrategy, state: IGameState): Option
+}
+
+
+class StrategyHandler<S> {
+  -next: Option<IActionHandler>
+  +setNext(handler: IActionHandler): IActionHandler
+  +handle(strategy: IActionStrategy, state: IGameState): Option
+}
+
+object HandlerChainFactory <<object>>{
+  +fullChain(): IActionHandler
+}
+
+class StrategyExecutor<S> <<object>>
+
+StrategyHandler --|> IActionHandler
+ActionHandler --|> IActionHandler
+StrategyHandler --> IActionStrategy
+StrategyHandler --> IGameState
+StrategyHandler --> ObservableEvent
+StrategyHandler --> StrategyExecutor
+
+StrategyExecutor ..> IActionStrategy
+StrategyExecutor --> IGameState
+StrategyExecutor --> ObservableEvent
+
+HandlerChainFactory --> StrategyHandler
+HandlerChainFactory --> IActionHandler
+
+StrategyHandler --> "next" IActionHandler : delegates
+
+@enduml

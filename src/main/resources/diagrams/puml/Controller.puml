@@ -1,0 +1,57 @@
+@startuml
+
+interface ICommand {
+  +execute(state: IGameState): CommandResult
+}
+
+interface IGameState
+class ObservableEvent
+
+class CommandResult {
+  +success: Boolean
+  +state: IGameState
+  +events: List<ObservableEvent>
+}
+
+class GameContext {
+  +state: IGameState
+  +undoManager: UndoManager
+  +copy(state: IGameState, undoManager: UndoManager): GameContext
+}
+
+class UndoManager {
+  +doStep(command: ICommand, state: IGameState): CommandResult
+}
+
+class IGameContextHolder {
+  +set(ctx: GameContext): Unit
+}
+
+class EventDispatcher {
+  +dispatch(..)
+}
+EventDispatcher --> ObservableEvent : dispatches
+
+class Controller {
+  -contextHolder: IGameContextHolder
+  +singleAttack(defenderIndex: Int, ctx: GameContext): (GameContext, Boolean)
+  -run(ctx: GameContext, command: ICommand, mainEvent: ObservableEvent): (GameContext, Boolean)
+}
+
+Controller --> GameContext
+Controller --> EventDispatcher
+Controller --> IGameContextHolder
+
+UndoManager --> ICommand
+UndoManager --> CommandResult
+
+CommandResult --> IGameState
+CommandResult --> ObservableEvent
+
+IGameContextHolder --> GameContext
+
+GameContext --> IGameState
+GameContext --> UndoManager
+
+@enduml
+
