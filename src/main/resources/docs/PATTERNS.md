@@ -72,9 +72,9 @@ This is a classic use of the Strategy Pattern, promoting open/closed design and 
 | [`RegularSwapStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/swap/RegularSwapStrategy.scala) | Concrete strategy – swaps last hand card with chosen hand card index |
 | [`ReverseSwapStrategy`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/trigger/swap/ReverseSwapStrategy.scala) | Concrete strategy – reverts the last swap made (hand ↔ hand)         |
 
-
 Each action is modular, testable, and swap-friendly at runtime, enabling both player and AI decision logic to reuse the
 same interface.
+
 ---
 ## 🔗 Action Handler Chain – Processing Dynamic Actions
 ### ☑️ Implemented Pattern: Chain of Responsibility
@@ -163,7 +163,6 @@ This control flow builds on:
 * The Mediator Pattern (EventDispatcher decouples event propagation)
 * The Observer Pattern (views subscribe to events and react accordingly)
 * A functional GameContext with an UndoManager for safe, reversible updates
-* 
 ## 🧩 UML Diagram
 ![Controller](../diagrams/png/Controller.png)
 
