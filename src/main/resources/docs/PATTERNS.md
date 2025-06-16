@@ -99,4 +99,86 @@ This pattern allows extensible support for new strategies without changing exist
 3. If not, it calls handleNext(...) -> passes the request to the next handler.
 4. When a handler matches, it executes the strategy and returns the updated game state + events.
 
+--- 
 
+## 🎮 Game Commands – Encapsulating Player Actions
+### ☑️ Implemented Pattern: Command
+#### 💡 Overview
+Game actions (like attacking or boosting) are encapsulated as command objects. Each command implements a common interface and can be executed independently, enabling:
+
+✅ Undo/redo mechanisms
+
+✅ Action queuing
+
+✅ Replay of moves
+
+✅ Decoupled control logic
+
+This is a textbook use of the Command Pattern, allowing the controller to issue actions without knowing the internal details of how they are carried out.
+
+## 🧩 UML Diagram
+![Command](src/main/resources/diagrams/png/Command.png)
+
+###  🧠 Command Pattern
+| **Component**                                                                                                                                                       | **Role**                                                                        |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------- |
+| [`ICommand`](src/main/scala/de/htwg/se/soccercardclash/controller/command/ICommand.scala)                                                                           | Core command interface with an `execute` method                                 |
+| [`ActionCommand`](src/main/scala/de/htwg/se/soccercardclash/controller/command/actionCommandTypes/action/ActionCommand.scala)                                       | Abstract base class providing default logic and delegation                      |
+| [`SingleAttackActionCommand`](src/main/scala/de/htwg/se/soccercardclash/controller/command/actionCommandTypes/attackActionCommands/SingleAttackActionCommand.scala) | Concrete command – performs a single attack on a specified defender index       |
+| [`IActionExecutor`](src/main/scala/de/htwg/se/soccercardclash/model/gameComponent/action/manager/IActionExecutor.scala)                                             | Executes the given strategy and returns a `CommandResult`                       |
+| [`CommandResult`](src/main/scala/de/htwg/se/soccercardclash/controller/command/CommandResult.scala)                                                                 | Result container with updated `IGameState`, success flag, and observable events |
+
+### ⚙️ Execution Flow
+
+1. The controller creates a concrete command (e.g., `SingleAttackActionCommand`), setting required parameters like the defender index.
+2. It calls `command.execute(currentState)`.
+3. The command internally calls `executeAction(...)`, which:
+    - Delegates to an `IActionExecutor`
+    - Applies the relevant strategy
+    - Returns a `CommandResult` with:
+        - the new `IGameState`
+        - a success flag
+        - a list of `ObservableEvent`s
+
+### 🔁 Benefits of the Command Pattern
+* 🧩 Encapsulation: Action logic is bundled into standalone, testable units
+* 🧠 History Management: Easy to support undo/redo using stored commands
+* 🔄 Flexible Invocation: Commands can be queued, delayed, or replayed
+* ✅ Open/Closed: Add new actions without modifying controller code
+
+--- 
+## 🧠 Command Execution – Managing State and Events
+### ☑️ Pattern Integration: Command • Mediator • Observer • Undo
+#### 💡 Overview
+The Controller coordinates execution of commands, manages undo history, and dispatches resulting game events. 
+This control flow builds on:
+* The Command Pattern (encapsulates game logic per action)
+* The Mediator Pattern (EventDispatcher decouples event propagation)
+* The Observer Pattern (views subscribe to events and react accordingly)
+* A functional GameContext with an UndoManager for safe, reversible updates
+* 
+## 🧩 UML Diagram
+![Controller](src/main/resources/diagrams/png/Controller.png)
+
+| **Component**                                                                                                       | **Role**                                                                    |
+|---------------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------------------- |
+| [`CommandResult`](src/main/scala/de/htwg/se/soccercardclash/controller/command/CommandResult.scala)                 | Holds the result of command execution – new state, success flag, and events |
+| [`GameContext`](src/main/scala/de/htwg/se/soccercardclash/model/gameComponent/context/GameContext.scala)            | Immutable holder for `IGameState` and `UndoManager`                         |
+| [`UndoManager`](src/main/scala/de/htwg/se/soccercardclash/util/UndoManager.scala)                                   | Applies commands and tracks them for undo/redo                              |
+| [`IGameContextHolder`](src/main/scala/de/htwg/se/soccercardclash/controller/contextHolder/IGameContextHolder.scala) | Stores the current shared `GameContext`                                     |
+| [`Controller`](src/main/scala/de/htwg/se/soccercardclash/controller/base/Controller.scala)                          | Orchestrates command execution and state updates                            |
+| [`EventDispatcher`](src/main/scala/de/htwg/se/soccercardclash/util/EventDispatcher.scala)                           | **Mediator** – distributes events to observers                              |
+| [`Observer`](src/main/scala/de/htwg/se/soccercardclash/util/Observer.scala) (UI, TUI)                                                                                            | **Observer** – listens for `ObservableEvent`s and updates accordingly       |
+
+### ⚙️ Execution Flow
+
+1. A controller method (e.g., `singleAttack`) creates the appropriate command.
+2. The controller calls `run(...)`, which uses `UndoManager.doStep(...)` to execute the command.
+3. The command returns a `CommandResult` containing:
+    - The new `IGameState`
+    - A success flag
+    - A list of `ObservableEvent`s
+4. The updated `GameContext` is stored in the `IGameContextHolder`.
+5. The `EventDispatcher` (**Mediator**) forwards all events to registered observers (via the **Observer Pattern**), triggering:
+    - UI updates
+    - TUI feedback
