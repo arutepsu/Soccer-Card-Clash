@@ -1,4 +1,8 @@
-# Design Patterns Overview
+<p align="center">
+  <img src="../images/data/logo/logoCut.png" alt="Logo" width="250"/>
+</p>
+
+# 📐 Design Patterns Overview
 
 ---
 ## 🧠 GameState – Core Game Snapshot

@@ -59,25 +59,36 @@ This game is built using the Model-View-Controller (MVC) architectural pattern, 
 
 ### 🧠 Model
 
-The model contains the immutable core logic of the game:
+The **model** contains the immutable core logic of the game:
 
-* Cards, roles, scores, and game state
-* Designed for predictability, testability, and safe concurrent use
+- Card logic, roles, scores, and game state transitions
+- Built with immutability for safe concurrency and functional testing
+- Implements key design patterns like **Memento**, **Strategy**, and **State**
 
 ### 🖼️ View
-Two synchronized views provide flexible interaction:
 
-* Text-based UI (TUI) for quick testing and interaction via console
-* Graphical UI (GUI) built with ScalaFX, offering a richer user experience
+Two synchronized views allow flexible interaction:
+
+- 🖥️ **GUI** (ScalaFX) – interactive and animated graphical interface
+- 📝 **TUI** – text-based interface ideal for fast testing and debugging
+- Both views act as **observers** and update automatically via event dispatching
 
 ### 🎮 Controller
-The controller mediates between the model and views:
 
-* Processes commands and applies changes to the game state
-* Supports undo/redo functionality
-* Dispatches events independently to both TUI and GUI observers
+The **controller** coordinates between user input and model logic:
 
-* ### 📖[DesignPatterns](src/main/resources/docs/PATTERNS.md)
+- Translates actions into executable **commands**
+- Applies changes using an **UndoManager** and updates a shared `GameContext`
+- Forwards emitted events to registered observers using a **Mediator** (`EventDispatcher`)
+
+---
+
+### 📐 Design Patterns
+
+This project applies several classic design patterns to ensure **clean architecture**, **testability**, and **flexible extensibility** across the model, controller, and view layers.
+
+### 👉 [See full documentation here](src/main/resources/docs/PATTERNS.md)
+
 ---
 ## 💻 Technologies Used
 ![Scala](https://img.shields.io/badge/Scala-3.4.1-red?logo=scala)
