@@ -174,7 +174,7 @@ This control flow builds on:
 | [`IGameContextHolder`](../../scala/de/htwg/se/soccercardclash/controller/contextHolder/GameContextHolder.scala) | Stores the current shared `GameContext`                                     |
 | [`Controller`](../../scala/de/htwg/se/soccercardclash/controller/base/Controller.scala)                         | Orchestrates command execution and state updates                            |
 | [`EventDispatcher`](../../scala/de/htwg/se/soccercardclash/util/EventDispatcher.scala)                          | **Mediator** – distributes events to observers                              |
-| [`Observer`](../../scala/de/htwg/se/soccercardclash/util/Observer.scala) (UI, TUI)                              | **Observer** – listens for `ObservableEvent`s and updates accordingly       |
+| [`Observer`](../../scala/de/htwg/se/soccercardclash/util/Observer.scala) (GUI, TUI)                             | **Observer** – listens for `ObservableEvent`s and updates accordingly       |
 
 ### ⚙️ Execution Flow
 
@@ -186,5 +186,5 @@ This control flow builds on:
     - A list of `ObservableEvent`s
 4. The updated `GameContext` is stored in the `IGameContextHolder`.
 5. The `EventDispatcher` (**Mediator**) forwards all events to registered observers (via the **Observer Pattern**), triggering:
-    - UI updates
+    - GUI updates
     - TUI feedback
