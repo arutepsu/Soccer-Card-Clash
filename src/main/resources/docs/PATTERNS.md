@@ -188,3 +188,49 @@ This control flow builds on:
 5. The `EventDispatcher` (**Mediator**) forwards all events to registered observers (via the **Observer Pattern**), triggering:
     - GUI updates
     - TUI feedback
+
+---
+---
+
+## 🧩 Additional Patterns Applied
+
+While the primary patterns are documented in detail above, several additional patterns are implemented throughout the codebase to support clean design and architectural flexibility.
+
+### 🏭 Factory Pattern
+
+Used to encapsulate object creation logic for key components:
+
+- [`CardFactory`](../../scala/de/htwg/se/soccercardclash/model/cardComponent/factory/CardFactory.scala)
+- [`GameCardsFactory`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/GameCards.scala)
+- [`CommandFactory`](../../scala/de/htwg/se/soccercardclash/controller/command/CommandFactory.scala)
+### 🔧 Builder Pattern
+
+- [`PlayerBuilder`](../../scala/de/htwg/se/soccercardclash/model/playerComponent/factory/PlayerBuilder.scala) provides a fluent and controlled way to configure player instances
+- Avoids constructor overloads and supports optional configuration
+
+### 💉 Dependency Injection (DI)
+
+- The entire project architecture is wired using **Google Guice**
+- Promotes **loose coupling** and **testability**
+- All core services, strategies, and providers are injected via modules like:
+
+    - [`GameCoreModule`](../../scala/de/htwg/se/soccercardclash/module/GameCoreModule.scala)
+    - [`ControllerModule`](../../scala/de/htwg/se/soccercardclash/module/ControllerModule.scala)
+    - [`SoccerCardClashModule`](../../scala/de/htwg/se/soccercardclash/module/SoccerCardClashModule.scala)
+### 🔒 Singleton Pattern
+
+- Enforced via Guice's [`@Singleton`](https://google.github.io/guice/api-docs/latest/javadoc/com/google/inject/Singleton.html) annotation
+- Ensures single shared instances of:
+    - [`Map[String, IPlayer]`](src/main/scala/de/htwg/se/soccercardclash/module/PlayerModule.scala) (AI roster)
+    - [`Map[String, IRandomProvider]`](src/main/scala/de/htwg/se/soccercardclash/module/PlayerModule.scala) (random providers)
+
+### ⏱️ Scheduler Pattern (Quasi)
+
+- [`UIActionScheduler`](../../scala/de/htwg/se/soccercardclash/view/gui/scenes/sceneManager/UIActionScheduler.scala) sequences delayed UI tasks (e.g. animations, transitions)
+- Acts as a simplified UI-oriented scheduler pattern for event-driven updates
+
+---
+
+These patterns, while not fully documented above, play a vital role in supporting the architecture’s scalability, composability, and maintainability.
+
+--- 
