@@ -1,0 +1,71 @@
+@startuml
+interface IGameState {
+  +getGameCards(): IGameCards
+  +getRoles(): IRoles
+  +getScores(): IScores
+  +newGameCards(newGameCards: IGameCards): IGameState
+  +newRoles(newRoles: IRoles): IGameState
+  +newScores(newScores: IScores): IGameState
+  +createMemento(): Memento
+  +restoreFromMemento(m: Memento): IGameState
+}
+
+interface IRoles {
+  +attacker(): IPlayer
+  +defender(): IPlayer
+  +switchRoles(): IRoles
+  +newRoles(newAttacker: IPlayer, newDefender: IPlayer): IRoles
+}
+
+interface IScores {
+  +getScore(player: IPlayer): Int
+  +updateScoringStrategy(strategy: IScoringStrategy): IScores
+  +scoreGoal(player: IPlayer): (IScores, List[StateEvent])
+  +newScore(player: IPlayer, score: Int): IScores
+}
+interface IGameCards {
+  +getPlayerHand(player: IPlayer): IHandCardsQueue
+    +newPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IGameCards
+'  +newPlayerHand(player: IPlayer, newHand: IHandCardsQueue): IGameCards
+  +otherMethods()
+'  +getAttackingCard(attacker: IPlayer): ICard
+'  +getDefenderCard(defender: IPlayer, index: Int): Option[ICard]
+'  +getPlayerGoalkeeper(player: IPlayer): Option[ICard]
+'  +newPlayerGoalkeeper(player: IPlayer, goalkeeper: Option[ICard]): IGameCards
+'  +getPlayerDefenders(player: IPlayer): List[Option[ICard]]
+'  +newPlayerDefenders(player: IPlayer, defenders: List[Option[ICard]]): IGameCards
+'  +removeDefenderCard(defender: IPlayer, card: Option[ICard]): IGameCards
+'  +removeDefenderGoalkeeper(defender: IPlayer): IGameCards
+'  +allDefendersBeaten(defender: IPlayer): Boolean
+'  +getDefenderCardAt(defender: IPlayer, index: Int): Option[ICard]
+'  +initializeFields(attacker: IPlayer, defender: IPlayer): IGameCards
+'  +refillDefenderField(defender: IPlayer): IGameCards
+'  +newRefillStrategy(strategy: IRefillStrategy): IGameCards
+'  +newGoalkeeperForAttacker(attacker: IPlayer, card: ICard): IGameCards
+}
+
+class GameStateMemento {
+  +gameCards: IGameCards
+  +roles: IRoles
+  +scores: IScores
+}
+
+class GameState {
+  +getGameCards(): IGameCards
+  +getRoles(): IRoles
+  +getScores(): IScores
+  +newGameCards(newGameCards: IGameCards): IGameState
+  +newRoles(newRoles: IRoles): IGameState
+  +newScores(newScores: IScores): IGameState
+  +createMemento(): Memento
+  +restoreFromMemento(m: Memento): IGameState
+}
+
+GameStateMemento --|> Memento
+GameState --|> IGameState
+IGameState --> IGameCards
+IGameState --> IRoles
+IGameState --> IScores
+IGameState --> Memento
+
+@enduml

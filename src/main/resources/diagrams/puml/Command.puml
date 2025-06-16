@@ -1,0 +1,53 @@
+@startuml
+
+' === Core Interfaces & Types ===
+interface IGameState
+class ObservableEvent
+
+' === ICommand Interface ===
+interface ICommand {
+  +execute(state: IGameState): CommandResult
+}
+
+' === Abstract Command Class ===
+abstract class ActionCommand {
+  +execute(state: IGameState): CommandResult
+  +executeAction(state: IGameState): Option<(IGameState, List<ObservableEvent>)>
+}
+
+' === Concrete Command ===
+class SingleAttackActionCommand {
+  -defenderIndex: Int
+  -actionExecutor: IActionExecutor
+  -revertBoostStrategyFactory: IRevertBoostStrategyFactory
+  +executeAction(state: IGameState): Option<(IGameState, List<ObservableEvent>)>
+}
+
+' === Supporting Interfaces ===
+interface IActionExecutor {
+  +execute(strategy: IActionStrategy, state: IGameState): CommandResult
+}
+
+'interface IRevertBoostStrategyFactory
+'interface IActionStrategy
+
+class CommandResult {
+  +success: Boolean
+  +state: IGameState
+  +events: List<ObservableEvent>
+}
+
+' === Inheritance ===
+ActionCommand --|> ICommand
+SingleAttackActionCommand --|> ActionCommand
+
+' === Dependencies ===
+SingleAttackActionCommand --> IActionExecutor
+'SingleAttackActionCommand --> IRevertBoostStrategyFactory
+'SingleAttackActionCommand --> IActionStrategy
+
+IActionExecutor --> CommandResult
+CommandResult --> IGameState
+CommandResult --> ObservableEvent
+
+@enduml

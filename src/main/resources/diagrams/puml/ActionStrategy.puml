@@ -1,0 +1,31 @@
+@startuml
+interface IActionStrategy {
+  +execute(playingField: IGameState): (Boolean, IGameState, List[ObservableEvent])
+}
+
+class SingleAttackStrategy {
+  +execute()...
+}
+class DoubleAttackStrategy {
+  +execute()...
+}
+class DefenderBoostStrategy {
+  +execute()...
+}
+class GoalkeeperBoostStrategy {
+  +execute()...
+}
+class RegularSwapStrategy {
+  +execute()...
+}
+class ReverseSwapStrategy {
+  +execute()...
+}
+SingleAttackStrategy --|> IActionStrategy
+DoubleAttackStrategy --|> IActionStrategy
+DefenderBoostStrategy --|> IActionStrategy
+GoalkeeperBoostStrategy --|> IActionStrategy
+RegularSwapStrategy --|> IActionStrategy
+ReverseSwapStrategy --|> IActionStrategy
+
+@enduml
