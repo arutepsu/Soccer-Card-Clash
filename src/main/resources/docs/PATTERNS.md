@@ -32,11 +32,11 @@ preserving functional purity and enabling safe undo/redo.
 This supports undo/redo, replays, and safe time travel.
 
 ### 📦 Delegation Pattern
-| **Responsibility** | **Delegated To**                                                                                       | **Example Methods**                             |
-| ------------------ |--------------------------------------------------------------------------------------------------------| ----------------------------------------------- |
-| Role management    | [`IRoles`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/IRoles.scala)         | `attacker()`, `defender()`, `switchRoles()`     |
-| Score tracking     | [`IScores`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/IScores.scala)       | `scoreGoal()`, `newScore()`, `getScore()`       |
-| Card handling      | [`IGameCards`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/IGameCards.scala) | `getPlayerHand()`, `newPlayerDefenders()`, etc. |
+| **Responsibility** | **Delegated To**                                                                                     | **Example Methods**                             |
+| ------------------ |------------------------------------------------------------------------------------------------------| ----------------------------------------------- |
+| Role management    | [`IRoles`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/Roles.scala)        | `attacker()`, `defender()`, `switchRoles()`     |
+| Score tracking     | [`IScores`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/Scores.scala)      | `scoreGoal()`, `newScore()`, `getScore()`       |
+| Card handling      | [`IGameCards`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/components/GameCards.scala) | `getPlayerHand()`, `newPlayerDefenders()`, etc. |
 
 
 ### 🌀 State Pattern (Conceptual)
@@ -90,13 +90,13 @@ If it can't, it delegates to the next handler. This keeps the system extensible,
 ![ActionHandler](../diagrams/png/ActionHandler.png)
 
 ### 🔗 Chain of Responsibility Pattern
-| **Component**                                                                                                                             | **Role**                                                                                       |
-|-------------------------------------------------------------------------------------------------------------------------------------------| ---------------------------------------------------------------------------------------------- |
-| [`IActionHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/IActionHandler.scala)           | Handler interface – defines `setNext` and `handle` methods                                     |
-| [`ActionHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/ActionHandler.scala)             | Abstract base – holds reference to `nextHandler` and delegates if current handler can't handle |
-| [`StrategyHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/StrategyHandler.scala)         | Concrete handler – uses a specific `StrategyExecutor` to process matching strategies           |
-| [`StrategyExecutor`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/StrategyExecutor.scala)       | Executes a specific strategy type after `canHandle()` check                                    |
-| [`HandlerChainFactory`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/HandlerChainFactory.scala) | Creates the full handler chain from all known strategy handlers                                |
+| **Component**                                                                                                                       | **Role**                                                                                       |
+|-------------------------------------------------------------------------------------------------------------------------------------| ---------------------------------------------------------------------------------------------- |
+| [`IActionHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/ActionHandler.scala)         | Handler interface – defines `setNext` and `handle` methods                                     |
+| [`ActionHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/ActionHandler.scala)          | Abstract base – holds reference to `nextHandler` and delegates if current handler can't handle |
+| [`StrategyHandler`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/StrategyHandler.scala)      | Concrete handler – uses a specific `StrategyExecutor` to process matching strategies           |
+| [`StrategyExecutor`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/StrategyExecutor.scala)    | Executes a specific strategy type after `canHandle()` check                                    |
+| [`HandlerChainFactory`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/strategy/executor/StrategyHandler.scala)  | Creates the full handler chain from all known strategy handlers                                |
 
 This pattern allows extensible support for new strategies without changing existing logic.
 
@@ -127,13 +127,13 @@ This is a textbook use of the Command Pattern, allowing the controller to issue 
 ![Command](../diagrams/png/Command.png)
 
 ###  🧠 Command Pattern
-| **Component**                                                                                                                                                       | **Role**                                                                        |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------- |
+| **Component**                                                                                                                                                    | **Role**                                                                        |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------- |
 | [`ICommand`](../../scala/de/htwg/se/soccercardclash/controller/command/ICommand.scala)                                                                           | Core command interface with an `execute` method                                 |
 | [`ActionCommand`](../../scala/de/htwg/se/soccercardclash/controller/command/actionCommandTypes/action/ActionCommand.scala)                                       | Abstract base class providing default logic and delegation                      |
 | [`SingleAttackActionCommand`](../../scala/de/htwg/se/soccercardclash/controller/command/actionCommandTypes/attackActionCommands/SingleAttackActionCommand.scala) | Concrete command – performs a single attack on a specified defender index       |
-| [`IActionExecutor`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/manager/IActionExecutor.scala)                                             | Executes the given strategy and returns a `CommandResult`                       |
-| [`CommandResult`](../../scala/de/htwg/se/soccercardclash/controller/command/CommandResult.scala)                                                                 | Result container with updated `IGameState`, success flag, and observable events |
+| [`IActionExecutor`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/action/manager/ActionExecutor.scala)                                              | Executes the given strategy and returns a `CommandResult`                       |
+| [`CommandResult`](../../scala/de/htwg/se/soccercardclash/controller/command/ICommand.scala)                                                                      | Result container with updated `IGameState`, success flag, and observable events |
 
 ### ⚙️ Execution Flow
 
@@ -167,15 +167,15 @@ This control flow builds on:
 ## 🧩 UML Diagram
 ![Controller](../diagrams/png/Controller.png)
 
-| **Component**                                                                                                       | **Role**                                                                    |
-|---------------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------------------- |
-| [`CommandResult`](../../scala/de/htwg/se/soccercardclash/controller/command/CommandResult.scala)                 | Holds the result of command execution – new state, success flag, and events |
-| [`GameContext`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/context/GameContext.scala)            | Immutable holder for `IGameState` and `UndoManager`                         |
-| [`UndoManager`](../../scala/de/htwg/se/soccercardclash/util/UndoManager.scala)                                   | Applies commands and tracks them for undo/redo                              |
-| [`IGameContextHolder`](../../scala/de/htwg/se/soccercardclash/controller/contextHolder/IGameContextHolder.scala) | Stores the current shared `GameContext`                                     |
-| [`Controller`](../../scala/de/htwg/se/soccercardclash/controller/base/Controller.scala)                          | Orchestrates command execution and state updates                            |
-| [`EventDispatcher`](../../scala/de/htwg/se/soccercardclash/util/EventDispatcher.scala)                           | **Mediator** – distributes events to observers                              |
-| [`Observer`](../../scala/de/htwg/se/soccercardclash/util/Observer.scala) (UI, TUI)                                                                                            | **Observer** – listens for `ObservableEvent`s and updates accordingly       |
+| **Component**                                                                                                   | **Role**                                                                    |
+|-----------------------------------------------------------------------------------------------------------------| --------------------------------------------------------------------------- |
+| [`CommandResult`](../../scala/de/htwg/se/soccercardclash/controller/command/ICommand.scala)                     | Holds the result of command execution – new state, success flag, and events |
+| [`GameContext`](../../scala/de/htwg/se/soccercardclash/model/gameComponent/context/GameContext.scala)           | Immutable holder for `IGameState` and `UndoManager`                         |
+| [`UndoManager`](../../scala/de/htwg/se/soccercardclash/util/UndoManager.scala)                                  | Applies commands and tracks them for undo/redo                              |
+| [`IGameContextHolder`](../../scala/de/htwg/se/soccercardclash/controller/contextHolder/GameContextHolder.scala) | Stores the current shared `GameContext`                                     |
+| [`Controller`](../../scala/de/htwg/se/soccercardclash/controller/base/Controller.scala)                         | Orchestrates command execution and state updates                            |
+| [`EventDispatcher`](../../scala/de/htwg/se/soccercardclash/util/EventDispatcher.scala)                          | **Mediator** – distributes events to observers                              |
+| [`Observer`](../../scala/de/htwg/se/soccercardclash/util/Observer.scala) (UI, TUI)                              | **Observer** – listens for `ObservableEvent`s and updates accordingly       |
 
 ### ⚙️ Execution Flow
 
