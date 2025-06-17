@@ -39,8 +39,8 @@ class CommandFactory @Inject()(gameService: IGameService,
   override def createCreateGameCommand(player1: String, player2: String): WorkflowCommand =
     new CreateGameWorkflowCommand(gameService, player1, player2)
 
-  override def createQuitCommand(): WorkflowCommand =
-    new QuitWorkflowCommand()
+  override def createQuitCommand(exitStrategy: ExitStrategy): WorkflowCommand =
+    new QuitWorkflowCommand(exitStrategy)
 
   override def createLoadGameCommand(fileName: String): WorkflowCommand =
     new LoadGameWorkflowCommand(gameService, fileName)
@@ -64,7 +64,7 @@ trait ICommandFactory {
 
   def createCreateGameCommand(player1: String, player2: String): WorkflowCommand
 
-  def createQuitCommand(): WorkflowCommand
+  def createQuitCommand(exitStrategy: ExitStrategy): WorkflowCommand
 
   def createSaveGameCommand(): WorkflowCommand
 

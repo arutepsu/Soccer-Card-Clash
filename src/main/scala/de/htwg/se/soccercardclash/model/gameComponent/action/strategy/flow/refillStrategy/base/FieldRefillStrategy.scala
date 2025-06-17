@@ -36,7 +36,7 @@ class FieldRefillStrategy extends IFieldRefillStrategy {
       .newPlayerHand(player, updatedHand)
   }
 
-  private def determineFieldCards(hand: IHandCardsQueue, defenderCount: Int, goalkeeperCount: Int): (List[ICard], IHandCardsQueue) = {
+  protected def determineFieldCards(hand: IHandCardsQueue, defenderCount: Int, goalkeeperCount: Int): (List[ICard], IHandCardsQueue) = {
     val cardsNeeded = (defenderCount, goalkeeperCount) match {
       case (0, 0) => 4
       case (1, _) => 2

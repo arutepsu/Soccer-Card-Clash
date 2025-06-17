@@ -31,10 +31,9 @@ class CreateGameWorkflowCommand(
   }
 }
 
-class QuitWorkflowCommand extends WorkflowCommand {
-
+class QuitWorkflowCommand(val exitStrategy: ExitStrategy) extends WorkflowCommand {
   override def doStep(state: IGameState): (IGameState, List[ObservableEvent]) = {
-    System.exit(0)
+    exitStrategy.exit()
     (state, List.empty)
   }
 }
@@ -66,4 +65,9 @@ class LoadGameWorkflowCommand(
   }
 }
 
-
+trait ExitStrategy {
+  def exit(): Unit
+}
+object ExitGameStrategy extends ExitStrategy {
+  override def exit(): Unit = System.exit(0)
+}

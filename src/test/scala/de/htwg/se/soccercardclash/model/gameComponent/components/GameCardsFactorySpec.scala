@@ -40,5 +40,49 @@ class GameCardsFactorySpec extends AnyWordSpec with Matchers with MockitoSugar {
       result.getPlayerHand(player1) shouldBe handQueue1
       result.getPlayerDefenders(player1) shouldBe List(None, None, None)
     }
+    "create GameCards from data correctly" in {
+      val player1 = mock[IPlayer]
+      val player2 = mock[IPlayer]
+
+      val handCard1 = mock[ICard]
+      val handCard2 = mock[ICard]
+      val defCard1 = Some(mock[ICard])
+      val defCard2 = Some(mock[ICard])
+      val goalkeeper = Some(mock[ICard])
+
+      val mockHandCardsFactory = mock[IHandCardsFactory]
+      val mockFieldCardsFactory = mock[IFieldCardsFactory]
+      val mockRefillStrategy = mock[IRefillStrategy]
+      val mockHandCards = mock[IHandCards]
+      val mockFieldCards = mock[IFieldCards]
+      val mockHandQueue1 = mock[IHandCardsQueue]
+      val mockHandQueue2 = mock[IHandCardsQueue]
+
+      when(mockHandCardsFactory.create(player1, List(handCard1), player2, List(handCard2)))
+        .thenReturn(mockHandCards)
+
+      when(mockHandCards.getPlayerHand(player1)).thenReturn(mockHandQueue1)
+      when(mockHandCards.getPlayerHand(player2)).thenReturn(mockHandQueue2)
+
+      when(mockFieldCardsFactory.create(any(), any(), any())).thenReturn(mockFieldCards)
+      when(mockRefillStrategy.refillField(any(), any(), any()))
+        .thenAnswer(i => i.getArgument(0).asInstanceOf[IGameCards])
+
+      val factory = new GameCardsFactory(mockHandCardsFactory, mockFieldCardsFactory, mockRefillStrategy)
+
+      val result = factory.createFromData(
+        attacker = player1,
+        attackerHand = List(handCard1),
+        defender = player2,
+        defenderHand = List(handCard2),
+        attackerDefenders = List(defCard1, None),
+        defenderDefenders = List(defCard2, None),
+        attackerGoalkeeper = goalkeeper,
+        defenderGoalkeeper = goalkeeper
+      )
+
+      result.getPlayerHand(player1) shouldBe mockHandQueue1
+      result.getPlayerHand(player2) shouldBe mockHandQueue2
+    }
   }
 }

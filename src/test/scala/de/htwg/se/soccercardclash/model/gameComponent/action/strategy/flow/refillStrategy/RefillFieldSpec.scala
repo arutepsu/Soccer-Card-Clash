@@ -12,7 +12,10 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.{eq => eqTo, any}
 
 class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
-
+  class TestableFieldRefillStrategy extends FieldRefillStrategy {
+    def testDetermineFieldCards(hand: IHandCardsQueue, defenders: Int, goalie: Int): (List[ICard], IHandCardsQueue) =
+      super.determineFieldCards(hand, defenders, goalie)
+  }
   "A RefillField" should {
     "refill defenders and goalkeeper when all are empty" in {
       val player = mock[IPlayer]
@@ -62,6 +65,53 @@ class RefillFieldSpec extends AnyWordSpec with Matchers with MockitoSugar {
       val result = strategy.refill(gameCards, player, hand)
 
       result shouldBe gameCards
+    }
+    "return 4 cards when both defender and goalkeeper are empty" in {
+      val hand = mock[IHandCardsQueue]
+      val updatedHand = mock[IHandCardsQueue]
+      val cards = List(mock[ICard], mock[ICard], mock[ICard], mock[ICard])
+      when(hand.splitAtEnd(4)).thenReturn((cards, updatedHand))
+
+      val strategy = new TestableFieldRefillStrategy
+      val (drawn, resultHand) = strategy.testDetermineFieldCards(hand, 0, 0)
+
+      drawn shouldBe cards
+      resultHand shouldBe updatedHand
+    }
+    "return 2 cards when one defender is present" in {
+      val hand = mock[IHandCardsQueue]
+      val updatedHand = mock[IHandCardsQueue]
+      val cards = List(mock[ICard], mock[ICard])
+      when(hand.splitAtEnd(2)).thenReturn((cards, updatedHand))
+
+      val strategy = new TestableFieldRefillStrategy
+      val (drawn, resultHand) = strategy.testDetermineFieldCards(hand, 1, 1)
+
+      drawn shouldBe cards
+      resultHand shouldBe updatedHand
+    }
+
+    "return 1 card when two defenders are present" in {
+      val hand = mock[IHandCardsQueue]
+      val updatedHand = mock[IHandCardsQueue]
+      val cards = List(mock[ICard])
+      when(hand.splitAtEnd(1)).thenReturn((cards, updatedHand))
+
+      val strategy = new TestableFieldRefillStrategy
+      val (drawn, resultHand) = strategy.testDetermineFieldCards(hand, 2, 1)
+
+      drawn shouldBe cards
+      resultHand shouldBe updatedHand
+    }
+
+    "return no cards when field is full (3 defenders)" in {
+      val hand = mock[IHandCardsQueue]
+
+      val strategy = new TestableFieldRefillStrategy
+      val (drawn, resultHand) = strategy.testDetermineFieldCards(hand, 3, 1)
+
+      drawn shouldBe empty
+      resultHand shouldBe hand
     }
   }
 }
