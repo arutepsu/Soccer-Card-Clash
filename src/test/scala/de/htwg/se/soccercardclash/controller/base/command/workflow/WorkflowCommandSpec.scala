@@ -12,6 +12,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar
 import scala.util.{Success, Failure}
 
+class TestExitStrategy extends ExitStrategy {
+  var wasCalled: Boolean = false
+
+  override def exit(): Unit = wasCalled = true
+}
+
 class WorkflowCommandSpec extends AnyFlatSpec with Matchers {
 
   "CreateGameWorkflowCommand" should "create a new game and return PlayingField event" in {
@@ -33,7 +39,7 @@ class WorkflowCommandSpec extends AnyFlatSpec with Matchers {
     val gameService = mock(classOf[IGameService])
     val state = mock(classOf[IGameState])
 
-    when(gameService.saveGame(state)).thenReturn(Success(())) // could also test Failure here
+    when(gameService.saveGame(state)).thenReturn(Success(()))
 
     val command = new SaveGameWorkflowCommand(gameService)
     val result = command.execute(state)
@@ -43,6 +49,18 @@ class WorkflowCommandSpec extends AnyFlatSpec with Matchers {
     result.events should contain(GameActionEvent.SaveGame)
   }
 
+  "QuitWorkflowCommand" should "invoke ExitStrategy and return unchanged state and empty events" in {
+    val testExit = new TestExitStrategy
+    val initialState = mock(classOf[IGameState])
+
+    val command = new QuitWorkflowCommand(testExit)
+    val result = command.execute(initialState)
+
+    result.success shouldBe true
+    result.state shouldBe initialState
+    result.events shouldBe empty
+    testExit.wasCalled shouldBe true
+  }
   "LoadGameWorkflowCommand" should "load game and return LoadGame event on success" in {
     val gameService = mock(classOf[IGameService])
     val state = mock(classOf[IGameState])
@@ -71,4 +89,5 @@ class WorkflowCommandSpec extends AnyFlatSpec with Matchers {
     result.state shouldBe state
     result.events shouldBe empty
   }
+  
 }

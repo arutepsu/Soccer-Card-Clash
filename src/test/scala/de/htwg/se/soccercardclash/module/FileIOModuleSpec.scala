@@ -21,7 +21,7 @@ class FileIOModuleSpec extends AnyWordSpec with Matchers {
   "FileIOModule" should {
     val injector = Guice.createInjector(new FileIOModule {
       override def configure(): Unit = {
-        // Provide mocked or dummy implementations for required constructors
+
         bind(classOf[PlayerDeserializer]).toInstance(mock(classOf[PlayerDeserializer]))
         bind(classOf[CardDeserializer]).toInstance(mock(classOf[CardDeserializer]))
         bind(classOf[IHandCardsQueueFactory]).toInstance(mock(classOf[IHandCardsQueueFactory]))

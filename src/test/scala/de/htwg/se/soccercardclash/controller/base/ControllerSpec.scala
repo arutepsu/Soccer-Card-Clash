@@ -13,7 +13,7 @@ import de.htwg.se.soccercardclash.model.gameComponent.service.IGameService
 import de.htwg.se.soccercardclash.model.playerComponent.playerAction.{CanPerformAction, OutOfActions, PlayerActionPolicies}
 import de.htwg.se.soccercardclash.util.{EventDispatcher, Observable, ObservableEvent, Observer, UndoManager}
 import de.htwg.se.soccercardclash.model.gameComponent.context.GameContext
-import de.htwg.se.soccercardclash.model.gameComponent.components.Roles
+import de.htwg.se.soccercardclash.model.gameComponent.components.{IRoles, Roles}
 import de.htwg.se.soccercardclash.model.playerComponent.base.AI
 import de.htwg.se.soccercardclash.util.*
 import org.scalatest.wordspec.AnyWordSpec
@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar
 
-import scala.util.{Success, Try, Failure}
+import scala.util.{Failure, Success, Try}
 
 class ControllerSpec extends AnyFlatSpec with MockitoSugar {
 
@@ -460,6 +460,5 @@ class ControllerSpec extends AnyFlatSpec with MockitoSugar {
     assert(result._1 eq ctx)
     assert(result._2)
   }
-
 }
 

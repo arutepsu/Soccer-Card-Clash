@@ -1,5 +1,6 @@
 package de.htwg.se.soccercardclash.controller.base.command
 
+import de.htwg.se.soccercardclash.controller.base.command.workflow.TestExitStrategy
 import de.htwg.se.soccercardclash.controller.command.CommandFactory
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.attackActionCommands.*
 import de.htwg.se.soccercardclash.controller.command.actionCommandTypes.boostActionCommands.*
@@ -66,8 +67,14 @@ class CommandFactorySpec extends AnyFlatSpec with Matchers {
   }
 
   it should "create QuitWorkflowCommand" in {
-    val cmd = factory.createQuitCommand()
+    val testExitStrategy = new TestExitStrategy
+
+    val cmd = factory.createQuitCommand(testExitStrategy)
+
     cmd shouldBe a[QuitWorkflowCommand]
+
+    val quitCmd = cmd.asInstanceOf[QuitWorkflowCommand]
+    quitCmd.exitStrategy shouldBe testExitStrategy
   }
 
   it should "create SaveGameWorkflowCommand" in {

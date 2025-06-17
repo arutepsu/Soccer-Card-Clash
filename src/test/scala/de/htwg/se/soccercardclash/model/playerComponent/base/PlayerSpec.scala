@@ -119,4 +119,26 @@ class PlayerSpec extends AnyWordSpec with Matchers with MockitoSugar {
       custom.getActionStates(PlayerActionPolicies.DoubleAttack) shouldBe CanPerformAction(2)
     }
   }
+  "PlayerActionPolicies" should {
+    "contain Boost, DoubleAttack, and Swap with correct maxUses" in {
+      PlayerActionPolicies.Boost.maxUses shouldBe 2
+      PlayerActionPolicies.DoubleAttack.maxUses shouldBe 1
+      PlayerActionPolicies.Swap.maxUses shouldBe 1
+    }
+
+    "have exactly 3 values" in {
+      PlayerActionPolicies.values should contain theSameElementsAs Seq(
+        PlayerActionPolicies.Boost,
+        PlayerActionPolicies.DoubleAttack,
+        PlayerActionPolicies.Swap
+      )
+      PlayerActionPolicies.values.size shouldBe 3
+    }
+
+    "have string representations matching the case names" in {
+      PlayerActionPolicies.Boost.toString shouldBe "Boost"
+      PlayerActionPolicies.DoubleAttack.toString shouldBe "DoubleAttack"
+      PlayerActionPolicies.Swap.toString shouldBe "Swap"
+    }
+  }
 }

@@ -73,5 +73,25 @@ class ICardSpec extends AnyFlatSpec with Matchers {
 
     boosted.revertBoost() shouldBe base
   }
+  it should "convert to correct XML" in {
+    val card = RegularCard(Value.Four, Suit.Spades)
+    val xml = card.toXml
+
+    (xml \ "suit").text.trim shouldBe "Spades"
+    (xml \ "value").text.trim shouldBe "4"
+    (xml \ "type").text.trim shouldBe "Regular"
+    (xml \ "additionalValue").isEmpty shouldBe true
+  }
+
+  "BoostedCard" should "serialize correctly to XML" in {
+    val base = RegularCard(Value.Jack, Suit.Clubs)
+    val boosted = BoostedCard(base, 2)
+    val xml = boosted.toXml
+
+    (xml \ "suit").text.trim shouldBe "Clubs"
+    (xml \ "value").text.trim shouldBe "King"
+    (xml \ "type").text.trim shouldBe "Boosted"
+    (xml \ "additionalValue").text.trim shouldBe "2"
+  }
 
 }
