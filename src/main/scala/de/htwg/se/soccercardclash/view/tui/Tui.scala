@@ -68,7 +68,7 @@ class Tui(
   protected var promptState: PromptState = PromptState.None
 
   def processInputLine(input: String): Unit = {
-    println(s"\uD83D\uDEE0 Received input: '$input'")
+    println(s"Received input: '$input'")
 
     if (createPlayersNameWitAITuiCommand.isWaitingForNames &&
       createPlayersNameWitAITuiCommand.handlePlayerNames(input)) {

@@ -43,7 +43,7 @@ object GameButtonFactory {
          |-fx-text-fill: white;
          |-fx-font-size: 20px;
          |-fx-font-family: "Rajdhani";
-         |-fx-font-weight: regular;
+         |-fx-font-weight: normal;
          |-fx-text-alignment: center;
          |-fx-alignment: center;
          |-fx-content-display: center;

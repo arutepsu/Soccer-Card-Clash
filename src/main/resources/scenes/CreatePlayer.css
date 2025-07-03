@@ -1,4 +1,3 @@
-/* Background Panel Styling */
 .create-player-panel {
     -fx-background-image: url("/images/data/frames/background2.jpg");
     -fx-background-size: cover;
@@ -9,7 +8,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 10, 0, 5, 5);
 }
 
-/* Title Styling */
 .title {
     -fx-font-size: 68px;
     -fx-font-family: "Rajdhani";
@@ -18,7 +16,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.3, 2, 2);
 }
 
-/* Subtitle (Enter Player Names) */
 .subtitle {
     -fx-font-size: 22px;
     -fx-font-family: "Rajdhani";
@@ -27,12 +24,11 @@
     -fx-font-family: "Segoe UI";
 }
 
-/* Player Input Fields */
 .player-text-input {
     -fx-font-size: 20px;
     -fx-font-family: "Rajdhani";
     -fx-text-fill: #f0e9fa;
-    -fx-font-weight: regular;
+    -fx-font-weight: normal;
     -fx-background-color: rgba(15,0,48,255);
     -fx-border-color: rgba(95,63,252,255);
     -fx-border-width: 2px;

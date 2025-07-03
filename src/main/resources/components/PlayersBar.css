@@ -2,7 +2,7 @@
 .player-avatar-box {
     -fx-padding: 8px;
     -fx-font-family: "Rajdhani";
-    -fx-font-weight: regular;
+    -fx-font-weight: normal;
     -fx-border-width: 2px;
     -fx-border-radius: 10px;
 
@@ -20,7 +20,7 @@
 .player-name {
     -fx-font-size: 40px;
     -fx-font-family: "Rajdhani";
-    -fx-font-weight: regular;
+    -fx-font-weight: normal;
     -fx-cell-hover-color: #f0e9fa;
 }
 .player-score {
@@ -46,52 +46,3 @@
     -fx-effect: dropshadow(gaussian, rgba(158, 75, 223, 0.8), 4, 0.3, 0, 1);
     -fx-text-alignment: center;
 }
-/*!* 🔹 Highlight Current Player (Attacker) *!*/
-/*.current-player {*/
-/*    -fx-background-color: rgba(255, 215, 0, 0.3); !* Light Gold *!*/
-/*    -fx-border-color: #FFD700;*/
-/*    -fx-border-width: 3px;*/
-/*    -fx-border-radius: 10px;*/
-/*    -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.8), 15, 0, 5, 5);*/
-/*}*/
-/*.player-actions {*/
-/*    -fx-font-size: 14px;*/
-/*    -fx-text-fill: #87CEEB; !* Light Blue for better readability *!*/
-/*    -fx-font-weight: bold;*/
-/*    -fx-font-family: "Arial";*/
-/*    -fx-padding: 5px 0;*/
-/*}*/
-/*.scores-bar {*/
-/*    -fx-padding: 10;*/
-/*    -fx-background-color: #1a1a2e;*/
-/*    -fx-background-radius: 10;*/
-/*    -fx-border-color: #5a189a;*/
-/*    -fx-border-radius: 10;*/
-/*    -fx-border-width: 2;*/
-/*}*/
-
-/*.score-box {*/
-/*    -fx-alignment: center;*/
-/*    -fx-spacing: 5;*/
-/*    -fx-padding: 10;*/
-/*    -fx-background-color: linear-gradient(to bottom, #5f0f40, #9a031e);*/
-/*    -fx-background-radius: 10;*/
-/*    -fx-effect: dropshadow(three-pass-box, #000000, 5, 0, 0, 2);*/
-/*}*/
-
-/*.score-icon {*/
-/*    -fx-font-size: 24px;*/
-/*    -fx-text-fill: white;*/
-/*}*/
-
-/*.player-name {*/
-/*    -fx-font-size: 16px;*/
-/*    -fx-text-fill: #ffd60a;*/
-/*    -fx-font-weight: bold;*/
-/*}*/
-
-/*.player-score {*/
-/*    -fx-font-size: 20px;*/
-/*    -fx-text-fill: #ffffff;*/
-/*    -fx-font-weight: bold;*/
-/*}*/

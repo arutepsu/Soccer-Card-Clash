@@ -78,33 +78,38 @@ class PrompterSpec extends AnyWordSpec with Matchers {
       Console.withOut(out) {
         new Prompter(null, null).promptRegularAttack()
       }
-      out.toString should include("Select a defender")
+      out.toString should include(":singleattack")
+      out.toString should include("Attack with a single card")
     }
-
+  
     "print double attack prompt" in {
       val out = new java.io.ByteArrayOutputStream()
       Console.withOut(out) {
         new Prompter(null, null).promptDoubleAttack()
       }
-      out.toString should include("Select a defender")
+      out.toString should include(":doubleattack")
+      out.toString should include("Double Attack with two cards")
     }
-
+  
     "print boost prompt" in {
       val out = new java.io.ByteArrayOutputStream()
       Console.withOut(out) {
         new Prompter(null, null).promptBoost()
       }
-      out.toString should include("Choose a defender")
+      out.toString should include(":boostdefender")
+      out.toString should include("Boost a defender")
     }
-
+  
     "print swap prompt" in {
       val out = new java.io.ByteArrayOutputStream()
       Console.withOut(out) {
         new Prompter(null, null).promptSwap()
       }
-      out.toString should include("Choose a card to swap")
+      out.toString should include(":regularswap")
+      out.toString should include(":reverseswap")
+      out.toString should include("Swap a card")
     }
-
+    
     "print new game prompt" in {
       val out = new java.io.ByteArrayOutputStream()
       Console.withOut(out) {
@@ -161,7 +166,7 @@ class PrompterSpec extends AnyWordSpec with Matchers {
       }
       val output = out.toString
       output should include("Welcome to Soccer Card Clash")
-      output should include(":startAI")
+      output should include(":singleplayer")
       output should include(":exit")
     }
   }
