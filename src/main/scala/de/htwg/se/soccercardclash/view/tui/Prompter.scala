@@ -11,30 +11,38 @@ import de.htwg.se.soccercardclash.view.tui.tuiCommand.tuiCommandTypes.LoadGameTu
 class Prompter(controller: IController, gameContextHolder: IGameContextHolder) extends IPrompter {
 
   def promptPlayersName(): Unit = {
-    println(f"Enter player names (format: `player1 player2`):${TuiKeys.Multiplayer.toString}")
+    println(f"Enter player names (format: `player1 player2`): ${TuiKeys.Multiplayer}")
   }
 
   def promptRegularAttack(): Unit = {
-    println("⚔Select a defender to attack (enter position):")
+    println(s"Attack with a single card: use `${TuiKeys.Attack} <defenderPosition>`")
   }
 
   def promptDoubleAttack(): Unit = {
-    println("Select a defender to attack (enter position):")
+    println(s"Double Attack with two cards: use `${TuiKeys.DoubleAttack} <defenderPosition>`")
   }
 
   def promptBoost(): Unit = {
-    println("Choose a defender to boost (enter position):")
+    println(s"Boost a defender: use `${TuiKeys.BoostDefender} <position>`")
   }
 
   def promptSwap(): Unit = {
-    println("Choose a card to swap from attacker's hand (enter position):")
+    println(s"Swap a card: use `${TuiKeys.RegularSwap} <handPosition>` or `${TuiKeys.ReverseSwap}`")
   }
+
   def promptNewGame(): Unit = {
     println("Creating a new game!")
   }
 
   def promptPlayingField(): Unit = {
     println("Game started!:")
+    printGameState()
+    promptRegularAttack()
+    promptDoubleAttack()
+    promptBoost()
+    promptSwap()
+    promptUndo()
+    promptRedo()
   }
 
   def promptShowAttackersHand(): Unit = {
@@ -110,8 +118,8 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
     println("      Welcome to Soccer Card Clash!      ")
     println("=========================================")
     println("\nMain Menu:")
-    println(":startAI - SinglePlayer")
-    println(":startM - MultiPlayer")
+    println(":singleplayer - SinglePlayer")
+    println(":multiplayer - MultiPlayer")
     println(":load - Load Game")
     println(":exit - Exit")
 
@@ -150,11 +158,11 @@ class Prompter(controller: IController, gameContextHolder: IGameContextHolder) e
   }
 
   def promptUndo(): Unit = {
-    println("Undo")
+    println(s"Undo last action: use `${TuiKeys.Undo}`")
   }
 
   def promptRedo(): Unit = {
-    println("Redo")
+    println(s"Redo last undone action: use `${TuiKeys.Redo}`")
   }
 }
 trait IPrompter {

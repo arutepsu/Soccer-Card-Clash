@@ -17,7 +17,7 @@ class LoadGameTuiCommandSpec extends AnyWordSpec with Matchers with MockitoSugar
 
     "print success message and notify scene switch when load succeeds" in {
       val controller = mock[IController]
-      val command = new LoadGameTuiCommand(controller, "save1.xml")
+      val command = new LoadGameTuiCommand(controller, "game.xml")
 
       // Spy on GlobalObservable (if replaceable). Otherwise, we check only println.
       val output = new java.io.ByteArrayOutputStream()
@@ -25,7 +25,7 @@ class LoadGameTuiCommandSpec extends AnyWordSpec with Matchers with MockitoSugar
         command.execute()
       }
 
-      verify(controller).loadGame("save1.xml")
+      verify(controller).loadGame("game.xml")
       output.toString should include("loaded successfully")
     }
 

@@ -15,4 +15,6 @@ enum TuiKeys(val key: String) {
   case BoostGoalkeeper extends TuiKeys(":boostgoalkeeper")
   case Exit extends TuiKeys(":exit")
   case ShowGames extends TuiKeys(":load")
+
+  override def toString: String = key
 }
