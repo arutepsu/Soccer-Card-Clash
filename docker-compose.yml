@@ -10,4 +10,4 @@ services:
     network_mode: host
     stdin_open: true
     tty: true
-    command: [ "java", "-jar", "target/scala-3.4.1/SoccerCardClash.jar" ]
+    command: [ "java", "-jar", "target/scala-3.3.3/SoccerCardClash.jar" ]
