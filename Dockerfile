@@ -1,4 +1,4 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-jammy-22_36_1.10.0_3.4.1
+FROM sbtscala/scala-sbt:eclipse-temurin-jammy-22_36_1.10.0_3.3.3
 
 RUN apt update && apt install -y \
     libxrender1 \
@@ -23,4 +23,4 @@ COPY . .
 
 RUN sbt assembly
 
-CMD ["java", "-jar", "target/scala-3.4.1/SoccerCardClash.jar"]
+CMD ["java", "-jar", "target/scala-3.3.3/SoccerCardClash.jar"]

@@ -102,6 +102,15 @@ The controller mediates between the model and views:
 
 ---
 
+# 🐞 Current Bugs to Fix
+
+- [ ] Fix AI players to consistently continue attacking instead of stopping or idling; add fallback logic when they halt.
+- [ ] Fix card comparison display when the card values are the same.
+- [ ] Replace the Queen of Spades image with a proper `.png` version.
+- [ ] Fix Docker.
+
+---
+
 # 🚀 Getting Started
 Want to jump into the game? Just clone this repository and launch it locally:
 
