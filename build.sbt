@@ -90,19 +90,25 @@ lazy val corepub = (project in file(".corepub"))
     Compile / excludeFilter := new FileFilter {
       override def accept(f: File): Boolean = {
         val p = f.getPath.replace('\\', '/')
-
-        (
-          p.contains("/de/htwg/se/soccercardclash/view/gui/") ||
-          p.contains("/de/htwg/se/soccercardclash/view/tui/") ||
-
-          p.endsWith("/de/htwg/se/soccercardclash/SoccerCardClash.scala") ||
-
-          p.endsWith("/de/htwg/se/soccercardclash/module/SceneModule.scala")
-        )
+        p.contains("/de/htwg/se/soccercardclash/view/gui/") ||
+        p.contains("/de/htwg/se/soccercardclash/view/tui/") ||
+        p.endsWith("/de/htwg/se/soccercardclash/SoccerCardClash.scala") ||
+        p.endsWith("/de/htwg/se/soccercardclash/module/SceneModule.scala")
       }
     },
 
     libraryDependencies ++= coreDeps,
 
-    publishMavenStyle := true
+    publishMavenStyle := true,
+
+    publishTo := Some("GitHub Packages" at "https://maven.pkg.github.com/arutepsu/Soccer-Card-Clash"),
+
+    credentials += Credentials(
+      "GitHub Package Registry",
+      "maven.pkg.github.com",
+      sys.env.getOrElse("GITHUB_USER", ""),
+      sys.env.getOrElse("GITHUB_TOKEN", "")
+    ),
+
+    pomIncludeRepository := { _ => false }
   )
