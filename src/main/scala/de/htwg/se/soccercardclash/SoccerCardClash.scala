@@ -25,13 +25,19 @@ object SoccerCardClash {
   def main(args: Array[String]): Unit = {
     startGui()
 
-    while ({ input = readLine().trim; input } != ":quit") {
+    var line: String | Null = null
+
+    while ({
+      line = readLine()
+      line != null && { input = line.trim; input } != ":quit"
+    }) {
       tui.processInputLine(input)
     }
 
     println("Exiting game. Goodbye!")
     System.exit(0)
   }
+
 
   private def startGui(): Unit = {
     val guiThread = new Thread(() => gui.main(Array.empty))
