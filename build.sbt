@@ -8,7 +8,7 @@ val scala3Version = "3.3.3"
 ThisBuild / scalaVersion := scala3Version
 
 ThisBuild / organization := "io.github.arutepsu"
-ThisBuild / version := "0.1.3"
+ThisBuild / version := "0.1.4"
 
 ThisBuild / homepage := Some(url("https://github.com/arutepsu/Soccer-Card-Clash"))
 ThisBuild / licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
