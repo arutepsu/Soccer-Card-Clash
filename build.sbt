@@ -8,7 +8,25 @@ val scala3Version = "3.3.3"
 ThisBuild / scalaVersion := scala3Version
 
 ThisBuild / organization := "io.github.arutepsu"
-ThisBuild / version      := "0.1.0"
+ThisBuild / version := "0.1.1"
+
+ThisBuild / homepage := Some(url("https://github.com/arutepsu/Soccer-Card-Clash"))
+ThisBuild / licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/arutepsu/Soccer-Card-Clash"),
+    "scm:git:https://github.com/arutepsu/Soccer-Card-Clash.git"
+  )
+)
+ThisBuild / developers := List(
+  Developer(
+    id    = "arutepsu",
+    name  = "arutepsu",
+    email = "arutepsu@gmail.com",
+    url   = url("https://github.com/arutepsu")
+  )
+)
+ThisBuild / versionScheme := Some("semver-spec")
 
 lazy val coreDeps: Seq[ModuleID] = Seq(
   "com.google.inject" % "guice" % "5.1.0",
@@ -100,15 +118,7 @@ lazy val corepub = (project in file(".corepub"))
     libraryDependencies ++= coreDeps,
 
     publishMavenStyle := true,
+    pomIncludeRepository := { _ => false },
 
-    publishTo := Some("GitHub Packages" at "https://maven.pkg.github.com/arutepsu/Soccer-Card-Clash"),
-
-    credentials += Credentials(
-      "GitHub Package Registry",
-      "maven.pkg.github.com",
-      sys.env.getOrElse("GITHUB_USER", ""),
-      sys.env.getOrElse("GITHUB_TOKEN", "")
-    ),
-
-    pomIncludeRepository := { _ => false }
+    publish / skip := false
   )
