@@ -16,6 +16,8 @@
 An unofficial Scala version of the Soccer Card Clash game for Software Engineering classes at 
 Konstanz University of Applied Sciences.
 
+🌐 **Web Version:** [Soccer-Card-Clash-Web](https://github.com/arutepsu/Soccer-Card-Clash-Web)
+
 * 🎮 Soccer Card Clash is a fast-paced, strategic 2-player card game where soccer meets tactical mind games.
 * 🧠 Outmaneuver your opponent with clever attacks, boosts, and hand manipulation to score goals and win the match.
 
