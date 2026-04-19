@@ -87,6 +87,9 @@ lazy val app = (project in file("."))
     Compile / run / fork := true,
     Compile / run / connectInput := true,
 
+    coverageExcludedPackages := "de\\.htwg\\.se\\.soccercardclash\\.view\\..*",
+    coverageExcludedFiles := ".*SoccerCardClash\\.scala",
+
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", "substance", _*) => MergeStrategy.discard
       case PathList("META-INF", "versions", _*)  => MergeStrategy.first
