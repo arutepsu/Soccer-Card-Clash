@@ -115,6 +115,13 @@ lazy val corepub = (project in file(".corepub"))
       }
     },
 
+    Test / excludeFilter := new FileFilter {
+      override def accept(f: File): Boolean = {
+        val p = f.getPath.replace('\\', '/')
+        p.contains("/de/htwg/se/soccercardclash/view/")
+      }
+    },
+
     libraryDependencies ++= coreDeps,
 
     publishMavenStyle := true,
